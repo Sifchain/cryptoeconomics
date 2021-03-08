@@ -1,18 +1,19 @@
-def get_APY(totalStaked, **kwargs):
+def get_APY(totalStaked, rowanPrice, **kwargs):
     """
     Get live APY
     args:
-        totalStaked: global total liquidity staked (in ROWAN)
+        totalStaked: global total liquidity staked/provided (in USD)
+        rowanPrice: price of ROWAN (in USD)
     kwargs:
         miningSeconds: the period of the liquidity mining programme (in seconds)
-        totalReward: total number of rewards to be distributed
+        totalReward: total rewards to be distributed (in ROWAN)
     returns:
         apy: marginal APY
     """
     miningSeconds, totalReward = kwargs['miningSeconds'], kwargs['totalReward']
     
     if totalStaked > 0: # prevent edge case
-        apy = totalReward \
+        apy = totalReward * rowanPrice \
             / totalStaked \
             * 365 * 86400 / miningSeconds \
             * 100
@@ -25,14 +26,14 @@ def get_normal_accmulated_reward(userSnapshots, globalSnapshots, **kwargs):
     """
     Get user's accumulated reward under normal liquidity mining
     args:
-        userSnapshots: a list of user's liquidity staked at diff snapshots (in ROWAN)
-        globalSnapshots: a list of global total liquidity staked at diff snapshots (in ROWAN)
+        userSnapshots: a list of user's provided liquidity at diff snapshots (in USD)
+        globalSnapshots: a list of global total provided liquidity at diff snapshots (in USD)
     kwargs:
         miningSeconds: the period of the liquidity mining programme (in seconds)
-        totalReward: total number of rewards to be distributed
+        totalReward: total rewards to be distributed (in ROWAN)
         epochSeconds: the period of an epoch (in seconds) as we take a snapshot per epoch
     returns:
-        userAccReward: user's accumulated reward
+        userAccReward: user's accumulated reward (in ROWAN)
     """
     
     assert len(userSnapshots) == len(globalSnapshots), 'Lists have different lengths'
@@ -49,30 +50,30 @@ def get_geyser_accmulated_reward(userSnapshots, list_userSnapshots, **kwargs):
     """
     Get user's accumulated reward under geyser liquidity mining
     args:
-        userSnapshots: a list of user's liquidity staked at diff snapshots (in ROWAN)
+        userSnapshots: a list of user's liquidity provided at diff snapshots (in ROWAN)
         list_userSnapshots: a FULL list of userSnapshots (must include all users to capture the global state)
     kwargs:
         miningSeconds: the period of the liquidity mining programme (in seconds)
         totalReward: total number of rewards to be distributed
         epochSeconds: the period of an epoch (in seconds) as we take a snapshot per epoch
     requires:
-        get_userSecondsSnapshots()
-        get_globalSecondsSnapshots()
+        get_userEpochsSnapshots()
+        get_globalEpochsSnapshots()
     returns:
         userAccReward: user's accumulated reward
     """
     
-    def get_userSecondsSnapshots(userSnapshots):
+    def get_userEpochsSnapshots(userSnapshots):
         """
-        Convert userSnapshots into userSecondsSnapshots for Geyser calculation
+        Convert userSnapshots into userEpochsSnapshots for Geyser calculation
         args:
-            userSnapshots: a list of user's liquidity staked at diff snapshots (in ROWAN)
+            userSnapshots: a list of user's provided liquidity at diff snapshots (in USD)
         returns:
-            userSecondsSnapshots: a list of user's liquidity-epochs (liquidity-seconds) staked at diff snapshots (in ROWAN)
+            userEpochsSnapshots: a list of user's liquidity-epochs provided at diff snapshots (in USD-snapshot)
         """
         # initialise
         user_memory = [] 
-        userSecondsSnapshots = []
+        userEpochsSnapshots = []
 
         for i in range(len(userSnapshots)):
             if userSnapshots[i] == 0: # if none staked at snapshot
@@ -95,28 +96,27 @@ def get_geyser_accmulated_reward(userSnapshots, list_userSnapshots, **kwargs):
                         else:
                             deficit -= user_memory[-1][-1]
                             user_memory = user_memory[:-1]
-            userSecondsSnapshots.append(sum([(i-mem[0]+1)*mem[1] for mem in user_memory]))
-        return userSecondsSnapshots
+            userEpochsSnapshots.append(sum([(i-mem[0]+1)*mem[1] for mem in user_memory]))
+        return userEpochsSnapshots
     
-    def get_globalSecondsSnapshots(list_userSnapshots):
+    def get_globalEpochsSnapshots(list_userSnapshots):
         """
-        Compute globalSecondsSnapshots from a list of userSnapshots
+        Compute globalEpochsSnapshots from a list of userSnapshots
         args:
             list_userSnapshots: a FULL list of userSnapshots (must include all users to capture the global state)
         requires:
             elementwisesum()
         returns:
-            globalSecondsSnapshots: a list of global total liquidity-epochs (liquidity-seconds) staked at diff snapshots (in ROWAN)
+            globalEpochsSnapshots: a list of global total liquidity-epochs (liquidity-seconds) provided at diff snapshots (in ROWAN)
         """
-     
-        list_userSecondsSnapshots = []
+        list_userEpochsSnapshots = []
         for l in list_userSnapshots:
-            list_userSecondsSnapshots.append(get_userSecondsSnapshots(l))
-        globalSecondsSnapshots = elementwisesum(list_userSecondsSnapshots)
-        return globalSecondsSnapshots
+            list_userEpochsSnapshots.append(get_userEpochsSnapshots(l))
+        globalEpochsSnapshots = elementwisesum(list_userEpochsSnapshots)
+        return globalEpochsSnapshots
     
-    userAccReward = get_normal_accmulated_reward(userSnapshots=get_userSecondsSnapshots(userSnapshots), 
-                                                 globalSnapshots=get_globalSecondsSnapshots(list_userSnapshots), 
+    userAccReward = get_normal_accmulated_reward(userSnapshots=get_userEpochsSnapshots(userSnapshots), 
+                                                 globalSnapshots=get_globalEpochsSnapshots(list_userSnapshots), 
                                                  **kwargs)
     return userAccReward
 
