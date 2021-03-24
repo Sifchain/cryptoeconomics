@@ -123,3 +123,10 @@ def get_geyser_accmulated_reward(userSnapshots, list_userSnapshots, **kwargs):
 def elementwisesum(listoflists):
     """element-wise summation of lists"""
     return [sum(x) for x in zip(*listoflists)]
+
+def dict2list(d: dict):
+    """convert a dictionary to a list"""
+    l = []
+    for k, v in d.items():
+        l.append(v)
+    return l
