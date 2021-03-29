@@ -10,12 +10,12 @@ def getUserAccReward(data, addressOfInterest):
         userAccReward: user's accumulated reward (in ROWAN)
     """
     # constants
-    constants = {'miningSeconds':4*30*86400,
-                 'totalReward':30e6,
-                 'epochSeconds':10*60}
+    constants = {'miningSeconds':4*30*86400, # 120 days
+                 'totalReward':30e6, # 30M 
+                 'epochSeconds':40*60} # 40 minutes
     
     # data route
-    data = data['data']['snapshots_new'][0]['snapshot_data']
+    data = data['data']['snapshots_testing'][0]['snapshot_data']
     
     def dict2list(d: dict):
         """convert a dictionary to a list"""
@@ -141,7 +141,7 @@ def getUserAccReward(data, addressOfInterest):
     for addy in addressList: # for each addy
         snapshotOfOneAddress = 0
         for token in tokenList: # aggregate USD values across all tokens
-            snapshotOfOneAddress += np.cumsum(data[addy][token])# cumulative sum
+            snapshotOfOneAddress += np.cumsum(data[addy][token], dtype=float)# cumulative sum
         snapshot[addy] = snapshotOfOneAddress
         
     # turn all negative numbers to 0
