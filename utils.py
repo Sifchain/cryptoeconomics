@@ -12,10 +12,10 @@ def getUserAccReward(data, addressOfInterest):
         currentMultiplier: user's current multiplier
     """
     # constants
-    constants = {'miningSeconds':4*30*86400, # 120 days
+    constants = {'miningSeconds':121*86400, # 121 days
                  'totalReward':30e6, # 30M
                  'epochSeconds':200*60, # 200 minutes
-                 'multiplierSeconds': 4*30*86400, # 120 days
+                 'multiplierSeconds': 121*86400, # 121 days
                  'multiplierBand': [1,4]} # from 1x to 4x
 
     # data route
