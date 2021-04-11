@@ -16,10 +16,10 @@ def getUserAccReward(data, addressOfInterest):
                  'totalReward':30e6, # 30M
                  'epochSeconds':200*60, # 200 minutes
                  'multiplierSeconds': 121*86400, # 121 days
-                 'multiplierBand': [1,4]} # from 1x to 4x
-
+                 'multiplierBand': [1,4], # from 1x to 4x
+                 'isGeyser': False} # Geyser or not
     # data route
-    data = data['data']['snapshots_mongo'][0]['snapshot_data']
+    data = data['data']['snapshots_new'][0]['snapshot_data']
 
     def dict2list(d: dict):
         """convert a dictionary to a list"""
@@ -32,90 +32,39 @@ def getUserAccReward(data, addressOfInterest):
         """element-wise summation of lists"""
         return [sum(x) for x in zip(*listoflists)]
 
-    def get_geyser_accmulated_reward(userSnapshots, list_userSnapshots, **kwargs):
+    def calculate_accumulated_reward(userSnapshots, list_userSnapshots, **kwargs):
         """
-        Get user's accumulated reward under geyser liquidity mining
+        Get user's accumulated reward
         args:
-            userSnapshots: a list of user's liquidity provided at diff snapshots (in ROWAN)
+            userSnapshots: a list of user's provided liquidity at diff snapshots (in ROWAN)
             list_userSnapshots: a FULL list of userSnapshots (must include all users to capture the global state)
         kwargs:
             miningSeconds: the period of the liquidity mining programme (in seconds)
-            totalReward: total number of rewards to be distributed
+            totalReward: total rewards to be distributed (in ROWAN)
             epochSeconds: the period of an epoch (in seconds) as we take a snapshot per epoch
+            isGeyser: Geyser (=True) or normal (=False) liquidity mining (bool)
         requires:
-            get_userEpochsSnapshots()
-            get_globalEpochsSnapshots()
             get_normal_accmulated_reward()
+            get_geyser_accmulated_reward()
         returns:
-            userAccReward: user's accumulated reward
+            userAccReward: user's accumulated reward (in ROWAN)
         """
-
-        def get_userEpochsSnapshots(userSnapshots):
-            """
-            Convert userSnapshots into userEpochsSnapshots for Geyser calculation
-            args:
-                userSnapshots: a list of user's provided liquidity at diff snapshots (in USD)
-            returns:
-                userEpochsSnapshots: a list of user's liquidity-epochs provided at diff snapshots (in USD-snapshot)
-            """
-            # initialise
-            user_memory = []
-            userEpochsSnapshots = []
-
-            for i in range(len(userSnapshots)):
-                if userSnapshots[i] == 0: # if none staked at snapshot
-                    user_memory = [] # clear memory
-                else: # if some staked at snapshot
-                    # get the difference between the previous snapshot
-                    if i == 0:
-                        diff = userSnapshots[0]
-                    else:
-                        diff = userSnapshots[i] - userSnapshots[i-1]
-
-                    if diff > 0: # if more tokens are staked
-                        user_memory.append((i,diff)) # record (index, difference in staked token)
-                    elif diff < 0: # if some tokens are withdrawn
-                        deficit = -diff
-                        while deficit > 0:
-                            if user_memory[-1][-1] > deficit: # partial remove
-                                user_memory[-1] = (user_memory[-1][0], user_memory[-1][-1]-deficit)
-                                deficit = 0
-                            else:
-                                deficit -= user_memory[-1][-1]
-                                user_memory = user_memory[:-1]
-                userEpochsSnapshots.append(sum([(i-mem[0]+1)*mem[1] for mem in user_memory]))
-            return userEpochsSnapshots
-
-        def get_globalEpochsSnapshots(list_userSnapshots):
-            """
-            Compute globalEpochsSnapshots from a list of userSnapshots
-            args:
-                list_userSnapshots: a FULL list of userSnapshots (must include all users to capture the global state)
-            requires:
-                elementwisesum()
-            returns:
-                globalEpochsSnapshots: a list of global total liquidity-epochs (liquidity-seconds) provided at diff snapshots (in ROWAN)
-            """
-            list_userEpochsSnapshots = []
-            for l in list_userSnapshots:
-                list_userEpochsSnapshots.append(get_userEpochsSnapshots(l))
-            globalEpochsSnapshots = elementwisesum(list_userEpochsSnapshots)
-            return globalEpochsSnapshots
-
-        def get_normal_accmulated_reward(userSnapshots, globalSnapshots, **kwargs):
+        def get_normal_accmulated_reward(userSnapshots, list_userSnapshots, **kwargs):
             """
             Get user's accumulated reward under normal liquidity mining
             args:
-                userSnapshots: a list of user's provided liquidity at diff snapshots (in USD)
-                globalSnapshots: a list of global total provided liquidity at diff snapshots (in USD)
+                userSnapshots: a list of user's provided liquidity at diff snapshots (in ROWAN)
+                list_userSnapshots: a FULL list of userSnapshots (must include all users to capture the global state)
             kwargs:
                 miningSeconds: the period of the liquidity mining programme (in seconds)
                 totalReward: total rewards to be distributed (in ROWAN)
                 epochSeconds: the period of an epoch (in seconds) as we take a snapshot per epoch
+            requires:
+                elementwisesum()
             returns:
                 userAccReward: user's accumulated reward (in ROWAN)
             """
-
+            globalSnapshots = elementwisesum(list_userSnapshots)
             assert len(userSnapshots) == len(globalSnapshots), 'Lists have different lengths'
             miningSeconds, totalReward, epochSeconds = kwargs['miningSeconds'], kwargs['totalReward'], kwargs['epochSeconds']
             # total reward distributed per epoch
@@ -125,10 +74,87 @@ def getUserAccReward(data, addressOfInterest):
             userAccReward = sum([userStaked / globalStaked * totalRewardPerEpoch for userStaked, globalStaked in zip(userSnapshots, globalSnapshots)])
             return userAccReward
 
-        userAccReward = get_normal_accmulated_reward(userSnapshots=get_userEpochsSnapshots(userSnapshots),
-                                                     globalSnapshots=get_globalEpochsSnapshots(list_userSnapshots),
-                                                     **kwargs)
-        return userAccReward
+        def get_geyser_accmulated_reward(userSnapshots, list_userSnapshots, **kwargs):
+            """
+            Get user's accumulated reward under geyser liquidity mining
+            args:
+                userSnapshots: a list of user's liquidity provided at diff snapshots (in ROWAN)
+                list_userSnapshots: a FULL list of userSnapshots (must include all users to capture the global state)
+            kwargs:
+                miningSeconds: the period of the liquidity mining programme (in seconds)
+                totalReward: total number of rewards to be distributed
+                epochSeconds: the period of an epoch (in seconds) as we take a snapshot per epoch
+            requires:
+                get_userEpochsSnapshots()
+                get_globalEpochsSnapshots()
+                get_normal_accmulated_reward()
+            returns:
+                userAccReward: user's accumulated reward
+            """
+
+            def get_userEpochsSnapshots(userSnapshots):
+                """
+                Convert userSnapshots into userEpochsSnapshots for Geyser calculation
+                args:
+                    userSnapshots: a list of user's provided liquidity at diff snapshots (in USD)
+                returns:
+                    userEpochsSnapshots: a list of user's liquidity-epochs provided at diff snapshots (in USD-snapshot)
+                """
+                # initialise
+                user_memory = []
+                userEpochsSnapshots = []
+
+                for i in range(len(userSnapshots)):
+                    if userSnapshots[i] == 0: # if none staked at snapshot
+                        user_memory = [] # clear memory
+                    else: # if some staked at snapshot
+                        # get the difference between the previous snapshot
+                        if i == 0:
+                            diff = userSnapshots[0]
+                        else:
+                            diff = userSnapshots[i] - userSnapshots[i-1]
+
+                        if diff > 0: # if more tokens are staked
+                            user_memory.append((i,diff)) # record (index, difference in staked token)
+                        elif diff < 0: # if some tokens are withdrawn
+                            deficit = -diff
+                            while deficit > 0:
+                                if user_memory[-1][-1] > deficit: # partial remove
+                                    user_memory[-1] = (user_memory[-1][0], user_memory[-1][-1]-deficit)
+                                    deficit = 0
+                                else:
+                                    deficit -= user_memory[-1][-1]
+                                    user_memory = user_memory[:-1]
+                    userEpochsSnapshots.append(sum([(i-mem[0]+1)*mem[1] for mem in user_memory]))
+                return userEpochsSnapshots
+
+            def get_globalEpochsSnapshots(list_userSnapshots):
+                """
+                Compute globalEpochsSnapshots from a list of userSnapshots
+                args:
+                    list_userSnapshots: a FULL list of userSnapshots (must include all users to capture the global state)
+                requires:
+                    elementwisesum()
+                returns:
+                    globalEpochsSnapshots: a list of global total liquidity-epochs (liquidity-seconds) provided at diff snapshots (in ROWAN)
+                """
+                list_userEpochsSnapshots = []
+                for l in list_userSnapshots:
+                    list_userEpochsSnapshots.append(get_userEpochsSnapshots(l))
+                globalEpochsSnapshots = elementwisesum(list_userEpochsSnapshots)
+                return globalEpochsSnapshots
+
+            userAccReward = get_normal_accmulated_reward(userSnapshots=get_userEpochsSnapshots(userSnapshots),
+                                                         globalSnapshots=get_globalEpochsSnapshots(list_userSnapshots),
+                                                         **kwargs)
+            return userAccReward
+
+        isGeyser = kwargs['isGeyser']
+        assert type(isGeyser) == bool, 'isGeyser should be boolean'
+        if isGeyser:
+            return get_geyser_accmulated_reward(userSnapshots, list_userSnapshots, **kwargs)
+        else:
+            return get_normal_accmulated_reward(userSnapshots, list_userSnapshots, **kwargs)
 
     def get_multiplier_record(userSnapshots, **kwargs):
         """
@@ -204,14 +230,14 @@ def getUserAccReward(data, addressOfInterest):
     for i in range(1, len(profile['multiplier'])):
 
         if  profile['multiplier'][i-1] > profile['multiplier'][i]: # if multiplier is going down, a claim is triggered
-            userAccRewardSoFar = get_geyser_accmulated_reward(userSnapshots=profile['liquidity'][:i],
+            userAccRewardSoFar = calculate_accumulated_reward(userSnapshots=profile['liquidity'][:i],
                                                               list_userSnapshots=[l[:i] for l in list_userSnapshots],
                                                               **constants)
 
             profile['reward']['reserved'] += (userAccRewardSoFar - profile['reward']['burned']) * profile['multiplier'][i-1] / constants['multiplierBand'][1]
             profile['reward']['burned'] = userAccRewardSoFar
 
-    userAccRewardSoFar = get_geyser_accmulated_reward(userSnapshots=profile['liquidity'],
+    userAccRewardSoFar = calculate_accumulated_reward(userSnapshots=profile['liquidity'],
                                                       list_userSnapshots=list_userSnapshots,
                                                       **constants)
     profile['reward']['claimable'] = (userAccRewardSoFar - profile['reward']['burned']) * profile['multiplier'][-1] / constants['multiplierBand'][1]
