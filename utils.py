@@ -1,9 +1,12 @@
-def getUserAccReward(data, addressOfInterest):
+def getUserAccReward(data: dict,
+                     addressOfInterest: str,
+                     **kwargs):
     """
     A wrapper that processes data and gets user's accumulated reward
     args:
         data: raw data
-        addressOfInterest: address of interest
+        addressOfInterest: address of interest (str)
+        kwargs: [Optional] params in constants that need overriding (dict)
     requires:
         the following functions
     returns:
@@ -18,6 +21,9 @@ def getUserAccReward(data, addressOfInterest):
                  'multiplierSeconds': 121*86400, # 121 days
                  'multiplierBand': [1,4], # from 1x to 4x
                  'isGeyser': False} # Geyser or not
+    for k, v in kwargs.items(): # override if user specified
+        assert k in list(constants), 'param does not exist'
+        constants[k] = v
     # data route
     data = data['data']['snapshots_new'][0]['snapshot_data']
 
@@ -71,7 +77,10 @@ def getUserAccReward(data, addressOfInterest):
             totalRewardPerEpoch = totalReward / miningSeconds * epochSeconds
 
             # sum(reward distributed pro-rata at each epoch)
-            userAccReward = sum([userStaked / globalStaked * totalRewardPerEpoch for userStaked, globalStaked in zip(userSnapshots, globalSnapshots)])
+            #userAccReward = sum([userStaked / globalStaked * totalRewardPerEpoch for userStaked, globalStaked in zip(userSnapshots, globalSnapshots)])
+
+            rewardSnapshots = [totalRewardPerEpoch] * len(userSnapshots)
+            userAccReward = sum([userStaked / globalStaked * reward for userStaked, globalStaked, reward in zip(userSnapshots, globalSnapshots, rewardSnapshots)])
             return userAccReward
 
         def get_geyser_accmulated_reward(userSnapshots, list_userSnapshots, **kwargs):
@@ -128,7 +137,7 @@ def getUserAccReward(data, addressOfInterest):
                     userEpochsSnapshots.append(sum([(i-mem[0]+1)*mem[1] for mem in user_memory]))
                 return userEpochsSnapshots
 
-            def get_globalEpochsSnapshots(list_userSnapshots):
+            def get_list_userEpochsSnapshots(list_userSnapshots):
                 """
                 Compute globalEpochsSnapshots from a list of userSnapshots
                 args:
@@ -136,16 +145,15 @@ def getUserAccReward(data, addressOfInterest):
                 requires:
                     elementwisesum()
                 returns:
-                    globalEpochsSnapshots: a list of global total liquidity-epochs (liquidity-seconds) provided at diff snapshots (in ROWAN)
+                    list_userEpochsSnapshots: a list of userEpochsSnapshots
                 """
                 list_userEpochsSnapshots = []
                 for l in list_userSnapshots:
                     list_userEpochsSnapshots.append(get_userEpochsSnapshots(l))
-                globalEpochsSnapshots = elementwisesum(list_userEpochsSnapshots)
-                return globalEpochsSnapshots
+                return list_userEpochsSnapshots
 
             userAccReward = get_normal_accmulated_reward(userSnapshots=get_userEpochsSnapshots(userSnapshots),
-                                                         globalSnapshots=get_globalEpochsSnapshots(list_userSnapshots),
+                                                         list_userSnapshots=get_list_userEpochsSnapshots(list_userSnapshots),
                                                          **kwargs)
             return userAccReward
 
@@ -255,6 +263,9 @@ def inspect_address(data, address, filtering=False, detail=True):
         filtering: if True, only select addresses that removes liq before adding any (default False)
         detail: if True, print out human-readable detail
     """
+    # data route
+    data = data['data']['snapshots_new'][0]['snapshot_data']
+
     d = data[address]
     tokenList = list(d)
 
