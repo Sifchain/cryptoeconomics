@@ -12,8 +12,8 @@ def getUserAccReward(data: dict,
     requires:
         the following functions
     returns:
-        reserved: reward already set aside for the user, ready to be claimed any time (in ROWAN)
-        claimable: user's accumulated *unclaimed* reward (in ROWAN)
+        claimable: reward already set aside for the user, ready to be claimed any time (in ROWAN)
+        accumulated: user's accumulated *unclaimed* reward (in ROWAN)
         currentMultiplier: user's current multiplier
     """
     # constants
@@ -260,7 +260,7 @@ def getUserAccReward(data: dict,
 
     # establish a user profile
     profile = {'liquidity':snapshot[addressOfInterest],
-               'reward':{'reserved':0, 'burned':0}}
+               'reward':{'claimable':0, 'burned':0}}
     profile['multiplier'] = get_multiplier_record(userSnapshots=profile['liquidity'],
                                                   **constants)
 
@@ -271,15 +271,15 @@ def getUserAccReward(data: dict,
                                                               list_userSnapshots=[l[:i] for l in list_userSnapshots],
                                                               **constants)
 
-            profile['reward']['reserved'] += (userAccRewardSoFar - profile['reward']['burned']) * profile['multiplier'][i-1] / constants['multiplierBand'][1]
+            profile['reward']['claimable'] += (userAccRewardSoFar - profile['reward']['burned']) * profile['multiplier'][i-1] / constants['multiplierBand'][1]
             profile['reward']['burned'] = userAccRewardSoFar
 
     userAccRewardSoFar = calculate_accumulated_reward(userSnapshots=profile['liquidity'],
                                                       list_userSnapshots=list_userSnapshots,
                                                       **constants)
-    profile['reward']['claimable'] = (userAccRewardSoFar - profile['reward']['burned']) * profile['multiplier'][-1] / constants['multiplierBand'][1]
+    profile['reward']['accumulated'] = (userAccRewardSoFar - profile['reward']['burned']) * profile['multiplier'][-1] / constants['multiplierBand'][1]
 
-    return profile['reward']['reserved'], profile['reward']['claimable'], profile['multiplier'][-1]
+    return profile['reward']['claimable'], profile['reward']['accumulated'], profile['multiplier'][-1]
 
 
 def inspect_address(data, address, filtering=False, detail=True):
