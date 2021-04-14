@@ -1,11 +1,13 @@
 def getUserAccReward(data: dict,
                      addressOfInterest: str,
+                     isValidator: bool = False,
                      **kwargs):
     """
     A wrapper that processes data and gets user's accumulated reward
     args:
         data: raw data
         addressOfInterest: address of interest (str)
+        isValidator: validator subsidy (True) or liquidity mining (False) (bool)
         kwargs: [Optional] params in constants that need overriding (dict)
     requires:
         the following functions
@@ -71,6 +73,15 @@ def getUserAccReward(data: dict,
                 userAccReward: user's accumulated reward (in ROWAN)
             """
             def get_reward_per_snapshot(**kwargs):
+                """
+                Get the global reward rate for each snapshot
+                kwargs:
+                    miningSeconds: the period of the liquidity mining programme (in seconds)
+                    totalReward: total rewards to be distributed (in ROWAN)
+                    epochSeconds: the period of an epoch (in seconds) as we take a snapshot per epoch
+                returns:
+                    rewardSnapshots: a list of number of rewards (in ROWAN) to be distributed for each snapshot
+                """
                 miningSeconds, totalReward, epochSeconds = kwargs['miningSeconds'], kwargs['totalReward'], kwargs['epochSeconds']
                 maxSnapshotLength = int(miningSeconds/epochSeconds) # round down
 
@@ -79,15 +90,18 @@ def getUserAccReward(data: dict,
                 #rewardSnapshots = [totalRewardPerEpoch] * len(userSnapshots)
                 #rewardSnapshots[:44] = [0] * omit # omit the first 44 epochs
 
-                # a bodge to alleviate the inequality in reward distribution caused by sudden spike in liquidity add
-                assert epochSeconds == 200*60, 'This bodge only works when epochSeconds == 200*60'
-                liquidityWeightQuantized = [0,1,39,92,98,99,100]
-                liquidityWeightSnapshotIndex = [0,40,44,68,71,86,293,maxSnapshotLength]
-                assert len(liquidityWeightQuantized)+1 == len(liquidityWeightSnapshotIndex), 'liquidityWeightQuantized or liquidityWeightSnapshotIndex is invalid'
-                rewardSnapshots = []
-                for weight, lowerlim, upperlim in zip(liquidityWeightQuantized, liquidityWeightSnapshotIndex[:-1], liquidityWeightSnapshotIndex[1:]):
-                    rewardSnapshots.extend([weight] * (upperlim-lowerlim))
-                rewardSnapshots = [r/sum(rewardSnapshots)*totalReward for r in rewardSnapshots] # normalise
+                if isValidator:
+                    raise NotImplementedError('not implemented')
+                else:
+                    # a bodge to alleviate the inequality in reward distribution caused by sudden spike in liquidity add
+                    assert epochSeconds == 200*60, 'This bodge only works when epochSeconds == 200*60'
+                    liquidityWeightQuantized = [0,1,4,5]
+                    liquidityWeightSnapshotIndex = [0,40,44,71,maxSnapshotLength]
+                    assert len(liquidityWeightQuantized)+1 == len(liquidityWeightSnapshotIndex), 'liquidityWeightQuantized or liquidityWeightSnapshotIndex is invalid'
+                    rewardSnapshots = []
+                    for weight, lowerlim, upperlim in zip(liquidityWeightQuantized, liquidityWeightSnapshotIndex[:-1], liquidityWeightSnapshotIndex[1:]):
+                        rewardSnapshots.extend([weight] * (upperlim-lowerlim))
+                    rewardSnapshots = [r/sum(rewardSnapshots)*totalReward for r in rewardSnapshots] # normalise
                 return rewardSnapshots
 
             globalSnapshots = elementwisesum(list_userSnapshots)
@@ -308,3 +322,15 @@ def inspect_address(data, address, filtering=False, detail=True):
         i += 1
     if detail:
         print()
+
+def remove_header(filename):
+    """
+    Data processing tool, not needed for deployment
+    Remove header of a file so that "{" is the first char
+    args:
+        filename: file name (str)
+    """
+    with open(filename, 'r') as f:
+        text = f.read()
+    with open(filename, 'w') as f:
+        f.write(text[text.find('{'):])
