@@ -27,7 +27,10 @@ def getUserAccReward(data: dict,
         assert k in list(constants), 'param does not exist'
         constants[k] = v
     # data route
-    data = data['data']['snapshots_new'][0]['snapshot_data']
+    if isValidator:
+        data = data['data']['snapshots_validators'][0]['snapshot_data']
+    else:
+        data = data['data']['snapshots_new'][0]['snapshot_data']
 
     def dict2list(d: dict):
         """convert a dictionary to a list"""
@@ -85,23 +88,21 @@ def getUserAccReward(data: dict,
                 miningSeconds, totalReward, epochSeconds = kwargs['miningSeconds'], kwargs['totalReward'], kwargs['epochSeconds']
                 maxSnapshotLength = int(miningSeconds/epochSeconds) # round down
 
-                #totalRewardPerEpoch = totalReward / maxSnapshotLength
-                #omit = 44
-                #rewardSnapshots = [totalRewardPerEpoch] * len(userSnapshots)
-                #rewardSnapshots[:44] = [0] * omit # omit the first 44 epochs
-
+                # a bodge to alleviate the inequality in reward distribution caused by sudden spike in liquidity add
                 if isValidator:
-                    raise NotImplementedError('not implemented')
+                    assert epochSeconds == 200*60, 'This bodge only works when epochSeconds == 200*60'
+                    liquidityWeightQuantized = [0,1,50]
+                    liquidityWeightSnapshotIndex = [0,32,131,maxSnapshotLength]
                 else:
-                    # a bodge to alleviate the inequality in reward distribution caused by sudden spike in liquidity add
                     assert epochSeconds == 200*60, 'This bodge only works when epochSeconds == 200*60'
                     liquidityWeightQuantized = [0,1,4,5]
                     liquidityWeightSnapshotIndex = [0,40,44,71,maxSnapshotLength]
-                    assert len(liquidityWeightQuantized)+1 == len(liquidityWeightSnapshotIndex), 'liquidityWeightQuantized or liquidityWeightSnapshotIndex is invalid'
-                    rewardSnapshots = []
-                    for weight, lowerlim, upperlim in zip(liquidityWeightQuantized, liquidityWeightSnapshotIndex[:-1], liquidityWeightSnapshotIndex[1:]):
-                        rewardSnapshots.extend([weight] * (upperlim-lowerlim))
-                    rewardSnapshots = [r/sum(rewardSnapshots)*totalReward for r in rewardSnapshots] # normalise
+
+                assert len(liquidityWeightQuantized)+1 == len(liquidityWeightSnapshotIndex), 'liquidityWeightQuantized or liquidityWeightSnapshotIndex is invalid'
+                rewardSnapshots = []
+                for weight, lowerlim, upperlim in zip(liquidityWeightQuantized, liquidityWeightSnapshotIndex[:-1], liquidityWeightSnapshotIndex[1:]):
+                    rewardSnapshots.extend([weight] * (upperlim-lowerlim))
+                rewardSnapshots = [r/sum(rewardSnapshots)*totalReward for r in rewardSnapshots] # normalise
                 return rewardSnapshots
 
             globalSnapshots = elementwisesum(list_userSnapshots)
@@ -109,7 +110,7 @@ def getUserAccReward(data: dict,
 
             rewardSnapshots = get_reward_per_snapshot(**kwargs)
             rewardSnapshots = rewardSnapshots[:len(userSnapshots)] # trim to ignore reward allocation for future snapshots
-            userAccReward = sum([userStaked / globalStaked * reward for userStaked, globalStaked, reward in zip(userSnapshots, globalSnapshots, rewardSnapshots)])
+            userAccReward = sum([userStaked / globalStaked * reward if globalStaked > 0 else 0 for userStaked, globalStaked, reward in zip(userSnapshots, globalSnapshots, rewardSnapshots)])
             return userAccReward
 
         def get_geyser_accmulated_reward(userSnapshots, list_userSnapshots, **kwargs):
@@ -282,7 +283,7 @@ def getUserAccReward(data: dict,
     return profile['reward']['claimable'], profile['reward']['accumulated'], profile['multiplier'][-1]
 
 
-def inspect_address(data, address, filtering=False, detail=True):
+def inspect_address(data, address, isValidator=False, filtering=False, detail=True):
     """
     Debug tool, not needed for deployment
     Inspect the activities of anddress
@@ -293,7 +294,10 @@ def inspect_address(data, address, filtering=False, detail=True):
         detail: if True, print out human-readable detail
     """
     # data route
-    data = data['data']['snapshots_new'][0]['snapshot_data']
+    if isValidator:
+        data = data['data']['snapshots_validators'][0]['snapshot_data']
+    else:
+        data = data['data']['snapshots_new'][0]['snapshot_data']
 
     d = data[address]
     tokenList = list(d)
