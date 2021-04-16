@@ -1,6 +1,7 @@
 def getUserAccReward(data: dict,
                      addressOfInterest: str,
                      isValidator: bool = False,
+                     hasPoolBalance: bool = True,
                      **kwargs):
     """
     A wrapper that processes data and gets user's accumulated reward
@@ -8,6 +9,7 @@ def getUserAccReward(data: dict,
         data: raw data
         addressOfInterest: address of interest (str)
         isValidator: validator subsidy (True) or liquidity mining (False) (bool)
+        hasPoolBalance: whether the user still has liquidity provided (default True) (bool)
         kwargs: [Optional] params in constants that need overriding (dict)
     requires:
         the following functions
@@ -91,8 +93,8 @@ def getUserAccReward(data: dict,
                 # a bodge to alleviate the inequality in reward distribution caused by sudden spike in liquidity add
                 if isValidator:
                     assert epochSeconds == 200*60, 'This bodge only works when epochSeconds == 200*60'
-                    liquidityWeightQuantized = [0,1,50]
-                    liquidityWeightSnapshotIndex = [0,32,131,maxSnapshotLength]
+                    liquidityWeightQuantized = [0,1,2,3,4,5]
+                    liquidityWeightSnapshotIndex = [0,60,88,119,270,372,maxSnapshotLength]
                 else:
                     assert epochSeconds == 200*60, 'This bodge only works when epochSeconds == 200*60'
                     liquidityWeightQuantized = [0,1,4,5]
@@ -233,6 +235,21 @@ def getUserAccReward(data: dict,
 
         assert len(multiplier_record) == len(userSnapshots), 'Wrong length for multiplier_record'
         return multiplier_record
+    def get_ignore_address_list():
+        """
+        Get a list of addresses that should be ignored in reward calculation
+        These addresses belong to the Sifchain foundation
+        returns:
+            ignoredAddressList: a list of ignored addresses
+        """
+        return ['sif1vktf7skpeyc3mq8fdg59nyyg57a053p9n3l5dl',
+                'sif1cvqeau8z7um5vnl78ueqyvfl26jcjpunmejdyz',
+                'sif1fy8xewt2xkyrnym2x36qfzwrtqf3z40cdzxgxz',
+                'sif1kxyjwd9clrnntuxdrtejwdrgvatarftzp8d8ps',
+                'sif1gaej9rvg99xnn8zecznj2vf2tnf87gx60hdkja',
+                'sif12ffxzle0x5093ysnpatrjy7rsduj2u2v4zygh9',
+                'sif165f2082xga5a3chux9lcf97ty9fa9jfdwes5cz',
+                'sif1reedn7lzr06smmckgn52mpppca3aeprasfvcf5']
 
     import numpy as np
 
@@ -244,13 +261,20 @@ def getUserAccReward(data: dict,
     for addy in addressList:
         assert tokenList == list(data[addy]), 'wrong token list'
 
+    # if not on the list -> returns all zeros
+    ignoredAddressList = get_ignore_address_list()
+    if addressOfInterest not in addressList or addressOfInterest in ignoredAddressList:
+        return 0, 0, 0
+
     # convert events into snapshots
     snapshot = {} #
+
     for addy in addressList: # for each addy
-        snapshotOfOneAddress = 0
-        for token in tokenList: # aggregate USD values across all tokens
-            snapshotOfOneAddress += np.cumsum(data[addy][token], dtype=float)# cumulative sum
-        snapshot[addy] = snapshotOfOneAddress
+        if addy not in ignoredAddressList: # if not ignored
+            snapshotOfOneAddress = 0
+            for token in tokenList: # aggregate USD values across all tokens
+                snapshotOfOneAddress += np.cumsum(data[addy][token], dtype=float)# cumulative sum
+            snapshot[addy] = snapshotOfOneAddress
 
     # turn all negative numbers to 0
     for addy, l in snapshot.items():
@@ -263,7 +287,7 @@ def getUserAccReward(data: dict,
     profile = {'liquidity':snapshot[addressOfInterest],
                'reward':{'claimable':0, 'burned':0}}
     profile['multiplier'] = get_multiplier_record(userSnapshots=profile['liquidity'],
-                                                  **constants)
+                                                  **constants) if hasPoolBalance else 0 # 0 multiplier if user has no liquidity now
 
     for i in range(1, len(profile['multiplier'])):
 
