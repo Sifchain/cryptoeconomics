@@ -287,7 +287,7 @@ def getUserAccReward(data: dict,
     profile = {'liquidity':snapshot[addressOfInterest],
                'reward':{'claimable':0, 'burned':0}}
     profile['multiplier'] = get_multiplier_record(userSnapshots=profile['liquidity'],
-                                                  **constants) if hasPoolBalance else 0 # 0 multiplier if user has no liquidity now
+                                                  **constants)
 
     for i in range(1, len(profile['multiplier'])):
 
@@ -304,8 +304,10 @@ def getUserAccReward(data: dict,
                                                       **constants)
     profile['reward']['accumulated'] = (userAccRewardSoFar - profile['reward']['burned']) * profile['multiplier'][-1] / constants['multiplierBand'][1]
 
-    return profile['reward']['claimable'], profile['reward']['accumulated'], profile['multiplier'][-1]
-
+    if hasPoolBalance:
+        return profile['reward']['claimable'], profile['reward']['accumulated'], profile['multiplier'][-1]
+    else:
+        return profile['reward']['claimable'], 0, 0
 
 def inspect_address(data, address, isValidator=False, filtering=False, detail=True):
     """
