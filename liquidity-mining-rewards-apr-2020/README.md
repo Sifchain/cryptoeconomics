@@ -38,17 +38,20 @@ All reward ROWAN starts off locked, in the locked pool. Over time, each period, 
 
 Participants will generate shares in the unlocked pool through their behavior. At the end of the competition, the entire locked pool will be drained into the unlocked pool.
 
-### Liquidity-Deposit Tickets and Deposit Bundles
-Each time a user deposits liquidity to a pool during the program, they create a nonfungible asset called a deposit bundle which contains an amount of liquidity-deposit tickets equal to the ROWAN value of the deposit made. Users will create multiple deposit bundles if they deposit liquidity multiple times.
+### Liquidity-Deposit Tickets
+Each time a user deposits liquidity to a pool during the program, they create an amount of liquidity-deposit tickets equal to the ROWAN value of the deposit made. Users will create new tickets each time they deposit liquidity.
 
-Each bundle has a multiplier that grows over time up to 4x.
+#### Ticket Multiplier
+Tickets are non-fungible. Each ticket has a multiplier that grows over time up from 1x to 4x.
 
-Each time period, each bundle generates shares in the unlocked pool for its owner based on its size and multiplier.
+#### Ticket Share Generation
+Each time period, each ticket generates shares in the unlocked pool based on its multiplier. These shares are attached to the ticket.
 
-Whenever a user wants to withdraw their liquidity, they will automatically burn an equivalent amount of tickets from their bundles to cover the withdrawal. By default, their tickets will be burned from bundles in order from newest bundles to oldest bundle in order to preserve the bundles with the highest multipliers.
+#### Claiming rewards
+Users can reset their tickets at any time. Whenever tickets are reset, the shares attached will be burned and the user will receive a corresponding portion of the unlocked rewards pool. Reset tickets start with a 1x multiplier again.
 
-### Unlocked Pool Shares
-Users can burn their shares at any time to withdraw a corresponding portion of the unlocked pool.
+#### Withdrawing Liquidity
+Whenever a user withdraws their liquidity, they will automatically burn an equivalent amount of tickets to cover the withdrawal. The shares attached to those tickets will also be burned, with the corresponding portion of the unlocked rewards pool going to the user. By default, their tickets and shares will be burned in order from newest tickets to oldest tickets in order to preserve the tickets with the highest multiplier.
 
 ## Calculations
 
@@ -59,7 +62,26 @@ For each user, at any point in time, we want to calculate both of:
 We need 2 functions to calculate this.
 
 ### Formulas
-todo
+
+Current claimable reward calculation
+```
+for
+
+```
+
+```
+for each user
+  for each currency
+    loop through timesteps
+    - on +: create new tickets with 1x multiplier
+    - on -: burn lowest tickets
+    - at end: process share generation and ticket growth
+  sum up all shares across currencies
+```
+
+at final end:
+ - total shares generated
+
  <!-- - based on % of total LPs user has been pooling
  - 4 months incentive (121days)
  - claimable reward is what you can claim immediately today
