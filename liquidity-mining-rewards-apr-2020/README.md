@@ -32,7 +32,9 @@ The total rewards are split between different liquidity providers based on the p
 
 ## Detail
 ### Global pools
-All ROWAN starts off locked, in a locked pool. Over time, each period, ROWAN moves from the locked pool to the unlocked pool.
+There are 2 global reward pools - the locked pool and unlocked pool.
+
+All ROWAN starts off locked, in the locked pool. Over time, each period, ROWAN moves from the locked pool to the unlocked pool.
 
 Participants will generate shares in the unlocked pool through their behavior. At the end of the competition, the entire locked pool will be drained into the unlocked pool.
 
