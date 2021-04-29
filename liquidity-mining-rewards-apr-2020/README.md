@@ -34,7 +34,7 @@ The total rewards are split between different liquidity providers based on the p
 ### Global pools
 There are 2 global reward pools - the locked pool and unlocked pool.
 
-All ROWAN starts off locked, in the locked pool. Over time, each period, ROWAN moves from the locked pool to the unlocked pool.
+All reward ROWAN starts off locked, in the locked pool. Over time, each period, ROWAN moves from the locked pool to the unlocked pool.
 
 Participants will generate shares in the unlocked pool through their behavior. At the end of the competition, the entire locked pool will be drained into the unlocked pool.
 
@@ -45,7 +45,7 @@ Each bundle has a multiplier that grows over time up to 4x.
 
 Each time period, each bundle generates shares in the unlocked pool for its owner based on its size and multiplier.
 
-Whenever a user wants to withdraw their liquidity, they must burn an equivalent amount of tickets from their bundles to cover the withdrawal. By default, their tickets will be burned from bundles in order from newest bundles to oldest bundle in order to preserve the bundles with the highest multipliers.
+Whenever a user wants to withdraw their liquidity, they will automatically burn an equivalent amount of tickets from their bundles to cover the withdrawal. By default, their tickets will be burned from bundles in order from newest bundles to oldest bundle in order to preserve the bundles with the highest multipliers.
 
 ### Unlocked Pool Shares
 Users can burn their shares at any time to withdraw a corresponding portion of the unlocked pool.
