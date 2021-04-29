@@ -59,7 +59,7 @@ For each user, at any point in time, we want to calculate both of:
 We need 2 functions to calculate this.
 
 ### Formulas
-
+todo
  <!-- - based on % of total LPs user has been pooling
  - 4 months incentive (121days)
  - claimable reward is what you can claim immediately today
