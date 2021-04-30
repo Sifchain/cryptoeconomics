@@ -26,26 +26,26 @@ Notes to be aware of:
    - Earlier on, the value of ROWAN vs Asset was very volatile, so there were a lot of crazy outliers in the data with really high or low changes. When creating the snapshot, sometimes an exchange rate from a previous block was used instead of for the exact time when the liquidity add/remove event occurred.
 
 # Liquidity Mining Rewards
-Sifchain will run a liquidity mining. There is 30mill ROWAN being initially allocated to this current rewards program. The program started at Betanet launch and will last at least 4 months. All liquidity that is added to Sifchain during the period will be eligible for LM Rewards. The program may be extended with additional allocations.
+Sifchain will run a liquidity mining program. There are 30 million ROWAN being initially allocated to this current rewards program. The eligibility window for the program started on Feb 19 and is set to end on May 14.  All liquidity that is added to Sifchain during the eligibility window will be eligible for LM Rewards. The program may be extended with additional allocations.
 
 The total rewards in the program are split between different liquidity providers and validators based on the proportion of total liquidity in the system that they have been providing over the duration of the program. Their total possible reward grows the longer they keep their liquidity in the system, up to a maximum of 4 months.
 
 ## Detail
-### Global pools
-There can be multiple global reward pools that each contain ROWAN to be rewarded across a 4-month time period. Initially, we will start with one pool, but we may periodically top up with additional pools as the program continues or is extended.
+### Global bucket
+There can be multiple global reward buckets that each contain ROWAN to be rewarded across a 4-month time period. Initially, we will start with one bucket, but we may periodically top up with additional buckets as the program continues or is extended.
 
-Reward ROWAN starts off in its global pool, and as the program progresses will be moved over to individual users as they earn their rewards.
+Reward ROWAN starts off in its global bucket, and as the program progresses will be moved over to individual users as they earn their rewards.
 
-Participants will generate rewards through their behavior. By the end of each pool's 4 month drain, its entire ROWAN reward will be drained into user reward.
+Participants will generate rewards through their behavior. By the end of each bucket's 4 month drain, its entire ROWAN reward will be drained into user rewards.
 
 ### Liquidity-Deposit Tickets
-Each time a user deposits liquidity to a pool during the program, they create an amount of liquidity-deposit tickets equal to the ROWAN value of the deposit made. Users will create new tickets each time they deposit liquidity.
+Each time a user deposits liquidity to a liquidity pool during the program, they create an amount of liquidity-deposit tickets equal to the ROWAN value of the deposit made. Users will create new tickets each time they deposit liquidity.
 
 #### Ticket Multiplier
 Tickets are non-fungible. Each ticket has a multiplier that grows over time up from 25% to 100%.
 
 #### Reward Generation
-Each time period, each ticket generates rewards from the global pools based on its multiplier. The rewards are attached to the ticket.
+Each time period, each ticket generates rewards from each global bucket based on its multiplier. The rewards are attached to the ticket.
 
 #### Claiming rewards
 Users can claim their rewards at any time by resetting their tickets. Whenever a ticket is reset, it will release its rewards to the user based on its current multiplier. Reset tickets then start empty with a 25% multiplier again.
@@ -56,7 +56,7 @@ Whenever a user withdraws their liquidity, they will automatically burn an equiv
 ## Calculations
 
 For each user, at any point in time, we want to calculate both of:
- -  Their expected total reward at maturity at the end of the program, assuming the amount of tickets across all users stays as is.
+ - Their projected total reward at maturity at the end of the program, assuming the amount of tickets across all users stays as is.
  - Their immediate current claimable reward if they were to reset or burn all their tickets.
 
 ### Algorithm
@@ -69,7 +69,7 @@ for each timestep
       - on -: burn worst tickets and release their rewards
       - on claim: reset all tickets and release their rewards
   for each ticket
-    process share generation and reward accrual
+    process reward accrual
   save new state as global state at timestep
 ```
 
@@ -87,3 +87,4 @@ Querying a user's projected final reward:
 Rewards will not be automatically distributed. Users need to burn or reset their tickets to claim their rewards.
 
 Each week users can go into the UI and submit a claim transaction to claim their rewards. These transactions will be gathered at the end of each week and then at the end of the week, we will process those claims by calculating each user's released rewards with these scripts and the amount of ROWAN that entitles them to. Then this list of users and their reward payouts will be sent again to the distribution module to trigger the start of the distribution process.
+.
