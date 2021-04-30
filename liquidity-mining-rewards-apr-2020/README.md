@@ -26,32 +26,32 @@ Notes to be aware of:
    - Earlier on, the value of ROWAN vs Asset was very volatile, so there were a lot of crazy outliers in the data with really high or low changes. When creating the snapshot, sometimes an exchange rate from a previous block was used instead of for the exact time when the liquidity add/remove event occurred.
 
 # Liquidity Mining Rewards
-There are 30mill ROWAN allocated to this current rewards program. The program started at Betanet launch and will last until May 19th. All liquidity that is added to Sifchain before that date will be eligible for LM Rewards.
+Sifchain will run a liquidity mining. There is 30mill ROWAN being initially allocated to this current rewards program. The program started at Betanet launch and will last at least 4 months. All liquidity that is added to Sifchain during the period will be eligible for LM Rewards. The program may be extended with additional allocations.
 
-The total rewards are split between different liquidity providers based on the proportion of total liquidity in the system that they have been providing over the duration of the program. Additionally, their reward grows the longer they keep their liquidity in the system, up to a maximum of 4 months.
+The total rewards in the program are split between different liquidity providers and validators based on the proportion of total liquidity in the system that they have been providing over the duration of the program. Their total possible reward grows the longer they keep their liquidity in the system, up to a maximum of 4 months.
 
 ## Detail
 ### Global pools
-There are 2 global reward pools - the locked pool and unlocked pool.
+There can be multiple global reward pools that each contain ROWAN to be rewarded across a 4-month time period. Initially, we will start with one pool, but we may periodically top up with additional pools as the program continues or is extended.
 
-All reward ROWAN starts off locked, in the locked pool. Over time, each period, ROWAN moves from the locked pool to the unlocked pool.
+Reward ROWAN starts off in its global pool, and as the program progresses will be moved over to individual users as they earn their rewards.
 
-Participants will generate shares in the unlocked pool through their behavior. At the end of the competition, the entire locked pool will be drained into the unlocked pool.
+Participants will generate rewards through their behavior. By the end of each pool's 4 month drain, its entire ROWAN reward will be drained into user reward.
 
 ### Liquidity-Deposit Tickets
 Each time a user deposits liquidity to a pool during the program, they create an amount of liquidity-deposit tickets equal to the ROWAN value of the deposit made. Users will create new tickets each time they deposit liquidity.
 
 #### Ticket Multiplier
-Tickets are non-fungible. Each ticket has a multiplier that grows over time up from 1x to 4x.
+Tickets are non-fungible. Each ticket has a multiplier that grows over time up from 25% to 100%.
 
-#### Ticket Share Generation
-Each time period, each ticket generates shares in the unlocked pool based on its multiplier. These shares are attached to the ticket.
+#### Reward Generation
+Each time period, each ticket generates rewards from the global pools based on its multiplier. The rewards are attached to the ticket.
 
 #### Claiming rewards
-Users can reset their tickets at any time. Whenever tickets are reset, the shares attached will be burned and the user will receive a corresponding portion of the unlocked rewards pool. Reset tickets start with a 1x multiplier again.
+Users can claim their rewards at any time by resetting their tickets. Whenever a ticket is reset, it will release its rewards to the user based on its current multiplier. Reset tickets then start empty with a 25% multiplier again.
 
 #### Withdrawing Liquidity
-Whenever a user withdraws their liquidity, they will automatically burn an equivalent amount of tickets to cover the withdrawal. The shares attached to those tickets will also be burned, with the corresponding portion of the unlocked rewards pool going to the user. By default, their tickets and shares will be burned in order from newest tickets to oldest tickets in order to preserve the tickets with the highest multiplier.
+Whenever a user withdraws their liquidity, they will automatically burn an equivalent amount of tickets to cover the withdrawal. The rewards in these tickets will be automatically claimed, as above, and the tickets will be burned. By default, their tickets will be burned in order from lowest multiplier to highest in order to preserve their best tickets with highest multipliers.
 
 ## Calculations
 
