@@ -63,34 +63,31 @@ We need 2 functions to calculate this.
 
 ### Formulas
 
-Current claimable reward calculation
+Global state calculation:
 ```
-for
-
-```
-
-```
-for each user
-  for each currency
-    loop through timesteps
-    - on +: create new tickets with 1x multiplier
-    - on -: burn lowest tickets
-    - at end: process share generation and ticket growth
-  sum up all shares across currencies
+for each timestep
+  for each user
+    for each currency
+      - on +: create new tickets with 1x multiplier
+      - on -: burn lowest tickets and their shares
+      - on claim: reset lowest tickets and burn their shares
+  for each ticket
+    process share generation and ticket growth
+  move rowan from locked pool to unlocked pool
+  save new state as global state at timestep
 ```
 
-at final end:
- - total shares generated
+Querying a user's immediate claimable reward:
+ - Query all tickets for the user at current time
+ - Calculate reward if all tickets are reset
+ - (Could also do on a per-ticket/per-group-of-tickets basis)
 
- <!-- - based on % of total LPs user has been pooling
- - 4 months incentive (121days)
- - claimable reward is what you can claim immediately today
- - reserved reward is your expected total reward if you keep your same liq pooled for full period
+Querying a user's projected final reward:
+ - Run the global state calculation as above, but continue loop into future until end of program, assuming no events on any future timesteps
+ - Sum up final share amounts for user at end
+ - Calculate reward if all shares are burned at end
 
-For a specific user, their total reward should be calculated as follows:
- - Users accrue rewards -->
-
-## Claiming rewards
+## Process for claiming rewards
 Rewards will not be automatically distributed. Users need to burn their unlocked pool shares to claim their rewards.
 
 Each week users can go into the UI and submit a claim transaction to claim their rewards. These transactions will be gathered at the end of each week and then at the end of the week, we will process those claims by calculating each user's share of the unlocked pool with these python scripts and the amount of ROWAN that entitles them to. Then this list of users and their outstanding reward amount will be sent again to the distribution module to trigger the start of the distribution process.
