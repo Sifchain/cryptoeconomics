@@ -61,8 +61,7 @@ For each user, at any point in time, we want to calculate both of:
 
 We need 2 functions to calculate this.
 
-### Formulas
-
+### Algorithm
 Global state calculation:
 ```
 for each timestep
