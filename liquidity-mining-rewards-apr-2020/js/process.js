@@ -23,7 +23,7 @@ for (let i = 0; i < NUMBER_OF_INTERVALS_TO_RUN; i++) {
 // calculate total payouts at end
 // remove past dispensations
 // return unpaid balances
-destroyPrintGlobalStates(globalStates, 'sif1hjkgsq0wcmwdh8pr3snhswx5xyy4zpgs833akh')
+destroyPrintGlobalStates(globalStates)
 
 function processGlobalState(lastGlobalState, timestamp, events) {
   const { rewardBuckets, rewardAccrued } = processRewardBuckets(
@@ -59,17 +59,16 @@ function processRewardBuckets(lastBuckets, bucketEvent, intervals) {
 function processUserTickets(users, rewardAccrued) {
   // process reward accruals and multiplier updates
   const totalShares = _.sum(_.flatten(_.map(users, (user, address) => {
-    return user.tickets.map(ticket => ticket.size * ticket.multiplier)
+    return user.tickets.map(ticket => ticket.amount)
   })))
   const updatedUsers = _.mapValues(users, user => {
     return {
       ...user,
       tickets: user.tickets.map(ticket => {
-        const ticketShares = ticket.size * ticket.multiplier
         return {
           ...ticket,
           multiplier: Math.min(ticket.multiplier + (0.75 / MULTIPLIER_MATURITY), 1),
-          reward: ticket.reward + ((ticketShares / totalShares) * rewardAccrued)
+          reward: ticket.reward + ((ticket.amount / totalShares) * rewardAccrued)
         }
       })
     }
@@ -79,28 +78,68 @@ function processUserTickets(users, rewardAccrued) {
 
 function processUserEvents(users, events) {
   events.forEach(event => {
-    users[event.address] = users[event.address] || {
+    const user = users[event.address] || {
       tickets: [],
       claimedReward: 0,
       dispensedReward: 0
     }
-    //process amount
     if (event.amount > 0) {
-      //create tickets
       const newTicket = {
-        size: event.amount,
+        amount: event.amount,
         multiplier: 0.25,
         reward: 0
       }
-      users[event.address].tickets = users[event.address].tickets.concat(newTicket)
+      user.tickets = user.tickets.concat(newTicket)
     } else if (event.amount < 0) {
-      //destroy tickets and release rewards
+      const { burnedTickets, remainingTickets }
+        = burnTickets(-event.amount, user.tickets)
+      user.claimedReward += calculateClaimReward(burnedTickets)
+      user.tickets = remainingTickets
     }
     if (event.claim) {
-      //reset tickets and release rewards
+      user.claimedReward += calculateClaimReward(user.tickets)
+      user.tickets = resetTickets(user.tickets)
     }
+    users[event.address] = user
   })
   return users;
+}
+
+function burnTickets(amount, tickets) {
+  const sortedTickets = _.sortBy(tickets, 'multiplier')
+
+  let amountLeft = amount;
+  const burnedTickets = [];
+  const remainingTickets = [];
+  sortedTickets.forEach(ticket => {
+    if (amountLeft === 0) {
+      remainingTickets.push(ticket)
+      return
+    }
+    let amountToRemove = Math.min(amountLeft, ticket.amount)
+    const burnedTicket = { ...ticket, amount: amountToRemove }
+    burnedTickets.push(burnedTicket)
+    amountLeft = amountLeft - amountToRemove
+    if (amountLeft === 0) {
+      const remainingTicket = { ...ticket, amount: ticket.amount - amountToRemove }
+      remainingTickets.push(remainingTicket)
+    }
+  })
+  return { burnedTickets, remainingTickets }
+}
+
+function calculateClaimReward(tickets) {
+  return tickets.reduce((accum, ticket) => {
+    return accum + (ticket.reward * ticket.multiplier)
+  }, 0)
+}
+
+function resetTickets(tickets) {
+  return tickets.map(ticket => ({
+    ...ticket,
+    multiplier: 0,
+    reward: 0
+  }))
 }
 
 function destroyPrintGlobalStates(globalStates, filterAddress) {

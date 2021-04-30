@@ -9,7 +9,7 @@ const ExampleGlobalState = [{
       'sif...': {
         tickets: [
           {
-            size: 7,
+            amount: 7,
             multiplier: 0.25,
             reward: 200
           }

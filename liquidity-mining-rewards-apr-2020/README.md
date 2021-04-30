@@ -45,7 +45,7 @@ Each time a user deposits liquidity to a liquidity pool during the program, they
 Tickets are non-fungible. Each ticket has a multiplier that grows over time up from 25% to 100%.
 
 #### Reward Generation
-Each time period, each ticket generates rewards from each global bucket based on its multiplier. The rewards are attached to the ticket.
+Each time period, each ticket generates rewards from each global bucket on the basis of 1 share per ticket. The rewards are attached to the ticket.
 
 #### Claiming rewards
 Users can claim their rewards at any time by resetting their tickets. Whenever a ticket is reset, it will release its rewards to the user based on its current multiplier. Reset tickets then start empty with a 25% multiplier again.
