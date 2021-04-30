@@ -51,15 +51,13 @@ Each time period, each ticket generates rewards from the global pools based on i
 Users can claim their rewards at any time by resetting their tickets. Whenever a ticket is reset, it will release its rewards to the user based on its current multiplier. Reset tickets then start empty with a 25% multiplier again.
 
 #### Withdrawing Liquidity
-Whenever a user withdraws their liquidity, they will automatically burn an equivalent amount of tickets to cover the withdrawal. The rewards in these tickets will be automatically claimed, as above, and the tickets will be burned. By default, their tickets will be burned in order from lowest multiplier to highest in order to preserve their best tickets with highest multipliers.
+Whenever a user withdraws their liquidity, they will automatically burn an equivalent amount of tickets to cover the withdrawal. The rewards in these tickets will also be automatically claimed, as above. Tickets will be burned in order from lowest multiplier to highest in order to preserve a user's best tickets with highest multipliers.
 
 ## Calculations
 
 For each user, at any point in time, we want to calculate both of:
- -  Their expected total reward until the end of the program, assuming the amount of tickets across all users stays as is.
- - Their immediate current claimable reward if they were to burn shares to withdraw from the unlocked pool.
-
-We need 2 functions to calculate this.
+ -  Their expected total reward at maturity at the end of the program, assuming the amount of tickets across all users stays as is.
+ - Their immediate current claimable reward if they were to reset or burn all their tickets.
 
 ### Algorithm
 Global state calculation:
@@ -67,12 +65,11 @@ Global state calculation:
 for each timestep
   for each user
     for each currency
-      - on +: create new tickets with 1x multiplier
-      - on -: burn lowest tickets and their shares
-      - on claim: reset lowest tickets and burn their shares
+      - on +: create new tickets with 25% multiplier
+      - on -: burn worst tickets and release their rewards
+      - on claim: reset all tickets and release their rewards
   for each ticket
-    process share generation and ticket growth
-  move rowan from locked pool to unlocked pool
+    process share generation and reward accrual
   save new state as global state at timestep
 ```
 
@@ -82,11 +79,11 @@ Querying a user's immediate claimable reward:
  - (Could also do on a per-ticket/per-group-of-tickets basis)
 
 Querying a user's projected final reward:
- - Run the global state calculation as above, but continue loop into future until end of program, assuming no events on any future timesteps
- - Sum up final share amounts for user at end
- - Calculate reward if all shares are burned at end
+ - Run the global state calculation as above, but continue loop into future until 4 months past end of program, assuming no events on any future timesteps
+ - Sum up final ticket reward amounts for user at end
+ - Calculate reward if all tickets are reset at end after 4 months
 
 ## Process for claiming rewards
-Rewards will not be automatically distributed. Users need to burn their unlocked pool shares to claim their rewards.
+Rewards will not be automatically distributed. Users need to burn or reset their tickets to claim their rewards.
 
-Each week users can go into the UI and submit a claim transaction to claim their rewards. These transactions will be gathered at the end of each week and then at the end of the week, we will process those claims by calculating each user's share of the unlocked pool with these python scripts and the amount of ROWAN that entitles them to. Then this list of users and their outstanding reward amount will be sent again to the distribution module to trigger the start of the distribution process.
+Each week users can go into the UI and submit a claim transaction to claim their rewards. These transactions will be gathered at the end of each week and then at the end of the week, we will process those claims by calculating each user's released rewards with these scripts and the amount of ROWAN that entitles them to. Then this list of users and their reward payouts will be sent again to the distribution module to trigger the start of the distribution process.
