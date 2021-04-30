@@ -1,0 +1,15 @@
+{
+  "name": "liquidity-mining-rewards-apr-2020",
+  "version": "1.0.0",
+  "description": "This code is responsible for taking a data-services snapshot from that team that contains:  - All liquidity adds  - All liquidity removes for all users from history of chain",
+  "main": "calc.js",
+  "scripts": {
+    "start": "node js/calc.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "lodash": "^4.17.21"
+  }
+}
