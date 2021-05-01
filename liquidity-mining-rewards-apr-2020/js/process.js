@@ -25,13 +25,14 @@ for (let i = 0; i < NUMBER_OF_INTERVALS_TO_RUN; i++) {
 // return unpaid balances
 // destroyPrintGlobalStates(globalStates)
 console.log(JSON.stringify(globalStates))
+
 function processGlobalState(lastGlobalState, timestamp, events) {
-  const { rewardBuckets, rewardAccrued } = processRewardBuckets(
+  const { rewardBuckets, globalRewardAccrued } = processRewardBuckets(
     lastGlobalState.rewardBuckets,
     lastGlobalState.bucketEvent,
     NUMBER_OF_INTERVALS_TO_RUN
   )
-  let users = processUserTickets(lastGlobalState.users, rewardAccrued)
+  let users = processUserTickets(lastGlobalState.users, globalRewardAccrued)
   users = processUserEvents(users, events)
   return {
     timestamp,
@@ -65,10 +66,11 @@ function processUserTickets(users, globalRewardAccrued) {
     return {
       ...user,
       tickets: user.tickets.map(ticket => {
+        const additionalAmount = ((ticket.amount / (totalShares || 1)) * globalRewardAccrued)
         return {
           ...ticket,
           multiplier: Math.min(ticket.multiplier + (0.75 / MULTIPLIER_MATURITY), 1),
-          reward: ticket.reward + ((ticket.amount / totalShares) * globalRewardAccrued)
+          reward: ticket.reward + additionalAmount
         }
       })
     }
@@ -117,11 +119,21 @@ function burnTickets(amount, tickets) {
       return
     }
     let amountToRemove = Math.min(amountLeft, ticket.amount)
-    const burnedTicket = { ...ticket, amount: amountToRemove }
+    //TODO divide by 0
+    const proportionBurned = ticket.amount === 0 ? 0 : parseFloat(amountToRemove) / parseFloat(ticket.amount)
+    const burnedTicket = {
+      ...ticket,
+      amount: amountToRemove,
+      reward: proportionBurned * parseFloat(ticket.reward || 0),
+    }
     burnedTickets.push(burnedTicket)
     amountLeft = amountLeft - amountToRemove
     if (amountLeft === 0) {
-      const remainingTicket = { ...ticket, amount: ticket.amount - amountToRemove }
+      const remainingTicket = {
+        ...ticket,
+        amount: ticket.amount - amountToRemove,
+        reward: (1 - proportionBurned) * parseFloat(ticket.reward || 0),
+      }
       remainingTickets.push(remainingTicket)
     }
   })
@@ -130,7 +142,7 @@ function burnTickets(amount, tickets) {
 
 function calculateClaimReward(tickets) {
   return tickets.reduce((accum, ticket) => {
-    return accum + (ticket.reward * ticket.multiplier)
+    return accum + ((ticket.reward || 0) * ticket.multiplier)
   }, 0)
 }
 
