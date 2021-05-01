@@ -65,7 +65,6 @@ class Chart extends React.Component {
   }
 
   componentDidUpdate() {
-    console.log('updating')
     this.clearD3()
     this.renderD3()
   }
