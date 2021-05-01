@@ -37,11 +37,11 @@ class App extends React.Component {
     const address = event.target.value
     this.setState({
       address,
-      timeseriesDataSet: event === 'all' ? rewardBucketsTimeSeries : (
+      timeseriesDataSet: address === 'all' ? rewardBucketsTimeSeries : (
         getUserData(raw, address)
       ),
       'xFunc': xFunc,
-      'yFunc': event === 'all' ? bucketYFunc : addressYFunc,
+      'yFunc': address === 'all' ? bucketYFunc : addressYFunc,
     });
   }
 
@@ -70,7 +70,7 @@ class App extends React.Component {
           <input
             id="timestamp"
             type="range"
-            min="0" max={NUMBER_OF_INTERVALS_TO_RUN - 1}
+            min="0" max={NUMBER_OF_INTERVALS_TO_RUN}
             value={this.state.timestamp}
             onChange={this.updateTimestamp}
             step="1" />
