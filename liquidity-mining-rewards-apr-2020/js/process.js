@@ -23,8 +23,8 @@ for (let i = 0; i < NUMBER_OF_INTERVALS_TO_RUN; i++) {
 // calculate total payouts at end
 // remove past dispensations
 // return unpaid balances
-destroyPrintGlobalStates(globalStates)
-
+// destroyPrintGlobalStates(globalStates)
+console.log(JSON.stringify(globalStates))
 function processGlobalState(lastGlobalState, timestamp, events) {
   const { rewardBuckets, rewardAccrued } = processRewardBuckets(
     lastGlobalState.rewardBuckets,
@@ -41,10 +41,10 @@ function processGlobalState(lastGlobalState, timestamp, events) {
 }
 
 function processRewardBuckets(lastBuckets, bucketEvent, intervals) {
-  let rewardAccrued = 0;
+  let globalRewardAccrued = 0;
   let rewardBuckets = lastBuckets.map(bucket => {
     accrueAmount = bucket.initialRowan / (intervals - 1)
-    rewardAccrued += accrueAmount
+    globalRewardAccrued += accrueAmount
     return {
       rowan: bucket.rowan - accrueAmount,
       initialRowan: bucket.initialRowan
@@ -53,10 +53,10 @@ function processRewardBuckets(lastBuckets, bucketEvent, intervals) {
   if (bucketEvent) {
     rewardBuckets.push(bucketEvent)
   }
-  return { rewardBuckets, rewardAccrued }
+  return { rewardBuckets, globalRewardAccrued }
 }
 
-function processUserTickets(users, rewardAccrued) {
+function processUserTickets(users, globalRewardAccrued) {
   // process reward accruals and multiplier updates
   const totalShares = _.sum(_.flatten(_.map(users, (user, address) => {
     return user.tickets.map(ticket => ticket.amount)
@@ -68,7 +68,7 @@ function processUserTickets(users, rewardAccrued) {
         return {
           ...ticket,
           multiplier: Math.min(ticket.multiplier + (0.75 / MULTIPLIER_MATURITY), 1),
-          reward: ticket.reward + ((ticket.amount / totalShares) * rewardAccrued)
+          reward: ticket.reward + ((ticket.amount / totalShares) * globalRewardAccrued)
         }
       })
     }
