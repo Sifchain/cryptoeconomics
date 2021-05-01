@@ -1,6 +1,5 @@
 import * as d3 from 'd3';
 import React from 'react';
-import JSONPretty from 'react-json-pretty';
 
 var margin = { top: 10, right: 30, bottom: 30, left: 60 },
   width = 860 - margin.left - margin.right,
