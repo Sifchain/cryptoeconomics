@@ -6,15 +6,27 @@ import JSONPretty from 'react-json-pretty';
 import 'react-json-pretty/themes/monikai.css';
 import moment from 'moment';
 import Chart from './Chart'
+import { rewardBucketsTimeSeries } from './dataParsed';
+import _ from 'lodash';
+
+const totalInitialRowan = rewardBucketsTimeSeries[0].totalInitialRowan
+const xFunc = d => d.timestamp
+const addressYFunc = d => d.userClaimableAmount
+const bucketYFunc = d => totalInitialRowan - d.totalCurrentRowan
 
 class App extends React.Component {
 
   constructor(props) {
     super(props);
+
+
     this.state = {
       timestamp: 0,
       date: moment.utc('2021-02-19T05:00').format("MMMM Do YYYY, h:mm:ss a"),
-      address: 'all'
+      address: 'all',
+      timeseriesDataSet: rewardBucketsTimeSeries,
+      'xFunc': xFunc,
+      'yFunc': bucketYFunc
     };
 
     this.updateAddress = this.updateAddress.bind(this);
@@ -22,8 +34,14 @@ class App extends React.Component {
   }
 
   updateAddress(event) {
+    const address = event.target.value
     this.setState({
-      address: event.target.value,
+      address,
+      timeseriesDataSet: event === 'all' ? rewardBucketsTimeSeries : (
+        getUserData(raw, address)
+      ),
+      'xFunc': xFunc,
+      'yFunc': event === 'all' ? bucketYFunc : addressYFunc,
     });
   }
 
@@ -59,7 +77,7 @@ class App extends React.Component {
 
         </header>
         <div className='content'>
-          <Chart />
+          <Chart xFunc={this.state.xFunc} yFunc={this.state.yFunc} data={this.state.timeseriesDataSet} />
           <JSONPretty id="json-pretty" data={data}></JSONPretty>
         </div>
       </div >
@@ -68,3 +86,15 @@ class App extends React.Component {
 }
 
 export default App;
+
+
+function getUserData(all, address) {
+  return all.map((timestampData, timestamp) => {
+    const userData = timestampData.users[address] || { tickets: [], claimedReward: 0 };
+    const userClaimableAmount = userData.claimedReward + _.sum(userData.tickets.map(t => t.reward * t.multiplier))
+    const userReservedAmount = userData.claimedReward + _.sum(userData.tickets.map(t => t.reward * 1))
+    return {
+      timestamp, userClaimableAmount, userReservedAmount
+    }
+  }).slice(1)
+}
