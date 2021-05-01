@@ -16,6 +16,7 @@ class Chart extends React.Component {
     const xFunc = this.props.xFunc;
     const yFunc = this.props.yFunc;
 
+    console.log(d)
     var svg = d3.select(this.myRef.current)
       .append("svg")
       .attr("width", width + margin.left + margin.right)
