@@ -6,6 +6,17 @@ html {
   background-color: #a1a9b8;
 }
 
+.timestamp-slider {
+  width: 770px;
+  margin-left: 45px;
+}
+
+.timestamp-slider-description {
+  text-align: center;
+  width: 770px;
+  color: #a1a9b8;
+}
+
 .App {
   text-align: center;
   background-color: #282c34;

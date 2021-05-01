@@ -66,18 +66,19 @@ class App extends React.Component {
             <option key={'all'} value={'all'}>All</option>
             {users.sort().map(user => <option key={user} value={user}>{user}</option>)}
           </select>
-          Timestamp: {this.state.date}
+
+        </header>
+        <div className='content'>
+          <Chart xFunc={this.state.xFunc} yFunc={this.state.yFunc} data={this.state.timeseriesDataSet} />
+          <div className="timestamp-slider-description">Timestamp: {this.state.date} </div>
           <input
             id="timestamp"
+            className="timestamp-slider"
             type="range"
             min="0" max={NUMBER_OF_INTERVALS_TO_RUN}
             value={this.state.timestamp}
             onChange={this.updateTimestamp}
             step="1" />
-
-        </header>
-        <div className='content'>
-          <Chart xFunc={this.state.xFunc} yFunc={this.state.yFunc} data={this.state.timeseriesDataSet} />
           <JSONPretty id="json-pretty" data={data}></JSONPretty>
         </div>
       </div >
