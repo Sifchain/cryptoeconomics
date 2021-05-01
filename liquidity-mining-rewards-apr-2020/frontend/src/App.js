@@ -5,6 +5,7 @@ import { raw, users } from './dataParsed';
 import JSONPretty from 'react-json-pretty';
 import 'react-json-pretty/themes/monikai.css';
 import moment from 'moment';
+import Chart from './Chart'
 
 class App extends React.Component {
 
@@ -58,6 +59,7 @@ class App extends React.Component {
 
         </header>
         <div className='content'>
+          <Chart />
           <JSONPretty id="json-pretty" data={data}></JSONPretty>
         </div>
       </div >
