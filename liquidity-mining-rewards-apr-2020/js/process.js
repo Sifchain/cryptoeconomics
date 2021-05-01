@@ -119,7 +119,6 @@ function burnTickets(amount, tickets) {
       return
     }
     let amountToRemove = Math.min(amountLeft, ticket.amount)
-    //TODO divide by 0
     const proportionBurned = ticket.amount === 0 ? 0 : parseFloat(amountToRemove) / parseFloat(ticket.amount)
     const burnedTicket = {
       ...ticket,
