@@ -1,7 +1,6 @@
-import { PieChart } from 'react-dc-js';
-import crossfilter from 'crossfilter2';
-import { raw, users } from './dataParsed';
 import * as d3 from 'd3';
+import React from 'react';
+import { raw, users } from './dataParsed';
 
 class Chart extends React.Component {
   constructor(props) {
