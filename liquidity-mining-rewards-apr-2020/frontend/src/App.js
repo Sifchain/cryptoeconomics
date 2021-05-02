@@ -11,7 +11,7 @@ import _ from 'lodash';
 
 const totalInitialRowan = rewardBucketsTimeSeries[0].totalInitialRowan
 const xFunc = d => d.timestamp
-const addressYFunc = d => d.userClaimableAmount
+const addressYFunc = d => d.userClaimableReward
 const bucketYFunc = d => totalInitialRowan - d.totalCurrentRowan
 
 class App extends React.Component {
@@ -58,7 +58,12 @@ class App extends React.Component {
 
   render() {
     const timestampGlobalState = rawAugmented[this.state.timestamp + 1];
-    const data = this.state.address === 'all' ? timestampGlobalState : timestampGlobalState.users[this.state.address]
+    const data = this.state.address === 'all' ? timestampGlobalState :
+      {
+        ...timestampGlobalState,
+        users: undefined,
+        user: timestampGlobalState.users[this.state.address]
+      }
     return (
       <div className="App" >
         <header className="App-header">
@@ -91,11 +96,11 @@ export default App;
 
 function getUserData(all, address) {
   return all.map((timestampData, timestamp) => {
-    const userData = timestampData.users[address] || { tickets: [], claimedReward: 0 };
-    const userClaimableAmount = userData.claimedReward + _.sum(userData.tickets.map(t => t.reward * t.multiplier))
-    const userReservedAmount = userData.claimedReward + _.sum(userData.tickets.map(t => t.reward * 1))
+    const userData = timestampData.users[address] || { tickets: [], reservedReward: 0, claimableReward: 0 };
+    const userClaimableReward = userData.claimableReward
+    const userReservedReward = userData.reservedReward
     return {
-      timestamp, userClaimableAmount, userReservedAmount
+      timestamp, userClaimableReward, userReservedReward
     }
   }).slice(1)
 }

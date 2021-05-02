@@ -3,6 +3,7 @@ import _ from 'lodash';
 
 export const users = _.uniq(_.flatten(data.map(timestamp => Object.keys(timestamp.users))))
 export const raw = data
+
 export const rawAugmented = data.map(timestamp => {
   const timestampTotalTickets = _.sum(_.map(timestamp.users, user => {
     return _.sum(user.tickets.map(t => t.amount))
@@ -14,8 +15,8 @@ export const rawAugmented = data.map(timestamp => {
       const totalTickets = _.sum(user.tickets.map(t => t.amount))
       return {
         ...user,
-        claimableReward: _.sum(user.tickets.map(t => t.reward * t.multiplier)),
-        reservedReward: _.sum(user.tickets.map(t => t.reward)),
+        claimableReward: user.claimedReward + _.sum(user.tickets.map(t => t.reward * t.multiplier)),
+        reservedReward: user.claimedReward + _.sum(user.tickets.map(t => t.reward)),
         totalTickets,
         nextRewardShare: totalTickets / timestampTotalTickets
       }
