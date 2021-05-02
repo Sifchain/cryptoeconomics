@@ -1,7 +1,7 @@
 import { NUMBER_OF_INTERVALS_TO_RUN } from './config';
 import './App.css';
 import React from 'react';
-import { raw, users } from './dataParsed';
+import { rawAugmented, users } from './dataParsed';
 import JSONPretty from 'react-json-pretty';
 import 'react-json-pretty/themes/monikai.css';
 import moment from 'moment';
@@ -38,7 +38,7 @@ class App extends React.Component {
     this.setState({
       address,
       timeseriesDataSet: address === 'all' ? rewardBucketsTimeSeries : (
-        getUserData(raw, address)
+        getUserData(rawAugmented, address)
       ),
       'xFunc': xFunc,
       'yFunc': address === 'all' ? bucketYFunc : addressYFunc,
@@ -57,7 +57,7 @@ class App extends React.Component {
 
 
   render() {
-    const timestampGlobalState = raw[this.state.timestamp + 1];
+    const timestampGlobalState = rawAugmented[this.state.timestamp + 1];
     const data = this.state.address === 'all' ? timestampGlobalState : timestampGlobalState.users[this.state.address]
     return (
       <div className="App" >
