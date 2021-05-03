@@ -1,0 +1,9 @@
+action items:
+ 1 - work out a system that has some reward that can be given immediately that is not at all dependent on activity in the future
+ 2 - write out clear definition of that system and new rules for how to calculate immediate portion of reward
+ 3 - make sure code is updated to calculate both:
+     A - immediate claimable reward based on new clarified rules and
+     B - total expected reward based on assumption of no new liquidity add/remove events
+ 4 - make sure code can also incorporate already-claimed amounts (C)
+ 5 - make sure code/lambda function has api call to get outstanding claimed amount (ie, A - C)
+ 6 - make sure code/lambda function has api call to get (B) so that frontend can use B to show expected APY over course of entire program
