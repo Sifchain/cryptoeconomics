@@ -1,6 +1,7 @@
-import data from './data.json';
 import _ from 'lodash';
 import * as d3 from 'd3';
+
+const data = []
 
 export const users = _.uniq(_.flatten(data.map(timestamp => Object.keys(timestamp.users))))
 export const raw = data
