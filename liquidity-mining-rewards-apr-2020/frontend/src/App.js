@@ -1,18 +1,16 @@
-import { NUMBER_OF_INTERVALS_TO_RUN } from './config';
+import { NUMBER_OF_INTERVALS_TO_RUN, START_DATETIME } from './config';
+import { getUserData } from './utils'
 import './App.css';
 import React from 'react';
-import { rawAugmented, users } from './dataParsed';
+import {
+  rawAugmented, users,
+} from './dataParsed';
 import JSONPretty from 'react-json-pretty';
 import 'react-json-pretty/themes/monikai.css';
 import moment from 'moment';
 import Chart from './Chart'
-import { rewardBucketsTimeSeries } from './dataParsed';
+import StackAll from './StackAll'
 import _ from 'lodash';
-
-const totalInitialRowan = rewardBucketsTimeSeries[0].totalInitialRowan
-const xFunc = d => d.timestamp
-const addressYFunc = d => d.userClaimableReward
-const bucketYFunc = d => totalInitialRowan - d.totalCurrentRowan
 
 class App extends React.Component {
 
@@ -22,11 +20,8 @@ class App extends React.Component {
 
     this.state = {
       timestamp: 0,
-      date: moment.utc('2021-02-19T05:00').format("MMMM Do YYYY, h:mm:ss a"),
+      date: moment.utc(START_DATETIME).format("MMMM Do YYYY, h:mm:ss a"),
       address: 'all',
-      timeseriesDataSet: rewardBucketsTimeSeries,
-      'xFunc': xFunc,
-      'yFunc': bucketYFunc
     };
 
     this.updateAddress = this.updateAddress.bind(this);
@@ -37,18 +32,14 @@ class App extends React.Component {
     const address = event.target.value
     this.setState({
       address,
-      timeseriesDataSet: address === 'all' ? rewardBucketsTimeSeries : (
-        getUserData(rawAugmented, address)
-      ),
-      'xFunc': xFunc,
-      'yFunc': address === 'all' ? bucketYFunc : addressYFunc,
+      timeseriesDataSet: getUserData(rawAugmented, address),
     });
   }
 
   updateTimestamp(event) {
     const timestamp = parseInt(event.target.value)
     const minutes = timestamp * 200;
-    const date = moment.utc('2021-02-19T05:00').add(minutes, 'm').format("MMMM Do YYYY, h:mm:ss a");
+    const date = moment.utc(START_DATETIME).add(minutes, 'm').format("MMMM Do YYYY, h:mm:ss a");
     this.setState({
       date,
       timestamp
@@ -74,17 +65,20 @@ class App extends React.Component {
 
         </header>
         <div className='content'>
-          <Chart xFunc={this.state.xFunc} yFunc={this.state.yFunc} data={this.state.timeseriesDataSet} />
-          <div className="timestamp-slider-description">Timestamp: {this.state.date} </div>
-          <input
+          {this.state.address === 'all' && <StackAll />}
+          {this.state.address !== 'all' &&
+            <Chart data={this.state.timeseriesDataSet} />}
+          {this.state.address != 'all' &&
+            <div className="timestamp-slider-description">Timestamp: {this.state.date} </div>}
+          {this.state.address != 'all' && <input
             id="timestamp"
             className="timestamp-slider"
             type="range"
             min="0" max={NUMBER_OF_INTERVALS_TO_RUN}
             value={this.state.timestamp}
             onChange={this.updateTimestamp}
-            step="1" />
-          <JSONPretty id="json-pretty" data={data}></JSONPretty>
+            step="1" />}
+          {this.state.address != 'all' && <JSONPretty id="json-pretty" data={data}></JSONPretty>}
         </div>
       </div >
     );
@@ -92,15 +86,3 @@ class App extends React.Component {
 }
 
 export default App;
-
-
-function getUserData(all, address) {
-  return all.map((timestampData, timestamp) => {
-    const userData = timestampData.users[address] || { tickets: [], reservedReward: 0, claimableReward: 0 };
-    const userClaimableReward = userData.claimableReward
-    const userReservedReward = userData.reservedReward
-    return {
-      timestamp, userClaimableReward, userReservedReward
-    }
-  }).slice(1)
-}
