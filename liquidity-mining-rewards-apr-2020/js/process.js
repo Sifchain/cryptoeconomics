@@ -82,8 +82,9 @@ function processUserEvents(users, events) {
   events.forEach(event => {
     const user = users[event.address] || {
       tickets: [],
-      claimedReward: 0,
-      dispensedReward: 0
+      claimed: 0,
+      dispensed: 0,
+      forfeited: 0,
     }
     if (event.amount > 0) {
       const newTicket = {
@@ -95,11 +96,15 @@ function processUserEvents(users, events) {
     } else if (event.amount < 0) {
       const { burnedTickets, remainingTickets }
         = burnTickets(-event.amount, user.tickets)
-      user.claimedReward += calculateClaimReward(burnedTickets)
+      const { claimed, forfeited } = calculateClaimReward(burnedTickets)
+      user.claimed += claimed
+      user.forfeited += forfeited
       user.tickets = remainingTickets
     }
     if (event.claim) {
-      user.claimedReward += calculateClaimReward(user.tickets)
+      const { claimed, forfeited } = calculateClaimReward(user.tickets)
+      user.claimed += claimed
+      user.forfeited += forfeited
       user.tickets = resetTickets(user.tickets)
     }
     users[event.address] = user
@@ -141,8 +146,14 @@ function burnTickets(amount, tickets) {
 
 function calculateClaimReward(tickets) {
   return tickets.reduce((accum, ticket) => {
-    return accum + ((ticket.reward || 0) * ticket.multiplier)
-  }, 0)
+    const forefeitedMultiplier = 1 - ticket.multiplier
+    const reward = ticket.reward || 0
+    const result = {
+      claimed: accum.claimed + (reward * ticket.multiplier),
+      forfeited: accum.forfeited + (reward * forefeitedMultiplier),
+    }
+    return result
+  }, { claimed: 0, forfeited: 0 })
 }
 
 function resetTickets(tickets) {
