@@ -10,7 +10,6 @@ import 'react-json-pretty/themes/monikai.css';
 import moment from 'moment';
 import Chart from './Chart'
 import StackAll from './StackAll'
-import _ from 'lodash';
 
 class App extends React.Component {
 
@@ -68,9 +67,9 @@ class App extends React.Component {
           {this.state.address === 'all' && <StackAll />}
           {this.state.address !== 'all' &&
             <Chart data={this.state.timeseriesDataSet} />}
-          {this.state.address != 'all' &&
+          {this.state.address !== 'all' &&
             <div className="timestamp-slider-description">Timestamp: {this.state.date} </div>}
-          {this.state.address != 'all' && <input
+          {this.state.address !== 'all' && <input
             id="timestamp"
             className="timestamp-slider"
             type="range"
@@ -78,7 +77,7 @@ class App extends React.Component {
             value={this.state.timestamp}
             onChange={this.updateTimestamp}
             step="1" />}
-          {this.state.address != 'all' && <JSONPretty id="json-pretty" data={data}></JSONPretty>}
+          {this.state.address !== 'all' && <JSONPretty id="json-pretty" data={data}></JSONPretty>}
         </div>
       </div >
     );
