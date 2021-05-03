@@ -2,9 +2,9 @@
   "name": "liquidity-mining-rewards-apr-2020",
   "version": "1.0.0",
   "description": "This code is responsible for taking a data-services snapshot from that team that contains:  - All liquidity adds  - All liquidity removes for all users from history of chain",
-  "main": "js/process.js",
+  "main": "backend/process.js",
   "scripts": {
-    "start": "node js/process.js",
+    "start": "node backend/process.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build-fe": "node js/process.js --silent > ./frontend/src/data.json"
   },

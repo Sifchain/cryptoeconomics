@@ -1,4 +1,5 @@
 _ = require("lodash")
+const { parseData } = require('./dataParsed')
 
 const { remapAddresses } = require("./util");
 const { TIME_INTERVAL, NUMBER_OF_INTERVALS_TO_RUN, MULTIPLIER_MATURITY, STARTING_GLOBAL_STATE } = require("./config");
@@ -20,11 +21,12 @@ for (let i = 0; i < NUMBER_OF_INTERVALS_TO_RUN; i++) {
   globalStates.push(newGlobalState)
 }
 
-// calculate total payouts at end
+// calculate total payouts at maturity
 // remove past dispensations
 // return unpaid balances
 // destroyPrintGlobalStates(globalStates)
-console.log(JSON.stringify(globalStates))
+// console.log(JSON.stringify(globalStates))
+parsedData = parseData(globalStates)
 
 function processGlobalState(lastGlobalState, timestamp, events) {
   const { rewardBuckets, globalRewardAccrued } = processRewardBuckets(
