@@ -69,7 +69,7 @@ function processUserTickets(users, globalRewardAccrued) {
         const additionalAmount = ((ticket.amount / (totalShares || 1)) * globalRewardAccrued)
         return {
           ...ticket,
-          multiplier: Math.min(ticket.multiplier + (0.75 / MULTIPLIER_MATURITY), 1),
+          mul: Math.min(ticket.mul + (0.75 / MULTIPLIER_MATURITY), 1),
           reward: ticket.reward + additionalAmount
         }
       })
@@ -89,7 +89,7 @@ function processUserEvents(users, events) {
     if (event.amount > 0) {
       const newTicket = {
         amount: event.amount,
-        multiplier: 0.25,
+        mul: 0.25,
         reward: 0
       }
       user.tickets = user.tickets.concat(newTicket)
@@ -113,7 +113,7 @@ function processUserEvents(users, events) {
 }
 
 function burnTickets(amount, tickets) {
-  const sortedTickets = _.sortBy(tickets, 'multiplier')
+  const sortedTickets = _.sortBy(tickets, 'mul')
 
   let amountLeft = amount;
   const burnedTickets = [];
@@ -146,10 +146,10 @@ function burnTickets(amount, tickets) {
 
 function calculateClaimReward(tickets) {
   return tickets.reduce((accum, ticket) => {
-    const forefeitedMultiplier = 1 - ticket.multiplier
+    const forefeitedMultiplier = 1 - ticket.mul
     const reward = ticket.reward || 0
     const result = {
-      claimed: accum.claimed + (reward * ticket.multiplier),
+      claimed: accum.claimed + (reward * ticket.mul),
       forfeited: accum.forfeited + (reward * forefeitedMultiplier),
     }
     return result
@@ -159,7 +159,7 @@ function calculateClaimReward(tickets) {
 function resetTickets(tickets) {
   return tickets.map(ticket => ({
     ...ticket,
-    multiplier: 0,
+    mul: 0,
     reward: 0
   }))
 }

@@ -16,7 +16,7 @@ export const rawAugmented = data.map(timestamp => {
       const totalTickets = _.sum(user.tickets.map(t => t.amount))
       return {
         ...user,
-        claimableReward: user.claimed + _.sum(user.tickets.map(t => t.reward * t.multiplier)),
+        claimableReward: user.claimed + _.sum(user.tickets.map(t => t.reward * t.mul)),
         reservedReward: user.claimed + _.sum(user.tickets.map(t => t.reward)),
         totalTickets,
         nextRewardShare: totalTickets / timestampTotalTickets
