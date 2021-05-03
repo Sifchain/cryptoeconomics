@@ -3,7 +3,7 @@ _ = require("lodash")
 const { remapAddresses } = require("./util");
 const { TIME_INTERVAL, NUMBER_OF_INTERVALS_TO_RUN, MULTIPLIER_MATURITY, STARTING_GLOBAL_STATE } = require("./config");
 
-const snapshot = require("../snapshots/snapshot_start_until_mid_april.json");
+const snapshot = require("../snapshots/snapshot_start_until_mid_april_fixed.json");
 
 
 const addresses = snapshot.data.snapshots_new[0].snapshot_data

@@ -16,15 +16,16 @@ class App extends React.Component {
   constructor(props) {
     super(props);
 
-
     this.state = {
       timestamp: 0,
       date: moment.utc(START_DATETIME).format("MMMM Do YYYY, h:mm:ss a"),
       address: 'all',
+      addressFilter: '',
     };
 
     this.updateAddress = this.updateAddress.bind(this);
     this.updateTimestamp = this.updateTimestamp.bind(this);
+    this.updateAddressFilter = this.updateAddressFilter.bind(this);
   }
 
   updateAddress(event) {
@@ -32,6 +33,13 @@ class App extends React.Component {
     this.setState({
       address,
       timeseriesDataSet: getUserData(rawAugmented, address),
+    });
+  }
+
+  updateAddressFilter(event) {
+    const addressFilter = event.target.value
+    this.setState({
+      addressFilter,
     });
   }
 
@@ -54,12 +62,16 @@ class App extends React.Component {
         users: undefined,
         user: timestampGlobalState.users[this.state.address]
       }
+    const usersFiltered = this.state.addressFilter ?
+      users.filter(user => user.includes(this.state.addressFilter)) :
+      users
     return (
       <div className="App" >
         <header className="App-header">
+          {/* Address filter: <input value={this.state.addressFilter} onChange={this.updateAddressFilter}></input> */}
           Address to show: <select value={this.state.address} onChange={this.updateAddress}>
             <option key={'all'} value={'all'}>All</option>
-            {users.sort().map(user => <option key={user} value={user}>{user}</option>)}
+            {usersFiltered.sort().map(user => <option key={user} value={user}>{user}</option>)}
           </select>
 
         </header>
