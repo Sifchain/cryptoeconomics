@@ -24,8 +24,6 @@ class Chart extends React.Component {
         "translate(" + margin.left + "," + margin.top + ")");
 
     // X scale and Axis
-    console.log(d3.extent(data, d => timestampToDate(d.timestamp)))
-    console.log(data.map(d => d.timestamp))
     var x = d3.scaleUtc()
       .domain(d3.extent(data, d => timestampToDate(d.timestamp)))
       .range([0, width]);       // This is the corresponding value I want in Pixel
