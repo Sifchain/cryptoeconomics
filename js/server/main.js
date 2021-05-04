@@ -4,14 +4,14 @@ const cors = require('cors')
 const { getParsedData } = require('./process');
 const { getUserData, getUserTimeSeriesData } = require('./user');
 
-const SERVER_PORT = 3001
+var port = process.env.PORT || 3000;
 const app = express();
 app.use(cors())
 
 const data = getParsedData();
 
-app.listen(SERVER_PORT, () => {
-  console.log(`Server running on port ${SERVER_PORT}`);
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
 });
 
 app.get("/api", (req, res, next) => {
