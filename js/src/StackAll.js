@@ -2,8 +2,8 @@ import * as d3 from 'd3';
 import { timestampToDate } from './utils'
 import React from 'react';
 import {
-  users, stackClaimableRewardData, stackedClaimableRewardSeries
-} from './dataParsed';
+  fetchStack
+} from './api';
 
 // const totalInitialRowan = rewardBucketsTimeSeries[0].totalInitialRowan
 
@@ -12,12 +12,14 @@ class StackAll extends React.Component {
   constructor(props) {
     super(props);
     this.myRef = React.createRef();
+    this.state = {}
   }
 
   renderD3() {
 
-    const data = stackClaimableRewardData
-    const series = stackedClaimableRewardSeries
+    const data = this.state.rewardData
+
+    const series = d3.stack().keys(this.props.users)(data)
 
     var margin = { top: 10, right: 30, bottom: 30, left: 60 },
       width = 860 - margin.left - margin.right,
@@ -33,12 +35,15 @@ class StackAll extends React.Component {
       .range([height - margin.bottom, margin.top])
 
     const area = d3.area()
-      .x(d => x(timestampToDate(d.data.timestamp)))
+      .x((d, xIndex) => {
+        const timestamp = xIndex * 200
+        return x(timestampToDate(timestamp))
+      })
       .y0(d => y(d[0]))
       .y1(d => y(d[1]))
 
     const color = d3.scaleOrdinal()
-      .domain(users)
+      .domain(this.props.users)
       .range(d3.schemeCategory10)
 
     const xAxis = g => g
@@ -81,19 +86,20 @@ class StackAll extends React.Component {
   }
 
   componentDidMount() {
-    this.renderD3()
+    fetchStack()
+      .then(({ rewardData }) => {
+        this.setState({ rewardData }, this.renderD3)
+      })
   }
 
   componentWillUnmount() {
     this.clearD3()
   }
 
-  componentDidUpdate() {
-    this.clearD3()
-    this.renderD3()
-  }
-
   render() {
+    if (!this.state.rewardData) {
+      <div>Loading...</div>
+    }
     return (
       <div ref={this.myRef} className='chart'>
       </div>

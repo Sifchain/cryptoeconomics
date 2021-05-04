@@ -1,10 +1,9 @@
 import { NUMBER_OF_INTERVALS_TO_RUN, START_DATETIME } from './config';
-import { getUserData } from './utils'
 import './App.css';
 import React from 'react';
 import {
-  rawAugmented, users,
-} from './dataParsed';
+  fetchUsers, fetchUserData, fetchUserTimeSeriesData
+} from './api';
 import JSONPretty from 'react-json-pretty';
 import 'react-json-pretty/themes/monikai.css';
 import moment from 'moment';
@@ -28,11 +27,18 @@ class App extends React.Component {
     this.updateAddressFilter = this.updateAddressFilter.bind(this);
   }
 
+  componentDidMount() {
+    fetchUsers().then(users => this.setState({ users }));
+  }
+
   updateAddress(event) {
     const address = event.target.value
+    fetchUserTimeSeriesData(address).then(userTimeSeriesData => this.setState({ userTimeSeriesData }));
+    fetchUserData(address).then(userData => this.setState({ userData }));
     this.setState({
       address,
-      timeseriesDataSet: getUserData(rawAugmented, address),
+      userData: undefined,
+      userTimeSeriesData: undefined,
     });
   }
 
@@ -55,16 +61,13 @@ class App extends React.Component {
 
 
   render() {
-    const timestampGlobalState = rawAugmented[this.state.timestamp + 1];
-    const data = this.state.address === 'all' ? timestampGlobalState :
-      {
-        ...timestampGlobalState,
-        users: undefined,
-        user: timestampGlobalState.users[this.state.address]
-      }
+    if (!this.state.users) {
+      return <div>Loading...</div>
+    }
+    const userTimestampJSON = this.state.userData ? this.state.userData[this.state.timestamp + 1] : 'Loading...'
     const usersFiltered = this.state.addressFilter ?
-      users.filter(user => user.includes(this.state.addressFilter)) :
-      users
+      this.state.users.filter(user => user.includes(this.state.addressFilter)) :
+      this.state.users
     return (
       <div className="App" >
         <header className="App-header">
@@ -76,9 +79,11 @@ class App extends React.Component {
 
         </header>
         <div className='content'>
-          {this.state.address === 'all' && <StackAll />}
-          {this.state.address !== 'all' &&
-            <Chart data={this.state.timeseriesDataSet} />}
+          {this.state.address === 'all' && <StackAll users={this.state.users} />}
+          {this.state.address !== 'all' && !this.state.userTimeSeriesData &&
+            <div>Loading...</div>}
+          {this.state.address !== 'all' && this.state.userTimeSeriesData &&
+            <Chart data={this.state.userTimeSeriesData} />}
           {this.state.address !== 'all' &&
             <div className="timestamp-slider-description">Timestamp: {this.state.date} </div>}
           {this.state.address !== 'all' && <input
@@ -89,7 +94,7 @@ class App extends React.Component {
             value={this.state.timestamp}
             onChange={this.updateTimestamp}
             step="1" />}
-          {this.state.address !== 'all' && <JSONPretty id="json-pretty" data={data}></JSONPretty>}
+          {this.state.address !== 'all' && <JSONPretty id="json-pretty" data={userTimestampJSON}></JSONPretty>}
         </div>
       </div >
     );

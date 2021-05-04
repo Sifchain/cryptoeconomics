@@ -26,7 +26,9 @@ for (let i = 0; i < NUMBER_OF_INTERVALS_TO_RUN; i++) {
 // return unpaid balances
 // destroyPrintGlobalStates(globalStates)
 // console.log(JSON.stringify(globalStates))
-parsedData = parseData(globalStates)
+exports.getParsedData = _ => {
+  return parseData(globalStates)
+}
 
 function processGlobalState(lastGlobalState, timestamp, events) {
   const { rewardBuckets, globalRewardAccrued } = processRewardBuckets(
