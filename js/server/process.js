@@ -6,12 +6,10 @@ const { TIME_INTERVAL, NUMBER_OF_INTERVALS_TO_RUN, MULTIPLIER_MATURITY, STARTING
 
 const snapshot = require("../snapshots/snapshot_start_until_mid_april_fixed.json");
 
-
 const addresses = snapshot.data.snapshots_new[0].snapshot_data
 
 const timeIntervalEvents = remapAddresses(addresses, TIME_INTERVAL)
 
-const startTime = 0;
 const globalStates = [STARTING_GLOBAL_STATE]
 for (let i = 0; i < NUMBER_OF_INTERVALS_TO_RUN; i++) {
   const lastGlobalState = globalStates[globalStates.length - 1]
