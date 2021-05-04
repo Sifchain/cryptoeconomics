@@ -1,5 +1,4 @@
 _ = require("lodash")
-d3 = require("d3")
 
 exports.parseData = data => {
   const users = _.uniq(_.flatten(data.map(timestamp => Object.keys(timestamp.users))))
@@ -47,13 +46,10 @@ exports.parseData = data => {
     }
   }).slice(1)
 
-  const stackedClaimableRewardSeries = d3.stack().keys(users)(stackClaimableRewardData)
-
   return {
     users,
     dataAugmented,
     rewardBucketsTimeSeries,
     stackClaimableRewardData,
-    stackedClaimableRewardSeries,
   }
 }

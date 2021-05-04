@@ -1,19 +1,21 @@
+const serverURL = 'http://localhost:3001/api'
+
 export const fetchUsers = _ => {
-  return fetch('./api/server?key=users')
+  return fetch(`${serverURL}?key=users`)
     .then(response => response.json())
 }
 
 export const fetchUserData = address => {
-  return fetch(`./api/server?key=userData&address=${address}`)
+  return fetch(`${serverURL}?key=userData&address=${address}`)
     .then(response => response.json())
 }
 
 export const fetchUserTimeSeriesData = address => {
-  return fetch(`./api/server?key=userTimeSeriesData&address=${address}`)
+  return fetch(`${serverURL}?key=userTimeSeriesData&address=${address}`)
     .then(response => response.json())
 }
 
 export const fetchStack = _ => {
-  return fetch(`./api/server?key=stack`)
+  return fetch(`${serverURL}?key=stack`)
     .then(response => response.json())
 }

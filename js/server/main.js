@@ -1,8 +1,20 @@
-const { getParsedData } = require('../lib/process');
-const { getUserData, getUserTimeSeriesData } = require('../src/utils');
+const express = require("express");
+const cors = require('cors')
 
-module.exports = (req, res) => {
-  data = getParsedData();
+const { getParsedData } = require('./process');
+const { getUserData, getUserTimeSeriesData } = require('./user');
+
+const SERVER_PORT = 3001
+const app = express();
+app.use(cors())
+
+const data = getParsedData();
+
+app.listen(SERVER_PORT, () => {
+  console.log(`Server running on port ${SERVER_PORT}`);
+});
+
+app.get("/api", (req, res, next) => {
   const key = req.query.key;
   let responseJSON = data[key]
   if (key === 'userTimeSeriesData') {
@@ -18,4 +30,4 @@ module.exports = (req, res) => {
     responseJSON = { rewardData }
   }
   res.json(responseJSON)
-}
+});
