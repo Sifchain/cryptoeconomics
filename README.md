@@ -87,4 +87,5 @@ Querying a user's projected final reward:
 Rewards will not be automatically distributed. Users need to burn or reset their tickets to claim their rewards.
 
 Each week users can go into the UI and submit a claim transaction to claim their rewards. These transactions will be gathered at the end of each week and then at the end of the week, we will process those claims by calculating each user's released rewards with these scripts and the amount of ROWAN that entitles them to. Then this list of users and their reward payouts will be sent again to the distribution module to trigger the start of the distribution process.
-.
+. d
+# Config

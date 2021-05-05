@@ -1,5 +1,5 @@
-moment = require("moment")
-_ = require("lodash")
+const moment = global.moment = require("moment")
+const _ = global._ = require("lodash")
 const { parseData } = require('./dataParsed')
 
 const { remapAddresses } = require("./util");

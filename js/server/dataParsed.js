@@ -1,8 +1,18 @@
 const _ = global._ = require("lodash")
+const moment = global.moment = require("moment")
+const { START_DATETIME } = require("./config");
 
+/**
+ *
+ *
+ * @param {*} data - Array of global reward states over time, structure defined in config.js
+ * @returns
+ */
 exports.parseData = data => {
+  // array of user id's
   const users = _.uniq(_.flatten(data.map(timestamp => Object.keys(timestamp.users))))
 
+  // reward states
   const dataWithRewards = data.map(timestamp => {
     const timestampTotalTickets = _.sum(_.map(timestamp.users, user => {
       return _.sum(user.tickets.map(t => t.amount))
@@ -24,18 +34,51 @@ exports.parseData = data => {
   })
 
   const finalTimestamp = dataWithRewards[dataWithRewards.length - 1] || { users: [] };
-  const dataWithRewardsAtMaturity = dataWithRewards.map(timestamp => {
+  const processedData = dataWithRewards.map((timestamp) => {
     return {
       ...timestamp,
       users: _.mapValues(timestamp.users, (user, address) => {
         const userAtMaturity = finalTimestamp.users[address] || {}
+        const totalRewardAtMaturity = userAtMaturity.claimableReward
+        const ticketAmountAtMaturity = _.sum(finalTimestamp.users[address].tickets.map(ticket => ticket.amount))
+        const yieldAtMaturity = totalRewardAtMaturity / ticketAmountAtMaturity
         return {
           ...user,
-          totalRewardAtMaturity: userAtMaturity.claimableReward
+          totalRewardAtMaturity,
+          ticketAmountAtMaturity,
+          yieldAtMaturity,
         }
       })
     }
   })
+
+  processedData.forEach((timestamp, timestampIndex) => {
+    _.forEach(timestamp.users, (user, address) => {
+      const prevTimestamp = processedData[timestampIndex - 1] || { users: [] }
+      const lastUser = prevTimestamp.users[address] || {}
+      const lastUserMaturityDate = lastUser.maturityDate
+      let maturityDate = lastUserMaturityDate
+      const userClaimableReward = user.claimableReward
+      const userReservedReward = user.reservedReward
+      if (maturityDate === undefined &&                       // maturity date not yet reached
+        timestamp.rewardBuckets.length === 0 &&               // reward period is over
+        userClaimableReward === userReservedReward            // rewards have matured
+      ) {
+        maturityDate = moment.utc(START_DATETIME).add(timestamp.timestamp, 'm').format("MMMM Do YYYY, h:mm:ss a")
+      }
+      user.maturityDate = maturityDate
+    })
+  })
+
+  // fill in old timestamps with maturity date now that we have it
+  const lastTimestamp = processedData[processedData.length - 1] || { users: [] }
+  processedData.forEach((timestamp) => {
+    _.forEach(timestamp.users, (user, address) => {
+      const lastUser = lastTimestamp.users[address] || {}
+      user.maturityDate = lastUser.maturityDate
+    })
+  })
+
 
   const rewardBucketsTimeSeries = data.map((timestampData, timestamp) => {
     const rewardBuckets = timestampData.rewardBuckets
@@ -46,7 +89,7 @@ exports.parseData = data => {
     }
   }).slice(1)
 
-  const stackClaimableRewardData = dataWithRewardsAtMaturity.map(t => {
+  const stackClaimableRewardData = processedData.map(t => {
     const blankUsers = users.reduce((accum, user) => {
       accum[user] = 0
       return accum
@@ -62,7 +105,7 @@ exports.parseData = data => {
 
   return {
     users,
-    dataWithRewardsAtMaturity,
+    processedData,
     rewardBucketsTimeSeries,
     stackClaimableRewardData,
   }
