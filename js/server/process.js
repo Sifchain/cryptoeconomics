@@ -6,9 +6,9 @@ const { remapAddresses } = require("./util");
 const { START_DATETIME, TIME_INTERVAL,
   NUMBER_OF_INTERVALS_TO_RUN, MULTIPLIER_MATURITY, STARTING_GLOBAL_STATE } = require("./config");
 
-const snapshot = require("../snapshots/snapshot_start_until_mid_april_fixed.json");
+const snapshotLM = require("../snapshots/snapshot_lm_latest.json");
 
-const addresses = snapshot.data.snapshots_new[0].snapshot_data
+const addresses = snapshotLM.data.snapshots_new[0].snapshot_data
 
 const timeIntervalEvents = remapAddresses(addresses, TIME_INTERVAL)
 
