@@ -18,34 +18,34 @@ class App extends React.Component {
     this.state = {
       timestamp: 0,
       date: moment.utc(START_DATETIME).format("MMMM Do YYYY, h:mm:ss a"),
-      address: 'all',
+      address: window.location.hash.substr(1) || 'all',
       addressFilter: '',
     };
 
+    this.updateAddressEvent = this.updateAddressEvent.bind(this);
     this.updateAddress = this.updateAddress.bind(this);
     this.updateTimestamp = this.updateTimestamp.bind(this);
-    this.updateAddressFilter = this.updateAddressFilter.bind(this);
+    this.updateAddress(this.state.address)
   }
 
   componentDidMount() {
     fetchUsers().then(users => this.setState({ users }));
   }
 
-  updateAddress(event) {
+  updateAddressEvent(event) {
     const address = event.target.value
-    fetchUserTimeSeriesData(address).then(userTimeSeriesData => this.setState({ userTimeSeriesData }));
-    fetchUserData(address).then(userData => this.setState({ userData }));
+    this.updateAddress(address)
+  }
+  updateAddress(address) {
+    window.history.pushState(undefined, '', `#${address}`)
+    if (address !== 'all') {
+      fetchUserTimeSeriesData(address).then(userTimeSeriesData => this.setState({ userTimeSeriesData }));
+      fetchUserData(address).then(userData => this.setState({ userData }));
+    }
     this.setState({
       address,
       userData: undefined,
       userTimeSeriesData: undefined,
-    });
-  }
-
-  updateAddressFilter(event) {
-    const addressFilter = event.target.value
-    this.setState({
-      addressFilter,
     });
   }
 
@@ -73,8 +73,7 @@ class App extends React.Component {
 
       <div className="App" >
         <header className="App-header">
-          {/* Address filter: <input value={this.state.addressFilter} onChange={this.updateAddressFilter}></input> */}
-          Address to show: <select value={this.state.address} onChange={this.updateAddress}>
+          Address to show: <select value={this.state.address} onChange={this.updateAddressEvent}>
             <option key={'all'} value={'all'}>All</option>
             {usersFiltered.sort().map(user => <option key={user} value={user}>{user}</option>)}
           </select>

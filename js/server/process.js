@@ -4,31 +4,30 @@ const { parseData } = require('./dataParsed')
 
 const { remapAddresses } = require("./util");
 const { START_DATETIME, TIME_INTERVAL,
-  NUMBER_OF_INTERVALS_TO_RUN, MULTIPLIER_MATURITY, STARTING_GLOBAL_STATE } = require("./config");
+  NUMBER_OF_INTERVALS_TO_RUN, MULTIPLIER_MATURITY, LM_STARTING_GLOBAL_STATE } = require("./config");
 
-const snapshot = require("../snapshots/snapshot_start_until_mid_april_fixed.json");
+const snapshotLM = require("../snapshots/snapshot_lm_latest.json");
 
-const addresses = snapshot.data.snapshots_new[0].snapshot_data
-
-const timeIntervalEvents = remapAddresses(addresses, TIME_INTERVAL)
-
-const globalStates = [STARTING_GLOBAL_STATE]
-for (let i = 0; i < NUMBER_OF_INTERVALS_TO_RUN; i++) {
-  const lastGlobalState = globalStates[globalStates.length - 1]
-  const timestamp = i * TIME_INTERVAL
-  const events = timeIntervalEvents['' + timestamp] || []
-  const newGlobalState = processGlobalState(lastGlobalState, timestamp, events)
-  globalStates.push(newGlobalState)
-}
-
-// calculate total payouts at maturity
-// remove past dispensations
-// return unpaid balances
-// destroyPrintGlobalStates(globalStates)
-// console.log(JSON.stringify(globalStates))
 exports.getParsedData = _ => {
-  return parseData(globalStates)
+  const LMAddresses = snapshotLM.data.snapshots_new[0].snapshot_data
+
+  const LMTimeIntervalEvents = remapAddresses(LMAddresses, TIME_INTERVAL)
+
+  const LMGlobalStates = [LM_STARTING_GLOBAL_STATE]
+  for (let i = 0; i < NUMBER_OF_INTERVALS_TO_RUN; i++) {
+    const lastGlobalState = LMGlobalStates[LMGlobalStates.length - 1]
+    const timestamp = i * TIME_INTERVAL
+    const events = LMTimeIntervalEvents['' + timestamp] || []
+    const newGlobalState = processGlobalState(lastGlobalState, timestamp, events)
+    LMGlobalStates.push(newGlobalState)
+  }
+
+  // TODO: remove past dispensations
+  // TODO: return unpaid balances
+  return parseData(LMGlobalStates)
 }
+
+
 
 function processGlobalState(lastGlobalState, timestamp, events) {
   const { rewardBuckets, globalRewardAccrued } = processRewardBuckets(
