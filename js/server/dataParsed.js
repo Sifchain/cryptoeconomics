@@ -1,4 +1,4 @@
-_ = require("lodash")
+const _ = global._ = require("lodash")
 
 exports.parseData = data => {
   const users = _.uniq(_.flatten(data.map(timestamp => Object.keys(timestamp.users))))
