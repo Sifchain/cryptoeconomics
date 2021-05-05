@@ -88,3 +88,11 @@ Rewards will not be automatically distributed. Users need to burn or reset their
 
 Each week users can go into the UI and submit a claim transaction to claim their rewards. These transactions will be gathered at the end of each week and then at the end of the week, we will process those claims by calculating each user's released rewards with these scripts and the amount of ROWAN that entitles them to. Then this list of users and their reward payouts will be sent again to the distribution module to trigger the start of the distribution process.
 .
+
+# Development
+ - Before starting, copy .env.example to .env and update it
+ - ```yarn``` - run to install dependencies
+ - ```yarn refresh-lm-snapshot``` - to update with latest lm snapshot
+ - ```yarn refresh-vs-snapshot``` - to update with latest vs snapshot
+ - ```yarn server``` - to run server
+ - ```yarn start``` - to run client

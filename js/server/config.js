@@ -1,5 +1,15 @@
 const config = {
-  STARTING_GLOBAL_STATE: {
+  LM_STARTING_GLOBAL_STATE: {
+    timestamp: -1,
+    rewardBuckets: [],
+    users: {},
+    bucketEvent: {
+      rowan: 30000000,
+      initialRowan: 30000000,
+      duration: 872 // ~871.2 200min periods or 121 days
+    }
+  },
+  VS_STARTING_GLOBAL_STATE: {
     timestamp: -1,
     rewardBuckets: [],
     users: {},
