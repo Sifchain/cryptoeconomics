@@ -3,7 +3,7 @@ _ = require("lodash")
 exports.parseData = data => {
   const users = _.uniq(_.flatten(data.map(timestamp => Object.keys(timestamp.users))))
 
-  const dataAugmented = data.map(timestamp => {
+  const dataWithRewards = data.map(timestamp => {
     const timestampTotalTickets = _.sum(_.map(timestamp.users, user => {
       return _.sum(user.tickets.map(t => t.amount))
     }))
@@ -17,7 +17,21 @@ exports.parseData = data => {
           claimableReward: user.claimed + _.sum(user.tickets.map(t => t.reward * t.mul)),
           reservedReward: user.claimed + _.sum(user.tickets.map(t => t.reward)),
           totalTickets,
-          nextRewardShare: totalTickets / timestampTotalTickets
+          nextRewardShare: totalTickets / timestampTotalTickets,
+        }
+      })
+    }
+  })
+
+  const finalTimestamp = dataWithRewards[dataWithRewards.length - 1] || { users: [] };
+  const dataWithRewardsAtMaturity = dataWithRewards.map(timestamp => {
+    return {
+      ...timestamp,
+      users: _.mapValues(timestamp.users, (user, address) => {
+        const userAtMaturity = finalTimestamp.users[address] || {}
+        return {
+          ...user,
+          totalRewardAtMaturity: userAtMaturity.claimableReward
         }
       })
     }
@@ -32,7 +46,7 @@ exports.parseData = data => {
     }
   }).slice(1)
 
-  const stackClaimableRewardData = dataAugmented.map(t => {
+  const stackClaimableRewardData = dataWithRewardsAtMaturity.map(t => {
     const blankUsers = users.reduce((accum, user) => {
       accum[user] = 0
       return accum
@@ -48,7 +62,7 @@ exports.parseData = data => {
 
   return {
     users,
-    dataAugmented,
+    dataWithRewardsAtMaturity,
     rewardBucketsTimeSeries,
     stackClaimableRewardData,
   }

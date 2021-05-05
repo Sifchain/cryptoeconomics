@@ -92,7 +92,7 @@ class App extends React.Component {
             id="timestamp"
             className="timestamp-slider"
             type="range"
-            min="0" max={timeSeriesData.length}
+            min="0" max={timeSeriesData.length - 1}
             value={this.state.timestamp}
             onChange={this.updateTimestamp}
             step="1" />}

@@ -19,11 +19,11 @@ app.get("/api", (req, res, next) => {
   let responseJSON = data[key]
   if (key === 'userTimeSeriesData') {
     const address = req.query.address
-    responseJSON = getUserTimeSeriesData(data.dataAugmented, address)
+    responseJSON = getUserTimeSeriesData(data.dataWithRewardsAtMaturity, address)
   }
   if (key === 'userData') {
     const address = req.query.address
-    responseJSON = getUserData(data.dataAugmented, address)
+    responseJSON = getUserData(data.dataWithRewardsAtMaturity, address)
   }
   if (key === 'stack') {
     rewardData = data.stackClaimableRewardData
