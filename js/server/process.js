@@ -33,8 +33,7 @@ exports.getParsedData = _ => {
 function processGlobalState(lastGlobalState, timestamp, events) {
   const { rewardBuckets, globalRewardAccrued } = processRewardBuckets(
     lastGlobalState.rewardBuckets,
-    lastGlobalState.bucketEvent,
-    NUMBER_OF_INTERVALS_TO_RUN
+    lastGlobalState.bucketEvent
   )
   let users = processUserTickets(lastGlobalState.users, globalRewardAccrued)
   users = processUserEvents(users, events)
@@ -45,14 +44,15 @@ function processGlobalState(lastGlobalState, timestamp, events) {
   };
 }
 
-function processRewardBuckets(lastBuckets, bucketEvent, intervals) {
+function processRewardBuckets(lastBuckets, bucketEvent) {
   let globalRewardAccrued = 0;
   let rewardBuckets = lastBuckets.map(bucket => {
-    accrueAmount = bucket.initialRowan / (intervals - 1)
+    accrueAmount = bucket.initialRowan / (bucket.duration - 1)
     globalRewardAccrued += accrueAmount
     return {
       rowan: bucket.rowan - accrueAmount,
-      initialRowan: bucket.initialRowan
+      initialRowan: bucket.initialRowan,
+      duration: bucket.duration
     }
   }).filter(bucket => bucket.rowan > 0)
   if (bucketEvent) {

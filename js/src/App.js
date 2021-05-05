@@ -1,4 +1,4 @@
-import { NUMBER_OF_INTERVALS_TO_RUN, START_DATETIME } from './config';
+import { START_DATETIME } from './config';
 import './App.css';
 import React from 'react';
 import {
@@ -68,7 +68,9 @@ class App extends React.Component {
     const usersFiltered = this.state.addressFilter ?
       this.state.users.filter(user => user.includes(this.state.addressFilter)) :
       this.state.users
+    const timeSeriesData = this.state.userTimeSeriesData || []
     return (
+
       <div className="App" >
         <header className="App-header">
           {/* Address filter: <input value={this.state.addressFilter} onChange={this.updateAddressFilter}></input> */}
@@ -80,17 +82,17 @@ class App extends React.Component {
         </header>
         <div className='content'>
           {this.state.address === 'all' && <StackAll users={this.state.users} />}
-          {this.state.address !== 'all' && !this.state.userTimeSeriesData &&
+          {this.state.address !== 'all' && !timeSeriesData &&
             <div>Loading...</div>}
-          {this.state.address !== 'all' && this.state.userTimeSeriesData &&
-            <Chart data={this.state.userTimeSeriesData} />}
+          {this.state.address !== 'all' && timeSeriesData &&
+            <Chart data={timeSeriesData} />}
           {this.state.address !== 'all' &&
             <div className="timestamp-slider-description">Timestamp: {this.state.date} </div>}
           {this.state.address !== 'all' && <input
             id="timestamp"
             className="timestamp-slider"
             type="range"
-            min="0" max={NUMBER_OF_INTERVALS_TO_RUN}
+            min="0" max={timeSeriesData.length}
             value={this.state.timestamp}
             onChange={this.updateTimestamp}
             step="1" />}
