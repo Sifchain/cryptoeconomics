@@ -1,8 +1,10 @@
+moment = require("moment")
 _ = require("lodash")
 const { parseData } = require('./dataParsed')
 
 const { remapAddresses } = require("./util");
-const { TIME_INTERVAL, NUMBER_OF_INTERVALS_TO_RUN, MULTIPLIER_MATURITY, STARTING_GLOBAL_STATE } = require("./config");
+const { START_DATETIME, TIME_INTERVAL,
+  NUMBER_OF_INTERVALS_TO_RUN, MULTIPLIER_MATURITY, STARTING_GLOBAL_STATE } = require("./config");
 
 const snapshot = require("../snapshots/snapshot_start_until_mid_april_fixed.json");
 
@@ -92,7 +94,8 @@ function processUserEvents(users, events) {
       const newTicket = {
         amount: event.amount,
         mul: 0.25,
-        reward: 0
+        reward: 0,
+        timestamp: moment.utc(START_DATETIME).add(event.timestamp, 'm').format("MMMM Do YYYY, h:mm:ss a")
       }
       user.tickets = user.tickets.concat(newTicket)
     } else if (event.amount < 0) {

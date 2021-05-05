@@ -42,9 +42,10 @@ function remapAddresses(addresses, timeInterval) {
   let allTimeIntervalAddressEvents = _.mapValues(allTimeIntervalEvents, timeIntervalEvents => {
     return _.groupBy(timeIntervalEvents, 'address')
   })
-  allTimeIntervalAddressEvents = _.mapValues(allTimeIntervalAddressEvents, timeIntervalAddressEvents => {
+  allTimeIntervalAddressEvents = _.mapValues(allTimeIntervalAddressEvents, (timeIntervalAddressEvents, timeInterval) => {
     return _.map(timeIntervalAddressEvents, (addressEvents, address) => {
       return {
+        timestamp: parseInt(timeInterval),
         address,
         amount: addressEvents.reduce((accum, addressEvent) => {
           return accum + parseFloat(addressEvent.amount)
