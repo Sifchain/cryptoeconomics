@@ -20,6 +20,8 @@
   "scripts": {
     "start": "FAST_REFRESH=false react-scripts start",
     "server": "node --max-old-space-size=4096 server/main.js",
+    "refresh-lm-snapshot": "source .env && curl -H 'Content-Type: application/json' -H \"$HEADER_SECRET\" -X POST -d '{\"query\": \"query GetSnapshot { snapshots_new(limit: 1 order_by: {id: desc}) { snapshot_data } }\"}' $SNAPSHOT_URL -o ./snapshots/snapshot_lm_latest.json",
+    "refresh-vs-snapshot": "source .env && curl -H 'Content-Type: application/json' -H \"$HEADER_SECRET\" -X POST -d '{\"query\": \"query GetCommissionSnapshot { snapshots_validators(limit: 1 order_by: {id: desc}) { snapshot_data } }\"}' $SNAPSHOT_URL -o ./snapshots/snapshot_vs_latest.json",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
