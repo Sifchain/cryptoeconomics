@@ -1,4 +1,6 @@
 _ = require("lodash")
+moment = require("moment")
+const { START_DATETIME } = require("./config");
 
 exports.parseData = data => {
   const users = _.uniq(_.flatten(data.map(timestamp => Object.keys(timestamp.users))))
@@ -24,7 +26,7 @@ exports.parseData = data => {
   })
 
   const finalTimestamp = dataWithRewards[dataWithRewards.length - 1] || { users: [] };
-  const dataWithRewardsAtMaturity = dataWithRewards.map(timestamp => {
+  const processedData = dataWithRewards.map((timestamp) => {
     return {
       ...timestamp,
       users: _.mapValues(timestamp.users, (user, address) => {
@@ -36,11 +38,39 @@ exports.parseData = data => {
           ...user,
           totalRewardAtMaturity,
           ticketAmountAtMaturity,
-          yieldAtMaturity
+          yieldAtMaturity,
         }
       })
     }
   })
+
+  processedData.forEach((timestamp, timestampIndex) => {
+    _.forEach(timestamp.users, (user, address) => {
+      const prevTimestamp = processedData[timestampIndex - 1] || { users: [] }
+      const lastUser = prevTimestamp.users[address] || {}
+      const lastUserMaturityDate = lastUser.maturityDate
+      let maturityDate = lastUserMaturityDate
+      const userClaimableReward = user.claimableReward
+      const userReservedReward = user.reservedReward
+      if (maturityDate === undefined &&                       // maturity date not yet reached
+        timestamp.rewardBuckets.length === 0 &&               // reward period is over
+        userClaimableReward === userReservedReward            // rewards have matured
+      ) {
+        maturityDate = moment.utc(START_DATETIME).add(timestamp.timestamp, 'm').format("MMMM Do YYYY, h:mm:ss a")
+      }
+      user.maturityDate = maturityDate
+    })
+  })
+
+  // fill in old timestamps with maturity date now that we have it
+  const lastTimestamp = processedData[processedData.length - 1] || { users: [] }
+  processedData.forEach((timestamp) => {
+    _.forEach(timestamp.users, (user, address) => {
+      const lastUser = lastTimestamp.users[address] || {}
+      user.maturityDate = lastUser.maturityDate
+    })
+  })
+
 
   const rewardBucketsTimeSeries = data.map((timestampData, timestamp) => {
     const rewardBuckets = timestampData.rewardBuckets
@@ -51,7 +81,7 @@ exports.parseData = data => {
     }
   }).slice(1)
 
-  const stackClaimableRewardData = dataWithRewardsAtMaturity.map(t => {
+  const stackClaimableRewardData = processedData.map(t => {
     const blankUsers = users.reduce((accum, user) => {
       accum[user] = 0
       return accum
@@ -67,7 +97,7 @@ exports.parseData = data => {
 
   return {
     users,
-    dataWithRewardsAtMaturity,
+    processedData,
     rewardBucketsTimeSeries,
     stackClaimableRewardData,
   }
