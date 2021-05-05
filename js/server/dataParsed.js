@@ -29,9 +29,14 @@ exports.parseData = data => {
       ...timestamp,
       users: _.mapValues(timestamp.users, (user, address) => {
         const userAtMaturity = finalTimestamp.users[address] || {}
+        const totalRewardAtMaturity = userAtMaturity.claimableReward
+        const ticketAmountAtMaturity = _.sum(finalTimestamp.users[address].tickets.map(ticket => ticket.amount))
+        const yieldAtMaturity = totalRewardAtMaturity / ticketAmountAtMaturity
         return {
           ...user,
-          totalRewardAtMaturity: userAtMaturity.claimableReward
+          totalRewardAtMaturity,
+          ticketAmountAtMaturity,
+          yieldAtMaturity
         }
       })
     }
