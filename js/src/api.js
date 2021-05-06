@@ -1,12 +1,10 @@
 const serverURL = (() => {
-  switch (process.env.REACT_APP_DEPLOYMENT_TAG) {
-    case "development":
-      return `https://api-cryptoeconomics-devnet.sifchain.finance/api`;
-    case "testnet":
-      return `https://api-cryptoeconomics-testnet.sifchain.finance/api`;
-    default:
-      return `https://api-cryptoeconomics.sifchain.finance/api`;
-  }
+	const env = process.env.REACT_APP_DEPLOYMENT_TAG
+	if (env === "production") {
+		return `https://api-cryptoeconomics.sifchain.finance/api`;
+	} else {
+		return `https://api-cryptoeconomics-${env || "devnet"}.sifchain.finance/api`;
+	}
 })()
 
 export const fetchUsers = type => {
