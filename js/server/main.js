@@ -1,33 +1,52 @@
 const express = require("express");
 const cors = require('cors')
 
-const { getParsedData } = require('./process');
+const { getProcessedLMData, getProcessedVSData } = require('./process');
 const { getUserData, getUserTimeSeriesData } = require('./user');
 
 var port = process.env.PORT || 3000;
 const app = express();
 app.use(cors())
 
-const data = getParsedData();
+const lmData = getProcessedLMData();
+// const vsData = getProcessedVSData();
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
 
-app.get("/api", (req, res, next) => {
+app.get("/api/lm", (req, res, next) => {
   const key = req.query.key;
-  let responseJSON = data[key]
+  let responseJSON = lmData[key]
   if (key === 'userTimeSeriesData') {
     const address = req.query.address
-    responseJSON = getUserTimeSeriesData(data.processedData, address)
+    responseJSON = getUserTimeSeriesData(lmData.processedData, address)
   }
   if (key === 'userData') {
     const address = req.query.address
-    responseJSON = getUserData(data.processedData, address)
+    responseJSON = getUserData(lmData.processedData, address)
   }
   if (key === 'stack') {
-    rewardData = data.stackClaimableRewardData
+    rewardData = lmData.stackClaimableRewardData
     responseJSON = { rewardData }
   }
   res.json(responseJSON)
 });
+
+// app.get("/api/vs", (req, res, next) => {
+//   const key = req.query.key;
+//   let responseJSON = vsData[key]
+//   if (key === 'userTimeSeriesData') {
+//     const address = req.query.address
+//     responseJSON = getUserTimeSeriesData(vsData.processedData, address)
+//   }
+//   if (key === 'userData') {
+//     const address = req.query.address
+//     responseJSON = getUserData(vsData.processedData, address)
+//   }
+//   if (key === 'stack') {
+//     rewardData = vsData.stackClaimableRewardData
+//     responseJSON = { rewardData }
+//   }
+//   res.json(responseJSON)
+// });

@@ -1,4 +1,4 @@
-const serverURL = 'https://sif-cryptoecon-test.herokuapp.com/api'
+const serverURL = 'https://sif-cryptoecon-test.herokuapp.com/api/lm'
 
 export const fetchUsers = _ => {
   return fetch(`${serverURL}?key=users`)
