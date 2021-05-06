@@ -1,4 +1,11 @@
-const serverURL = 'https://sif-cryptoecon-test.herokuapp.com/api'
+const serverURL = (() => {
+	const env = process.env.REACT_APP_DEPLOYMENT_TAG
+	if (env === "production") {
+		return `https://api-cryptoeconomics.sifchain.finance/api`;
+	} else {
+		return `https://api-cryptoeconomics-${env || "devnet"}.sifchain.finance/api`;
+	}
+})()
 
 export const fetchUsers = type => {
   return fetch(`${serverURL}/${type}?key=users`)
