@@ -3,7 +3,7 @@ module.exports.loadLiquidityMinersSnapshot = async function () {
   if (!process.env.HASURA_ADMIN_SECRET) {
     throw new Error("process.env.HASURA_ADMIN_SECRET not defined!")
   }
-  const { data } = await fetch('https://cute-toucan-88.hasura.app/v1/graphql', {
+  return await fetch('https://cute-toucan-88.hasura.app/v1/graphql', {
     headers: {
       'x-hasura-admin-secret': process.env.HASURA_ADMIN_SECRET
     },
@@ -18,5 +18,4 @@ module.exports.loadLiquidityMinersSnapshot = async function () {
       }"}`
     })
   }).then(r => r.json());
-  
 }

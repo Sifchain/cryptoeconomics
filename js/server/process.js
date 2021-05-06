@@ -6,9 +6,7 @@ const { remapAddresses } = require("./util");
 const { START_DATETIME, TIME_INTERVAL,
   NUMBER_OF_INTERVALS_TO_RUN, MULTIPLIER_MATURITY, LM_STARTING_GLOBAL_STATE } = require("./config");
 
-const snapshotLM = require("../snapshots/snapshot_lm_latest.json");
-
-exports.getParsedData = _ => {
+exports.getParsedData = snapshotLM => {
   const LMAddresses = snapshotLM.data.snapshots_new[0].snapshot_data
 
   const LMTimeIntervalEvents = remapAddresses(LMAddresses, TIME_INTERVAL)
