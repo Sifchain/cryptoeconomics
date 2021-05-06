@@ -1,6 +1,7 @@
 const moment = require("moment")
 const { START_DATETIME } = require("../config");
 
+// client may send ms since epoch, or "now" string, or nothing for entire time series
 function getTimeIndex( timestampFromClient ) {
 	if(!timestampFromClient) { return }
 	if (timestampFromClient === "now") { nowMoment = moment(Date.parse(new Date())) }
