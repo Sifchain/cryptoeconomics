@@ -2,7 +2,7 @@ _ = require("lodash")
 moment = require("moment")
 const { START_DATETIME } = require("./config");
 
-exports.parseData = data => {
+exports.augmentLMData = data => {
   const users = _.uniq(_.flatten(data.map(timestamp => Object.keys(timestamp.users))))
 
   const dataWithRewards = data.map(timestamp => {
