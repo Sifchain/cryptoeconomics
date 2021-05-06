@@ -15,7 +15,7 @@ export const fetchUserTimeSeriesData = (address, type) => {
     .then(response => response.json())
 }
 
-export const fetchStack = _ => {
-  return fetch(`${serverURL}/lm?key=stack`)
+export const fetchStack = type => {
+  return fetch(`${serverURL}/${type}?key=stack`)
     .then(response => response.json())
 }
