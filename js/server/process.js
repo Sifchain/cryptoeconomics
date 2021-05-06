@@ -1,188 +1,47 @@
 moment = require("moment")
 _ = require("lodash")
-const { parseData } = require('./dataParsed')
+const { augmentLMData } = require('./augmentLMData')
 
-const { remapAddresses } = require("./util");
-const { START_DATETIME, TIME_INTERVAL,
-  NUMBER_OF_INTERVALS_TO_RUN, MULTIPLIER_MATURITY, LM_STARTING_GLOBAL_STATE } = require("./config");
+const { remapLMAddresses } = require('./util/lm-util');
+const { remapVSAddresses } = require('./util/vs-util');
+
+const { processLMGlobalState } = require('./process-lm')
+const { processVSGlobalState } = require('./process-vs')
+
+const { TIME_INTERVAL,
+  NUMBER_OF_INTERVALS_TO_RUN,
+  VS_STARTING_GLOBAL_STATE, LM_STARTING_GLOBAL_STATE } = require("./config");
 
 const snapshotLM = require("../snapshots/snapshot_lm_latest.json");
+const snapshotVS = require("../snapshots/snapshot_vs_latest.json");
 
 exports.getParsedData = _ => {
   const LMAddresses = snapshotLM.data.snapshots_new[0].snapshot_data
+  const VSValidatorAddresses = snapshotVS.data.snapshots_validators[0].snapshot_data
 
-  const LMTimeIntervalEvents = remapAddresses(LMAddresses, TIME_INTERVAL)
+  const LMTimeIntervalEvents = remapLMAddresses(LMAddresses, TIME_INTERVAL)
+  const VSTimeIntervalEvents = remapVSAddresses(VSValidatorAddresses, TIME_INTERVAL)
 
   const LMGlobalStates = [LM_STARTING_GLOBAL_STATE]
   for (let i = 0; i < NUMBER_OF_INTERVALS_TO_RUN; i++) {
     const lastGlobalState = LMGlobalStates[LMGlobalStates.length - 1]
     const timestamp = i * TIME_INTERVAL
     const events = LMTimeIntervalEvents['' + timestamp] || []
-    const newGlobalState = processGlobalState(lastGlobalState, timestamp, events)
+    const newGlobalState = processLMGlobalState(lastGlobalState, timestamp, events)
     LMGlobalStates.push(newGlobalState)
   }
 
+  const VSGlobalStates = [VS_STARTING_GLOBAL_STATE]
+  for (let i = 0; i < NUMBER_OF_INTERVALS_TO_RUN; i++) {
+    const lastGlobalState = VSGlobalStates[VSGlobalStates.length - 1]
+    const timestamp = i * TIME_INTERVAL
+    const events = VSTimeIntervalEvents['' + timestamp] || []
+    // const newGlobalState = processVSGlobalState(lastGlobalState, timestamp, events)
+    // VSGlobalStates.push(newGlobalState)
+  }
+
+
   // TODO: remove past dispensations
   // TODO: return unpaid balances
-  return parseData(LMGlobalStates)
-}
-
-
-
-function processGlobalState(lastGlobalState, timestamp, events) {
-  const { rewardBuckets, globalRewardAccrued } = processRewardBuckets(
-    lastGlobalState.rewardBuckets,
-    lastGlobalState.bucketEvent
-  )
-  let users = processUserTickets(lastGlobalState.users, globalRewardAccrued)
-  users = processUserEvents(users, events)
-  return {
-    timestamp,
-    rewardBuckets,
-    users
-  };
-}
-
-function processRewardBuckets(lastBuckets, bucketEvent) {
-  let globalRewardAccrued = 0;
-  let rewardBuckets = lastBuckets.map(bucket => {
-    accrueAmount = bucket.initialRowan / (bucket.duration - 1)
-    globalRewardAccrued += accrueAmount
-    return {
-      rowan: bucket.rowan - accrueAmount,
-      initialRowan: bucket.initialRowan,
-      duration: bucket.duration
-    }
-  }).filter(bucket => bucket.rowan > 0)
-  if (bucketEvent) {
-    rewardBuckets.push(bucketEvent)
-  }
-  return { rewardBuckets, globalRewardAccrued }
-}
-
-function processUserTickets(users, globalRewardAccrued) {
-  // process reward accruals and multiplier updates
-  const totalShares = _.sum(_.flatten(_.map(users, (user, address) => {
-    return user.tickets.map(ticket => ticket.amount)
-  })))
-  const updatedUsers = _.mapValues(users, user => {
-    return {
-      ...user,
-      tickets: user.tickets.map(ticket => {
-        const additionalAmount = ((ticket.amount / (totalShares || 1)) * globalRewardAccrued)
-        return {
-          ...ticket,
-          mul: Math.min(ticket.mul + (0.75 / MULTIPLIER_MATURITY), 1),
-          reward: ticket.reward + additionalAmount
-        }
-      })
-    }
-  })
-  return updatedUsers
-}
-
-function processUserEvents(users, events) {
-  events.forEach(event => {
-    const user = users[event.address] || {
-      tickets: [],
-      claimed: 0,
-      dispensed: 0,
-      forfeited: 0,
-    }
-    if (event.amount > 0) {
-      const newTicket = {
-        amount: event.amount,
-        mul: 0.25,
-        reward: 0,
-        timestamp: moment.utc(START_DATETIME).add(event.timestamp, 'm').format("MMMM Do YYYY, h:mm:ss a")
-      }
-      user.tickets = user.tickets.concat(newTicket)
-    } else if (event.amount < 0) {
-      const { burnedTickets, remainingTickets }
-        = burnTickets(-event.amount, user.tickets)
-      const { claimed, forfeited } = calculateClaimReward(burnedTickets)
-      user.claimed += claimed
-      user.forfeited += forfeited
-      user.tickets = remainingTickets
-    }
-    if (event.claim) {
-      const { claimed, forfeited } = calculateClaimReward(user.tickets)
-      user.claimed += claimed
-      user.forfeited += forfeited
-      user.tickets = resetTickets(user.tickets)
-    }
-    users[event.address] = user
-  })
-  return users;
-}
-
-function burnTickets(amount, tickets) {
-  const sortedTickets = _.sortBy(tickets, 'mul')
-
-  let amountLeft = amount;
-  const burnedTickets = [];
-  const remainingTickets = [];
-  sortedTickets.forEach(ticket => {
-    if (amountLeft === 0) {
-      remainingTickets.push(ticket)
-      return
-    }
-    let amountToRemove = Math.min(amountLeft, ticket.amount)
-    const proportionBurned = ticket.amount === 0 ? 0 : parseFloat(amountToRemove) / parseFloat(ticket.amount)
-    const burnedTicket = {
-      ...ticket,
-      amount: amountToRemove,
-      reward: proportionBurned * parseFloat(ticket.reward || 0),
-    }
-    burnedTickets.push(burnedTicket)
-    amountLeft = amountLeft - amountToRemove
-    if (amountLeft === 0) {
-      const remainingTicket = {
-        ...ticket,
-        amount: ticket.amount - amountToRemove,
-        reward: (1 - proportionBurned) * parseFloat(ticket.reward || 0),
-      }
-      remainingTickets.push(remainingTicket)
-    }
-  })
-  return { burnedTickets, remainingTickets }
-}
-
-function calculateClaimReward(tickets) {
-  return tickets.reduce((accum, ticket) => {
-    const forefeitedMultiplier = 1 - ticket.mul
-    const reward = ticket.reward || 0
-    const result = {
-      claimed: accum.claimed + (reward * ticket.mul),
-      forfeited: accum.forfeited + (reward * forefeitedMultiplier),
-    }
-    return result
-  }, { claimed: 0, forfeited: 0 })
-}
-
-function resetTickets(tickets) {
-  return tickets.map(ticket => ({
-    ...ticket,
-    mul: 0,
-    reward: 0
-  }))
-}
-
-function destroyPrintGlobalStates(globalStates, filterAddress) {
-  if (filterAddress) {
-    globalStates.map(globalState => {
-      _.forEach(globalState.users, (user, address) => {
-        if (address !== filterAddress) {
-          delete globalState.users[address]
-        }
-      })
-      return globalState
-    })
-  }
-  console.dir({
-    globalStates: globalStates.filter(globalState => globalState.users[filterAddress] !== undefined)
-  }, { depth: null })
-  console.dir(globalStates[globalStates.length - 3], { depth: null })
-  console.dir(globalStates[globalStates.length - 2], { depth: null })
-  console.dir(globalStates[globalStates.length - 1], { depth: null })
+  return augmentLMData(LMGlobalStates)
 }

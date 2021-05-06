@@ -1,25 +1,6 @@
-function getNumberOfTimestamps(addresses) {
-  const snapshotEventLengths = []
-  _.map(addresses, (tokens, address) => {
-    _.map(tokens, (liquidityEvents, token) => {
-      snapshotEventLengths.push(liquidityEvents.length)
-    })
-  });
-
-  uniqueSnapshotEventLengths = _.uniq(snapshotEventLengths);
-
-  if (uniqueSnapshotEventLengths.length !== 1) {
-    console.log('error with snapshot - inconsistent times');
-    console.log(uniqueSnapshotEventLengths);
-    process.exit(1);
-  }
-
-  return uniqueSnapshotEventLengths[0];
-}
-
 // Restructure snapshot address liquidity event entries into per-time interval aggregated event form
 // (see global-state.md for example)
-function remapAddresses(addresses, timeInterval) {
+function remapLMAddresses(addresses, timeInterval) {
 
   mapped = _.map(addresses, (tokens, address) => {
     addressTokenEvents = _.map(tokens, (timeIntervals, token) => {
@@ -42,6 +23,8 @@ function remapAddresses(addresses, timeInterval) {
   let allTimeIntervalAddressEvents = _.mapValues(allTimeIntervalEvents, timeIntervalEvents => {
     return _.groupBy(timeIntervalEvents, 'address')
   })
+
+
   allTimeIntervalAddressEvents = _.mapValues(allTimeIntervalAddressEvents, (timeIntervalAddressEvents, timeInterval) => {
     return _.map(timeIntervalAddressEvents, (addressEvents, address) => {
       return {
@@ -53,9 +36,10 @@ function remapAddresses(addresses, timeInterval) {
       }
     })
   })
+
   return allTimeIntervalAddressEvents
 }
 
 module.exports = {
-  remapAddresses, getNumberOfTimestamps
+  remapLMAddresses
 }
