@@ -97,13 +97,13 @@ class App extends React.Component {
           </div>
           Address to show: <select value={this.state.address} onChange={this.updateAddressEvent}>
             <option key={'none'} value={'none'}>None</option>
-            {/* <option key={'all'} value={'all'}>All</option> */}
+            {this.state.type === 'lm' && <option key={'all'} value={'all'}>All</option>}
             {users.sort().map(user => <option key={user} value={user}>{user}</option>)}
           </select>
 
         </header>
         <div className='content'>
-          {this.state.address === 'all' && <StackAll users={this.state.users} />}
+          {this.state.address === 'all' && this.state.type === 'lm' && <StackAll users={users} />}
           {this.state.address !== 'all' && this.state.address !== 'none' && !timeSeriesData &&
             <div>Loading...</div>}
           {this.state.address !== 'all' && this.state.address !== 'none' && timeSeriesData &&

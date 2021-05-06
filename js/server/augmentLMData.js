@@ -65,24 +65,25 @@ exports.augmentLMData = data => {
     }
   }).slice(1)
 
-  // const stackClaimableRewardData = dataWithRewards.map(t => {
-  //   const blankUsers = users.reduce((accum, user) => {
-  //     accum[user] = 0
-  //     return accum
-  //   }, {});
-  //   const blankUserRewards = _.mapValues(blankUsers, u => 0)
-  //   const userRewards = _.mapValues(t.users, u => u.claimableReward)
-  //   return {
-  //     timestamp: t.timestamp,
-  //     ...blankUserRewards,
-  //     ...userRewards
-  //   }
-  // }).slice(1)
+  const stackClaimableRewardData = []
+  const blankUserRewards = users.reduce((accum, user) => {
+    accum[user] = 0
+    return accum
+  }, {});
+  for (let i = 1; i < data.length; i++) {
+    const timestamp = data[i]
+    const userRewards = _.mapValues(timestamp.users, u => u.claimableReward)
+    stackClaimableRewardData.push({
+      timestamp: timestamp.timestamp,
+      ...blankUserRewards,
+      ...userRewards
+    })
+  }
 
   return {
     users,
     processedData: data,
     rewardBucketsTimeSeries,
-    // stackClaimableRewardData,
+    stackClaimableRewardData,
   }
 }

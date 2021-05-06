@@ -16,7 +16,6 @@ class StackAll extends React.Component {
   }
 
   renderD3() {
-
     const data = this.state.rewardData
 
     const series = d3.stack().keys(this.props.users)(data)
