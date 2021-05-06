@@ -3,6 +3,7 @@ const cors = require('cors')
 
 const { getProcessedLMData, getProcessedVSData } = require('./process');
 const { getUserData, getUserTimeSeriesData } = require('./user');
+const { getTimeIndex } = require('./util/getTimeIndex')
 
 var port = process.env.PORT || 3000;
 const app = express();
@@ -28,7 +29,9 @@ app.get("/api/lm", (req, res, next) => {
   }
   if (key === 'userData') {
     const address = req.query.address
-    responseJSON = getUserData(lmData.processedData, address)
+    // client may send ms since epoch, or "now" string, or nothing for entire time series
+    const timeIndex = getTimeIndex(req.query.timestamp)
+    responseJSON = getUserData(lmData.processedData, address, timeIndex)
   }
   if (key === 'stack') {
     rewardData = lmData.stackClaimableRewardData

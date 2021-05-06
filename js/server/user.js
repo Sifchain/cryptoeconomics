@@ -9,14 +9,14 @@ exports.getUserTimeSeriesData = (all, address) => {
   }).slice(1)
 }
 
-exports.getUserData = (all, address) => {
-
-  return all.map(timestampGlobalState => {
+exports.getUserData = (all, address, timeIndex) => {
+  const data = all.map(timestampGlobalState => {
     return {
       ...timestampGlobalState,
       users: undefined,
       user: timestampGlobalState.users[address]
     }
   })
-
+  if (!timeIndex) { return data }
+  return data[timeIndex]
 }
