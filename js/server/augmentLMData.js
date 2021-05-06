@@ -2,14 +2,7 @@ const _ = global._ = require("lodash")
 const moment = global.moment = require("moment")
 const { START_DATETIME } = require("./config");
 
-/**
- *
- *
- * @param {*} data - Array of global reward states over time, structure defined in config.js
- * @returns
- */
-exports.parseData = data => {
-  // array of user id's
+exports.augmentLMData = data => {
   const users = _.uniq(_.flatten(data.map(timestamp => Object.keys(timestamp.users))))
 
   // reward states
