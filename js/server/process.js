@@ -1,5 +1,5 @@
-const moment = global.moment = require("moment")
-const _ = global._ = require("lodash")
+const moment = require("moment")
+const _ = require("lodash")
 const { augmentLMData } = require('./augmentLMData')
 const { augmentVSData } = require('./augmentVSData')
 

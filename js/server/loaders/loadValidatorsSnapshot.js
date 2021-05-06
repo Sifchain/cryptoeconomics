@@ -1,11 +1,17 @@
+const { fetch } = require('cross-fetch')
 
 module.exports.loadValidatorsSnapshot = async function () {
-  if (!process.env.HASURA_ADMIN_SECRET) {
-    throw new Error("process.env.HASURA_ADMIN_SECRET not defined!")
+  if (!process.env.HEADER_SECRET) {
+    throw new Error("process.env.HEADER_SECRET not defined!")
   }
-  const { data } = await fetch('https://cute-toucan-88.hasura.app/v1/graphql', {
+  if (!process.env.SNAPSHOT_URL) {
+    throw new Error("process.env.SNAPSHOT_URL not defined!")
+  }
+  return fetch(process.env.SNAPSHOT_URL, {
+    method: 'POST',
     headers: {
-      'x-hasura-admin-secret': process.env.HASURA_ADMIN_SECRET
+      'x-hasura-admin-secret': process.env.HEADER_SECRET,
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify({
       query: /* GraphQL */`query GetCommissionSnapshot { 
