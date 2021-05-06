@@ -4,15 +4,14 @@ const { START_DATETIME,
 
 const { processRewardBuckets } = require('./util/bucket-util')
 
-function processVSGlobalState(lastGlobalState, timestamp, events) {
+function processVSGlobalState(lastGlobalState, timestamp, eventsByUser) {
+
   const { rewardBuckets, globalRewardAccrued } = processRewardBuckets(
     lastGlobalState.rewardBuckets,
     lastGlobalState.bucketEvent
   )
-  console.log({ lastGlobalState })
-  return
   let users = processUserTickets(lastGlobalState.users, globalRewardAccrued)
-  users = processUserEvents(users, events)
+  users = processUserEvents(users, eventsByUser)
   return {
     timestamp,
     rewardBuckets,
@@ -42,37 +41,41 @@ function processUserTickets(users, globalRewardAccrued) {
   return updatedUsers
 }
 
-function processUserEvents(users, events) {
-  events.forEach(event => {
-    const user = users[event.address] || {
-      tickets: [],
-      claimed: 0,
-      dispensed: 0,
-      forfeited: 0,
-    }
-    if (event.amount > 0) {
-      const newTicket = {
-        amount: event.amount,
-        mul: 0.25,
-        reward: 0,
-        timestamp: moment.utc(START_DATETIME).add(event.timestamp, 'm').format("MMMM Do YYYY, h:mm:ss a")
+function processUserEvents(users, eventsByUser) {
+  _.forEach(eventsByUser, userEvents => {
+    userEvents.forEach(event => {
+      const user = eventsByUser[event.delegateAddress][event.address] || {
+        tickets: [],
+        claimed: 0,
+        dispensed: 0,
+        forfeited: 0,
       }
-      user.tickets = user.tickets.concat(newTicket)
-    } else if (event.amount < 0) {
-      const { burnedTickets, remainingTickets }
-        = burnTickets(-event.amount, user.tickets)
-      const { claimed, forfeited } = calculateClaimReward(burnedTickets)
-      user.claimed += claimed
-      user.forfeited += forfeited
-      user.tickets = remainingTickets
-    }
-    if (event.claim) {
-      const { claimed, forfeited } = calculateClaimReward(user.tickets)
-      user.claimed += claimed
-      user.forfeited += forfeited
-      user.tickets = resetTickets(user.tickets)
-    }
-    users[event.address] = user
+      if (event.amount > 0) {
+        const newTicket = {
+          commision: event.commision,
+          valSifAddress: event.valSifAddress,
+          amount: event.amount,
+          mul: 0.25,
+          reward: 0,
+          timestamp: moment.utc(START_DATETIME).add(event.timestamp, 'm').format("MMMM Do YYYY, h:mm:ss a")
+        }
+        user.tickets = user.tickets.concat(newTicket)
+      } else if (event.amount < 0) {
+        const { burnedTickets, remainingTickets }
+          = burnTickets(-event.amount, user.tickets)
+        const { claimed, forfeited } = calculateClaimReward(burnedTickets)
+        user.claimed += claimed
+        user.forfeited += forfeited
+        user.tickets = remainingTickets
+      }
+      if (event.claim) {
+        const { claimed, forfeited } = calculateClaimReward(user.tickets)
+        user.claimed += claimed
+        user.forfeited += forfeited
+        user.tickets = resetTickets(user.tickets)
+      }
+      users[event.delegateAddress] = user
+    })
   })
   return users;
 }
