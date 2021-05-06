@@ -1,5 +1,5 @@
 const serverURL = (() => {
-  switch (process.env.NODE_ENV) {
+  switch (process.env.REACT_APP_DEPLOYMENT_TAG) {
     case "development":
       return `https://api-cryptoeconomics-devnet.sifchain.finance/api`;
     case "testnet":
