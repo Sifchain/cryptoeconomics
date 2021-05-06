@@ -23,5 +23,7 @@ module.exports.loadLiquidityMinersSnapshot = async function () {
         }
       }`
     })
-  }).then(r => r.json());
+  }).then(async r => {
+    return r.json()
+  });
 }

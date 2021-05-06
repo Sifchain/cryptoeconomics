@@ -6,8 +6,8 @@ const cors = require('cors')
 const { getUserData, getUserTimeSeriesData } = require('./user');
 
 // implements process.js in separate thread
-const { createProcessingWorkerHandler } = require('./process-worker-handler');
-const processingWorkerHandler = createProcessingWorkerHandler()
+const { createProcessingHandler } = require('./processing-handler');
+const processingWorkerHandler = createProcessingHandler()
 
 const port = process.env.PORT || 3000;
 const app = express();

@@ -1,5 +1,6 @@
 const serverURL = (() => {
 	const env = process.env.REACT_APP_DEPLOYMENT_TAG
+  return 'http://localhost:3000/api';
 	if (env === "production") {
 		return `https://api-cryptoeconomics.sifchain.finance/api`;
 	} else {
