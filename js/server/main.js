@@ -15,6 +15,10 @@ app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
 
+app.get("/status", (req, res, next) => {
+  res.status(200).send({ status: "OK" });
+});
+
 app.get("/api/lm", (req, res, next) => {
   const key = req.query.key;
   let responseJSON = lmData[key]
