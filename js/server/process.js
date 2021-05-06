@@ -49,7 +49,6 @@ exports.getProcessedVSData = _ => {
     VSGlobalStates.push(newGlobalState)
   }
 
-
   // TODO: remove past dispensations
   // TODO: return unpaid balances
   return augmentVSData(VSGlobalStates)

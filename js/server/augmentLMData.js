@@ -26,22 +26,13 @@ exports.augmentLMData = data => {
   })
 
   const finalTimestamp = dataWithRewards[dataWithRewards.length - 1] || { users: [] };
-  const processedData = dataWithRewards.map((timestamp) => {
-    return {
-      ...timestamp,
-      users: _.mapValues(timestamp.users, (user, address) => {
-        const userAtMaturity = finalTimestamp.users[address] || {}
-        const totalRewardAtMaturity = userAtMaturity.claimableReward
-        const ticketAmountAtMaturity = _.sum(finalTimestamp.users[address].tickets.map(ticket => ticket.amount))
-        const yieldAtMaturity = totalRewardAtMaturity / ticketAmountAtMaturity
-        return {
-          ...user,
-          totalRewardAtMaturity,
-          ticketAmountAtMaturity,
-          yieldAtMaturity,
-        }
-      })
-    }
+  dataWithRewards.forEach((timestamp) => {
+    _.forEach(timestamp.users, (user, address) => {
+      const userAtMaturity = finalTimestamp.users[address] || {}
+      user.totalRewardAtMaturity = userAtMaturity.claimableReward
+      user.ticketAmountAtMaturity = _.sum(finalTimestamp.users[address].tickets.map(ticket => ticket.amount))
+      user.yieldAtMaturity = user.totalRewardAtMaturity / user.ticketAmountAtMaturity
+    })
   })
 
   processedData.forEach((timestamp, timestampIndex) => {
