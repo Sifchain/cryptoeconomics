@@ -1,4 +1,13 @@
-const serverURL = 'https://sif-cryptoecon-test.herokuapp.com/api'
+const serverURL = (() => {
+  switch (process.env.NODE_ENV) {
+    case "development":
+      return `https://api-cryptoeconomics-devnet.sifchain.finance/api`;
+    case "testnet":
+      return `https://api-cryptoeconomics-testnet.sifchain.finance/api`;
+    default:
+      return `https://api-cryptoeconomics.sifchain.finance/api`;
+  }
+})()
 
 export const fetchUsers = type => {
   return fetch(`${serverURL}/${type}?key=users`)
