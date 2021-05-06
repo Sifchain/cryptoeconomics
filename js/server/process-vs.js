@@ -52,6 +52,8 @@ function processUserEvents(users, eventsByUser) {
       }
       if (event.amount > 0) {
         const newTicket = {
+          commision: event.commision,
+          valSifAddress: event.valSifAddress,
           amount: event.amount,
           mul: 0.25,
           reward: 0,

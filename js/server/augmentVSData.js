@@ -5,32 +5,22 @@ const { START_DATETIME } = require("./config");
 exports.augmentVSData = data => {
   const users = _.uniq(_.flatten(data.map(timestamp => Object.keys(timestamp.users))))
 
-  const usertix = _.map(data[data.length - 1].users, user => {
-    return user.tickets.length
-  })
-
-  const dataWithRewards = data.map(timestamp => {
+  data.forEach(timestamp => {
     const timestampTotalTickets = _.sum(_.map(timestamp.users, user => {
       return _.sum(user.tickets.map(t => t.amount))
     }))
-    return {
-      ...timestamp,
-      totalTickets: timestampTotalTickets,
-      users: _.mapValues(timestamp.users, user => {
-        const totalTickets = _.sum(user.tickets.map(t => t.amount))
-        return {
-          ...user,
-          claimableReward: user.claimed + _.sum(user.tickets.map(t => t.reward * t.mul)),
-          reservedReward: user.claimed + _.sum(user.tickets.map(t => t.reward)),
-          totalTickets,
-          nextRewardShare: totalTickets / timestampTotalTickets,
-        }
-      })
-    }
+    timestamp.totalTickets = timestampTotalTickets
+    timestamp.users = _.forEach(timestamp.users, user => {
+      const totalTickets = _.sum(user.tickets.map(t => t.amount))
+      user.claimableReward = user.claimed + _.sum(user.tickets.map(t => t.reward * t.mul))
+      user.reservedReward = user.claimed + _.sum(user.tickets.map(t => t.reward))
+      user.totalTickets = totalTickets
+      user.nextRewardShare = totalTickets / timestampTotalTickets
+    })
   })
 
-  const finalTimestamp = dataWithRewards[dataWithRewards.length - 1] || { users: [] };
-  dataWithRewards.forEach((timestamp) => {
+  const finalTimestamp = data[data.length - 1] || { users: [] };
+  data.forEach((timestamp) => {
     _.forEach(timestamp.users, (user, address) => {
       const userAtMaturity = finalTimestamp.users[address] || {}
       user.totalRewardAtMaturity = userAtMaturity.claimableReward
@@ -39,9 +29,9 @@ exports.augmentVSData = data => {
     })
   })
 
-  dataWithRewards.forEach((timestamp, timestampIndex) => {
+  data.forEach((timestamp, timestampIndex) => {
     _.forEach(timestamp.users, (user, address) => {
-      const prevTimestamp = dataWithRewards[timestampIndex - 1] || { users: [] }
+      const prevTimestamp = data[timestampIndex - 1] || { users: [] }
       const lastUser = prevTimestamp.users[address] || {}
       const lastUserMaturityDate = lastUser.maturityDate
       let maturityDate = lastUserMaturityDate
@@ -58,8 +48,8 @@ exports.augmentVSData = data => {
   })
 
   // fill in old timestamps with maturity date now that we have it
-  const lastTimestamp = dataWithRewards[dataWithRewards.length - 1] || { users: [] }
-  dataWithRewards.forEach((timestamp) => {
+  const lastTimestamp = data[data.length - 1] || { users: [] }
+  data.forEach((timestamp) => {
     _.forEach(timestamp.users, (user, address) => {
       const lastUser = lastTimestamp.users[address] || {}
       user.maturityDate = lastUser.maturityDate
@@ -74,6 +64,8 @@ exports.augmentVSData = data => {
       timestamp, totalCurrentRowan, totalInitialRowan
     }
   }).slice(1)
+
+  // TODO: VS stack?
 
   // const stackClaimableRewardData = processedData.map(t => {
   //   const blankUsers = users.reduce((accum, user) => {
@@ -91,7 +83,7 @@ exports.augmentVSData = data => {
 
   return {
     users,
-    processedData: dataWithRewards,
+    processedData: data,
     rewardBucketsTimeSeries,
     // stackClaimableRewardData,
   }
