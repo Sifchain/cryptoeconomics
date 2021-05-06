@@ -17,8 +17,9 @@ class StackAll extends React.Component {
 
   renderD3() {
     const data = this.state.rewardData
+    const users = Object.keys(data[0]).filter(key => key !== 'timestamp')
 
-    const series = d3.stack().keys(this.props.users)(data)
+    const series = d3.stack().keys(users)(data)
 
     var margin = { top: 10, right: 30, bottom: 30, left: 60 },
       width = 860 - margin.left - margin.right,
@@ -42,7 +43,7 @@ class StackAll extends React.Component {
       .y1(d => y(d[1]))
 
     const color = d3.scaleOrdinal()
-      .domain(this.props.users)
+      .domain(users)
       .range(d3.schemeCategory10)
 
     const xAxis = g => g

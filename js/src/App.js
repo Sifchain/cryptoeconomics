@@ -103,7 +103,7 @@ class App extends React.Component {
 
         </header>
         <div className='content'>
-          {this.state.address === 'all' && this.state.type === 'lm' && <StackAll users={users} />}
+          {this.state.address === 'all' && this.state.type === 'lm' && <StackAll />}
           {this.state.address !== 'all' && this.state.address !== 'none' && !timeSeriesData &&
             <div>Loading...</div>}
           {this.state.address !== 'all' && this.state.address !== 'none' && timeSeriesData &&

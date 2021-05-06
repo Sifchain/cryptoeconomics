@@ -66,13 +66,21 @@ exports.augmentLMData = data => {
   }).slice(1)
 
   const stackClaimableRewardData = []
-  const blankUserRewards = users.reduce((accum, user) => {
-    accum[user] = 0
+  const finalTimestampUsers = _.map(finalTimestamp.users, (u, address) => ({ ...u, address }))
+  const top50Users = _.orderBy(finalTimestampUsers, ['totalRewardAtMaturity'], ['desc']).slice(0, 50)
+  const blankUserRewards = top50Users.reduce((accum, user) => {
+    accum[user.address] = 0
     return accum
   }, {});
   for (let i = 1; i < data.length; i++) {
     const timestamp = data[i]
-    const userRewards = _.mapValues(timestamp.users, u => u.claimableReward)
+    const userRewards = top50Users.reduce((accum, user) => {
+      const userAtTimestamp = timestamp.users[user.address] || {}
+      if (userAtTimestamp.claimableReward) {
+        accum[user.address] = userAtTimestamp.claimableReward
+      }
+      return accum
+    }, {})
     stackClaimableRewardData.push({
       timestamp: timestamp.timestamp,
       ...blankUserRewards,
