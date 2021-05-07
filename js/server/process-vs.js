@@ -44,7 +44,7 @@ function processUserTickets(users, globalRewardAccrued) {
 function processUserEvents(users, eventsByUser) {
   _.forEach(eventsByUser, userEvents => {
     userEvents.forEach(event => {
-      const user = eventsByUser[event.delegateAddress][event.address] || {
+      const user = users[event.delegateAddress] || {
         tickets: [],
         claimed: 0,
         dispensed: 0,
