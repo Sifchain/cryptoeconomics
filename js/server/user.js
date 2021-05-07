@@ -23,8 +23,10 @@ exports.getUserData = (all, payload) => {
       ...timestampGlobalState,
       users: undefined,
       user: timestampGlobalState.users[payload.address]
-    }
-  })
-  if (!payload.timeIndex) { return data }
-  return data[payload.timeIndex]
-}
+    };
+  });
+  if (!payload.timeIndex) {
+    return data;
+  }
+  return data[payload.timeIndex];
+};
