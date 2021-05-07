@@ -91,7 +91,7 @@ Each week users can go into the UI and submit a claim transaction to claim their
 # Development
  - Before starting, copy .env.example to .env and update it
  - ```yarn``` - run to install dependencies
- - ```yarn refresh-lm-snapshot``` - to update with latest lm snapshot
- - ```yarn refresh-vs-snapshot``` - to update with latest vs snapshot
+ - ```yarn refresh-lm-snapshot``` - to update with latest local lm snapshot (when `LOCAL_SNAPSHOT_DEV_MODE=enabled`)
+ - ```yarn refresh-vs-snapshot``` - to update with latest local vs snapshot (when `LOCAL_SNAPSHOT_DEV_MODE=enabled`)
  - ```yarn server``` - to run server
  - ```yarn start``` - to run client

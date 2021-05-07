@@ -1,7 +1,4 @@
-if (process.env.NODE_ENV === 'development') {
-	require('dotenv').config();
-}
-const fs = require('fs');
+if (process.env.NODE_ENV !== 'production') require('dotenv').config();
 const {
 	loadLiquidityMinersSnapshot,
 } = require('./loaders/loadLiquidityMinersSnapshot');
@@ -13,15 +10,18 @@ const { getUserData, getUserTimeSeriesData } = require('./user');
   Reloads & re-processes Miner & Validator data once every `RELOAD_INTERVAL`
 */
 const RELOAD_INTERVAL = 10 * 60 * 1000;
-// processing time included to ensure data has been processed by time client reloads
-const PROCESSING_TIME = 60 * 1000;
 
-const LOCAL_ONLY_DEV_MODE = process.env.NODE_ENV !== 'production' && true;
-// temp file. Do not access outside this function. Deleted before exit
-const outputFilePath = `/tmp/cryptoecon-processing-result-${Date.now()}.json`;
+// Enable to load snapshots from ./snapshots instead of remotely
+const LOCAL_SNAPSHOT_DEV_MODE = 
+		process.env.NODE_ENV !== 'production' && 
+		process.env.LOCAL_SNAPSHOT_DEV_MODE === 'enabled';
 
-process.on('beforeExit', () => fs.unlinkSync(outputFilePath));
-
+/* 
+	Handles: 
+		* Snapshot reloading
+		* Snapshot processing
+		* Remote invokation of getter actions on processor outputs
+*/
 class BackgroundProcessor {
 	constructor() {
 		// Set in this#reloadAndReprocessOnLoop
@@ -30,7 +30,7 @@ class BackgroundProcessor {
 	}
 
 	/* 
-    ACTIONS INVOKABLE FROM `./MAIN.JS` via `processingHandler#dispatch(...)`
+    Actions invokable from `./main.js` via `processingHandler#dispatch(...)`
   */
 	get actions() {
 		return {
@@ -67,6 +67,7 @@ class BackgroundProcessor {
 		};
 	}
 
+	// listens for actions dispatched to child process (this one)
 	async listenForParentThreadInvokations() {
 		process.on('message', async (msg) => {
 			if (
@@ -91,28 +92,39 @@ class BackgroundProcessor {
 		});
 	}
 	async reloadAndReprocessOnLoop() {
-		if (LOCAL_ONLY_DEV_MODE) {
-			console.log('LOCAL_ONLY_DEV_MODE enabled! Will not refresh or reprocess snapshots!')
+		if (LOCAL_SNAPSHOT_DEV_MODE) {
+			console.log('LOCAL_SNAPSHOT_DEV_MODE enabled! Will not refresh or reprocess snapshots!')
 		}
 		try {
-			const [lMSnapshot, vsSnapshot] = LOCAL_ONLY_DEV_MODE ? [
+			const [lMSnapshot, vsSnapshot] = LOCAL_SNAPSHOT_DEV_MODE ? [
 				require("../snapshots/snapshot_lm_latest.json"),
 				require("../snapshots/snapshot_vs_latest.json")
 			] : await Promise.all([
 				loadLiquidityMinersSnapshot(),
 				loadValidatorsSnapshot(),
 			]);
-			delete this.lmDataParsed;
+			/*
+				V8 performance hack.
+				Remove reference to previous results so they can be garbage collected.
+				Otherwise, we run out of memory on `--max-old-space-size=4096`
+			*/
+			this.lmDataParsed = undefined;
+			this.vsDataParsed = undefined;
+
 			console.time('getProcessedLMData');
 			this.lmDataParsed = getProcessedLMData(lMSnapshot);
 			console.timeEnd('getProcessedLMData');
+
 			console.time('getProcessedVSData')
 			this.vsDataParsed = getProcessedVSData(vsSnapshot);
 			console.timeEnd('getProcessedVSData')
+
 		} catch (e) {
 			console.error(e);
 		}
-	 	if (!LOCAL_ONLY_DEV_MODE) setTimeout(this.reloadAndReprocessOnLoop.bind(this), RELOAD_INTERVAL);
+	 	if (!LOCAL_SNAPSHOT_DEV_MODE) {
+			setTimeout(this.reloadAndReprocessOnLoop.bind(this), RELOAD_INTERVAL);
+		}
 	}
 
 	static start() {
