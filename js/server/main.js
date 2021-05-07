@@ -1,16 +1,16 @@
 const express = require('express');
 const cors = require('cors');
-
-const { getProcessedLMData, getProcessedVSData } = require('./process');
-const { getUserData, getUserTimeSeriesData } = require('./user');
 const { getTimeIndex } = require('./util/getTimeIndex');
+
+// implements process.js in separate thread
+const { createMultiprocessActionDispatcher } = require('./processing-handler');
+
+// interfaces with `./process.childprocess.js`
+const processingHandler = createMultiprocessActionDispatcher();
 
 const port = process.env.PORT || 3000;
 const app = express();
 app.use(cors());
-
-const lmData = getProcessedLMData();
-const vsData = getProcessedVSData();
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
@@ -20,40 +20,77 @@ app.get('/status', (req, res, next) => {
   res.status(200).send({ status: 'OK' });
 });
 
-app.get('/api/lm', (req, res, next) => {
+app.get('/api/lm', async (req, res, next) => {
   const key = req.query.key;
-  let responseJSON = lmData[key];
-  if (key === 'userTimeSeriesData') {
-    const address = req.query.address;
-    responseJSON = getUserTimeSeriesData(lmData.processedData, address);
-  }
-  if (key === 'userData') {
-    const address = req.query.address;
-    // client may send ms since epoch, or "now" string, or nothing for entire time series
-    const timeIndex = getTimeIndex(req.query.timestamp);
-    responseJSON = getUserData(lmData.processedData, address, timeIndex);
-  }
-  if (key === 'stack') {
-    const rewardData = lmData.stackClaimableRewardData;
-    responseJSON = { rewardData };
+  let responseJSON;
+  const activeProcess = processingHandler.getActiveProcess();
+  await activeProcess.waitForReadyState();
+  switch (key) {
+    case 'userTimeSeriesData': {
+      const address = req.query.address;
+      responseJSON = await activeProcess.dispatch(
+        'GET_LM_USER_TIME_SERIES_DATA',
+        address
+      );
+      break;
+    }
+    case 'userData': {
+      const address = req.query.address;
+      const timeIndex = getTimeIndex(req.query.timestamp);
+      responseJSON = await activeProcess.dispatch('GET_LM_USER_DATA', {
+        address,
+        timeIndex
+      });
+      break;
+    }
+    case 'stack': {
+      let rewardData = await activeProcess.dispatch('GET_LM_STACK_DATA', null);
+      responseJSON = { rewardData };
+      break;
+    }
+    case 'maturityAPY': {
+      const address = req.query.address;
+      let { maturityAPY, remainingYieldPercent } = await activeProcess.dispatch(
+        'GET_LM_USER_MATURITY_APY',
+        { address }
+      );
+      responseJSON = { maturityAPY, remainingYieldPercent };
+      break;
+    }
+    default: {
+      responseJSON = await activeProcess.dispatch('GET_LM_KEY_VALUE', key);
+    }
   }
   res.json(responseJSON);
 });
 
-app.get('/api/vs', (req, res, next) => {
+app.get('/api/vs', async (req, res, next) => {
   const key = req.query.key;
-  let responseJSON = vsData[key];
-  if (key === 'userTimeSeriesData') {
-    const address = req.query.address;
-    responseJSON = getUserTimeSeriesData(vsData.processedData, address);
-  }
-  if (key === 'userData') {
-    const address = req.query.address;
-    responseJSON = getUserData(vsData.processedData, address);
-  }
-  if (key === 'stack') {
-    const rewardData = vsData.stackClaimableRewardData;
-    responseJSON = { rewardData };
+  let responseJSON;
+  const activeProcess = processingHandler.getActiveProcess();
+  await activeProcess.waitForReadyState();
+  switch (key) {
+    case 'userTimeSeriesData': {
+      const address = req.query.address;
+      responseJSON = await activeProcess.dispatch(
+        'GET_VS_USER_TIME_SERIES_DATA',
+        address
+      );
+      break;
+    }
+    case 'userData': {
+      const address = req.query.address;
+      responseJSON = await activeProcess.dispatch('GET_VS_USER_DATA', address);
+      break;
+    }
+    case 'stack': {
+      let rewardData = await activeProcess.dispatch('GET_VS_STACK_DATA', null);
+      responseJSON = { rewardData };
+      break;
+    }
+    default: {
+      responseJSON = await activeProcess.dispatch('GET_VS_KEY_VALUE', key);
+    }
   }
   res.json(responseJSON);
 });
