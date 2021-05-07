@@ -25,13 +25,12 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "build-fe": "node lib/process.js --silent > ./src/data.json"
+    "build-fe": "node lib/process.js --silent > ./src/data.json",
+    "lint": "prettier-standard --lint '**/*.js'",
+    "prepare": "cd .. && husky install js/.husky"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+  "lint-staged": {
+    "*.js": "prettier-standard --lint --fix"
   },
   "browserslist": {
     "production": [
@@ -44,5 +43,16 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "eslint": "^7.25.0",
+    "eslint-config-semistandard": "^15.0.1",
+    "eslint-config-standard": "^16.0.2",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "husky": "^6.0.0",
+    "lint-staged": "^10.5.4",
+    "prettier-standard": "^16.4.1"
   }
 }

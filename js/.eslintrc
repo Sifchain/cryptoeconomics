@@ -1,0 +1,9 @@
+{
+  "parser": "@babel/eslint-parser",
+  "extends": "semistandard",
+  "rules": {
+    "camelcase": "off",
+    "prefer-const": "off",
+    "indent": "off"
+  }
+}
