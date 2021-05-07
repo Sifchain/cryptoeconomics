@@ -17,16 +17,14 @@ exports.getUserTimeSeriesData = (all, address) => {
     .slice(1);
 };
 
-exports.getUserData = (all, address, timeIndex) => {
+exports.getUserData = (all, payload) => {
   const data = all.map(timestampGlobalState => {
     return {
       ...timestampGlobalState,
       users: undefined,
-      user: timestampGlobalState.users[address]
-    };
-  });
-  if (!timeIndex) {
-    return data;
-  }
-  return data[timeIndex];
-};
+      user: timestampGlobalState.users[payload.address]
+    }
+  })
+  if (!payload.timeIndex) { return data }
+  return data[payload.timeIndex]
+}

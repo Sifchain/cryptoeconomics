@@ -44,8 +44,8 @@ class BackgroundProcessor {
 			GET_LM_USER_TIME_SERIES_DATA: (address) => {
 				return getUserTimeSeriesData(this.lmDataParsed.processedData, address);
 			},
-			GET_LM_USER_DATA: (address) => {
-				return getUserData(this.lmDataParsed.processedData, address);
+			GET_LM_USER_DATA: (payload) => {
+				return getUserData(this.lmDataParsed.processedData, payload);
 			},
 			GET_LM_STACK_DATA: () => {
 				return this.lmDataParsed.stackClaimableRewardData;
