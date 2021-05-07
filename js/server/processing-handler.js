@@ -3,7 +3,7 @@ const { fork } = require('child_process');
 /* 
   Reloads & re-processes Miner & Validator data once every `RELOAD_INTERVAL`
 */
-const RELOAD_INTERVAL = 0.1 * 60 * 1000;
+const RELOAD_INTERVAL = 6 * 60 * 1000;
 
 // Provides #dispatch method by which the express router endpoints can interact with processed data
 function createMultiprocessActionDispatcher () {
