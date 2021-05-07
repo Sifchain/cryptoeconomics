@@ -31,8 +31,10 @@ class BackgroundProcessor {
 
 	/* 
     Actions invokable from `./main.js` via `processingHandler#dispatch(...)`
+		Actions can only take one argument. Consolidate multiple args into an object.
   */
 	get actions() {
+		// Use `KEY: VALUE` syntax to ensure `this` is bound correctly.
 		return {
 			CHECK_IF_PARSED_DATA_READY: () => {
 				return !!this.lmDataParsed && !!this.vsDataParsed;

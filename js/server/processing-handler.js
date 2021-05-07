@@ -1,4 +1,6 @@
 const { fork } = require('child_process');
+
+// Provides #dispatch method by which the express router endpoints can interact with processed data
 function createProcessingHandler() {
 	let didExit = false;
 	let didError = false;
