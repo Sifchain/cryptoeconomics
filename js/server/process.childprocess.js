@@ -35,7 +35,7 @@ class BackgroundProcessor {
 				this.vsDataParsed = undefined;
 			},
 			LOAD_AND_PROCESS_SNAPSHOTS: () => {
-				this.loadAndProcessSnapshots()
+				return this.loadAndProcessSnapshots()
 			},
 			/* LM Actions */
 			GET_LM_KEY_VALUE: (key) => {
@@ -78,16 +78,24 @@ class BackgroundProcessor {
 			)
 				return;
 			try {
-				const out = this.actions[msg.payload.fn](...msg.payload.args);
+				const out = await this.actions[msg.payload.fn](...msg.payload.args);
 				process.send({
 					action: 'return',
 					payload: {
 						id: msg.payload.id,
 						out,
+						error: undefined
 					},
 				});
 			} catch (e) {
-				console.error(e);
+				process.send({
+					action: 'return',
+					payload: {
+						id: msg.payload.id,
+						out: undefined,
+						error: e
+					},
+				});
 			}
 		});
 	}
@@ -95,33 +103,28 @@ class BackgroundProcessor {
 		if (process.env.LOCAL_SNAPSHOT_DEV_MODE === 'enabled') {
 			console.log('LOCAL_SNAPSHOT_DEV_MODE enabled - Will not refresh or reprocess snapshots.')
 		}
-		try {
-			const [lMSnapshot, vsSnapshot] = process.env.LOCAL_SNAPSHOT_DEV_MODE === 'enabled' ? [
-				require("../snapshots/snapshot_lm_latest.json"),
-				require("../snapshots/snapshot_vs_latest.json")
-			] : await Promise.all([
-				loadLiquidityMinersSnapshot(),
-				loadValidatorsSnapshot(),
-			]);
-			/*
-				V8 performance hack.
-				Remove reference to previous results so they can be garbage collected.
-				Otherwise, we run out of memory on `--max-old-space-size=4096`
-			*/
-			this.lmDataParsed = undefined;
-			this.vsDataParsed = undefined;
+		const [lMSnapshot, vsSnapshot] = process.env.LOCAL_SNAPSHOT_DEV_MODE === 'enabled' ? [
+			require("../snapshots/snapshot_lm_latest.json"),
+			require("../snapshots/snapshot_vs_latest.json")
+		] : await Promise.all([
+			loadLiquidityMinersSnapshot(),
+			loadValidatorsSnapshot(),
+		]);
+		/*
+			V8 performance hack.
+			Remove reference to previous results so they can be garbage collected.
+			Otherwise, we run out of memory on `--max-old-space-size=4096`
+		*/
+		this.lmDataParsed = undefined;
+		this.vsDataParsed = undefined;
 
-			console.time('getProcessedLMData');
-			this.lmDataParsed = getProcessedLMData(lMSnapshot);
-			console.timeEnd('getProcessedLMData');
+		console.time('getProcessedLMData');
+		this.lmDataParsed = getProcessedLMData(lMSnapshot);
+		console.timeEnd('getProcessedLMData');
 
-			console.time('getProcessedVSData')
-			this.vsDataParsed = getProcessedVSData(vsSnapshot);
-			console.timeEnd('getProcessedVSData')
-
-		} catch (e) {
-			console.error(e);
-		}
+		console.time('getProcessedVSData')
+		this.vsDataParsed = getProcessedVSData(vsSnapshot);
+		console.timeEnd('getProcessedVSData')
 	}
 
 	static start() {
