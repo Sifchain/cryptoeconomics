@@ -30,8 +30,7 @@
     "prepare": "cd .. && husky install js/.husky"
   },
   "lint-staged": {
-    "server/**/*.js": "prettier-standard --lint --fix",
-    "src/**/*.js": "prettier-standard --lint --fix"
+    "*.js": "prettier-standard --lint --fix"
   },
   "browserslist": {
     "production": [
