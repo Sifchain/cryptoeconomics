@@ -16,7 +16,7 @@ const RELOAD_INTERVAL = 10 * 60 * 1000;
 // processing time included to ensure data has been processed by time client reloads
 const PROCESSING_TIME = 60 * 1000;
 
-const LOCAL_ONLY_DEV_MODE = process.env.NODE_ENV == 'development' && true;
+const LOCAL_ONLY_DEV_MODE = process.env.NODE_ENV !== 'production' && true;
 // temp file. Do not access outside this function. Deleted before exit
 const outputFilePath = `/tmp/cryptoecon-processing-result-${Date.now()}.json`;
 
