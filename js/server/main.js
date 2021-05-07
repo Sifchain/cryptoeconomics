@@ -3,6 +3,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 const express = require('express');
 const cors = require('cors');
+const { getTimeIndex } = require('./util/getTimeIndex');
 
 // implements process.js in separate thread
 const { createProcessingHandler } = require('./processing-handler');
@@ -39,10 +40,11 @@ app.get('/api/lm', async (req, res, next) => {
 		}
 		case 'userData': {
 			const address = req.query.address;
-			responseJSON = await processingHandler.dispatch(
-				'GET_LM_USER_DATA',
-				address
-			);
+			const timeIndex = getTimeIndex(req.query.timestamp);
+			responseJSON = await processingHandler.dispatch('GET_LM_USER_DATA', {
+				address,
+				timeIndex,
+			});
 			break;
 		}
 		case 'stack': {

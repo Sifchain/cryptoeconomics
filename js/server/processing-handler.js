@@ -1,16 +1,7 @@
 const { fork } = require('child_process');
-const bfj = require('bfj');
 function createProcessingHandler() {
-	let hasLoaded = false;
 	let didExit = false;
 	let didError = false;
-	let currentState = {
-		lmData: null,
-		vsData: null,
-		// denotes the time at which client is suggested to reload data
-		expiresAt: null,
-	};
-
 	const childProcess = fork(`${__dirname}/process.childprocess.js`); //the first argument to fork() is the name of the js file to be run by the child process
 
 	childProcess.on('error', (e) => {

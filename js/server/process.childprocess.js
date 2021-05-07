@@ -15,6 +15,8 @@ const { getUserData, getUserTimeSeriesData } = require('./user');
 const RELOAD_INTERVAL = 10 * 60 * 1000;
 // processing time included to ensure data has been processed by time client reloads
 const PROCESSING_TIME = 60 * 1000;
+
+const LOCAL_ONLY_DEV_MODE = process.env.NODE_ENV == 'development' && true;
 // temp file. Do not access outside this function. Deleted before exit
 const outputFilePath = `/tmp/cryptoecon-processing-result-${Date.now()}.json`;
 
@@ -56,8 +58,8 @@ class BackgroundProcessor {
 			GET_VS_USER_TIME_SERIES_DATA: (address) => {
 				return getUserTimeSeriesData(this.vsDataParsed.processedData, address);
 			},
-			GET_VS_USER_DATA: (address) => {
-				return getUserData(this.vsDataParsed.processedData, address);
+			GET_VS_USER_DATA: ({ address, timeIndex }) => {
+				return getUserData(this.vsDataParsed.processedData, address, timeIndex);
 			},
 			GET_VS_STACK_DATA: () => {
 				return this.vsDataParsed.stackClaimableRewardData;
@@ -89,20 +91,28 @@ class BackgroundProcessor {
 		});
 	}
 	async reloadAndReprocessOnLoop() {
+		if (LOCAL_ONLY_DEV_MODE) {
+			console.log('LOCAL_ONLY_DEV_MODE enabled! Will not refresh or reprocess snapshots!')
+		}
 		try {
-			const [lMSnapshot, vsSnapshot] = await Promise.all([
+			const [lMSnapshot, vsSnapshot] = LOCAL_ONLY_DEV_MODE ? [
+				require("../snapshots/snapshot_lm_latest.json"),
+				require("../snapshots/snapshot_vs_latest.json")
+			] : await Promise.all([
 				loadLiquidityMinersSnapshot(),
 				loadValidatorsSnapshot(),
 			]);
-			console.time();
 			delete this.lmDataParsed;
+			console.time('getProcessedLMData');
 			this.lmDataParsed = getProcessedLMData(lMSnapshot);
+			console.timeEnd('getProcessedLMData');
+			console.time('getProcessedVSData')
 			this.vsDataParsed = getProcessedVSData(vsSnapshot);
-			console.timeEnd();
+			console.timeEnd('getProcessedVSData')
 		} catch (e) {
 			console.error(e);
 		}
-		setTimeout(this.reloadAndReprocessOnLoop.bind(this), RELOAD_INTERVAL);
+	 	if (!LOCAL_ONLY_DEV_MODE) setTimeout(this.reloadAndReprocessOnLoop.bind(this), RELOAD_INTERVAL);
 	}
 
 	static start() {

@@ -23,6 +23,7 @@ function processUserTickets(users, globalRewardAccrued) {
   const totalShares = _.sum(_.flatten(_.map(users, (user, address) => {
     return user.tickets.map(ticket => ticket.amount)
   })))
+
   const updatedUsers = _.mapValues(users, user => {
     return {
       ...user,
