@@ -3,7 +3,7 @@ const {
   loadLiquidityMinersSnapshot
 } = require('./loaders/loadLiquidityMinersSnapshot');
 const { loadValidatorsSnapshot } = require('./loaders/loadValidatorsSnapshot');
-/* eslint-disable-line */
+// eslint-disable-next-line
 const { getProcessedLMData, getProcessedVSData } = require('./process');
 const {
   getUserData,
