@@ -1,7 +1,25 @@
 const { fork } = require('child_process');
 
+/* 
+  Reloads & re-processes Miner & Validator data once every `RELOAD_INTERVAL`
+*/
+const RELOAD_INTERVAL = 10 * 60 * 1000;
+
 // Provides #dispatch method by which the express router endpoints can interact with processed data
-function createProcessingHandler() {
+function createProcessingHandler () {
+	const revolvingChildProcesses = [createDispatchableChildProcess(), createDispatchableChildProcess()];
+	while (true) {
+		// clear memory for inactive process while in standby
+		revolvingChildProcesses[1].dispatch('CLEAR_PARSED_DATA');
+		// revolve
+		revolvingChildProcesses.push(revolvingChildProcesses.shift())
+		if (process.env.LOCAL_SNAPSHOT_DEV_MODE === 'enabled') {
+			break;
+		}
+	}
+}
+
+function createDispatchableChildProcess() {
 	let didExit = false;
 	let didError = false;
 	const childProcess = fork(`${__dirname}/process.childprocess.js`); //the first argument to fork() is the name of the js file to be run by the child process
@@ -16,7 +34,36 @@ function createProcessingHandler() {
 			console.error(new Error(`Child processs stopped with exit code ${code}`));
 		}
 	});
-	async function dispatch(method, payload) {
+
+	const dispatch = createChildProcessActionDispatcher();
+
+	async function waitForReadyState() {
+		return new Promise(async (r, rj) => {
+			while (true) {
+				let isReady = await dispatch('CHECK_IF_PARSED_DATA_READY');
+				if (didError) rj('errored');
+				if (didExit) rj('exited');
+				if (isReady) return r(true);
+				await new Promise((r) => setTimeout(r, 100));
+			}
+		});
+	}
+	return {
+		// Remotely invokes child process actions in `./process.childprocess.js` `BackgroundProcessor#actions`
+		async dispatch(action, payload) {
+			await waitForReadyState();
+			return dispatch(action, payload);
+		},
+	};
+}
+
+module.exports = {
+	createProcessingHandler,
+};
+
+
+function createChildProcessActionDispatcher (childProcess) {
+	return async function dispatch(method, payload) {
 		const invokationId = Math.random().toString();
 		childProcess.send({
 			action: 'invoke',
@@ -37,26 +84,4 @@ function createProcessingHandler() {
 			childProcess.on('message', handler);
 		});
 	}
-	async function waitForReadyState() {
-		return new Promise(async (r, rj) => {
-			while (true) {
-				let isReady = await dispatch('CHECK_IF_PARSED_DATA_READY');
-				if (didError) rj('errored');
-				if (didExit) rj('exited');
-				if (isReady) return r(true);
-				await new Promise((r) => setTimeout(r, 100));
-			}
-		});
-	}
-	return {
-		// Remotely invokes child process actions in `./process.childprocess.js` `BackgroundProcessor#actions`
-		async dispatch(method, payload) {
-			await waitForReadyState();
-			return dispatch(method, payload);
-		},
-	};
 }
-
-module.exports = {
-	createProcessingHandler,
-};

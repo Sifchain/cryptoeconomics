@@ -7,16 +7,6 @@ const { getProcessedLMData, getProcessedVSData } = require('./process');
 const { getUserData, getUserTimeSeriesData } = require('./user');
 
 /* 
-  Reloads & re-processes Miner & Validator data once every `RELOAD_INTERVAL`
-*/
-const RELOAD_INTERVAL = 10 * 60 * 1000;
-
-// Enable to load snapshots from ./snapshots instead of remotely
-const LOCAL_SNAPSHOT_DEV_MODE = 
-		process.env.NODE_ENV !== 'production' && 
-		process.env.LOCAL_SNAPSHOT_DEV_MODE === 'enabled';
-
-/* 
 	Handles: 
 		* Snapshot reloading
 		* Snapshot processing
@@ -36,10 +26,18 @@ class BackgroundProcessor {
 	get actions() {
 		// Use `KEY: VALUE` syntax to ensure `this` is bound correctly.
 		return {
+			/* Internal Actions */
 			CHECK_IF_PARSED_DATA_READY: () => {
 				return !!this.lmDataParsed && !!this.vsDataParsed;
 			},
-			// LM DATA ACTIONS
+			CLEAR_PARSED_DATA: () => {
+				this.lmDataParsed = undefined;
+				this.vsDataParsed = undefined;
+			},
+			LOAD_AND_PROCESS_SNAPSHOTS: () => {
+				this.loadAndProcessSnapshots()
+			},
+			/* LM Actions */
 			GET_LM_KEY_VALUE: (key) => {
 				return this.lmDataParsed[key];
 			},
@@ -53,7 +51,7 @@ class BackgroundProcessor {
 				return this.lmDataParsed.stackClaimableRewardData;
 			},
 
-			// VS DATA ACTIONS
+			/* VS Actions */
 			GET_VS_KEY_VALUE: (key) => {
 				return this.vsDataParsed[key];
 			},
@@ -93,12 +91,12 @@ class BackgroundProcessor {
 			}
 		});
 	}
-	async reloadAndReprocessOnLoop() {
-		if (LOCAL_SNAPSHOT_DEV_MODE) {
-			console.log('LOCAL_SNAPSHOT_DEV_MODE enabled! Will not refresh or reprocess snapshots!')
+	async loadAndProcessSnapshots () {
+		if (process.env.LOCAL_SNAPSHOT_DEV_MODE === 'enabled') {
+			console.log('LOCAL_SNAPSHOT_DEV_MODE enabled - Will not refresh or reprocess snapshots.')
 		}
 		try {
-			const [lMSnapshot, vsSnapshot] = LOCAL_SNAPSHOT_DEV_MODE ? [
+			const [lMSnapshot, vsSnapshot] = process.env.LOCAL_SNAPSHOT_DEV_MODE === 'enabled' ? [
 				require("../snapshots/snapshot_lm_latest.json"),
 				require("../snapshots/snapshot_vs_latest.json")
 			] : await Promise.all([
@@ -124,14 +122,10 @@ class BackgroundProcessor {
 		} catch (e) {
 			console.error(e);
 		}
-	 	if (!LOCAL_SNAPSHOT_DEV_MODE) {
-			setTimeout(this.reloadAndReprocessOnLoop.bind(this), RELOAD_INTERVAL);
-		}
 	}
 
 	static start() {
 		const instance = new this();
-		instance.reloadAndReprocessOnLoop();
 		instance.listenForParentThreadInvokations();
 	}
 }
