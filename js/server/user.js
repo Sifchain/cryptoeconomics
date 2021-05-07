@@ -93,23 +93,27 @@ exports.getUserMaturityAPY = async (all, address) => {
     futureTotalEarningsAtMaturity - alreadyEarned;
   let remainingYieldPercent = remainingFutureYieldAmount / totalPooled;
   let msUntilMaturity =
-    Date.parse(lmRewards.value.user.maturityDate) - Date.now();
+    Date.parse(lmRewards.value.user.maturityDateISO) - Date.now();
   let yearsUntilMaturity = Math.ceil(
     msUntilMaturity / (1000 * 60 * 60 * 24 * 365)
   );
+
+  let currentAPY =
+    remainingYieldPercent / yearsUntilMaturity > 0
+      ? remainingYieldPercent / yearsUntilMaturity
+      : 0;
   console.log({
     totalPooled,
     alreadyEarned,
     futureTotalEarningsAtMaturity,
     remainingFutureYieldAmount,
-    remainingYieldPercent
+    remainingYieldPercent,
+    yearsUntilMaturity,
+    currentAPY,
+    user: lmRewards.value.user
   });
-  let currentAPY =
-    remainingYieldPercent / yearsUntilMaturity > 0
-      ? remainingYieldPercent / yearsUntilMaturity
-      : 0;
   return {
-    maturityAPY: currentAPY,
-    remainingYieldPercent
+    // shouldn't currentAPY == maturityAPY since earnings max out after 4 months?
+    maturityAPY: currentAPY
   };
 };

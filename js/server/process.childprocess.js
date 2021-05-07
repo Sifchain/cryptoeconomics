@@ -144,7 +144,6 @@ class BackgroundProcessor {
 
     console.time('getProcessedVSData');
     this.vsDataParsed = getProcessedVSData(vsSnapshot);
-    this.vsDataParsed = {};
     console.log('UNSAVELFY RESET THE VSPARSED DDATA TO SVSE TIME');
     console.timeEnd('getProcessedVSData');
   }
