@@ -7,7 +7,9 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "cors": "^2.8.5",
+    "cross-fetch": "^3.1.4",
     "d3": "^6.7.0",
+    "dotenv": "^9.0.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "react": "^17.0.2",
@@ -19,7 +21,7 @@
   },
   "scripts": {
     "start": "FAST_REFRESH=false react-scripts start",
-    "server": "node --max-old-space-size=4096 server/main.js",
+    "server": "node -r dotenv/config --max-old-space-size=6144 server/main.js",
     "refresh-lm-snapshot": "source .env && curl -H 'Content-Type: application/json' -H \"$HEADER_SECRET\" -X POST -d '{\"query\": \"query GetSnapshot { snapshots_new(limit: 1 order_by: {id: desc}) { snapshot_data } }\"}' $SNAPSHOT_URL -o ./snapshots/snapshot_lm_latest.json",
     "refresh-vs-snapshot": "source .env && curl -H 'Content-Type: application/json' -H \"$HEADER_SECRET\" -X POST -d '{\"query\": \"query GetCommissionSnapshot { snapshots_validators(limit: 1 order_by: {id: desc}) { snapshot_data } }\"}' $SNAPSHOT_URL -o ./snapshots/snapshot_vs_latest.json",
     "build": "react-scripts build",

@@ -12,7 +12,13 @@ const config = {
   VS_STARTING_GLOBAL_STATE: {
     timestamp: -1,
     rewardBuckets: [],
-    users: {},
+    users: {
+      /* 
+      [*]: {
+        
+      }
+      */
+    },
     bucketEvent: {
       rowan: 30000000,
       initialRowan: 30000000,

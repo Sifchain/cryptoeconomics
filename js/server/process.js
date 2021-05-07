@@ -14,10 +14,10 @@ const {
   LM_STARTING_GLOBAL_STATE
 } = require('./config');
 
-const snapshotLM = require('../snapshots/snapshot_lm_latest.json');
-const snapshotVS = require('../snapshots/snapshot_vs_latest.json');
+// const snapshotLM = require("../snapshots/snapshot_lm_latest.json");
+// const snapshotVS = require("../snapshots/snapshot_vs_latest.json");
 
-exports.getProcessedLMData = _ => {
+exports.getProcessedLMData = snapshotLM => {
   const LMAddresses = snapshotLM.data.snapshots_new[0].snapshot_data;
 
   const LMTimeIntervalEvents = remapLMAddresses(LMAddresses, TIME_INTERVAL);
@@ -40,7 +40,7 @@ exports.getProcessedLMData = _ => {
   return augmentLMData(LMGlobalStates);
 };
 
-exports.getProcessedVSData = _ => {
+exports.getProcessedVSData = snapshotVS => {
   const VSValidatorAddresses =
     snapshotVS.data.snapshots_validators[0].snapshot_data;
 
