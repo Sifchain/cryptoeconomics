@@ -3,7 +3,7 @@
 #
 
 # Build
-FROM mhart/alpine-node:latest AS build
+FROM mhart/alpine-node:14.13.0 AS build
 
 WORKDIR /app/cryptoeconomics/
 COPY . .
@@ -12,7 +12,7 @@ COPY . .
 RUN yarn install
 
 # Release
-FROM mhart/alpine-node:latest AS release
+FROM mhart/alpine-node:14.13.0 AS release
 
 WORKDIR /app/cryptoeconomics/
 COPY --from=build /app/cryptoeconomics/ .
