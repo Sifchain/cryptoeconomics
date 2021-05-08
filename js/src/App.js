@@ -8,6 +8,11 @@ import moment from 'moment';
 import Chart from './Chart';
 import StackAll from './StackAll';
 
+const now = moment.utc(Date.parse(new Date()))
+function initTimestamp() {
+  return moment.duration(now.diff(START_DATETIME)).asMinutes() / 200
+}
+
 class App extends React.Component {
   constructor (props) {
     super(props);
@@ -27,9 +32,19 @@ class App extends React.Component {
     this.updateAddress(this.state.address);
   }
 
+  
+  initDateTime() {
+    const now = moment.utc(Date.parse(new Date()))
+    this.setState({
+      date: moment.utc(now).format('MMMM Do YYYY, h:mm:ss a'),
+      timestamp: Math.floor(moment.duration(now.diff(START_DATETIME)).asMinutes() / 200)
+    });
+  }
+
   componentDidMount () {
     fetchUsers('lm').then(usersLM => this.setState({ usersLM }));
     fetchUsers('vs').then(usersVS => this.setState({ usersVS }));
+    this.initDateTime()
   }
 
   updateAddressEvent (event) {
@@ -44,6 +59,7 @@ class App extends React.Component {
       `#${address}&type=${this.state.type}`
     );
     if (address !== 'all' && address !== 'none') {
+      console.log('here')
       fetchUserTimeSeriesData(address, this.state.type).then(
         userTimeSeriesData => this.setState({ userTimeSeriesData })
       );
@@ -93,47 +109,58 @@ class App extends React.Component {
     return (
       <div className='App'>
         <header className='App-header'>
-          <div className='radios'>
-            <label>
-              <input
-                type='radio'
-                value='lm'
-                onChange={e => this.updateType(e)}
-                checked={this.state.type === 'lm'}
-              />
-              Liquidity Pooling Rewards
-            </label>
-            <label>
-              <input
-                type='radio'
-                value='vs'
-                onChange={e => this.updateType(e)}
-                checked={this.state.type === 'vs'}
-              />
-              Validator Staking/Delegating Rewards
-            </label>
+          <div className='logo-container'>
+            <img src='sifchain-logo.svg'/>
           </div>
-          Address to show:{' '}
-          <select
-            value={this.state.address}
-            onChange={e => this.updateAddressEvent(e)}
-          >
-            <option key='none' value='none'>
-              None
-            </option>
-            {
-              <option key='all' value='all'>
-                Top 50
-              </option>
-            }
-            {users.sort().map(user => (
-              <option key={user} value={user}>
-                {user}
-              </option>
-            ))}
-          </select>
+          <div className="select-container">
+            <div className='radios'>
+              <label>
+                <input
+                  type='radio'
+                  value='lm'
+                  onChange={e => this.updateType(e)}
+                  checked={this.state.type === 'lm'}
+                />
+                <span>Liquidity Pooling Rewards</span>
+              </label>
+              <label>
+                <input
+                  type='radio'
+                  value='vs'
+                  onChange={e => this.updateType(e)}
+                  checked={this.state.type === 'vs'}
+                />
+                <span>Validator Staking/Delegating Rewards</span>
+              </label>
+            </div>
+
+            <div className='address-container'>
+              Address to Show:{' '}
+              <select
+                value={this.state.address}
+                onChange={e => this.updateAddressEvent(e)}
+                className='dropdown-container'
+              >
+                <option key='none' value='none'>
+                  None
+                </option>
+                {
+                  <option key='all' value='all'>
+                    Top 50
+                  </option>
+                }
+                {users.sort().map(user => (
+                  <option key={user} value={user}>
+                    {user}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
         </header>
+
         <div className='content'>
+
           {this.state.address === 'all' && <StackAll type={this.state.type} />}
           {this.state.address !== 'all' &&
             this.state.address !== 'none' &&
