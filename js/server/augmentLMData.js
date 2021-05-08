@@ -43,7 +43,9 @@ exports.augmentLMData = data => {
       const prevTimestamp = data[timestampIndex - 1] || { users: [] };
       const lastUser = prevTimestamp.users[address] || {};
       const lastUserMaturityDate = lastUser.maturityDate;
+      const lastUserMaturityDateISO = lastUser.maturityDateISO;
       let maturityDate = lastUserMaturityDate;
+      let maturityDateISO = lastUserMaturityDateISO;
       const userClaimableReward = user.claimableReward;
       const userReservedReward = user.reservedReward;
       if (
@@ -56,7 +58,18 @@ exports.augmentLMData = data => {
           .add(timestamp.timestamp, 'm')
           .format('MMMM Do YYYY, h:mm:ss a');
       }
+      if (
+        maturityDateISO === undefined && // maturity date not yet reached
+        timestamp.rewardBuckets.length === 0 && // reward period is over
+        userClaimableReward === userReservedReward // rewards have matured
+      ) {
+        maturityDateISO = user.maturityDateISO = moment
+          .utc(START_DATETIME)
+          .add(timestamp.timestamp, 'm')
+          .toISOString();
+      }
       user.maturityDate = maturityDate;
+      user.maturityDateISO = maturityDateISO;
     });
   });
 
@@ -66,6 +79,7 @@ exports.augmentLMData = data => {
     _.forEach(timestamp.users, (user, address) => {
       const lastUser = lastTimestamp.users[address] || {};
       user.maturityDate = lastUser.maturityDate;
+      user.maturityDateISO = lastUser.maturityDateISO;
     });
   });
 

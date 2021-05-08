@@ -3,8 +3,13 @@ const {
   loadLiquidityMinersSnapshot
 } = require('./loaders/loadLiquidityMinersSnapshot');
 const { loadValidatorsSnapshot } = require('./loaders/loadValidatorsSnapshot');
+// eslint-disable-next-line
 const { getProcessedLMData, getProcessedVSData } = require('./process');
-const { getUserData, getUserTimeSeriesData } = require('./user');
+const {
+  getUserData,
+  getUserTimeSeriesData,
+  getUserMaturityAPY
+} = require('./user');
 
 /* 
 	Handles: 
@@ -49,6 +54,12 @@ class BackgroundProcessor {
       },
       GET_LM_STACK_DATA: () => {
         return this.lmDataParsed.stackClaimableRewardData;
+      },
+      GET_LM_USER_MATURITY_APY: async ({ address }) => {
+        return await getUserMaturityAPY(
+          this.lmDataParsed.processedData,
+          address
+        );
       },
 
       /* VS Actions */

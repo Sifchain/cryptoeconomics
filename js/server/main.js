@@ -48,6 +48,13 @@ app.get('/api/lm', async (req, res, next) => {
       responseJSON = { rewardData };
       break;
     }
+    case 'maturityAPY': {
+      const address = req.query.address;
+      responseJSON = await activeProcess.dispatch('GET_LM_USER_MATURITY_APY', {
+        address
+      });
+      break;
+    }
     default: {
       responseJSON = await activeProcess.dispatch('GET_LM_KEY_VALUE', key);
     }
