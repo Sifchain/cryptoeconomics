@@ -55,39 +55,46 @@ exports.augmentLMData = data => {
         timestamp.rewardBuckets.length === 0 && // reward period is over
         userClaimableReward === userReservedReward // rewards have matured
       ) {
-        maturityDateMoment = moment
+        const maturityDateMoment = moment
           .utc(START_DATETIME)
-          .add(timestamp.timestamp, 'm')
-        maturityDate = maturityDateMoment
-          .format('MMMM Do YYYY, h:mm:ss a');
+          .add(timestamp.timestamp, 'm');
+        maturityDate = maturityDateMoment.format('MMMM Do YYYY, h:mm:ss a');
         maturityDateMS = maturityDateMoment.valueOf();
         maturityDateISO = maturityDateMoment.toISOString();
       }
       user.maturityDate = maturityDate;
       user.maturityDateISO = maturityDateISO;
       user.maturityDateMS = maturityDateMS;
-      user.futureReward = user.totalRewardAtMaturity - user.claimableReward
-      user.currentYieldOnTickets = user.futureReward / user.totalTickets
-      const nextBucketGlobalReward = timestamp.rewardBuckets.reduce((accum, bucket) => {
-        return accum + (bucket.initialRowan / bucket.duration)
-      }, 0)
+      user.futureReward = user.totalRewardAtMaturity - user.claimableReward;
+      user.currentYieldOnTickets = user.futureReward / user.totalTickets;
+      const nextBucketGlobalReward = timestamp.rewardBuckets.reduce(
+        (accum, bucket) => {
+          return accum + bucket.initialRowan / bucket.duration;
+        },
+        0
+      );
       user.nextReward = user.nextRewardShare * nextBucketGlobalReward;
-      user.nextRewardProjectedFutureReward = (user.nextReward / 200) * 60 * 24 * 365;
-      user.nextRewardProjectedAPYOnTickets = user.nextRewardProjectedFutureReward / user.totalTickets
+      user.nextRewardProjectedFutureReward =
+        (user.nextReward / 200) * 60 * 24 * 365;
+      user.nextRewardProjectedAPYOnTickets =
+        user.nextRewardProjectedFutureReward / user.totalTickets;
     });
   });
 
   // fill in old timestamps with maturity date now that we have it
   const lastTimestamp = data[data.length - 1] || { users: [] };
   data.forEach(timestamp => {
-    const timestampDate = moment.utc(START_DATETIME).add(timestamp.timestamp, 'm')
+    const timestampDate = moment
+      .utc(START_DATETIME)
+      .add(timestamp.timestamp, 'm');
     _.forEach(timestamp.users, (user, address) => {
       const lastUser = lastTimestamp.users[address] || {};
       user.maturityDate = lastUser.maturityDate;
       user.maturityDateISO = lastUser.maturityDateISO;
-      const msToMaturity = lastUser.maturityDateMS - timestampDate.valueOf()
-      user.yearsToMaturity = msToMaturity / 1000 / 60 / 60 / 24 / 365
-      user.currentAPYOnTickets = user.currentYieldOnTickets / user.yearsToMaturity
+      const msToMaturity = lastUser.maturityDateMS - timestampDate.valueOf();
+      user.yearsToMaturity = msToMaturity / 1000 / 60 / 60 / 24 / 365;
+      user.currentAPYOnTickets =
+        user.currentYieldOnTickets / user.yearsToMaturity;
     });
   });
 
