@@ -55,9 +55,7 @@ exports.getUserMaturityAPY = async (all, address) => {
         maturityAPY: 0
       };
     }
-    // https://api.sifchain.finance/clp/getLiquidityProvider?symbol=cusdt&lpAddress=${address}
-    // https://api.sifchain.finance/clp/getLiquidityProvider?symbol=cbat&lpAddress=${address}
-    // https://api.sifchain.finance/clp/getPools`
+
     const providerData = await Promise.all(
       assets.result.map(
         a =>
@@ -109,16 +107,7 @@ exports.getUserMaturityAPY = async (all, address) => {
       remainingYieldPercent / yearsUntilMaturity > 0
         ? remainingYieldPercent / yearsUntilMaturity
         : 0;
-    // console.log({
-    //   totalPooled,
-    //   alreadyEarned,
-    //   futureTotalEarningsAtMaturity,
-    //   remainingFutureYieldAmount,
-    //   remainingYieldPercent,
-    //   yearsUntilMaturity,
-    //   currentAPY,
-    //   user: lmRewards.value.user
-    // });
+
     return {
       maturityAPY: currentAPY
     };
