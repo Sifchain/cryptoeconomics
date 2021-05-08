@@ -35,10 +35,11 @@ const getUserData = (exports.getUserData = (all, payload) => {
 });
 
 exports.getUserMaturityAPY = async (all, address) => {
-  const assets = await fetch(
-    `https://api.sifchain.finance/clp/getAssets?lpAddress=${address}`
-  ).then(r => r.json());
-  /* 
+  try {
+    const assets = await fetch(
+      `https://api.sifchain.finance/clp/getAssets?lpAddress=${address}`
+    ).then(r => r.json());
+    /* 
     Returns: {
       "height":"1304365",
       "result":[
@@ -48,16 +49,22 @@ exports.getUserMaturityAPY = async (all, address) => {
       ]
     }
   */
-  // https://api.sifchain.finance/clp/getLiquidityProvider?symbol=cusdt&lpAddress=${address}
-  // https://api.sifchain.finance/clp/getLiquidityProvider?symbol=cbat&lpAddress=${address}
-  // https://api.sifchain.finance/clp/getPools`
-  const providerData = await Promise.all(
-    assets.result.map(
-      a =>
-        fetch(
-          `https://api.sifchain.finance/clp/getLiquidityProvider?symbol=${a.symbol}&lpAddress=${address}`
-        ).then(r => r.json())
-      /* 
+    if (!assets.result) {
+      return {
+        message: 'no assets found for designated address',
+        maturityAPY: 0
+      };
+    }
+    // https://api.sifchain.finance/clp/getLiquidityProvider?symbol=cusdt&lpAddress=${address}
+    // https://api.sifchain.finance/clp/getLiquidityProvider?symbol=cbat&lpAddress=${address}
+    // https://api.sifchain.finance/clp/getPools`
+    const providerData = await Promise.all(
+      assets.result.map(
+        a =>
+          fetch(
+            `https://api.sifchain.finance/clp/getLiquidityProvider?symbol=${a.symbol}&lpAddress=${address}`
+          ).then(r => r.json())
+        /* 
         Returns: {"height":"1304422","result":{
           "LiquidityProvider": {
             "asset": {
@@ -71,47 +78,52 @@ exports.getUserMaturityAPY = async (all, address) => {
           "height": "1304422"
         }}
       */
-    )
-  );
+      )
+    );
 
-  const lmRewards = {
-    value: getUserData(all, {
-      address,
-      timeIndex: getTimeIndex('now')
-    })
-  };
-  let totalPooled = 0.0;
-  providerData.forEach(({ result }) => {
-    const nativeBalance = result.native_asset_balance;
-    totalPooled += parseFloat(nativeBalance) * 2;
-  });
-  let alreadyEarned = lmRewards.value.user.claimableReward;
-  let futureTotalEarningsAtMaturity =
-    lmRewards.value.user.totalRewardAtMaturity;
-  let remainingFutureYieldAmount =
-    futureTotalEarningsAtMaturity - alreadyEarned;
-  let remainingYieldPercent = remainingFutureYieldAmount / totalPooled;
-  let msUntilMaturity =
-    Date.parse(lmRewards.value.user.maturityDateISO) - Date.now();
-  let yearsUntilMaturity = Math.ceil(
-    msUntilMaturity / (1000 * 60 * 60 * 24 * 365)
-  );
+    const lmRewards = {
+      value: getUserData(all, {
+        address,
+        timeIndex: getTimeIndex('now')
+      })
+    };
+    let totalPooled = 0.0;
+    const EROWAN_PRECISION = 1e18;
+    providerData.forEach(({ result }) => {
+      const nativeBalance = result.native_asset_balance;
+      totalPooled += (parseFloat(nativeBalance) / EROWAN_PRECISION) * 2;
+    });
+    let alreadyEarned = lmRewards.value.user.claimableReward;
+    let futureTotalEarningsAtMaturity =
+      lmRewards.value.user.totalRewardAtMaturity;
+    let remainingFutureYieldAmount =
+      futureTotalEarningsAtMaturity - alreadyEarned;
+    let remainingYieldPercent = remainingFutureYieldAmount / totalPooled;
+    let msUntilMaturity =
+      Date.parse(lmRewards.value.user.maturityDateISO) - Date.now();
+    let yearsUntilMaturity = Math.ceil(
+      msUntilMaturity / (1000 * 60 * 60 * 24 * 365)
+    );
 
-  let currentAPY =
-    remainingYieldPercent / yearsUntilMaturity > 0
-      ? remainingYieldPercent / yearsUntilMaturity
-      : 0;
-  // console.log({
-  //   totalPooled,
-  //   alreadyEarned,
-  //   futureTotalEarningsAtMaturity,
-  //   remainingFutureYieldAmount,
-  //   remainingYieldPercent,
-  //   yearsUntilMaturity,
-  //   currentAPY,
-  //   user: lmRewards.value.user
-  // });
-  return {
-    maturityAPY: currentAPY
-  };
+    let currentAPY =
+      remainingYieldPercent / yearsUntilMaturity > 0
+        ? remainingYieldPercent / yearsUntilMaturity
+        : 0;
+    // console.log({
+    //   totalPooled,
+    //   alreadyEarned,
+    //   futureTotalEarningsAtMaturity,
+    //   remainingFutureYieldAmount,
+    //   remainingYieldPercent,
+    //   yearsUntilMaturity,
+    //   currentAPY,
+    //   user: lmRewards.value.user
+    // });
+    return {
+      maturityAPY: currentAPY
+    };
+  } catch (e) {
+    console.error(e);
+    throw new Error('failed to getUserMaturityAPY');
+  }
 };
