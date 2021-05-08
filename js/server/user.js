@@ -80,7 +80,6 @@ exports.getUserMaturityAPY = async (all, address) => {
       timeIndex: getTimeIndex('now')
     })
   };
-  console.log({ lmRewards, providerData }, all.length);
   let totalPooled = 0.0;
   providerData.forEach(({ result }) => {
     const nativeBalance = result.native_asset_balance;
@@ -102,18 +101,17 @@ exports.getUserMaturityAPY = async (all, address) => {
     remainingYieldPercent / yearsUntilMaturity > 0
       ? remainingYieldPercent / yearsUntilMaturity
       : 0;
-  console.log({
-    totalPooled,
-    alreadyEarned,
-    futureTotalEarningsAtMaturity,
-    remainingFutureYieldAmount,
-    remainingYieldPercent,
-    yearsUntilMaturity,
-    currentAPY,
-    user: lmRewards.value.user
-  });
+  // console.log({
+  //   totalPooled,
+  //   alreadyEarned,
+  //   futureTotalEarningsAtMaturity,
+  //   remainingFutureYieldAmount,
+  //   remainingYieldPercent,
+  //   yearsUntilMaturity,
+  //   currentAPY,
+  //   user: lmRewards.value.user
+  // });
   return {
-    // shouldn't currentAPY == maturityAPY since earnings max out after 4 months?
     maturityAPY: currentAPY
   };
 };
