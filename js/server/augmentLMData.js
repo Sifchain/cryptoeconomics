@@ -68,6 +68,12 @@ exports.augmentLMData = data => {
       user.maturityDateMS = maturityDateMS;
       user.futureReward = user.totalRewardAtMaturity - user.claimableReward
       user.currentYieldOnTickets = user.futureReward / user.totalTickets
+      const nextBucketGlobalReward = timestamp.rewardBuckets.reduce((accum, bucket) => {
+        return accum + (bucket.initialRowan / bucket.duration)
+      }, 0)
+      user.nextReward = user.nextRewardShare * nextBucketGlobalReward;
+      user.nextRewardProjectedFutureReward = (user.nextReward / 200) * 60 * 24 * 365;
+      user.nextRewardProjectedAPYOnTickets = user.nextRewardProjectedFutureReward / user.totalTickets
     });
   });
 
