@@ -2,6 +2,9 @@
   "name": "my-app",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "14.13.0"
+  },
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
@@ -30,7 +33,8 @@
     "eject": "react-scripts eject",
     "build-fe": "node lib/process.js --silent > ./src/data.json",
     "lint": "prettier-standard --lint '**/*.js'",
-    "prepare": "cd .. && husky install js/.husky"
+    "prepare": "cd .. && husky install js/.husky",
+    "preinstall": "node lock-node-version.js"
   },
   "lint-staged": {
     "*.js": "prettier-standard --lint --fix"
