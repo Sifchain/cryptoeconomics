@@ -1,5 +1,4 @@
 const { fetch } = require('cross-fetch');
-const { getTimeIndex } = require('./util/getTimeIndex');
 
 exports.getUserTimeSeriesData = (all, address) => {
   return all
@@ -20,7 +19,7 @@ exports.getUserTimeSeriesData = (all, address) => {
     .slice(1);
 };
 
-const getUserData = (exports.getUserData = (all, payload) => {
+exports.getUserData = async (all, payload) => {
   const data = all.map(timestampGlobalState => {
     return {
       ...timestampGlobalState,
@@ -31,10 +30,17 @@ const getUserData = (exports.getUserData = (all, payload) => {
   if (!payload.timeIndex) {
     return data;
   }
-  return data[payload.timeIndex];
-});
+  const userData = data[payload.timeIndex];
+  return {
+    ...userData,
+    user: {
+      ...userData.user,
+      maturityAPY: await getUserMaturityAPY(userData, payload.address)
+    }
+  };
+};
 
-exports.getUserMaturityAPY = async (all, address) => {
+async function getUserMaturityAPY (userData, address) {
   try {
     const assets = await fetch(
       `https://api.sifchain.finance/clp/getAssets?lpAddress=${address}`
@@ -50,10 +56,7 @@ exports.getUserMaturityAPY = async (all, address) => {
     }
   */
     if (!assets.result) {
-      return {
-        message: 'no assets found for designated address',
-        maturityAPY: 0
-      };
+      return 0;
     }
 
     const providerData = await Promise.all(
@@ -80,10 +83,7 @@ exports.getUserMaturityAPY = async (all, address) => {
     );
 
     const lmRewards = {
-      value: getUserData(all, {
-        address,
-        timeIndex: getTimeIndex('now')
-      })
+      value: userData
     };
     let totalPooled = 0.0;
     const EROWAN_PRECISION = 1e18;
@@ -108,11 +108,10 @@ exports.getUserMaturityAPY = async (all, address) => {
         ? remainingYieldPercent / yearsUntilMaturity
         : 0;
 
-    return {
-      maturityAPY: currentAPY
-    };
+    // Alter calculation to show 4 months rate instead of 12 months
+    return currentAPY * 3;
   } catch (e) {
     console.error(e);
     throw new Error('failed to getUserMaturityAPY');
   }
-};
+}
