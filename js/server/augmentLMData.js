@@ -44,8 +44,10 @@ exports.augmentLMData = data => {
       const lastUser = prevTimestamp.users[address] || {};
       const lastUserMaturityDate = lastUser.maturityDate;
       const lastUserMaturityDateISO = lastUser.maturityDateISO;
+      const lastUserMaturityDateMS = lastUser.maturityDateMS;
       let maturityDate = lastUserMaturityDate;
       let maturityDateISO = lastUserMaturityDateISO;
+      let maturityDateMS = lastUserMaturityDateMS;
       const userClaimableReward = user.claimableReward;
       const userReservedReward = user.reservedReward;
       if (
@@ -53,33 +55,33 @@ exports.augmentLMData = data => {
         timestamp.rewardBuckets.length === 0 && // reward period is over
         userClaimableReward === userReservedReward // rewards have matured
       ) {
-        maturityDate = moment
+        maturityDateMoment = moment
           .utc(START_DATETIME)
           .add(timestamp.timestamp, 'm')
+        maturityDate = maturityDateMoment
           .format('MMMM Do YYYY, h:mm:ss a');
-      }
-      if (
-        maturityDateISO === undefined && // maturity date not yet reached
-        timestamp.rewardBuckets.length === 0 && // reward period is over
-        userClaimableReward === userReservedReward // rewards have matured
-      ) {
-        maturityDateISO = user.maturityDateISO = moment
-          .utc(START_DATETIME)
-          .add(timestamp.timestamp, 'm')
-          .toISOString();
+        maturityDateMS = maturityDateMoment.valueOf();
+        maturityDateISO = maturityDateMoment.toISOString();
       }
       user.maturityDate = maturityDate;
       user.maturityDateISO = maturityDateISO;
+      user.maturityDateMS = maturityDateMS;
+      user.futureReward = user.totalRewardAtMaturity - user.claimableReward
+      user.currentYieldOnTickets = user.futureReward / user.totalTickets
     });
   });
 
   // fill in old timestamps with maturity date now that we have it
   const lastTimestamp = data[data.length - 1] || { users: [] };
   data.forEach(timestamp => {
+    const timestampDate = moment.utc(START_DATETIME).add(timestamp.timestamp, 'm')
     _.forEach(timestamp.users, (user, address) => {
       const lastUser = lastTimestamp.users[address] || {};
       user.maturityDate = lastUser.maturityDate;
       user.maturityDateISO = lastUser.maturityDateISO;
+      const msToMaturity = lastUser.maturityDateMS - timestampDate.valueOf()
+      user.yearsToMaturity = msToMaturity / 1000 / 60 / 60 / 24 / 365
+      user.currentAPYOnTickets = user.currentYieldOnTickets / user.yearsToMaturity
     });
   });
 
