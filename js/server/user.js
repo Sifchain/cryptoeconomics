@@ -45,7 +45,7 @@ async function getUserMaturityAPY (userData, address) {
     const assets = await fetch(
       `https://api.sifchain.finance/clp/getAssets?lpAddress=${address}`
     ).then(r => r.json());
-    /* 
+    /*
     Returns: {
       "height":"1304365",
       "result":[
@@ -65,7 +65,7 @@ async function getUserMaturityAPY (userData, address) {
           fetch(
             `https://api.sifchain.finance/clp/getLiquidityProvider?symbol=${a.symbol}&lpAddress=${address}`
           ).then(r => r.json())
-        /* 
+        /*
         Returns: {"height":"1304422","result":{
           "LiquidityProvider": {
             "asset": {
