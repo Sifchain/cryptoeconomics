@@ -44,31 +44,41 @@ function createMultiprocessActionDispatcher () {
 }
 
 function createDispatchableChildProcess () {
-  let didExit = false;
-  let didError = false;
-  const childProcess = fork(path.join(__dirname, `process.childprocess.js`));
+  const createChildProcess = () =>
+    fork(path.join(__dirname, `process.childprocess.js`));
+  let childProcess = createChildProcess();
 
   childProcess.on('error', e => {
-    didError = true;
+    childProcess.kill();
+    childProcess = createChildProcess();
     console.error(e);
   });
   childProcess.on('exit', code => {
-    didExit = true;
+    childProcess.kill();
+    childProcess = createChildProcess();
     if (code !== 0) {
       console.error(new Error(`Child processs stopped with exit code ${code}`));
     }
   });
 
-  const dispatch = createChildProcessActionDispatcher(childProcess);
+  const dispatch = (...args) => {
+    return createChildProcessActionDispatcher(childProcess)(...args);
+  };
 
   async function waitForReadyState () {
     return new Promise((resolve, reject) => {
+      let didExpire = false;
+      setTimeout(() => {
+        didExpire = true;
+        // expires after 5 minutes
+      }, 1000 * 60 * 5);
       (async () => {
         while (true) {
           let isReady = await dispatch('CHECK_IF_PARSED_DATA_READY');
-          if (didError) reject(new Error('child process errored'));
-          if (didExit) reject(new Error('child process exited'));
           if (isReady) return resolve(true);
+          if (didExpire) {
+            return reject(new Error('Timed out waiting for child process'));
+          }
           await new Promise(resolve => setTimeout(resolve, 100));
         }
       })();

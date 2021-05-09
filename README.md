@@ -95,3 +95,14 @@ Each week users can go into the UI and submit a claim transaction to claim their
  - ```yarn refresh-vs-snapshot``` - to update with latest local vs snapshot (when `LOCAL_SNAPSHOT_DEV_MODE=enabled`)
  - ```yarn server``` - to run server
  - ```yarn start``` - to run client
+
+# Deployment
+
+1. Set all environment variables defined in [js/.env.example](js/.env.example).
+2. Go to:
+[Sifchain/chainOps/actions/workflows/cryptoeconomics_build_and_deployment_pipeline.yml](https://github.com/Sifchain/chainOps/actions/workflows/cryptoeconomics_build_and_deployment_pipeline.yml)
+3. Click on "Run workflow" and a dropdown with several options will appear.
+4. Enter in the version for this release. Don't worry about any of the other options, these are all set as they should be.
+5. Click on the green "Run workflow" button at the bottom of the dropdown and it'll run a deployment (build the image, push the image to docker hub, and deploy the image to k8s - which is available on https://api-cryptoeconomics.sifchain.finance).
+6. It won't look like it's running until you refresh the page.
+7. Deployed.
