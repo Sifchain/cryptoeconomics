@@ -53,6 +53,15 @@ function processUserEvents (users, eventsByUser) {
         dispensed: 0,
         forfeited: 0
       };
+      users[event.delegateAddress] = user;
+      const validator = users[event.valSifAddress] || {
+        tickets: [],
+        claimed: 0,
+        dispensed: 0,
+        forfeited: 0
+      };
+      users[event.valSifAddress] = validator;
+      validator.commisionClaimed = validator.commisionClaimed || 0;
       if (event.amount > 0) {
         const newTicket = {
           commision: event.commision,
@@ -67,22 +76,32 @@ function processUserEvents (users, eventsByUser) {
         };
         user.tickets = user.tickets.concat(newTicket);
       } else if (event.amount < 0) {
-        const { burnedTickets, remainingTickets } = burnTickets(
-          -event.amount,
-          user.tickets
+        const thisValTickets = user.tickets.filter(
+          ticket => ticket.valSifAddress === event.valSifAddress
         );
-        const { claimed, forfeited } = calculateClaimReward(burnedTickets);
-        user.claimed += claimed;
+        const otherValTickets = user.tickets.filter(
+          ticket => ticket.valSifAddress !== event.valSifAddress
+        );
+        const burnResult = burnTickets(-event.amount, thisValTickets);
+        const burnedThisValTickets = burnResult.burnedTickets;
+        const remainingThisValTickets = burnResult.remainingTickets;
+        const { claimed, forfeited } = calculateClaimReward(
+          burnedThisValTickets
+        );
+        user.claimed += claimed * (1 - event.commision);
+        validator.claimed += claimed * event.commision;
+        validator.commisionClaimed += claimed * event.commision;
         user.forfeited += forfeited;
-        user.tickets = remainingTickets;
+        user.tickets = otherValTickets.concat(remainingThisValTickets);
       }
       if (event.claim) {
         const { claimed, forfeited } = calculateClaimReward(user.tickets);
-        user.claimed += claimed;
+        user.claimed += claimed * (1 - event.commision);
+        validator.claimed += claimed * event.commision;
+        validator.commisionClaimed += claimed * event.commision;
         user.forfeited += forfeited;
         user.tickets = resetTickets(user.tickets);
       }
-      users[event.delegateAddress] = user;
     });
   });
   return users;

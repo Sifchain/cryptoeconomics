@@ -7,11 +7,11 @@ const { loadValidatorsSnapshot } = require('./loaders/loadValidatorsSnapshot');
 const { getProcessedLMData, getProcessedVSData } = require('./process');
 const { getUserData, getUserTimeSeriesData } = require('./user');
 
-/* 
-	Handles: 
-		* Snapshot reloading
-		* Snapshot processing
-		* Remote invokation of getter actions on processor outputs
+/*
+  Handles:
+    * Snapshot reloading
+    * Snapshot processing
+    * Remote invokation of getter actions on processor outputs
 */
 class BackgroundProcessor {
   constructor () {
@@ -20,9 +20,9 @@ class BackgroundProcessor {
     this.vsDataParsed = null;
   }
 
-  /* 
+  /*
     Actions invokable from `./main.js` via `processingHandler#dispatch(...)`
-		Actions can only take one argument. Consolidate multiple args into an object.
+    Actions can only take one argument. Consolidate multiple args into an object.
   */
   get actions () {
     // Use `KEY: VALUE` syntax to ensure `this` is bound correctly.
@@ -121,10 +121,10 @@ class BackgroundProcessor {
             loadValidatorsSnapshot()
           ]);
     /*
-			V8 performance hack.
-			Remove reference to previous results so they can be garbage collected.
-			Otherwise, we run out of memory on `--max-old-space-size=4096`
-		*/
+      V8 performance hack.
+      Remove reference to previous results so they can be garbage collected.
+      Otherwise, we run out of memory on `--max-old-space-size=4096`
+    */
     this.lmDataParsed = undefined;
     this.vsDataParsed = undefined;
 

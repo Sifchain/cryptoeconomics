@@ -45,6 +45,24 @@ function remapVSAddresses (vaLAddresses, timeInterval) {
     }
   );
 
+  allTimeIntervalAddressEvents = _.mapValues(
+    allTimeIntervalAddressEvents,
+    (timeIntervalAddressEvents, timeInterval) => {
+      return _.map(
+        timeIntervalAddressEvents,
+        (addressEvents, delegateAddress) => {
+          return addressEvents.map(addressEvent => {
+            return {
+              ...addressEvent,
+              timestamp: parseInt(timeInterval),
+              delegateAddress
+            };
+          });
+        }
+      );
+    }
+  );
+
   return allTimeIntervalAddressEvents;
 }
 

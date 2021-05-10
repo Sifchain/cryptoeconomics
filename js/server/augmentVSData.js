@@ -46,40 +46,56 @@ exports.augmentVSData = data => {
       const lastUserMaturityDateISO = lastUser.maturityDateISO;
       let maturityDate = lastUserMaturityDate;
       let maturityDateISO = lastUserMaturityDateISO;
+      const lastUserMaturityDateMs = lastUser.maturityDateMs;
+      let maturityDateMs = lastUserMaturityDateMs;
       const userClaimableReward = user.claimableReward;
       const userReservedReward = user.reservedReward;
+      let maturityDateMoment;
       if (
         maturityDate === undefined && // maturity date not yet reached
         timestamp.rewardBuckets.length === 0 && // reward period is over
         userClaimableReward === userReservedReward // rewards have matured
       ) {
-        maturityDate = moment
+        maturityDateMoment = moment
           .utc(START_DATETIME)
-          .add(timestamp.timestamp, 'm')
-          .format('MMMM Do YYYY, h:mm:ss a');
-      }
-      if (
-        maturityDateISO === undefined && // maturity date not yet reached
-        timestamp.rewardBuckets.length === 0 && // reward period is over
-        userClaimableReward === userReservedReward // rewards have matured
-      ) {
-        maturityDateISO = user.maturityDateISO = moment
-          .utc(START_DATETIME)
-          .add(timestamp.timestamp, 'm')
-          .toISOString();
+          .add(timestamp.timestamp, 'm');
+        maturityDate = maturityDateMoment.format('MMMM Do YYYY, h:mm:ss a');
+        maturityDateMs = maturityDateMoment.valueOf();
+        maturityDateISO = user.maturityDateISO = maturityDateMoment.toISOString();
       }
       user.maturityDate = maturityDate;
       user.maturityDateISO = maturityDateISO;
+      user.maturityDateMs = maturityDateMs;
+      user.futureReward = user.totalRewardAtMaturity - user.claimableReward;
+      user.currentYieldOnTickets = user.futureReward / user.totalTickets;
+      const nextBucketGlobalReward = timestamp.rewardBuckets.reduce(
+        (accum, bucket) => {
+          return accum + bucket.initialRowan / bucket.duration;
+        },
+        0
+      );
+      user.nextReward = user.nextRewardShare * nextBucketGlobalReward;
+      user.nextRewardProjectedFutureReward =
+        (user.nextReward / 200) * 60 * 24 * 365;
+      user.nextRewardProjectedAPYOnTickets =
+        user.nextRewardProjectedFutureReward / user.totalTickets;
     });
   });
 
   // fill in old timestamps with maturity date now that we have it
   const lastTimestamp = data[data.length - 1] || { users: [] };
   data.forEach(timestamp => {
+    const timestampDate = moment
+      .utc(START_DATETIME)
+      .add(timestamp.timestamp, 'm');
     _.forEach(timestamp.users, (user, address) => {
       const lastUser = lastTimestamp.users[address] || {};
       user.maturityDate = lastUser.maturityDate;
       user.maturityDateISO = lastUser.maturityDateISO;
+      const msToMaturity = lastUser.maturityDateMs - timestampDate.valueOf();
+      user.yearsToMaturity = msToMaturity / 1000 / 60 / 60 / 24 / 365;
+      user.currentAPYOnTickets =
+        user.currentYieldOnTickets / user.yearsToMaturity;
     });
   });
 
