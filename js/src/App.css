@@ -64,9 +64,6 @@ input[type="radio"]:checked + span {
   cursor: pointer;
   margin-bottom: 8px;
 }
-.radios label:hover {
-  font-weight: bold
-}
 
 input[type="radio"]:checked + label {
   font-weight: bold
