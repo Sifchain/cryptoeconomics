@@ -1,30 +1,28 @@
 html {
   background-color: #282c34;
+  /*margin: 36px 24px;*/
 }
 
-.chart {
-  background-color: #a1a9b8;
-}
+
+:root {
+  --white: #ececec;
+};
+.chart {}
+.axis line { stroke: var(--white); }
+.axis path { stroke: var(--white); }
+.axis text { fill: var(--white); }
+.tick line { stroke: var(--white);}
 
 .timestamp-slider {
   width: 770px;
   margin-left: 45px;
 }
 
-.timestamp-slider-description {
-  text-align: center;
-  width: 770px;
-  color: #a1a9b8;
-}
-
 .App {
   text-align: center;
   background-color: #282c34;
-}
-
-.content {
-  text-align: left;
-  padding: 20px 100px;
+  display: flex;
+  flex-direction: column;
 }
 
 .App-logo {
@@ -39,14 +37,63 @@ html {
 }
 
 .App-header {
-  background-color: #282c34;
-  height: 100px;
+  background-color: #040810;
+  display: flex;
+  flex-direction: row;
+  color: var(--white);
+  text-align: left;
+  padding: 36px 24px;
+}
+
+.logo-container {
+  margin-right: 24px;
+}
+.select-container {}
+
+input[type="radio"]:checked + span {
+  font-weight: bold;
+  border-bottom: 1px solid white
+  ;
+}
+.radios {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  text-align: left;
+}
+.radios label {
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+.radios label:hover {
+  font-weight: bold
+}
+
+input[type="radio"]:checked + label {
+  font-weight: bold
+}
+.address-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdown-container {
+  margin-top: 8px;
+  max-width: 480px;
+  padding: 8px;
+  font-weight: bold;
+  color: #333333;
+}
+
+.content {
+  text-align: left;
+  padding: 36px 24px;
+}
+
+.timestamp-slider-description {
+  text-align: center;
+  width: 835px;
+  color: var(--white);
+  margin-bottom: 8px;
 }
 
 .App-link {

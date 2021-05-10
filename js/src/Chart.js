@@ -31,6 +31,7 @@ class Chart extends React.Component {
 
     svg
       .append('g')
+      .attr("class", "axis")
       .attr('transform', 'translate(0,' + height + ')')
       .call(d3.axisBottom(x));
 
@@ -40,13 +41,15 @@ class Chart extends React.Component {
       .domain(d3.extent(data, d => d.userClaimableReward)) // This is the min and the max of the data: 0 to 100 if percentages
       .range([height, 0]); // This is the corresponding value I want in Pixel
 
-    svg.append('g').call(d3.axisLeft(y));
+    svg.append('g')
+      .attr("class", "axis")
+      .call(d3.axisLeft(y));
 
     svg
       .append('path')
       .datum(data)
-      .attr('fill', '#cce5df')
-      .attr('stroke', 'steelblue')
+      .attr('fill', '#70ebb1')
+      .attr('stroke', '#70ebb1')
       .attr('stroke-width', 1.5)
       .attr(
         'd',
