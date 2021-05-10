@@ -130,7 +130,7 @@ class App extends React.Component {
       <div className='App'>
         <header className='App-header'>
           <div className='logo-container'>
-            <img src='sifchain-logo-gold.svg' />
+            <img src='Sifchain-logo-gold.svg'/>
           </div>
           <div className='select-container'>
             <div className='radios'>
