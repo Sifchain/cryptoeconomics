@@ -6,7 +6,8 @@ const { loadValidatorsSnapshot } = require('./loaders/loadValidatorsSnapshot');
 // eslint-disable-next-line
 const { getProcessedLMData, getProcessedVSData } = require('./process');
 const { getUserData, getUserTimeSeriesData } = require('./user');
-
+const { retryOnFail } = require('./util/retryOnFail');
+process.setMaxListeners(100000);
 /*
   Handles:
     * Snapshot reloading
@@ -25,7 +26,7 @@ class BackgroundProcessor {
     Actions can only take one argument. Consolidate multiple args into an object.
   */
   get actions () {
-    // Use `KEY: VALUE` syntax to ensure `this` is bound correctly.
+    // Use `KEY: () => {}` syntax to ensure `this` is bound correctly.
     return {
       /* Internal Actions */
       CHECK_IF_PARSED_DATA_READY: () => {
@@ -53,6 +54,9 @@ class BackgroundProcessor {
       },
 
       /* VS Actions */
+      // GET_VS_UNCLAIMED_DELEGATED_REWARDS: (key) => {
+      //   this.lmDataParsed;
+      // },
       GET_VS_KEY_VALUE: key => {
         return this.vsDataParsed[key];
       },
@@ -110,6 +114,7 @@ class BackgroundProcessor {
         'LOCAL_SNAPSHOT_DEV_MODE enabled - Will not refresh or reprocess snapshots.'
       );
     }
+
     const [lMSnapshot, vsSnapshot] =
       process.env.LOCAL_SNAPSHOT_DEV_MODE === 'enabled'
         ? [
@@ -117,9 +122,18 @@ class BackgroundProcessor {
             require('../snapshots/snapshot_vs_latest.json')
           ]
         : await Promise.all([
-            loadLiquidityMinersSnapshot(),
-            loadValidatorsSnapshot()
+            retryOnFail({
+              fn: () => loadLiquidityMinersSnapshot(),
+              iterations: 5,
+              waitFor: 1000
+            }),
+            retryOnFail({
+              fn: () => loadValidatorsSnapshot(),
+              iterations: 5,
+              waitFor: 1000
+            })
           ]);
+
     /*
       V8 performance hack.
       Remove reference to previous results so they can be garbage collected.

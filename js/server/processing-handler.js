@@ -44,8 +44,11 @@ function createMultiprocessActionDispatcher () {
 }
 
 function createDispatchableChildProcess () {
-  const createChildProcess = () =>
-    fork(path.join(__dirname, `process.childprocess.js`));
+  const createChildProcess = () => {
+    const p = fork(path.join(__dirname, `process.childprocess.js`));
+    p.setMaxListeners(100000);
+    return p;
+  };
   let childProcess = createChildProcess();
 
   childProcess.on('error', e => {
