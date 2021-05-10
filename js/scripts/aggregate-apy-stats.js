@@ -1,7 +1,5 @@
 const { fetch } = require("cross-fetch");
 
-const url = "aggregate-apy-stats";
-
 const ENV = [null, "production", "devnet", "testnet"][0];
 const serverURL = (() => {
   switch (ENV) {
@@ -83,7 +81,7 @@ const serverURL = (() => {
         maturityAPY,
         nextRewardProjectedAPYOnCurrentLiquidity,
         nextRewardProjectedAPYOnTickets,
-        nextRewardProjectedFutureReward,
+        // nextRewardProjectedFutureReward,
       } = item.userData;
       outputText += [
         `\n${i + 1}. ${item.address}:`,
