@@ -53,12 +53,14 @@ function processUserEvents (users, eventsByUser) {
         dispensed: 0,
         forfeited: 0
       };
+      users[event.delegateAddress] = user;
       const validator = users[event.valSifAddress] || {
         tickets: [],
         claimed: 0,
         dispensed: 0,
         forfeited: 0
       };
+      users[event.valSifAddress] = validator;
       validator.commisionClaimed = validator.commisionClaimed || 0;
       if (event.amount > 0) {
         const newTicket = {
@@ -100,8 +102,6 @@ function processUserEvents (users, eventsByUser) {
         user.forfeited += forfeited;
         user.tickets = resetTickets(user.tickets);
       }
-      users[event.delegateAddress] = user;
-      users[event.valSifAddress] = validator;
     });
   });
   return users;
