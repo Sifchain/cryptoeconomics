@@ -5,12 +5,24 @@ import { fetchUsers, fetchUserData, fetchUserTimeSeriesData } from './api';
 import JSONPretty from 'react-json-pretty';
 import 'react-json-pretty/themes/monikai.css';
 import moment from 'moment';
+import omit from 'omit.js';
 import Chart from './Chart';
 import StackAll from './StackAll';
 
+const userFieldsToHide = [
+  'reservedReward',
+  'nextRewardShare',
+  'ticketAmountAtMaturity',
+  'yieldAtMaturity',
+  'nextReward',
+  'nextRewardProjectedFutureReward',
+  'yearsToMaturity',
+  'currentAPYOnTickets'
+];
+
 // const now = moment.utc(Date.parse(new Date()));
 // function initTimestamp() {
-//   return moment.duration(now.diff(START_DATETIME)).asMinutes() / 200
+//   return moment.duration(now.diff(START_DATETIME)).asMinutes() / 200;
 // }
 
 class App extends React.Component {
@@ -60,7 +72,6 @@ class App extends React.Component {
       `#${address}&type=${this.state.type}`
     );
     if (address !== 'all' && address !== 'none') {
-      console.log('here');
       fetchUserTimeSeriesData(address, this.state.type).then(
         userTimeSeriesData => this.setState({ userTimeSeriesData })
       );
@@ -103,15 +114,23 @@ class App extends React.Component {
     }
     const users =
       this.state.type === 'lm' ? this.state.usersLM : this.state.usersVS;
-    const userTimestampJSON = this.state.userData
-      ? this.state.userData[this.state.timestamp + 1]
-      : 'Loading...';
+
+    let userTimestampJSON = 'Loading...';
+    if (this.state.userData) {
+      const data = this.state.userData[this.state.timestamp + 1];
+      userTimestampJSON = {
+        ...data,
+        user: omit(data.user, userFieldsToHide)
+      };
+      console.log(data, userTimestampJSON);
+    }
+
     const timeSeriesData = this.state.userTimeSeriesData;
     return (
       <div className='App'>
         <header className='App-header'>
           <div className='logo-container'>
-            <img src='sifchain-logo.svg' />
+            <img src='Sifchain-logo-gold.svg' />
           </div>
           <div className='select-container'>
             <div className='radios'>
@@ -143,7 +162,7 @@ class App extends React.Component {
                 className='dropdown-container'
               >
                 <option key='none' value='none'>
-                  None
+                  Select An Address
                 </option>
                 {
                   <option key='all' value='all'>
