@@ -3,15 +3,23 @@ html {
   /*margin: 36px 24px;*/
 }
 
-
 :root {
   --white: #ececec;
-};
-.chart {}
-.axis line { stroke: var(--white); }
-.axis path { stroke: var(--white); }
-.axis text { fill: var(--white); }
-.tick line { stroke: var(--white);}
+}
+.chart {
+}
+.axis line {
+  stroke: var(--white);
+}
+.axis path {
+  stroke: var(--white);
+}
+.axis text {
+  fill: var(--white);
+}
+.tick line {
+  stroke: var(--white);
+}
 
 .timestamp-slider {
   width: 770px;
@@ -48,12 +56,12 @@ html {
 .logo-container {
   margin-right: 24px;
 }
-.select-container {}
+.select-container {
+}
 
-input[type="radio"]:checked + span {
+input[type='radio']:checked + span {
   font-weight: bold;
-  border-bottom: 1px solid white
-  ;
+  border-bottom: 1px solid white;
 }
 .radios {
   display: flex;
@@ -65,11 +73,11 @@ input[type="radio"]:checked + span {
   margin-bottom: 8px;
 }
 .radios label:hover {
-  font-weight: bold
+  font-weight: bold;
 }
 
-input[type="radio"]:checked + label {
-  font-weight: bold
+input[type='radio']:checked + label {
+  font-weight: bold;
 }
 .address-container {
   display: flex;
