@@ -46,6 +46,10 @@ function processUserTickets (users, globalRewardAccrued) {
 
 function processUserEvents (users, eventsByUser) {
   _.forEach(eventsByUser, userEvents => {
+    const previousUser =
+      userEvents.length > 0 && users[userEvents[0].delegateAddress];
+    const previousTickets = previousUser ? previousUser.tickets : [];
+
     userEvents.forEach(event => {
       const user = users[event.delegateAddress] || {
         tickets: [],
@@ -69,7 +73,8 @@ function processUserEvents (users, eventsByUser) {
             return other.amount === -event.amount;
           });
         const redelegatedTicket =
-          isRedelegation && user.tickets.find(t => t.amount === event.amount);
+          isRedelegation &&
+          previousTickets.find(t => t.amount === event.amount);
         const newTicket = {
           commision: event.commision,
           valSifAddress: event.valSifAddress,
