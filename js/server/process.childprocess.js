@@ -63,11 +63,12 @@ class BackgroundProcessor {
       GET_VS_USER_TIME_SERIES_DATA: address => {
         return getUserTimeSeriesData(this.vsDataParsed.processedData, address);
       },
-      GET_VS_USER_DATA: ({ address, timeIndex }) => {
-        return getUserData(this.vsDataParsed.processedData, {
+      GET_VS_USER_DATA: async ({ address, timeIndex }) => {
+        const userDataOut = await getUserData(this.vsDataParsed.processedData, {
           address,
           timeIndex
         });
+        return userDataOut;
       },
       GET_VS_STACK_DATA: () => {
         return this.vsDataParsed.stackClaimableRewardData;

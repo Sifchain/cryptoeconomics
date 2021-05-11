@@ -11,10 +11,12 @@ function processVSGlobalState (lastGlobalState, timestamp, eventsByUser) {
   );
   let users = processUserTickets(lastGlobalState.users, globalRewardAccrued);
   users = processUserEvents(users, eventsByUser);
+
   return {
     timestamp,
     rewardBuckets,
-    users
+    users,
+    eventsByUser
   };
 }
 
@@ -62,6 +64,8 @@ function processUserEvents (users, eventsByUser) {
       };
       users[event.valSifAddress] = validator;
       validator.commisionClaimed = validator.commisionClaimed || 0;
+      validator.commisionClaimable = validator.commisionClaimable || 0;
+      // Depositing funds
       if (event.amount > 0) {
         const newTicket = {
           commision: event.commision,
@@ -75,6 +79,8 @@ function processUserEvents (users, eventsByUser) {
             .format('MMMM Do YYYY, h:mm:ss a')
         };
         user.tickets = user.tickets.concat(newTicket);
+
+        // Withdrawing funds
       } else if (event.amount < 0) {
         const thisValTickets = user.tickets.filter(
           ticket => ticket.valSifAddress === event.valSifAddress
@@ -95,6 +101,7 @@ function processUserEvents (users, eventsByUser) {
         user.tickets = otherValTickets.concat(remainingThisValTickets);
       }
       if (event.claim) {
+        // Never reached in debug. What does this do?
         const { claimed, forfeited } = calculateClaimReward(user.tickets);
         user.claimed += claimed * (1 - event.commision);
         validator.claimed += claimed * event.commision;
