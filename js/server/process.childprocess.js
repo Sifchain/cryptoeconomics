@@ -142,13 +142,25 @@ class BackgroundProcessor {
     this.lmDataParsed = undefined;
     this.vsDataParsed = undefined;
 
-    console.time('getProcessedLMData');
-    this.lmDataParsed = getProcessedLMData(lMSnapshot);
-    console.timeEnd('getProcessedLMData');
+    try {
+      console.time('getProcessedLMData');
+      this.lmDataParsed = getProcessedLMData(lMSnapshot);
+      console.timeEnd('getProcessedLMData');
+    } catch (error) {
+      console.error('Error processing LM data');
+      console.error(error);
+      throw error;
+    }
 
-    console.time('getProcessedVSData');
-    this.vsDataParsed = getProcessedVSData(vsSnapshot);
-    console.timeEnd('getProcessedVSData');
+    try {
+      console.time('getProcessedVSData');
+      this.vsDataParsed = getProcessedVSData(vsSnapshot);
+      console.timeEnd('getProcessedVSData');
+    } catch (error) {
+      console.error('Error processing VS data');
+      console.error(error);
+      throw error;
+    }
 
     // const used = process.memoryUsage();
     // for (let key in used) {
