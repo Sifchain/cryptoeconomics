@@ -63,9 +63,11 @@ function processUserEvents (users, eventsByUser) {
       users[event.valSifAddress] = validator;
       validator.commisionClaimed = validator.commisionClaimed || 0;
       if (event.amount > 0) {
-        const isRedelegation = userEvents.some(other => {
-          return other.amount === -event.amount;
-        });
+        const isRedelegation =
+          userEvents.length > 1 &&
+          userEvents.some(other => {
+            return other.amount === -event.amount;
+          });
         const redelegatedTicket =
           isRedelegation && user.tickets.find(t => t.amount === event.amount);
         const newTicket = {
