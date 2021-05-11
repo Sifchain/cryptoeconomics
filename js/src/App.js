@@ -8,10 +8,10 @@ import moment from 'moment';
 import Chart from './Chart';
 import StackAll from './StackAll';
 
-const now = moment.utc(Date.parse(new Date()))
-function initTimestamp() {
-  return moment.duration(now.diff(START_DATETIME)).asMinutes() / 200
-}
+// const now = moment.utc(Date.parse(new Date()));
+// function initTimestamp() {
+//   return moment.duration(now.diff(START_DATETIME)).asMinutes() / 200
+// }
 
 class App extends React.Component {
   constructor (props) {
@@ -32,19 +32,20 @@ class App extends React.Component {
     this.updateAddress(this.state.address);
   }
 
-  
-  initDateTime() {
-    const now = moment.utc(Date.parse(new Date()))
+  initDateTime () {
+    const now = moment.utc(Date.parse(new Date()));
     this.setState({
       date: moment.utc(now).format('MMMM Do YYYY, h:mm:ss a'),
-      timestamp: Math.floor(moment.duration(now.diff(START_DATETIME)).asMinutes() / 200)
+      timestamp: Math.floor(
+        moment.duration(now.diff(START_DATETIME)).asMinutes() / 200
+      )
     });
   }
 
   componentDidMount () {
     fetchUsers('lm').then(usersLM => this.setState({ usersLM }));
     fetchUsers('vs').then(usersVS => this.setState({ usersVS }));
-    this.initDateTime()
+    this.initDateTime();
   }
 
   updateAddressEvent (event) {
@@ -59,7 +60,7 @@ class App extends React.Component {
       `#${address}&type=${this.state.type}`
     );
     if (address !== 'all' && address !== 'none') {
-      console.log('here')
+      console.log('here');
       fetchUserTimeSeriesData(address, this.state.type).then(
         userTimeSeriesData => this.setState({ userTimeSeriesData })
       );
@@ -110,9 +111,9 @@ class App extends React.Component {
       <div className='App'>
         <header className='App-header'>
           <div className='logo-container'>
-            <img src='sifchain-logo.svg'/>
+            <img src='sifchain-logo.svg' />
           </div>
-          <div className="select-container">
+          <div className='select-container'>
             <div className='radios'>
               <label>
                 <input
@@ -160,7 +161,6 @@ class App extends React.Component {
         </header>
 
         <div className='content'>
-
           {this.state.address === 'all' && <StackAll type={this.state.type} />}
           {this.state.address !== 'all' &&
             this.state.address !== 'none' &&

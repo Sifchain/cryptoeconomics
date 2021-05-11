@@ -11,7 +11,6 @@ function processVSGlobalState(lastGlobalState, timestamp, eventsByUser) {
   );
   let users = processUserTickets(lastGlobalState.users, globalRewardAccrued);
   users = processUserEvents(users, eventsByUser);
-  debugger;
   return {
     timestamp,
     rewardBuckets,
