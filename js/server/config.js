@@ -35,7 +35,7 @@ const config = {
   START_DATETIME,
   TIME_INTERVAL,
   MULTIPLIER_MATURITY: 864, // 4 months in in 200minute intervals,
-  NUMBER_OF_INTERVALS_TO_RUN: 872 + 864 // duration of bucket drain + duration to latest possible multiplier maturity
+  NUMBER_OF_INTERVALS_TO_RUN: DURATION_INTERVALS + 864 // duration of bucket drain + duration to latest possible multiplier maturity
 };
 
 module.exports = config;
