@@ -1,5 +1,10 @@
 const { fetch } = require('cross-fetch');
+const { RateLimitProtector } = require('./util/RateLimitProtector');
 
+const clpFetch = new RateLimitProtector({ padding: 100 }).buildAsyncShield(
+  fetch,
+  fetch
+);
 exports.getUserTimeSeriesData = (all, address) => {
   return all
     .map(timestampData => {
@@ -41,8 +46,12 @@ exports.getUserData = async (all, payload) => {
 };
 
 async function getUserMaturityAPY (userData, address) {
+  if (!userData) {
+    return 0;
+  }
+  userData = userData.user || userData;
   try {
-    const assets = await fetch(
+    const assets = await clpFetch(
       `https://api.sifchain.finance/clp/getAssets?lpAddress=${address}`
     ).then(r => r.json());
     /*
@@ -62,7 +71,7 @@ async function getUserMaturityAPY (userData, address) {
     const providerData = await Promise.all(
       assets.result.map(
         a =>
-          fetch(
+          clpFetch(
             `https://api.sifchain.finance/clp/getLiquidityProvider?symbol=${a.symbol}&lpAddress=${address}`
           ).then(r => r.json())
         /*
@@ -82,34 +91,35 @@ async function getUserMaturityAPY (userData, address) {
       )
     );
 
-    const lmRewards = {
-      value: userData
-    };
     let totalPooled = 0.0;
     const EROWAN_PRECISION = 1e18;
     providerData.forEach(({ result }) => {
       const nativeBalance = result.native_asset_balance;
       totalPooled += (parseFloat(nativeBalance) / EROWAN_PRECISION) * 2;
     });
-    let alreadyEarned = lmRewards.value.user.claimableReward;
-    let futureTotalEarningsAtMaturity =
-      lmRewards.value.user.totalRewardAtMaturity;
-    let remainingFutureYieldAmount =
-      futureTotalEarningsAtMaturity - alreadyEarned;
-    let remainingYieldPercent = remainingFutureYieldAmount / totalPooled;
-    let msUntilMaturity =
-      Date.parse(lmRewards.value.user.maturityDateISO) - Date.now();
-    let yearsUntilMaturity = Math.ceil(
-      msUntilMaturity / (1000 * 60 * 60 * 24 * 365)
-    );
+    // Only works for "now" timestamp
+    const nextRewardProjectedAPYOnCurrentLiquidity =
+      userData.nextRewardProjectedFutureReward / totalPooled;
+    return nextRewardProjectedAPYOnCurrentLiquidity;
 
-    let currentAPY =
-      remainingYieldPercent / yearsUntilMaturity > 0
-        ? remainingYieldPercent / yearsUntilMaturity
-        : 0;
+    /* UI Version (calculates APY, but we're actually looking for realizable ROI as measured above) */
+    // let alreadyEarned = userData.claimableReward;
+    // let futureTotalEarningsAtMaturity = userData.totalRewardAtMaturity;
+    // let remainingFutureYieldAmount =
+    //   futureTotalEarningsAtMaturity - alreadyEarned;
+    // let remainingYieldPercent = remainingFutureYieldAmount / totalPooled;
+    // let msUntilMaturity = Date.parse(userData.maturityDateISO) - Date.now();
+    // let yearsUntilMaturity = Math.ceil(
+    //   msUntilMaturity / (1000 * 60 * 60 * 24 * 365)
+    // );
 
-    // Alter calculation to show 4 months rate instead of 12 months
-    return currentAPY * 3;
+    // let currentAPY =
+    //   remainingYieldPercent / yearsUntilMaturity > 0
+    //     ? remainingYieldPercent / yearsUntilMaturity
+    //     : 0;
+
+    // // Alter calculation to show 4 months rate instead of 12 months
+    // return currentAPY * 3;
   } catch (e) {
     console.error(e);
     throw new Error('failed to getUserMaturityAPY');

@@ -61,6 +61,9 @@ app.get('/api/vs', async (req, res, next) => {
   const activeProcess = processingHandler.getActiveProcess();
   await activeProcess.waitForReadyState();
   switch (key) {
+    case 'unclaimedDelegatedRewards': {
+      break;
+    }
     case 'userTimeSeriesData': {
       const address = req.query.address;
       responseJSON = await activeProcess.dispatch(

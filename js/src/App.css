@@ -1,17 +1,26 @@
 html {
   background-color: #282c34;
+  background-color: #1a1a1a;
   /*margin: 36px 24px;*/
 }
 
-
 :root {
   --white: #ececec;
-};
-.chart {}
-.axis line { stroke: var(--white); }
-.axis path { stroke: var(--white); }
-.axis text { fill: var(--white); }
-.tick line { stroke: var(--white);}
+}
+.chart {
+}
+.axis line {
+  stroke: var(--white);
+}
+.axis path {
+  stroke: var(--white);
+}
+.axis text {
+  fill: var(--white);
+}
+.tick line {
+  stroke: var(--white);
+}
 
 .timestamp-slider {
   width: 770px;
@@ -21,6 +30,7 @@ html {
 .App {
   text-align: center;
   background-color: #282c34;
+  background-color: #1a1a1a;
   display: flex;
   flex-direction: column;
 }
@@ -48,12 +58,13 @@ html {
 .logo-container {
   margin-right: 24px;
 }
-.select-container {}
+.select-container {
+}
 
 input[type="radio"]:checked + span {
   font-weight: bold;
-  border-bottom: 1px solid white
-  ;
+  border-bottom: 1px solid white;
+  text-shadow: 2px 0px 5px rgba(212, 181, 83, 0.5);
 }
 .radios {
   display: flex;
@@ -65,20 +76,35 @@ input[type="radio"]:checked + span {
   margin-bottom: 8px;
 }
 
+input[type="radio"] + label,
+input[type="radio"] + span {
+  transition: font-weight 150ms ease-out;
+}
+
 input[type="radio"]:checked + label {
-  font-weight: bold
+  font-weight: bold;
+  box-shadow: -5px 0px 2px rgba(212, 181, 83, 0.5);
 }
 .address-container {
   display: flex;
   flex-direction: column;
+  margin-top: 10px;
 }
 
 .dropdown-container {
   margin-top: 8px;
   max-width: 480px;
-  padding: 8px;
+  padding: 8px 10px;
   font-weight: bold;
   color: #333333;
+  background: transparent;
+  color: #fafafa;
+  cursor: pointer;
+  border: 2.5px solid #c1a04f;
+  border-radius: 20px;
+  box-sizing: content-box;
+  outline: none !important;
+  text-shadow: 2px 0px 5px rgba(212, 181, 83, 0.5);
 }
 
 .content {

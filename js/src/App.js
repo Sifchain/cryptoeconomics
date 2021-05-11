@@ -20,10 +20,10 @@ const userFieldsToHide = [
   'currentAPYOnTickets'
 ];
 
-const now = moment.utc(Date.parse(new Date()));
-function initTimestamp () {
-  return moment.duration(now.diff(START_DATETIME)).asMinutes() / 200;
-}
+// const now = moment.utc(Date.parse(new Date()));
+// function initTimestamp() {
+//   return moment.duration(now.diff(START_DATETIME)).asMinutes() / 200;
+// }
 
 class App extends React.Component {
   constructor (props) {
@@ -130,7 +130,7 @@ class App extends React.Component {
       <div className='App'>
         <header className='App-header'>
           <div className='logo-container'>
-            <img src='Sifchain-logo-gold.svg'/>
+            <img src='Sifchain-logo-gold.svg' />
           </div>
           <div className='select-container'>
             <div className='radios'>
@@ -162,7 +162,7 @@ class App extends React.Component {
                 className='dropdown-container'
               >
                 <option key='none' value='none'>
-                  None
+                  Select An Address
                 </option>
                 {
                   <option key='all' value='all'>
