@@ -7,7 +7,16 @@ html {
 :root {
   --white: #ececec;
 }
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: stretch;
+}
 .chart {
+}
+.json-metadata {
+  width: 100%;
 }
 .axis line {
   stroke: var(--white);
@@ -25,6 +34,10 @@ html {
 .timestamp-slider {
   width: 770px;
   margin-left: 45px;
+  filter: hue-rotate(-40deg) saturate(120%);
+}
+.timestamp-slider::hover {
+  cursor: pointer;
 }
 
 .App {
@@ -61,7 +74,7 @@ html {
 .select-container {
 }
 
-input[type='radio']:checked + span {
+input[type="radio"]:checked + span {
   font-weight: bold;
   border-bottom: 1px solid white;
   text-shadow: 2px 0px 5px rgba(212, 181, 83, 0.5);
@@ -76,12 +89,12 @@ input[type='radio']:checked + span {
   margin-bottom: 8px;
 }
 
-input[type='radio'] + label,
-input[type='radio'] + span {
+input[type="radio"] + label,
+input[type="radio"] + span {
   transition: font-weight 150ms ease-out;
 }
 
-input[type='radio']:checked + label {
+input[type="radio"]:checked + label {
   font-weight: bold;
   box-shadow: -5px 0px 2px rgba(212, 181, 83, 0.5);
 }
