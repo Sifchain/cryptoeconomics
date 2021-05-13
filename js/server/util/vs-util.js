@@ -3,30 +3,35 @@ const _ = require('lodash');
 // Restructure snapshot address liquidity event entries into per-time interval aggregated event form
 // (see global-state.md for example)
 function remapVSAddresses (vaLAddresses, timeInterval) {
-  const mapped = _.map(vaLAddresses, (valAddressData, valStakeAddress) => {
-    const keys = Object.keys(valAddressData);
-    const commisionEvents = valAddressData[keys[0]];
-    const commisionTimeIntervals = processCommisionEvents(commisionEvents);
-    const valSifAddress = keys[1];
-    const delegates = keys.slice(1);
+  const mapped = _.map(
+    vaLAddresses,
+    ({ commission: commissionEvents, ...valAddressData }, valStakeAddress) => {
+      const commissionTimeIntervals = processCommissionEvents(commissionEvents);
+      const delegates = Object.keys(valAddressData);
 
-    const valDelegateEvents = _.map(delegates, delegateAddress => {
-      const delegateTimeIntervals = valAddressData[delegateAddress].rowan;
-      return delegateTimeIntervals
-        .map((amount, index) => {
-          return {
-            timestamp: (index + 1) * timeInterval,
-            commision: commisionTimeIntervals[index],
-            amount,
-            delegateAddress,
-            valSifAddress,
-            valStakeAddress
-          };
+      const valDelegateEvents = delegates
+        .map(delegateAddress => {
+          const delegateTimeIntervals = valAddressData[delegateAddress].rowan;
+          return delegateTimeIntervals
+            .map((amount, index) => {
+              const commissionRateDelta = commissionTimeIntervals[index];
+              if (commissionRateDelta < 0) {
+                console.log('COMMISSION RATE < 0. NEEDS HANDLING');
+              }
+              return {
+                timestamp: (index + 1) * timeInterval,
+                commission: commissionRateDelta,
+                amount,
+                delegateAddress,
+                validatorSifAddress: valStakeAddress
+              };
+            })
+            .filter(e => e.amount !== 0);
         })
-        .filter(e => e.amount !== 0);
-    }).filter(events => events.length !== 0);
-    return valDelegateEvents;
-  });
+        .filter(events => events.length !== 0);
+      return valDelegateEvents;
+    }
+  );
 
   const rawEvents = _.flattenDeep(mapped);
 
@@ -66,18 +71,21 @@ function remapVSAddresses (vaLAddresses, timeInterval) {
   return allTimeIntervalAddressEvents;
 }
 
-function processCommisionEvents (commisionEvents) {
-  const commision = [commisionEvents[0]];
-  for (let i = 1; i < commisionEvents.length; i++) {
-    const event = commisionEvents[i];
+function processCommissionEvents (commissionEvents) {
+  const commission = [commissionEvents[0]];
+  for (let i = 1; i < commissionEvents.length; i++) {
+    const event = commissionEvents[i];
+    if (event < 0) {
+      console.log('COMMISSION RATE < 0. NEEDS HANDLING');
+    }
     if (event === 0) {
-      const lastEvent = commision[i - 1];
-      commision.push(lastEvent);
+      const lastEvent = commission[i - 1];
+      commission.push(lastEvent);
     } else {
-      commision.push(event);
+      commission.push(event);
     }
   }
-  return commision;
+  return commission;
 }
 
 module.exports = {

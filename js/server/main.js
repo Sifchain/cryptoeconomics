@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const { getTimeIndex } = require('./util/getTimeIndex');
-
 // implements process.js in separate thread
 const { createMultiprocessActionDispatcher } = require('./processing-handler');
 
