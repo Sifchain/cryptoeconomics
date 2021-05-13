@@ -1,10 +1,10 @@
-const _ = require('lodash');
-const moment = require('moment');
-const { START_DATETIME, MULTIPLIER_MATURITY } = require('./config');
+const _ = require("lodash");
+const moment = require("moment");
+const { START_DATETIME, MULTIPLIER_MATURITY } = require("./config");
 
-const { processRewardBuckets } = require('./util/bucket-util');
+const { processRewardBuckets } = require("./util/bucket-util");
 // const { getTimeIndex } = require("./util/getTimeIndex");
-const config = require('./config');
+const config = require("./config");
 /*
   Filter out deposit events after config.DEPOSIT_CUTOFF_DATETIME,
   but continue accruing rewards until config.END_OF_REWARD_ACCRUAL_DATETIME
@@ -12,7 +12,7 @@ const config = require('./config');
 // const DEPOSIT_CUTOFF_TIME_INDEX = getTimeIndex(
 //   new Date(config.DEPOSIT_CUTOFF_DATETIME).valueOf()
 // );
-function processVSGlobalState (lastGlobalState, timestamp, eventsByUser) {
+function processVSGlobalState(lastGlobalState, timestamp, eventsByUser) {
   const { rewardBuckets, globalRewardAccrued } = processRewardBuckets(
     lastGlobalState.rewardBuckets,
     lastGlobalState.bucketEvent
@@ -22,64 +22,64 @@ function processVSGlobalState (lastGlobalState, timestamp, eventsByUser) {
   return {
     timestamp,
     rewardBuckets,
-    users
+    users,
   };
 }
 
-function processUserTickets (users, globalRewardAccrued) {
+function processUserTickets(users, globalRewardAccrued) {
   // process reward accruals and multiplier updates
   const totalShares = _.sum(
     _.flatten(
       _.map(users, (user, address) => {
-        return user.tickets.map(ticket => ticket.amount);
+        return user.tickets.map((ticket) => ticket.amount);
       })
     )
   );
-  const updatedUsers = _.mapValues(users, user => {
+  const updatedUsers = _.mapValues(users, (user) => {
     return {
       ...user,
-      tickets: user.tickets.map(ticket => {
+      tickets: user.tickets.map((ticket) => {
         const additionalAmount =
           (ticket.amount / (totalShares || 1)) * globalRewardAccrued;
         return {
           ...ticket,
           mul: Math.min(ticket.mul + 0.75 / MULTIPLIER_MATURITY, 1),
-          reward: ticket.reward + additionalAmount
+          reward: ticket.reward + additionalAmount,
         };
-      })
+      }),
     };
   });
   return updatedUsers;
 }
 
-function processUserEvents (users, eventsByUser) {
-  _.forEach(eventsByUser, userEvents => {
+function processUserEvents(users, eventsByUser) {
+  _.forEach(eventsByUser, (userEvents) => {
     const previousUser =
       userEvents.length > 0 && users[userEvents[0].delegateAddress];
     const previousTickets = previousUser ? previousUser.tickets : [];
 
-    userEvents.forEach(event => {
+    userEvents.forEach((event) => {
       const user = users[event.delegateAddress] || {
         tickets: [],
         claimed: 0,
         dispensed: 0,
-        forfeited: 0
+        forfeited: 0,
       };
       users[event.delegateAddress] = user;
-      const validator = users[event.valSifAddress] || {
+      const validator = users[event.validatorSifAddress] || {
         tickets: [],
         claimed: 0,
         dispensed: 0,
-        forfeited: 0
+        forfeited: 0,
       };
-      users[event.valSifAddress] = validator;
+      users[event.validatorSifAddress] = validator;
       validator.commissionClaimed = validator.commissionClaimed || 0;
 
       // Is deposit (adding funds)
       if (event.amount > 0) {
         const isRedelegation =
           userEvents.length > 1 &&
-          userEvents.some(other => {
+          userEvents.some((other) => {
             return other.amount === -event.amount;
           });
         if (
@@ -90,27 +90,27 @@ function processUserEvents (users, eventsByUser) {
           // skip
           return;
         }
-        const redelegatedTicket =
-          isRedelegation &&
-          previousTickets.find(t => t.amount === event.amount);
+        const redelegatedTicket = isRedelegation
+          ? previousTickets.find((t) => t.amount === event.amount)
+          : false;
         const newTicket = {
           commission: event.commission,
-          valSifAddress: event.valSifAddress,
+          validatorSifAddress: event.validatorSifAddress,
           amount: event.amount,
           mul: redelegatedTicket ? redelegatedTicket.mul : 0.25,
           reward: 0,
           timestamp: moment
             .utc(START_DATETIME)
-            .add(event.timestamp, 'm')
-            .format('MMMM Do YYYY, h:mm:ss a')
+            .add(event.timestamp, "m")
+            .format("MMMM Do YYYY, h:mm:ss a"),
         };
         user.tickets = user.tickets.concat(newTicket);
       } else if (event.amount < 0) {
         const thisValTickets = user.tickets.filter(
-          ticket => ticket.valSifAddress === event.valSifAddress
+          (ticket) => ticket.validatorSifAddress === event.validatorSifAddress
         );
         const otherValTickets = user.tickets.filter(
-          ticket => ticket.valSifAddress !== event.valSifAddress
+          (ticket) => ticket.validatorSifAddress !== event.validatorSifAddress
         );
         const burnResult = burnTickets(-event.amount, thisValTickets);
         const burnedThisValTickets = burnResult.burnedTickets;
@@ -137,13 +137,13 @@ function processUserEvents (users, eventsByUser) {
   return users;
 }
 
-function burnTickets (amount, tickets) {
-  const sortedTickets = _.sortBy(tickets, 'mul');
+function burnTickets(amount, tickets) {
+  const sortedTickets = _.sortBy(tickets, "mul");
 
   let amountLeft = amount;
   const burnedTickets = [];
   const remainingTickets = [];
-  sortedTickets.forEach(ticket => {
+  sortedTickets.forEach((ticket) => {
     if (amountLeft === 0) {
       remainingTickets.push(ticket);
       return;
@@ -156,7 +156,7 @@ function burnTickets (amount, tickets) {
     const burnedTicket = {
       ...ticket,
       amount: amountToRemove,
-      reward: proportionBurned * parseFloat(ticket.reward || 0)
+      reward: proportionBurned * parseFloat(ticket.reward || 0),
     };
     burnedTickets.push(burnedTicket);
     amountLeft = amountLeft - amountToRemove;
@@ -164,7 +164,7 @@ function burnTickets (amount, tickets) {
       const remainingTicket = {
         ...ticket,
         amount: ticket.amount - amountToRemove,
-        reward: (1 - proportionBurned) * parseFloat(ticket.reward || 0)
+        reward: (1 - proportionBurned) * parseFloat(ticket.reward || 0),
       };
       remainingTickets.push(remainingTicket);
     }
@@ -172,14 +172,14 @@ function burnTickets (amount, tickets) {
   return { burnedTickets, remainingTickets };
 }
 
-function calculateClaimReward (tickets) {
+function calculateClaimReward(tickets) {
   return tickets.reduce(
     (accum, ticket) => {
       const forefeitedMultiplier = 1 - ticket.mul;
       const reward = ticket.reward || 0;
       const result = {
         claimed: accum.claimed + reward * ticket.mul,
-        forfeited: accum.forfeited + reward * forefeitedMultiplier
+        forfeited: accum.forfeited + reward * forefeitedMultiplier,
       };
       return result;
     },
@@ -187,14 +187,14 @@ function calculateClaimReward (tickets) {
   );
 }
 
-function resetTickets (tickets) {
-  return tickets.map(ticket => ({
+function resetTickets(tickets) {
+  return tickets.map((ticket) => ({
     ...ticket,
     mul: 0,
-    reward: 0
+    reward: 0,
   }));
 }
 
 module.exports = {
-  processVSGlobalState
+  processVSGlobalState,
 };

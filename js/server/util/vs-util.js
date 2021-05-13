@@ -19,7 +19,7 @@ function remapVSAddresses (vaLAddresses, timeInterval) {
                 commission: commissionTimeIntervals[index],
                 amount,
                 delegateAddress,
-                valSifAddress: valStakeAddress
+                validatorSifAddress: valStakeAddress
               };
             })
             .filter(e => e.amount !== 0);
