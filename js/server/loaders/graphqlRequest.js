@@ -1,6 +1,6 @@
 const { fetch } = require('cross-fetch');
 
-module.exports.loadValidatorsSnapshot = async function loadValidatorsSnapshot () {
+module.exports.graphqlRequest = async function graphqlRequest (query) {
   if (!process.env.HEADER_SECRET) {
     throw new Error('process.env.HEADER_SECRET not defined!');
   }
@@ -9,18 +9,14 @@ module.exports.loadValidatorsSnapshot = async function loadValidatorsSnapshot ()
   }
   return fetch(process.env.SNAPSHOT_URL, {
     method: 'POST',
-    headers: {
+    headers: Object.entries({
       'x-hasura-admin-secret': process.env.HEADER_SECRET,
       'Content-Type': 'application/json'
-    },
+    }),
     body: JSON.stringify({
-      query: /* GraphQL */ `
-        query GetCommissionSnapshot {
-          snapshots_validators(limit: 1, order_by: { id: desc }) {
-            snapshot_data
-          }
-        }
-      `
+      query
     })
-  }).then(r => r.json());
+  }).then(async r => {
+    return r.json();
+  });
 };

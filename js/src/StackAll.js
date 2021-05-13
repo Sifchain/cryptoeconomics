@@ -19,7 +19,7 @@ class StackAll extends React.Component {
     const series = d3.stack().keys(users)(data);
 
     let margin = { top: 10, right: 30, bottom: 30, left: 60 };
-    let width = 860 - margin.left - margin.right;
+    let width = 800 - margin.left - margin.right;
     let height = 400 - margin.top - margin.bottom;
 
     const x = d3

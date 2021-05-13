@@ -3,7 +3,15 @@ const moment = require('moment');
 const { START_DATETIME, MULTIPLIER_MATURITY } = require('./config');
 
 const { processRewardBuckets } = require('./util/bucket-util');
-
+// const { getTimeIndex } = require("./util/getTimeIndex");
+const config = require('./config');
+/*
+  Filter out deposit events after config.DEPOSIT_CUTOFF_DATETIME,
+  but continue accruing rewards until config.END_OF_REWARD_ACCRUAL_DATETIME
+*/
+// const DEPOSIT_CUTOFF_TIME_INDEX = getTimeIndex(
+//   new Date(config.DEPOSIT_CUTOFF_DATETIME).valueOf()
+// );
 function processVSGlobalState (lastGlobalState, timestamp, eventsByUser) {
   const { rewardBuckets, globalRewardAccrued } = processRewardBuckets(
     lastGlobalState.rewardBuckets,
@@ -15,8 +23,7 @@ function processVSGlobalState (lastGlobalState, timestamp, eventsByUser) {
   return {
     timestamp,
     rewardBuckets,
-    users,
-    eventsByUser
+    users
   };
 }
 
@@ -48,6 +55,10 @@ function processUserTickets (users, globalRewardAccrued) {
 
 function processUserEvents (users, eventsByUser) {
   _.forEach(eventsByUser, userEvents => {
+    const previousUser =
+      userEvents.length > 0 && users[userEvents[0].delegateAddress];
+    const previousTickets = previousUser ? previousUser.tickets : [];
+
     userEvents.forEach(event => {
       const user = users[event.delegateAddress] || {
         tickets: [],
@@ -56,22 +67,38 @@ function processUserEvents (users, eventsByUser) {
         forfeited: 0
       };
       users[event.delegateAddress] = user;
-      const validator = users[event.valSifAddress] || {
+      const validator = users[event.validatorSifAddress] || {
         tickets: [],
         claimed: 0,
         dispensed: 0,
         forfeited: 0
       };
-      users[event.valSifAddress] = validator;
-      validator.commisionClaimed = validator.commisionClaimed || 0;
-      validator.commisionClaimable = validator.commisionClaimable || 0;
-      // Depositing funds
+      users[event.validatorSifAddress] = validator;
+      validator.commissionClaimed = validator.commissionClaimed || 0;
+
+      // Is deposit (adding funds)
       if (event.amount > 0) {
+        const isRedelegation =
+          userEvents.length > 1 &&
+          userEvents.some(other => {
+            return other.amount === -event.amount;
+          });
+        if (
+          !isRedelegation &&
+          // is after deposits are allowed
+          event.timestamp > config.DEPOSITS_ALLOWED_DURATION_MS / 1000 / 60
+        ) {
+          // skip
+          return;
+        }
+        const redelegatedTicket = isRedelegation
+          ? previousTickets.find(t => t.amount === event.amount)
+          : false;
         const newTicket = {
-          commision: event.commision,
-          valSifAddress: event.valSifAddress,
+          commission: event.commission,
+          validatorSifAddress: event.validatorSifAddress,
           amount: event.amount,
-          mul: 0.25,
+          mul: redelegatedTicket ? redelegatedTicket.mul : 0.25,
           reward: 0,
           timestamp: moment
             .utc(START_DATETIME)
@@ -83,10 +110,10 @@ function processUserEvents (users, eventsByUser) {
         // Withdrawing funds
       } else if (event.amount < 0) {
         const thisValTickets = user.tickets.filter(
-          ticket => ticket.valSifAddress === event.valSifAddress
+          ticket => ticket.validatorSifAddress === event.validatorSifAddress
         );
         const otherValTickets = user.tickets.filter(
-          ticket => ticket.valSifAddress !== event.valSifAddress
+          ticket => ticket.validatorSifAddress !== event.validatorSifAddress
         );
         const burnResult = burnTickets(-event.amount, thisValTickets);
         const burnedThisValTickets = burnResult.burnedTickets;
@@ -94,18 +121,18 @@ function processUserEvents (users, eventsByUser) {
         const { claimed, forfeited } = calculateClaimReward(
           burnedThisValTickets
         );
-        user.claimed += claimed * (1 - event.commision);
-        validator.claimed += claimed * event.commision;
-        validator.commisionClaimed += claimed * event.commision;
+        user.claimed += claimed * (1 - event.commission);
+        validator.claimed += claimed * event.commission;
+        validator.commissionClaimed += claimed * event.commission;
         user.forfeited += forfeited;
         user.tickets = otherValTickets.concat(remainingThisValTickets);
       }
       if (event.claim) {
         // Never reached in debug. What does this do?
         const { claimed, forfeited } = calculateClaimReward(user.tickets);
-        user.claimed += claimed * (1 - event.commision);
-        validator.claimed += claimed * event.commision;
-        validator.commisionClaimed += claimed * event.commision;
+        user.claimed += claimed * (1 - event.commission);
+        validator.claimed += claimed * event.commission;
+        validator.commissionClaimed += claimed * event.commission;
         user.forfeited += forfeited;
         user.tickets = resetTickets(user.tickets);
       }

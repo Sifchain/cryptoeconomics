@@ -1,9 +1,11 @@
 const _ = require('lodash');
 const moment = require('moment');
-const { START_DATETIME, MULTIPLIER_MATURITY } = require('./config');
-
+const {
+  START_DATETIME,
+  MULTIPLIER_MATURITY,
+  DEPOSITS_ALLOWED_DURATION_MS
+} = require('./config');
 const { processRewardBuckets } = require('./util/bucket-util');
-
 function processLMGlobalState (lastGlobalState, timestamp, events) {
   const { rewardBuckets, globalRewardAccrued } = processRewardBuckets(
     lastGlobalState.rewardBuckets,
@@ -53,6 +55,14 @@ function processUserEvents (users, events) {
       forfeited: 0
     };
     if (event.amount > 0) {
+      if (
+        // is after deposits are allowed
+        event.timestamp >
+        DEPOSITS_ALLOWED_DURATION_MS / 1000 / 60
+      ) {
+        // skip
+        return;
+      }
       const newTicket = {
         amount: event.amount,
         mul: 0.25,

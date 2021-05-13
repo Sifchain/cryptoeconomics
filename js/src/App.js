@@ -5,7 +5,6 @@ import { fetchUsers, fetchUserData, fetchUserTimeSeriesData } from './api';
 import JSONPretty from 'react-json-pretty';
 import 'react-json-pretty/themes/monikai.css';
 import moment from 'moment';
-import omit from 'omit.js';
 import Chart from './Chart';
 import StackAll from './StackAll';
 
@@ -120,7 +119,13 @@ class App extends React.Component {
       const data = this.state.userData[this.state.timestamp + 1];
       userTimestampJSON = {
         ...data,
-        user: omit(data.user, userFieldsToHide)
+        user: !data.user
+          ? null
+          : Object.fromEntries(
+              Object.entries(data.user).filter(([key, val]) => {
+                return !userFieldsToHide.includes(key);
+              })
+            )
       };
       console.log(data, userTimestampJSON);
     }
@@ -207,7 +212,11 @@ class App extends React.Component {
               />
             )}
           {this.state.address !== 'all' && this.state.address !== 'none' && (
-            <JSONPretty id='json-pretty' data={userTimestampJSON} />
+            <JSONPretty
+              className='json-metadata'
+              id='json-pretty'
+              data={userTimestampJSON}
+            />
           )}
         </div>
       </div>
