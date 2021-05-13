@@ -49,11 +49,14 @@ exports.getProcessedVSData = snapshotVS => {
   const VSValidatorAddresses =
     snapshotVS.data.snapshots_validators[0].snapshot_data;
 
+  console.time('remapVS');
   const VSTimeIntervalEvents = remapVSAddresses(
     VSValidatorAddresses,
     EVENT_INTERVAL_MINUTES
   );
+  console.timeEnd('remapVS');
 
+  console.time('processvs');
   const VSGlobalStates = [VS_STARTING_GLOBAL_STATE];
   for (let i = 0; i < NUMBER_OF_INTERVALS_TO_RUN; i++) {
     const lastGlobalState = VSGlobalStates[VSGlobalStates.length - 1];
@@ -66,6 +69,7 @@ exports.getProcessedVSData = snapshotVS => {
     );
     VSGlobalStates.push(newGlobalState);
   }
+  console.timeEnd('processvs');
 
   // TODO: remove past dispensations
   // TODO: return unpaid balances

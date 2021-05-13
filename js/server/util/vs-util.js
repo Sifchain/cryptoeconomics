@@ -6,7 +6,7 @@ function remapVSAddresses (vaLAddresses, timeInterval) {
   const mapped = _.map(
     vaLAddresses,
     ({ commission: commissionEvents, ...valAddressData }, valStakeAddress) => {
-      const commissionTimeIntervals = processcommissionEvents(commissionEvents);
+      const commissionTimeIntervals = processCommissionEvents(commissionEvents);
       const delegates = Object.keys(valAddressData);
 
       const valDelegateEvents = delegates
@@ -67,7 +67,7 @@ function remapVSAddresses (vaLAddresses, timeInterval) {
   return allTimeIntervalAddressEvents;
 }
 
-function processcommissionEvents (commissionEvents) {
+function processCommissionEvents (commissionEvents) {
   const commission = [commissionEvents[0]];
   for (let i = 1; i < commissionEvents.length; i++) {
     const event = commissionEvents[i];
