@@ -14,9 +14,13 @@ function remapVSAddresses (vaLAddresses, timeInterval) {
           const delegateTimeIntervals = valAddressData[delegateAddress].rowan;
           return delegateTimeIntervals
             .map((amount, index) => {
+              const commissionRateDelta = commissionTimeIntervals[index];
+              if (commissionRateDelta < 0) {
+                console.log('COMMISSION RATE < 0. NEEDS HANDLING');
+              }
               return {
                 timestamp: (index + 1) * timeInterval,
-                commission: commissionTimeIntervals[index],
+                commission: commissionRateDelta,
                 amount,
                 delegateAddress,
                 validatorSifAddress: valStakeAddress
@@ -71,6 +75,9 @@ function processCommissionEvents (commissionEvents) {
   const commission = [commissionEvents[0]];
   for (let i = 1; i < commissionEvents.length; i++) {
     const event = commissionEvents[i];
+    if (event < 0) {
+      console.log('COMMISSION RATE < 0. NEEDS HANDLING');
+    }
     if (event === 0) {
       const lastEvent = commission[i - 1];
       commission.push(lastEvent);
