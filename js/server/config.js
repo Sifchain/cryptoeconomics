@@ -7,11 +7,11 @@
 */
 
 // Rewards begin accruing
-const START_DATETIME = "2021-02-19T06:48:43+00:00";
+const START_DATETIME = '2021-02-19T06:48:43+00:00';
 // Deposits are cut off earlier on
-const DEPOSIT_CUTOFF_DATETIME = "2021-06-30T23:59:59";
+const DEPOSIT_CUTOFF_DATETIME = '2021-06-30T23:59:59';
 // But they can continue to accrue rewards until the final end date
-const END_OF_REWARD_ACCRUAL_DATETIME = "2021-08-04T23:59:59";
+const END_OF_REWARD_ACCRUAL_DATETIME = '2021-08-04T23:59:59';
 // Snapshot of all Validator events is split into 200 minute intervals (https://github.com/Sifchain/Vanir/issues/13)
 const EVENT_INTERVAL_MINUTES = 200;
 
@@ -41,8 +41,8 @@ const config = {
     bucketEvent: {
       rowan: 45_000_000,
       initialRowan: 45_000_000,
-      duration: REWARD_ACCRUAL_DURATION_INTERVAL_COUNT,
-    },
+      duration: REWARD_ACCRUAL_DURATION_INTERVAL_COUNT
+    }
   },
   VS_STARTING_GLOBAL_STATE: {
     timestamp: -1,
@@ -57,8 +57,8 @@ const config = {
     bucketEvent: {
       rowan: 45_000_000,
       initialRowan: 45_000_000,
-      duration: REWARD_ACCRUAL_DURATION_INTERVAL_COUNT,
-    },
+      duration: REWARD_ACCRUAL_DURATION_INTERVAL_COUNT
+    }
   },
   START_DATETIME,
   DEPOSIT_CUTOFF_DATETIME,
@@ -66,7 +66,7 @@ const config = {
   EVENT_INTERVAL_MINUTES,
   DEPOSITS_ALLOWED_DURATION_MS,
   MULTIPLIER_MATURITY: 864, // 4 months in in 200minute intervals,
-  NUMBER_OF_INTERVALS_TO_RUN: REWARD_ACCRUAL_DURATION_INTERVAL_COUNT + 864, // duration of bucket drain + duration to latest possible multiplier maturity
+  NUMBER_OF_INTERVALS_TO_RUN: REWARD_ACCRUAL_DURATION_INTERVAL_COUNT + 864 // duration of bucket drain + duration to latest possible multiplier maturity
 };
 
 module.exports = config;
