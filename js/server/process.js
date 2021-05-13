@@ -8,11 +8,12 @@ const { processLMGlobalState } = require('./process-lm');
 const { processVSGlobalState } = require('./process-vs');
 
 const {
-  TIME_INTERVAL,
+  EVENT_INTERVAL_MINUTES,
   NUMBER_OF_INTERVALS_TO_RUN,
   VS_STARTING_GLOBAL_STATE,
   LM_STARTING_GLOBAL_STATE
 } = require('./config');
+// const { getTimeIndex } = require("./util/getTimeIndex");
 
 // const snapshotLM = require("../snapshots/snapshot_lm_latest.json");
 // const snapshotVS = require("../snapshots/snapshot_vs_latest.json");
@@ -20,12 +21,16 @@ const {
 exports.getProcessedLMData = snapshotLM => {
   const LMAddresses = snapshotLM.data.snapshots_new[0].snapshot_data;
 
-  const LMTimeIntervalEvents = remapLMAddresses(LMAddresses, TIME_INTERVAL);
+  const LMTimeIntervalEvents = remapLMAddresses(
+    LMAddresses,
+    EVENT_INTERVAL_MINUTES
+  );
 
   const LMGlobalStates = [LM_STARTING_GLOBAL_STATE];
+
   for (let i = 0; i < NUMBER_OF_INTERVALS_TO_RUN; i++) {
     const lastGlobalState = LMGlobalStates[LMGlobalStates.length - 1];
-    const timestamp = i * TIME_INTERVAL;
+    const timestamp = i * EVENT_INTERVAL_MINUTES;
     const events = LMTimeIntervalEvents['' + timestamp] || [];
     const newGlobalState = processLMGlobalState(
       lastGlobalState,
@@ -46,13 +51,13 @@ exports.getProcessedVSData = snapshotVS => {
 
   const VSTimeIntervalEvents = remapVSAddresses(
     VSValidatorAddresses,
-    TIME_INTERVAL
+    EVENT_INTERVAL_MINUTES
   );
 
   const VSGlobalStates = [VS_STARTING_GLOBAL_STATE];
   for (let i = 0; i < NUMBER_OF_INTERVALS_TO_RUN; i++) {
     const lastGlobalState = VSGlobalStates[VSGlobalStates.length - 1];
-    const timestamp = i * TIME_INTERVAL;
+    const timestamp = i * EVENT_INTERVAL_MINUTES;
     const events = VSTimeIntervalEvents['' + timestamp] || [];
     const newGlobalState = processVSGlobalState(
       lastGlobalState,

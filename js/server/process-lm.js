@@ -1,7 +1,6 @@
 const _ = require('lodash');
 const moment = require('moment');
 const { START_DATETIME, MULTIPLIER_MATURITY } = require('./config');
-
 const { processRewardBuckets } = require('./util/bucket-util');
 
 function processLMGlobalState (lastGlobalState, timestamp, events) {
