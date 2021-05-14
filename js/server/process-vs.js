@@ -71,7 +71,9 @@ function processUserEvents (users, eventsByUser) {
       };
       users[event.validatorSifAddress] = validator;
       validator.commissionClaimed = validator.commissionClaimed || 0;
-
+      // if (validator.commissionClaimed > 0) {
+      //   debugger;
+      // }
       // Is deposit (adding funds)
       if (event.amount > 0) {
         const isRedelegation =
@@ -101,6 +103,13 @@ function processUserEvents (users, eventsByUser) {
             .add(event.timestamp, 'm')
             .format('MMMM Do YYYY, h:mm:ss a')
         };
+        // if (
+        //   [event.validatorSifAddress, event.delegateAddress].includes(
+        //     "sif16g0rrp6veu33hep8gjzdvdh4e2l5l9dttg6md7"
+        //   )
+        // ) {
+        //   debugger;
+        // }
         user.tickets = user.tickets.concat(newTicket);
       } else if (event.amount < 0) {
         const thisValTickets = user.tickets.filter(
