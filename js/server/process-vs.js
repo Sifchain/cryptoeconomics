@@ -1,17 +1,13 @@
 const _ = require('lodash');
 const moment = require('moment');
 const { START_DATETIME, MULTIPLIER_MATURITY } = require('./config');
-
 const { processRewardBuckets } = require('./util/bucket-util');
-// const { getTimeIndex } = require("./util/getTimeIndex");
 const config = require('./config');
+
 /*
   Filter out deposit events after config.DEPOSIT_CUTOFF_DATETIME,
   but continue accruing rewards until config.END_OF_REWARD_ACCRUAL_DATETIME
 */
-// const DEPOSIT_CUTOFF_TIME_INDEX = getTimeIndex(
-//   new Date(config.DEPOSIT_CUTOFF_DATETIME).valueOf()
-// );
 function processVSGlobalState (lastGlobalState, timestamp, eventsByUser) {
   const { rewardBuckets, globalRewardAccrued } = processRewardBuckets(
     lastGlobalState.rewardBuckets,
@@ -105,6 +101,13 @@ function processUserEvents (users, eventsByUser) {
             .add(event.timestamp, 'm')
             .format('MMMM Do YYYY, h:mm:ss a')
         };
+        // if (
+        //   [event.validatorSifAddress, event.delegateAddress].includes(
+        //     "sif16g0rrp6veu33hep8gjzdvdh4e2l5l9dttg6md7"
+        //   )
+        // ) {
+        //   debugger;
+        // }
         user.tickets = user.tickets.concat(newTicket);
 
         // Withdrawing funds

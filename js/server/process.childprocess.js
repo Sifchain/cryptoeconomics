@@ -177,15 +177,3 @@ class BackgroundProcessor {
   }
 }
 BackgroundProcessor.start();
-
-// Async JSON Serialization, if remiplementation is desired in future
-// const saveJson = async (data) => {
-//   await require('bfj').write(outputFilePath, data, {
-//     Promise,
-//     bufferLength: 512,
-//     yieldRate: 500
-//   })
-//   console.log('finished!!!');
-//   process.send(outputFilePath);
-//   console.log('wrote file ' + outputFilePath)
-// }

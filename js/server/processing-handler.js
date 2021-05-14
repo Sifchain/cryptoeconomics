@@ -1,5 +1,6 @@
 const { fork } = require('child_process');
 const path = require('path');
+const { retryOnFail } = require('./util/retryOnFail');
 /* 
   Reloads & re-processes Miner & Validator data once every `RELOAD_INTERVAL`
 */
@@ -22,8 +23,8 @@ function createMultiprocessActionDispatcher () {
 					a little buffer for any code still using a reference to staleProcess
 					before we clear out the data
 				*/
-        await new Promise(resolve => setTimeout(resolve, 250));
-        staleProcess.dispatch('CLEAR_PARSED_DATA');
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        await staleProcess.dispatch('CLEAR_PARSED_DATA');
         await staleProcess.restart();
         // Wait until snapshot data is expired
         await new Promise(resolve => setTimeout(resolve, RELOAD_INTERVAL));
@@ -52,14 +53,14 @@ function createDispatchableChildProcess () {
   let childProcess = createChildProcess();
 
   childProcess.on('error', e => {
-    childProcess.kill();
+    if (!childProcess.killed) childProcess.kill();
     childProcess = createChildProcess();
     console.error(e);
   });
   childProcess.on('exit', code => {
     childProcess = createChildProcess();
     if (code !== 0) {
-      console.log(`Child process stopped with exit code ${code}`);
+      // ignore
     }
   });
 
@@ -88,6 +89,9 @@ function createDispatchableChildProcess () {
   }
   return {
     restart () {
+      if (childProcess.killed) {
+        return Promise.resolve();
+      }
       const promise = new Promise(resolve => {
         childProcess.once('exit', () => {
           // new childProcess is created above in `exit` event handler, which will execute before this
@@ -98,7 +102,12 @@ function createDispatchableChildProcess () {
       return promise;
     },
     // Remotely invokes child process actions in `./process.childprocess.js` `BackgroundProcessor#actions`
-    dispatch,
+    dispatch: (...args) =>
+      retryOnFail({
+        fn: () => dispatch(...args),
+        iterations: 20,
+        waitFor: 250
+      }),
     waitForReadyState,
     get childProcess () {
       return childProcess;

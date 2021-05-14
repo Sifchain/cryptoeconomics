@@ -109,7 +109,14 @@ class App extends React.Component {
 
   render () {
     if (!this.state.usersLM || !this.state.usersVS) {
-      return <div>Loading...</div>;
+      return (
+        <div className='loading-screen'>
+          <div className='logo-loader'>
+            <img src='Sifchain-logo-gold.svg' />;
+            <div className='logo-loader-overlay' />
+          </div>
+        </div>
+      );
     }
     const users =
       this.state.type === 'lm' ? this.state.usersLM : this.state.usersVS;
