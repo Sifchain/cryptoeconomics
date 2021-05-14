@@ -1,8 +1,12 @@
-use super::types;
-use itertools::{self, Itertools};
+use std::collections::HashMap;
+
+use super::types::{self, DelegationEvent};
 use serde_json::map::Iter;
 
-fn remap_vs_addresses(validator_addresses: types::SnapshotValidatorDataItemMap, timeInterval: i64) {
+fn remap_vs_addresses<'a>(
+    validator_addresses: types::SnapshotValidatorDataItemMap,
+    timeInterval: i64,
+) {
     let mapped = validator_addresses.iter().map(
         //   ({ commission: commissionEvents, ...valAddressData }, valStakeAddress) => {
         |(valStakeAddress, snapshotDelegate)| {
@@ -16,9 +20,9 @@ fn remap_vs_addresses(validator_addresses: types::SnapshotValidatorDataItemMap, 
                         .rowan
                         .iter()
                         .enumerate()
-                        .map(|(index, amount)| types::DelegationEvent {
+                        .map(|(index, amount)| types::DelegationEvent::<'a> {
                             timestamp: (index + 1).into() * timeInterval,
-                            commission: commissionTimeIntervals[index],
+                            commission: &commissionTimeIntervals[index],
                             amount,
                             delegateAddress,
                             validatorSifAddress: valStakeAddress,
@@ -33,20 +37,38 @@ fn remap_vs_addresses(validator_addresses: types::SnapshotValidatorDataItemMap, 
         },
     );
 
-    let rawEvents = Iterator::flatten(mapped.collect_vec().iter());
-    let rawEvents = itertools::Itertools::group_by(rawEvents, |item| item.timestamp)
-        .map(|(ts, deVec)| {
-            let collect = itertools::Itertools::group_by(deVec.iter(), |de| de.delegateAddress)
-                .collect::<types::DelegationEvent>();
-            return (ts, collect);
-        })
-        .collect::<Vec<(f64, types::DelegationEvent)>>()
-        .map(|(ts, deVec)| {
-            return (
-                ts,
-                itertools::Itertools::group_by(deVec.iter(), |de| de.delegateAddress),
-            );
+    let rawEvents = mapped.flatten().collect::<Vec<DelegationEvent>>();
+    let eventsByTimeStamp = HashMap::<i64, Vec<&DelegationEvent<'a>>>::new();
+    for de in rawEvents.iter() {
+        match eventsByTimeStamp.get(de.timestamp) {
+            Some(val) => {
+                val.push(de);
+            }
+            None => {}
+        };
+    }
+    let eventsByDelegateByTimestamp = eventsByTimeStamp.iter().map(|(ts, events)| {});
+    for (ts, events) in eventsByTimeStamp.iter() {
+        let collected = HashMap::<&String, Vec<&&DelegationEvent>>::new();
+        events.iter().for_each(|de| {
+            match collected.get(de.delegateAddress) {
+                Some(val) => {
+                    val.push(de);
+                }
+                None => {
+                    collected.insert(de.delegateAddress, vec![de]);
+                }
+            };
         });
+        return (ts, collected);
+    }
+    // .collect::<Vec<(f64, std::result::Iter<&types::DelegationEvent>)>>()
+    // .map(|(ts, deVec)| {
+    //     return (
+    //         ts,
+    //         itertools::Itertools::group_by(deVec.iter(), |de| de.delegateAddress),
+    //     );
+    // });
 
     // allTimeIntervalAddressEvents = _.mapValues(
     //   allTimeIntervalAddressEvents,
@@ -66,7 +88,7 @@ fn remap_vs_addresses(validator_addresses: types::SnapshotValidatorDataItemMap, 
     //   }
     // );
 
-    return allTimeIntervalAddressEvents;
+    return rawEvents;
 }
 
 fn process_commission_events(commission_events: types::SnapshotTimeSeriesVec) -> Vec<f64> {

@@ -3,8 +3,8 @@ use serde::Deserialize;
 use std::collections::HashMap;
 
 pub struct DelegationEvent<'a> {
-    pub timestamp: f64,
-    pub commission: f64,
+    pub timestamp: &'a i64,
+    pub commission: &'a f64,
     pub amount: &'a f64,
     pub delegateAddress: &'a String,
     pub validatorSifAddress: &'a String,
