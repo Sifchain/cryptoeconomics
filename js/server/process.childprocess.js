@@ -133,7 +133,6 @@ class BackgroundProcessor {
               waitFor: 1000
             })
           ]);
-
     /*
       V8 performance hack.
       Remove reference to previous results so they can be garbage collected.
