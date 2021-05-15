@@ -1,21 +1,25 @@
 use serde_json::Result;
 use std::fs;
+pub mod config;
 mod validator_staking;
+use std::time::Instant;
+
 // mod remap_vs_addresses;
 fn main() {
+    let out = get_processed_vs_data();
+    // println!("{}", out.len());
+
     // process_vs_snapshot();
 }
 
-const EVENT_INTERVAL_MINUTES: i32 = 200;
-
-fn remap_vs_addresses() {}
-
-fn get_processed_vs_data(snapshot: validator_staking::types::Snapshot) {
-    let v = crate::load_snapshot_json();
-    let data = v.data.snapshots_validators[0].snapshot_data.iter();
-    for (key, val) in data {
-        println!("{:?}", &key)
-    }
+fn get_processed_vs_data() {
+    let now = Instant::now();
+    let snapshot = crate::load_snapshot_json();
+    println!("{}", now.elapsed().as_millis());
+    validator_staking::process_data::process_data(snapshot)
+    // for (key, val) in data.iter() {
+    //     println!("{:?}", &key);
+    // }
 }
 
 fn load_snapshot_json() -> validator_staking::types::Snapshot {
@@ -29,11 +33,8 @@ fn load_snapshot_json() -> validator_staking::types::Snapshot {
 #[cfg(test)]
 mod tests {
     #[test]
-    fn load_snapshot_json_test() {
-        let v = crate::load_snapshot_json();
-        let data = v.data.snapshots_validators[0].snapshot_data.iter();
-        for (key, val) in data {
-            println!("{:?}", &key)
-        }
+    fn process_vs_test() {
+        let processed = crate::get_processed_vs_data();
+        println!("{:?}", processed);
     }
 }
