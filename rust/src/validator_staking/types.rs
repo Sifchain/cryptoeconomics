@@ -1,6 +1,6 @@
 use serde;
 use serde::Deserialize;
-use std::collections::HashMap;
+use std::{collections::HashMap, marker::PhantomData};
 
 #[derive(Deserialize, Debug)]
 pub struct ValidatorStakingBucketEvent {
@@ -9,7 +9,7 @@ pub struct ValidatorStakingBucketEvent {
     pub duration: f64,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct UserTicket {
     pub mul: f64,
     pub reward: f64,
@@ -19,28 +19,52 @@ pub struct UserTicket {
     pub humanReadableTimestamp: String,
 }
 
+pub type UserTicketsVec = Vec<UserTicket>;
 #[derive(Deserialize, Debug)]
 pub struct User {
-    pub tickets: Vec<UserTicket>,
+    pub tickets: UserTicketsVec,
     pub claimed: f64,
     pub dispensed: f64,
     pub forfeited: f64,
     pub commissionClaimedAsValidator: f64,
 }
 
+impl User {
+    /// Get a mutable reference to the user's tickets.
+    pub fn tickets_mut(&mut self) -> &mut UserTicketsVec {
+        &mut self.tickets
+    }
+}
+
+pub type ValidatorStakingUsersByAddress = HashMap<String, User>;
+
 #[derive(Deserialize, Debug)]
 pub struct ValidatorStakingRewardState {
     pub timestamp: i64,
     pub rewardBuckets: Vec<ValidatorStakingBucketEvent>,
-    pub users: HashMap<String, User>,
-    // users: {
-    //   /*
-    //   [*]: {
-
-    //   }
-    //   */
-    // },
+    pub users: ValidatorStakingUsersByAddress,
     pub bucketEvent: Option<ValidatorStakingBucketEvent>,
+}
+impl ValidatorStakingRewardState {
+    pub fn createUserIfNotExists(mut self, addr: String) -> &'static User {
+        match self.users.get(&addr) {
+            Some(u) => {}
+            None => {
+                self.users.insert(
+                    addr.clone(),
+                    User {
+                        tickets: vec![],
+                        claimed: 0_f64,
+                        dispensed: 0_f64,
+                        forfeited: 0_f64,
+                        commissionClaimedAsValidator: 0_f64,
+                    },
+                );
+                self.users.get(&addr).unwrap();
+            }
+        }
+        self.users.get(&addr.clone()).unwrap()
+    }
 }
 
 #[derive(Deserialize, Debug)]
