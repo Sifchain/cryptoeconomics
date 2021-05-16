@@ -1,7 +1,8 @@
+use rayon::{iter::*, prelude};
 use serde;
 use serde::Deserialize;
-use std::{collections::HashMap, marker::PhantomData};
-
+use std::collections::HashMap;
+use std::marker::PhantomData;
 #[derive(Deserialize, Debug)]
 pub struct ValidatorStakingBucketEvent {
     pub rowan: f64,
@@ -27,6 +28,7 @@ pub struct User {
     pub dispensed: f64,
     pub forfeited: f64,
     pub commissionClaimedAsValidator: f64,
+    pub address: String,
 }
 
 impl User {
@@ -36,34 +38,33 @@ impl User {
     }
 }
 
-pub type ValidatorStakingUsersByAddress = HashMap<String, User>;
-
 #[derive(Deserialize, Debug)]
 pub struct ValidatorStakingRewardState {
     pub timestamp: i64,
     pub rewardBuckets: Vec<ValidatorStakingBucketEvent>,
-    pub users: ValidatorStakingUsersByAddress,
+    pub users: Vec<User>,
     pub bucketEvent: Option<ValidatorStakingBucketEvent>,
 }
 impl ValidatorStakingRewardState {
-    pub fn createUserIfNotExists(mut self, addr: String) -> &'static User {
-        match self.users.get(&addr) {
-            Some(u) => {}
+    pub fn findUser(mut self, addr: String) -> Option<&'static User> {
+        self.users.par_iter().find_any(|user| user.address == addr)
+    }
+    pub fn findOrCreateUser(mut self, addr: String) -> &'static User {
+        match self.findUser(addr) {
+            Some(u) => u,
             None => {
-                self.users.insert(
-                    addr.clone(),
-                    User {
-                        tickets: vec![],
-                        claimed: 0_f64,
-                        dispensed: 0_f64,
-                        forfeited: 0_f64,
-                        commissionClaimedAsValidator: 0_f64,
-                    },
-                );
-                self.users.get(&addr).unwrap();
+                let user = User {
+                    tickets: vec![],
+                    claimed: 0_f64,
+                    dispensed: 0_f64,
+                    forfeited: 0_f64,
+                    commissionClaimedAsValidator: 0_f64,
+                    address: addr,
+                };
+                self.users.push(user);
+                &user
             }
         }
-        self.users.get(&addr.clone()).unwrap()
     }
 }
 
@@ -75,8 +76,6 @@ pub struct DelegationEvent {
     pub delegateAddress: String,
     pub validatorSifAddress: String,
 }
-
-pub type EventsByUser = HashMap<String, Vec<DelegationEvent>>;
 
 pub type SnapshotTimeSeriesVec = Vec<f64>;
 
