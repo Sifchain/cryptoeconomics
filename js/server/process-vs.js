@@ -58,14 +58,14 @@ function processUserEvents (users, eventsByUser) {
     userEvents.forEach(event => {
       const user = users[event.delegateAddress] || {
         tickets: [],
-        claimed: 0,
+        claimableRewardsOnWithdrawnAssets: 0,
         dispensed: 0,
         forfeited: 0
       };
       users[event.delegateAddress] = user;
       const validator = users[event.validatorSifAddress] || {
         tickets: [],
-        claimed: 0,
+        claimableRewardsOnWithdrawnAssets: 0,
         dispensed: 0,
         forfeited: 0
       };
@@ -124,8 +124,10 @@ function processUserEvents (users, eventsByUser) {
         const { claimed, forfeited } = calculateClaimReward(
           burnedThisValTickets
         );
-        user.claimed += claimed * (1 - event.commission);
-        validator.claimed += claimed * event.commission;
+        user.claimableRewardsOnWithdrawnAssets +=
+          claimed * (1 - event.commission);
+        validator.claimableRewardsOnWithdrawnAssets +=
+          claimed * event.commission;
         validator.commissionClaimed += claimed * event.commission;
         user.forfeited += forfeited;
         user.tickets = otherValTickets.concat(remainingThisValTickets);
@@ -133,8 +135,10 @@ function processUserEvents (users, eventsByUser) {
       if (event.claim) {
         // Never reached in debug. What does this do?
         const { claimed, forfeited } = calculateClaimReward(user.tickets);
-        user.claimed += claimed * (1 - event.commission);
-        validator.claimed += claimed * event.commission;
+        user.claimableRewardsOnWithdrawnAssets +=
+          claimed * (1 - event.commission);
+        validator.claimableRewardsOnWithdrawnAssets +=
+          claimed * event.commission;
         validator.commissionClaimed += claimed * event.commission;
         user.forfeited += forfeited;
         user.tickets = resetTickets(user.tickets);
@@ -157,9 +161,7 @@ function burnTickets (amount, tickets) {
     }
     let amountToRemove = Math.min(amountLeft, ticket.amount);
     const proportionBurned =
-      ticket.amount === 0
-        ? 0
-        : parseFloat(amountToRemove) / parseFloat(ticket.amount);
+      ticket.amount === 0 ? 0 : +amountToRemove / parseFloat(ticket.amount);
     const burnedTicket = {
       ...ticket,
       amount: amountToRemove,

@@ -18,9 +18,11 @@ exports.augmentVSData = data => {
     timestamp.users = _.forEach(timestamp.users, user => {
       const totalTickets = _.sum(user.tickets.map(t => t.amount));
       user.claimableReward =
-        user.claimed + _.sum(user.tickets.map(t => t.reward * t.mul));
+        user.claimableRewardsOnWithdrawnAssets +
+        _.sum(user.tickets.map(t => t.reward * t.mul));
       user.reservedReward =
-        user.claimed + _.sum(user.tickets.map(t => t.reward));
+        user.claimableRewardsOnWithdrawnAssets +
+        _.sum(user.tickets.map(t => t.reward));
       user.totalTickets = totalTickets;
       user.nextRewardShare = totalTickets / timestampTotalTickets;
     });

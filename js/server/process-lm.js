@@ -50,7 +50,7 @@ function processUserEvents (users, events) {
   events.forEach(event => {
     const user = users[event.address] || {
       tickets: [],
-      claimed: 0,
+      claimableRewardsOnWithdrawnAssets: 0,
       dispensed: 0,
       forfeited: 0
     };
@@ -79,13 +79,13 @@ function processUserEvents (users, events) {
         user.tickets
       );
       const { claimed, forfeited } = calculateClaimReward(burnedTickets);
-      user.claimed += claimed;
+      user.claimableRewardsOnWithdrawnAssets += claimed;
       user.forfeited += forfeited;
       user.tickets = remainingTickets;
     }
     if (event.claim) {
       const { claimed, forfeited } = calculateClaimReward(user.tickets);
-      user.claimed += claimed;
+      user.claimableRewardsOnWithdrawnAssets += claimed;
       user.forfeited += forfeited;
       user.tickets = resetTickets(user.tickets);
     }
