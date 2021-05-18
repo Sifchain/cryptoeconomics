@@ -1,6 +1,6 @@
 const serverURL = (() => {
   let environment = process.env.REACT_APP_DEPLOYMENT_TAG;
-  environment = 'production';
+  // environment = 'production';
   switch (environment) {
     case 'production':
       return 'https://api-cryptoeconomics.sifchain.finance/api';

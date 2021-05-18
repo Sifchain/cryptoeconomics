@@ -4,6 +4,7 @@ const { getTimeIndex } = require('./util/getTimeIndex');
 // implements process.js in separate thread
 const { createMultiprocessActionDispatcher } = require('./processing-handler');
 
+// require("./simple").createValidatorStakingTimeSeries();
 // interfaces with `./process.childprocess.js`
 const processingHandler = createMultiprocessActionDispatcher();
 

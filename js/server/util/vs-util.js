@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const { DelegateEvent } = require('../types');
 
 // Restructure snapshot address liquidity event entries into per-time interval aggregated event form
 // (see global-state.md for example)
@@ -18,13 +19,13 @@ function remapVSAddresses (vaLAddresses, timeInterval) {
               if (commissionRateDelta < 0) {
                 console.log('COMMISSION RATE < 0. NEEDS HANDLING');
               }
-              return {
+              return Object.assign(new DelegateEvent(), {
                 timestamp: (index + 1) * timeInterval,
                 commission: commissionRateDelta,
                 amount,
                 delegateAddress,
                 validatorSifAddress: valStakeAddress
-              };
+              });
             })
             .filter(e => e.amount !== 0);
         })
@@ -39,7 +40,10 @@ function remapVSAddresses (vaLAddresses, timeInterval) {
   allTimeIntervalEvents = _.mapValues(
     allTimeIntervalEvents,
     timeIntervalEvents => {
-      return timeIntervalEvents.map(event => _.omit(event, 'timestamp'));
+      return timeIntervalEvents.map(event => {
+        event.clearTimestamp();
+        return event;
+      });
     }
   );
 
@@ -57,11 +61,10 @@ function remapVSAddresses (vaLAddresses, timeInterval) {
         timeIntervalAddressEvents,
         (addressEvents, delegateAddress) => {
           return addressEvents.map(addressEvent => {
-            return {
-              ...addressEvent,
+            return addressEvent.cloneWith({
               timestamp: parseInt(timeInterval),
               delegateAddress
-            };
+            });
           });
         }
       );

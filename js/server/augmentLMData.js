@@ -13,17 +13,17 @@ exports.augmentLMData = (data) => {
         return _.sum(user.tickets.map((t) => t.amount));
       })
     );
-    timestamp.totalTickets = timestampTotalTickets;
+    timestamp.totalTicketsAmountSum = timestampTotalTickets;
     timestamp.users = _.forEach(timestamp.users, (user) => {
-      const totalTickets = _.sum(user.tickets.map((t) => t.amount));
-      user.claimableReward =
+      const totalTicketsAmountSum = _.sum(user.tickets.map((t) => t.amount));
+      user.currentTotalClaimableReward =
         user.claimableRewardsOnWithdrawnAssets +
         _.sum(user.tickets.map((t) => t.reward * t.mul));
       user.reservedReward =
         user.claimableRewardsOnWithdrawnAssets +
         _.sum(user.tickets.map((t) => t.reward));
-      user.totalTickets = totalTickets;
-      user.nextRewardShare = totalTickets / timestampTotalTickets;
+      user.totalTicketsAmountSum = totalTicketsAmountSum;
+      user.nextRewardShare = totalTicketsAmountSum / timestampTotalTickets;
     });
   });
 
@@ -50,7 +50,7 @@ exports.augmentLMData = (data) => {
       let maturityDate = lastUserMaturityDate;
       let maturityDateISO = lastUserMaturityDateISO;
       let maturityDateMS = lastUserMaturityDateMS;
-      const userClaimableReward = user.claimableReward;
+      const userClaimableReward = user.currentTotalClaimableReward;
       const userReservedReward = user.reservedReward;
       if (
         maturityDate === undefined && // maturity date not yet reached
@@ -67,8 +67,10 @@ exports.augmentLMData = (data) => {
       user.maturityDate = maturityDate;
       user.maturityDateISO = maturityDateISO;
       user.maturityDateMS = maturityDateMS;
-      user.futureReward = user.totalRewardAtMaturity - user.claimableReward;
-      user.currentYieldOnTickets = user.futureReward / user.totalTickets;
+      user.futureReward =
+        user.totalRewardAtMaturity - user.currentTotalClaimableReward;
+      user.currentYieldOnTickets =
+        user.futureReward / user.totalTicketsAmountSum;
       const nextBucketGlobalReward = timestamp.rewardBuckets.reduce(
         (accum, bucket) => {
           return accum + bucket.initialRowan / bucket.duration;
@@ -79,7 +81,7 @@ exports.augmentLMData = (data) => {
       user.nextRewardProjectedFutureReward =
         (user.nextReward / 200) * 60 * 24 * 365;
       user.nextRewardProjectedAPYOnTickets =
-        user.nextRewardProjectedFutureReward / user.totalTickets;
+        user.nextRewardProjectedFutureReward / user.totalTicketsAmountSum;
     });
   });
 
@@ -131,8 +133,8 @@ exports.augmentLMData = (data) => {
     const timestamp = data[i];
     const userRewards = top50Users.reduce((accum, user) => {
       const userAtTimestamp = timestamp.users[user.address] || {};
-      if (userAtTimestamp.claimableReward) {
-        accum[user.address] = userAtTimestamp.claimableReward;
+      if (userAtTimestamp.currentTotalClaimableReward) {
+        accum[user.address] = userAtTimestamp.currentTotalClaimableReward;
       }
       return accum;
     }, {});

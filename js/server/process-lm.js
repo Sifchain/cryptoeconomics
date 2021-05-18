@@ -5,7 +5,9 @@ const {
   MULTIPLIER_MATURITY,
   DEPOSITS_ALLOWED_DURATION_MS
 } = require('./config');
+const { GlobalTimestampState, User } = require('./types');
 const { processRewardBuckets } = require('./util/bucket-util');
+
 function processLMGlobalState (lastGlobalState, timestamp, events) {
   const { rewardBuckets, globalRewardAccrued } = processRewardBuckets(
     lastGlobalState.rewardBuckets,
@@ -13,11 +15,11 @@ function processLMGlobalState (lastGlobalState, timestamp, events) {
   );
   let users = processUserTickets(lastGlobalState.users, globalRewardAccrued);
   users = processUserEvents(users, events);
-  return {
-    timestamp,
-    rewardBuckets,
-    users
-  };
+  let globalState = new GlobalTimestampState();
+  globalState.timestamp = timestamp;
+  globalState.rewardBuckets = rewardBuckets;
+  globalState.users = users;
+  return globalState;
 }
 
 function processUserTickets (users, globalRewardAccrued) {
@@ -48,12 +50,7 @@ function processUserTickets (users, globalRewardAccrued) {
 
 function processUserEvents (users, events) {
   events.forEach(event => {
-    const user = users[event.address] || {
-      tickets: [],
-      claimableRewardsOnWithdrawnAssets: 0,
-      dispensed: 0,
-      forfeited: 0
-    };
+    const user = users[event.address] || new User();
     if (event.amount > 0) {
       if (
         // is after deposits are allowed
@@ -107,9 +104,7 @@ function burnTickets (amount, tickets) {
     }
     let amountToRemove = Math.min(amountLeft, ticket.amount);
     const proportionBurned =
-      ticket.amount === 0
-        ? 0
-        : parseFloat(amountToRemove) / parseFloat(ticket.amount);
+      ticket.amount === 0 ? 0 : +amountToRemove / parseFloat(ticket.amount);
     const burnedTicket = {
       ...ticket,
       amount: amountToRemove,

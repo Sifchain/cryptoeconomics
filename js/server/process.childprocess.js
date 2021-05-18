@@ -8,6 +8,7 @@ const { getProcessedLMData, getProcessedVSData } = require('./process');
 const { getUserData, getUserTimeSeriesData } = require('./user');
 const { retryOnFail } = require('./util/retryOnFail');
 process.setMaxListeners(100000);
+
 /*
   Handles:
     * Snapshot reloading
@@ -163,12 +164,12 @@ class BackgroundProcessor {
       throw error;
     }
 
-    // const used = process.memoryUsage();
-    // for (let key in used) {
-    //   console.log(
-    //     `${key} ${Math.round((used[key] / 1024 / 1024) * 100) / 100} MB`
-    //   );
-    // }
+    const used = process.memoryUsage();
+    for (let key in used) {
+      console.log(
+        `${key} ${Math.round((used[key] / 1024 / 1024) * 100) / 100} MB`
+      );
+    }
   }
 
   static start () {
