@@ -1,6 +1,6 @@
-const _ = require("lodash");
-const moment = require("moment");
-const { START_DATETIME } = require("./config");
+const _ = require('lodash');
+const moment = require('moment');
+const { START_DATETIME } = require('./config');
 
 exports.augmentLMData = (data) => {
   const users = _.uniq(
@@ -59,8 +59,8 @@ exports.augmentLMData = (data) => {
       ) {
         const maturityDateMoment = moment
           .utc(START_DATETIME)
-          .add(timestamp.timestamp, "m");
-        maturityDate = maturityDateMoment.format("MMMM Do YYYY, h:mm:ss a");
+          .add(timestamp.timestamp, 'm');
+        maturityDate = maturityDateMoment.format('MMMM Do YYYY, h:mm:ss a');
         maturityDateMS = maturityDateMoment.valueOf();
         maturityDateISO = maturityDateMoment.toISOString();
       }
@@ -90,7 +90,7 @@ exports.augmentLMData = (data) => {
   data.forEach((timestamp) => {
     const timestampDate = moment
       .utc(START_DATETIME)
-      .add(timestamp.timestamp, "m");
+      .add(timestamp.timestamp, 'm');
     _.forEach(timestamp.users, (user, address) => {
       const lastUser = lastTimestamp.users[address] || {};
       user.maturityDate = lastUser.maturityDate;
@@ -122,8 +122,8 @@ exports.augmentLMData = (data) => {
   }));
   const top50Users = _.orderBy(
     finalTimestampUsers,
-    ["totalRewardAtMaturity"],
-    ["desc"]
+    ['totalRewardAtMaturity'],
+    ['desc']
   ).slice(0, 50);
   const blankUserRewards = top50Users.reduce((accum, user) => {
     accum[user.address] = 0;
