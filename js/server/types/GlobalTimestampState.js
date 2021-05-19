@@ -1,4 +1,5 @@
 const config = require('../config');
+const { User } = require('./User');
 class GlobalTimestampState {
   constructor () {
     this.totalTicketsAmountSum = 0;
@@ -6,6 +7,16 @@ class GlobalTimestampState {
     this.timestamp = -1;
     this.rewardBuckets = [];
     this.bucketEvent = undefined;
+  }
+
+  static fromJSON (props) {
+    let next = Object.assign(new this(), props);
+    next.users = Object.fromEntries(
+      Object.entries(next.users).map(([k, v]) => {
+        return [k, User.fromJSON(v)];
+      })
+    );
+    return next;
   }
 
   static getInitial () {

@@ -8,15 +8,37 @@ class UserTicket {
     this.reward = 0;
     this.validatorSifAddress = null;
     this.timestamp = null;
-    this.commissionRewardsClaimedByValidators = 0;
+    this.rewardDelta = 0;
+    this.poolDominanceRatio = 0;
+    this.commissionRewardsByValidator = {};
+  }
+
+  static fromJSON (props) {
+    return Object.assign(new this(), props);
   }
 
   cloneWith (props) {
-    return Object.assign(Object.assign(new UserTicket(), this), props);
+    let next = new UserTicket();
+    next = Object.assign(Object.assign(next, this), props);
+    if (props.commissionRewardsByValidator) {
+      next.commissionRewardsByValidator = {
+        ...next.commissionRewardsByValidator
+      };
+    }
+    return next;
   }
 
-  addCommissionRewardClaimedByValidator (commissionReward) {
-    this.commissionRewardsClaimedByValidators += commissionReward;
+  addCommissionRewardByValidator (commissionReward, validatorSifAddress) {
+    let currentClaims =
+      this.commissionRewardsByValidator[validatorSifAddress] || 0;
+    this.commissionRewardsByValidator[validatorSifAddress] =
+      currentClaims + commissionReward;
+  }
+
+  getClaimableCommissionRewardByValidator (validatorSifAddress) {
+    let currentClaims =
+      this.commissionRewardsByValidator[validatorSifAddress] || 0;
+    return currentClaims * this.mul;
   }
 
   static fromEvent (event, mul) {

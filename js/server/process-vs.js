@@ -35,12 +35,16 @@ function processUserTickets (users, globalRewardAccrued) {
   );
   const updatedUsers = _.mapValues(users, user => {
     return user.cloneWith({
+      // reset each round because this is both incrementally calculated and based upon multiplier
+      totalClaimableCommissionsOnDelegatorRewards: 0,
       tickets: user.tickets.map(ticket => {
-        const additionalAmount =
-          (ticket.amount / (totalShares || 1)) * globalRewardAccrued;
+        const poolDominanceRatio = ticket.amount / (totalShares || 1);
+        const rewardDelta = poolDominanceRatio * globalRewardAccrued;
         return ticket.cloneWith({
           mul: Math.min(ticket.mul + 0.75 / MULTIPLIER_MATURITY, 1),
-          reward: ticket.reward + additionalAmount
+          reward: ticket.reward + rewardDelta,
+          rewardDelta: rewardDelta,
+          poolDominanceRatio
         });
       })
     });
@@ -91,13 +95,6 @@ function processUserEvents (users, eventsByUser) {
         user.addTicket(newTicket);
       }
 
-      // Collect commission before tickets can be altered by withdrawal
-      user.collectValidatorCommissionOnLatestUnclaimedRewards(
-        event,
-        validator,
-        previousTickets
-      );
-
       // Withdrawing funds
       if (event.amount < 0) {
         user.withdrawStakeAsDelegator(event, validator);
@@ -113,7 +110,7 @@ function processUserEvents (users, eventsByUser) {
       //     claimed * (1 - event.commission);
       //   validator.claimableRewardsOnWithdrawnAssets +=
       //     claimed * event.commission;
-      //   validator.claimableCommissionsOnDelegatorRewards +=
+      //   validator.totalClaimableCommissionsOnDelegatorRewards +=
       //     claimed * event.commission;
       //   user.forfeited += forfeited;
       //   user.tickets = resetTickets(user.tickets);

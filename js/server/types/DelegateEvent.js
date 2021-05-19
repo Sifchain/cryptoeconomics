@@ -11,6 +11,10 @@ class DelegateEvent {
     this.timestamp = undefined;
   }
 
+  static fromJSON (props) {
+    return Object.assign(new this(), props);
+  }
+
   cloneWith (props) {
     return Object.assign(Object.assign(new DelegateEvent(), this), props);
   }

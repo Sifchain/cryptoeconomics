@@ -3,15 +3,21 @@ const moment = require('moment');
 const { START_DATETIME } = require('./config');
 const { GlobalTimestampState, User } = require('./types');
 
-exports.augmentVSData = globalTimestampStates => {
-  globalTimestampStates.forEach(state => {
+exports.augmentVSData = (globalTimestampStates) => {
+  globalTimestampStates.forEach((state) => {
     const timestampTicketsAmountSum = _.sum(
-      _.map(state.users, user => {
-        return _.sum(user.tickets.map(t => t.amount));
+      _.map(state.users, (user) => {
+        return _.sum(user.tickets.map((t) => t.amount));
       })
     );
     state.totalTicketsAmountSum = timestampTicketsAmountSum;
-    state.users = _.forEach(state.users, user => {
+    state.users = _.forEach(state.users, (user, delegatorSifAddress) => {
+      user.collectValidatorsCommissionsOnLatestUnclaimedRewards(
+        (validatorSifAddress) => {
+          return state.users[validatorSifAddress];
+        },
+        delegatorSifAddress
+      );
       user.updateRewards(timestampTicketsAmountSum);
     });
   });
@@ -20,9 +26,10 @@ exports.augmentVSData = globalTimestampStates => {
     globalTimestampStates[globalTimestampStates.length - 1] ||
     new GlobalTimestampState();
 
-  globalTimestampStates.forEach(timestamp => {
+  globalTimestampStates.forEach((timestamp) => {
     _.forEach(timestamp.users, (user, address) => {
       const userAtMaturity = finalTimestampState.users[address] || new User();
+      // user.recalculateTotalClaimableCommissionsOnDelegatorRewards();
       user.updateUserMaturityRewards(userAtMaturity);
     });
   });
@@ -53,7 +60,7 @@ exports.augmentVSData = globalTimestampStates => {
   const lastTimestamp =
     globalTimestampStates[globalTimestampStates.length - 1] ||
     new GlobalTimestampState();
-  globalTimestampStates.forEach(timestampState => {
+  globalTimestampStates.forEach((timestampState) => {
     const timestampDate = moment
       .utc(START_DATETIME)
       .add(timestampState.timestamp, 'm');
@@ -66,12 +73,12 @@ exports.augmentVSData = globalTimestampStates => {
   const rewardBucketsTimeSeries = globalTimestampStates
     .map((timestampData, timestamp) => {
       const rewardBuckets = timestampData.rewardBuckets;
-      const totalCurrentRowan = _.sum(rewardBuckets.map(b => b.rowan));
-      const totalInitialRowan = _.sum(rewardBuckets.map(b => b.initialRowan));
+      const totalCurrentRowan = _.sum(rewardBuckets.map((b) => b.rowan));
+      const totalInitialRowan = _.sum(rewardBuckets.map((b) => b.initialRowan));
       return {
         timestamp,
         totalCurrentRowan,
-        totalInitialRowan
+        totalInitialRowan,
       };
     })
     .slice(1);
@@ -102,18 +109,18 @@ exports.augmentVSData = globalTimestampStates => {
     stackClaimableRewardData.push({
       timestamp: timestamp.timestamp,
       ...blankUserRewards,
-      ...userRewards
+      ...userRewards,
     });
   }
 
   const uniqueUserAddresses = _.uniq(
-    _.flatten(globalTimestampStates.map(state => Object.keys(state.users)))
+    _.flatten(globalTimestampStates.map((state) => Object.keys(state.users)))
   );
 
   return {
     users: uniqueUserAddresses,
     processedData: globalTimestampStates,
     rewardBucketsTimeSeries,
-    stackClaimableRewardData
+    stackClaimableRewardData,
   };
 };

@@ -121,7 +121,7 @@ class BackgroundProcessor {
       process.env.LOCAL_SNAPSHOT_DEV_MODE === 'enabled'
         ? [
             require('../snapshots/snapshot_lm_latest.json'),
-            require('../snapshots/snapshot_vs_latest.json')
+            require('../snapshots/test.vs.json')
           ]
         : await Promise.all([
             retryOnFail({

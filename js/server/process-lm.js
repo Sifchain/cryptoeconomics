@@ -40,7 +40,8 @@ function processUserTickets (users, globalRewardAccrued) {
         return {
           ...ticket,
           mul: Math.min(ticket.mul + 0.75 / MULTIPLIER_MATURITY, 1),
-          reward: ticket.reward + additionalAmount
+          reward: ticket.reward + additionalAmount,
+          rewardDelta: additionalAmount
         };
       })
     };
