@@ -4,6 +4,12 @@ use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 
 use super::types::{self, DelegationEvent};
 
+/*
+    Needs to return a dictionary mapping Timestamp -> DelegatorAddress -> Users[]
+    Currently only does this with DelegatorAddress -> Users.
+    One correct mapping is made, relative changes will need to be made
+    in `process_state#process_user_events()`
+*/
 pub fn remap_vs_addresses<'a>(
     snapshot: types::Snapshot,
     timeInterval: f64,
