@@ -75,14 +75,20 @@ class User {
   }
 
   updateRewards (timestampTicketsAmountSum) {
-    this.totalTicketsAmountSum = _.sum(this.tickets.map(t => t.amount));
+    let totalAmount = 0;
+    let totalReward = 0;
+    let totalClaimableReward = 0;
+    this.tickets.forEach(t => {
+      totalAmount += t.amount;
+      totalReward += t.reward;
+      totalClaimableReward += t.reward * t.mul;
+    });
+    this.totalTicketsAmountSum = totalAmount;
     this.currentTotalClaimableReward =
       this.claimableRewardsOnWithdrawnAssets +
-      _.sum(this.tickets.map(t => t.reward * t.mul)) +
+      totalClaimableReward +
       this.totalClaimableCommissionsOnDelegatorRewards;
-    this.reservedReward =
-      this.claimableRewardsOnWithdrawnAssets +
-      _.sum(this.tickets.map(t => t.reward));
+    this.reservedReward = this.claimableRewardsOnWithdrawnAssets + totalReward;
     this.nextRewardShare =
       this.totalTicketsAmountSum / timestampTicketsAmountSum;
   }

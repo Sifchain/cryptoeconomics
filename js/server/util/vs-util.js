@@ -11,7 +11,14 @@ function remapVSAddresses (vaLAddresses, timeInterval) {
       // and shouldn't be ignored as in `processCommissionEvents(commissionEvents)`
       // const commissionTimeIntervals = processCommissionEvents(commissionEvents);
       const commissionTimeIntervals = commissionEvents;
-      const delegates = Object.keys(valAddressData);
+
+      /*
+        `rewardAddressDesignatedByValidator` is purposefully being set by the data team 
+         as the first property key in the validator's delegate dictionary
+      */
+      const [rewardAddressDesignatedByValidator, ...delegates] = Object.keys(
+        valAddressData
+      );
 
       const valDelegateEvents = delegates
         .map(delegateAddress => {
@@ -27,7 +34,7 @@ function remapVSAddresses (vaLAddresses, timeInterval) {
                 commission: commissionRate,
                 amount,
                 delegateAddress,
-                validatorSifAddress: valStakeAddress
+                validatorSifAddress: rewardAddressDesignatedByValidator
               });
             })
             .filter(e => e.amount !== 0);

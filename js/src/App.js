@@ -116,7 +116,7 @@ class App extends React.Component {
       return (
         <div className='loading-screen'>
           <div className='logo-loader'>
-            <img src='Sifchain-logo-gold.svg' />;
+            <img src='Sifchain-logo-gold.svg' />
             <div className='logo-loader-overlay' />
           </div>
         </div>
