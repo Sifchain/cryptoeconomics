@@ -7,6 +7,9 @@ function remapLMAddresses (addresses, timeInterval) {
     const addressTokenEvents = _.map(tokens, (timeIntervals, token) => {
       return timeIntervals
         .map((amount, index) => {
+          if (amount < 0) {
+            // debugger;
+          }
           return {
             timestamp: (index + 1) * timeInterval,
             amount,

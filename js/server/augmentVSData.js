@@ -1,124 +1,125 @@
 const _ = require('lodash');
 const moment = require('moment');
 const { START_DATETIME } = require('./config');
+const { GlobalTimestampState, User } = require('./types');
 
-exports.augmentVSData = data => {
-  const users = _.uniq(
-    _.flatten(data.map(timestamp => Object.keys(timestamp.users)))
-  );
+exports.augmentVSData = (globalTimestampStates) => {
+  globalTimestampStates.forEach((state) => {
+    state.users = _.forEach(state.users, (user, delegatorSifAddress) => {
+      /*
+        Must be run first on every user because delegators
+        store validators' addresses as references (and vice-versa) to be used in
+        `User(Validator)#recalculateTotalClaimableCommissionsOnDelegatorRewards`
+        via the user getter function passed as a callback.
 
-  data.forEach(timestamp => {
-    const timestampTotalTickets = _.sum(
-      _.map(timestamp.users, user => {
-        return _.sum(user.tickets.map(t => t.amount));
+        If `User#recalculateTotalClaimableCommissionsOnDelegatorRewards` is run
+        immediately after this, within this loop iteration, it will only
+        account for delegate rewards on delegates that were processed before it
+        and leave out all those processed after.
+      */
+      user.collectValidatorsCommissionsOnLatestUnclaimedRewards(
+        (validatorSifAddress) => {
+          return state.users[validatorSifAddress];
+        },
+        delegatorSifAddress
+      );
+    });
+  });
+
+  globalTimestampStates.forEach((state) => {
+    const timestampTicketsAmountSum = _.sum(
+      _.map(state.users, (user) => {
+        return _.sum(user.tickets.map((t) => t.amount));
       })
     );
-    timestamp.totalTickets = timestampTotalTickets;
-    timestamp.users = _.forEach(timestamp.users, user => {
-      const totalTickets = _.sum(user.tickets.map(t => t.amount));
-      user.claimableReward =
-        user.claimed + _.sum(user.tickets.map(t => t.reward * t.mul));
-      user.reservedReward =
-        user.claimed + _.sum(user.tickets.map(t => t.reward));
-      user.totalTickets = totalTickets;
-      user.nextRewardShare = totalTickets / timestampTotalTickets;
-    });
-  });
-
-  const finalTimestamp = data[data.length - 1] || { users: [] };
-  data.forEach(timestamp => {
-    _.forEach(timestamp.users, (user, address) => {
-      const userAtMaturity = finalTimestamp.users[address] || {};
-      user.totalRewardAtMaturity = userAtMaturity.claimableReward;
-      user.ticketAmountAtMaturity = _.sum(
-        finalTimestamp.users[address].tickets.map(ticket => ticket.amount)
+    state.totalTicketsAmountSum = timestampTicketsAmountSum;
+    _.forEach(state.users, (user, address) => {
+      /*
+        used to calculate ROI stats (APY, yield, etc.)
+        in `User#updateRewards`
+      */
+      user.recalculateTotalClaimableCommissionsOnDelegatorRewards(
+        (addr) => state.users[addr],
+        address
       );
-      user.yieldAtMaturity =
-        user.totalRewardAtMaturity / user.ticketAmountAtMaturity;
+      /*
+        Must be run on every user before `User#updateUserMaturityRewards`
+        `User#updateUserMaturityRewards` uses the rewards calulated here.
+        Must be run after `User#recalculateTotalClaimableCommissionsOnDelegatorRewards`
+        because `User#updateRewards` uses `User.totalClaimableCommissionsOnDelegatorRewards`,
+        which is calculated in the former method.
+      */
+      user.updateRewards(timestampTicketsAmountSum);
     });
   });
 
-  data.forEach((timestamp, timestampIndex) => {
+  const finalTimestampState =
+    globalTimestampStates[globalTimestampStates.length - 1] ||
+    new GlobalTimestampState();
+
+  globalTimestampStates.forEach((timestamp) => {
     _.forEach(timestamp.users, (user, address) => {
-      const prevTimestamp = data[timestampIndex - 1] || { users: [] };
-      const lastUser = prevTimestamp.users[address] || {};
-      const lastUserMaturityDate = lastUser.maturityDate;
-      const lastUserMaturityDateISO = lastUser.maturityDateISO;
-      let maturityDate = lastUserMaturityDate;
-      let maturityDateISO = lastUserMaturityDateISO;
-      const lastUserMaturityDateMs = lastUser.maturityDateMs;
-      let maturityDateMs = lastUserMaturityDateMs;
-      const userClaimableReward = user.claimableReward;
-      const userReservedReward = user.reservedReward;
-      let maturityDateMoment;
-      if (
-        maturityDate === undefined && // maturity date not yet reached
-        timestamp.rewardBuckets.length === 0 && // reward period is over
-        userClaimableReward === userReservedReward // rewards have matured
-      ) {
-        maturityDateMoment = moment
-          .utc(START_DATETIME)
-          .add(timestamp.timestamp, 'm');
-        maturityDate = maturityDateMoment.format('MMMM Do YYYY, h:mm:ss a');
-        maturityDateMs = maturityDateMoment.valueOf();
-        maturityDateISO = user.maturityDateISO = maturityDateMoment.toISOString();
-      }
-      user.maturityDate = maturityDate;
-      user.maturityDateISO = maturityDateISO;
-      user.maturityDateMs = maturityDateMs;
-      user.futureReward = user.totalRewardAtMaturity - user.claimableReward;
-      user.currentYieldOnTickets = user.futureReward / user.totalTickets;
-      const nextBucketGlobalReward = timestamp.rewardBuckets.reduce(
+      const userAtMaturity = finalTimestampState.users[address] || new User();
+      user.updateUserMaturityRewards(userAtMaturity);
+    });
+  });
+
+  globalTimestampStates.forEach((timestampState, timestampIndex) => {
+    _.forEach(timestampState.users, (user, address) => {
+      const prevTimestamp =
+        globalTimestampStates[timestampIndex - 1] || new GlobalTimestampState();
+      const userAtPrevTimestamp = prevTimestamp.users[address] || new User();
+      const isAfterRewardPeriod = timestampState.rewardBuckets.length === 0;
+      const currentTimestampInMinutes = timestampState.timestamp;
+      const nextBucketGlobalReward = timestampState.rewardBuckets.reduce(
         (accum, bucket) => {
           return accum + bucket.initialRowan / bucket.duration;
         },
         0
       );
-      user.nextReward = user.nextRewardShare * nextBucketGlobalReward;
-      user.nextRewardProjectedFutureReward =
-        (user.nextReward / 200) * 60 * 24 * 365;
-      user.nextRewardProjectedAPYOnTickets =
-        user.nextRewardProjectedFutureReward / user.totalTickets;
+      user.updateUserMaturityDates(
+        userAtPrevTimestamp,
+        isAfterRewardPeriod,
+        currentTimestampInMinutes,
+        nextBucketGlobalReward
+      );
     });
   });
 
   // fill in old timestamps with maturity date now that we have it
-  const lastTimestamp = data[data.length - 1] || { users: [] };
-  data.forEach(timestamp => {
+  const lastTimestamp =
+    globalTimestampStates[globalTimestampStates.length - 1] ||
+    new GlobalTimestampState();
+  globalTimestampStates.forEach((timestampState) => {
     const timestampDate = moment
       .utc(START_DATETIME)
-      .add(timestamp.timestamp, 'm');
-    _.forEach(timestamp.users, (user, address) => {
-      const lastUser = lastTimestamp.users[address] || {};
-      user.maturityDate = lastUser.maturityDate;
-      user.maturityDateISO = lastUser.maturityDateISO;
-      const msToMaturity = lastUser.maturityDateMs - timestampDate.valueOf();
-      user.yearsToMaturity = msToMaturity / 1000 / 60 / 60 / 24 / 365;
-      user.currentAPYOnTickets =
-        user.currentYieldOnTickets / user.yearsToMaturity;
+      .add(timestampState.timestamp, 'm');
+    _.forEach(timestampState.users, (user, address) => {
+      const lastUser = lastTimestamp.users[address] || new User();
+      user.updateMaturityTimeProps(lastUser, timestampDate.valueOf());
     });
   });
 
-  const rewardBucketsTimeSeries = data
+  const rewardBucketsTimeSeries = globalTimestampStates
     .map((timestampData, timestamp) => {
       const rewardBuckets = timestampData.rewardBuckets;
-      const totalCurrentRowan = _.sum(rewardBuckets.map(b => b.rowan));
-      const totalInitialRowan = _.sum(rewardBuckets.map(b => b.initialRowan));
+      const totalCurrentRowan = _.sum(rewardBuckets.map((b) => b.rowan));
+      const totalInitialRowan = _.sum(rewardBuckets.map((b) => b.initialRowan));
       return {
         timestamp,
         totalCurrentRowan,
-        totalInitialRowan
+        totalInitialRowan,
       };
     })
     .slice(1);
 
   const stackClaimableRewardData = [];
-  const finalTimestampUsers = _.map(finalTimestamp.users, (u, address) => ({
-    ...u,
-    address
-  }));
+  const finalTimestampStateUsers = _.map(
+    finalTimestampState.users,
+    (u, address) => u.cloneWith({ address })
+  );
   const top50Users = _.orderBy(
-    finalTimestampUsers,
+    finalTimestampStateUsers,
     ['totalRewardAtMaturity'],
     ['desc']
   ).slice(0, 50);
@@ -126,26 +127,30 @@ exports.augmentVSData = data => {
     accum[user.address] = 0;
     return accum;
   }, {});
-  for (let i = 1; i < data.length; i++) {
-    const timestamp = data[i];
+  for (let i = 1; i < globalTimestampStates.length; i++) {
+    const timestamp = globalTimestampStates[i];
     const userRewards = top50Users.reduce((accum, user) => {
-      const userAtTimestamp = timestamp.users[user.address] || {};
-      if (userAtTimestamp.claimableReward) {
-        accum[user.address] = userAtTimestamp.claimableReward;
+      const userAtTimestamp = timestamp.users[user.address] || new User();
+      if (userAtTimestamp.currentTotalClaimableReward) {
+        accum[user.address] = userAtTimestamp.currentTotalClaimableReward;
       }
       return accum;
     }, {});
     stackClaimableRewardData.push({
       timestamp: timestamp.timestamp,
       ...blankUserRewards,
-      ...userRewards
+      ...userRewards,
     });
   }
 
+  const uniqueUserAddresses = _.uniq(
+    _.flatten(globalTimestampStates.map((state) => Object.keys(state.users)))
+  );
+
   return {
-    users,
-    processedData: data,
+    users: uniqueUserAddresses,
+    processedData: globalTimestampStates,
     rewardBucketsTimeSeries,
-    stackClaimableRewardData
+    stackClaimableRewardData,
   };
 };

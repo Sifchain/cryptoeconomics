@@ -1,3 +1,4 @@
 snapshots/
 node_modules/
 build/
+server/simplify.js

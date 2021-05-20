@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const { DelegateEvent } = require('../types');
 
 // Restructure snapshot address liquidity event entries into per-time interval aggregated event form
 // (see global-state.md for example)
@@ -6,25 +7,35 @@ function remapVSAddresses (vaLAddresses, timeInterval) {
   const mapped = _.map(
     vaLAddresses,
     ({ commission: commissionEvents, ...valAddressData }, valStakeAddress) => {
-      const commissionTimeIntervals = processCommissionEvents(commissionEvents);
-      const delegates = Object.keys(valAddressData);
+      // Per data team, commission rates with value of zero are actually 0% commissions
+      // and shouldn't be ignored as in `processCommissionEvents(commissionEvents)`
+      // const commissionTimeIntervals = processCommissionEvents(commissionEvents);
+      const commissionTimeIntervals = commissionEvents;
+
+      /*
+        `rewardAddressDesignatedByValidator` is purposefully being set by the data team 
+         as the first property key in the validator's delegate dictionary
+      */
+      const [rewardAddressDesignatedByValidator, ...delegates] = Object.keys(
+        valAddressData
+      );
 
       const valDelegateEvents = delegates
         .map(delegateAddress => {
           const delegateTimeIntervals = valAddressData[delegateAddress].rowan;
           return delegateTimeIntervals
             .map((amount, index) => {
-              const commissionRateDelta = commissionTimeIntervals[index];
-              if (commissionRateDelta < 0) {
+              const commissionRate = commissionTimeIntervals[index];
+              if (commissionRate < 0) {
                 console.log('COMMISSION RATE < 0. NEEDS HANDLING');
               }
-              return {
+              return Object.assign(new DelegateEvent(), {
                 timestamp: (index + 1) * timeInterval,
-                commission: commissionRateDelta,
+                commission: commissionRate,
                 amount,
                 delegateAddress,
-                validatorSifAddress: valStakeAddress
-              };
+                validatorSifAddress: rewardAddressDesignatedByValidator
+              });
             })
             .filter(e => e.amount !== 0);
         })
@@ -39,7 +50,10 @@ function remapVSAddresses (vaLAddresses, timeInterval) {
   allTimeIntervalEvents = _.mapValues(
     allTimeIntervalEvents,
     timeIntervalEvents => {
-      return timeIntervalEvents.map(event => _.omit(event, 'timestamp'));
+      return timeIntervalEvents.map(event => {
+        event.clearTimestamp();
+        return event;
+      });
     }
   );
 
@@ -57,11 +71,10 @@ function remapVSAddresses (vaLAddresses, timeInterval) {
         timeIntervalAddressEvents,
         (addressEvents, delegateAddress) => {
           return addressEvents.map(addressEvent => {
-            return {
-              ...addressEvent,
+            return addressEvent.cloneWith({
               timestamp: parseInt(timeInterval),
               delegateAddress
-            };
+            });
           });
         }
       );
@@ -71,22 +84,22 @@ function remapVSAddresses (vaLAddresses, timeInterval) {
   return allTimeIntervalAddressEvents;
 }
 
-function processCommissionEvents (commissionEvents) {
-  const commission = [commissionEvents[0]];
-  for (let i = 1; i < commissionEvents.length; i++) {
-    const event = commissionEvents[i];
-    if (event < 0) {
-      console.log('COMMISSION RATE < 0. NEEDS HANDLING');
-    }
-    if (event === 0) {
-      const lastEvent = commission[i - 1];
-      commission.push(lastEvent);
-    } else {
-      commission.push(event);
-    }
-  }
-  return commission;
-}
+// function processCommissionEvents(commissionEvents) {
+//   const commission = [commissionEvents[0]];
+//   for (let i = 1; i < commissionEvents.length; i++) {
+//     const event = commissionEvents[i];
+//     if (event < 0) {
+//       console.log('COMMISSION RATE < 0. NEEDS HANDLING');
+//     }
+//     if (event === 0) {
+//       const lastEvent = commission[i - 1];
+//       commission.push(lastEvent);
+//     } else {
+//       commission.push(event);
+//     }
+//   }
+//   return commission;
+// }
 
 module.exports = {
   remapVSAddresses

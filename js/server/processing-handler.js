@@ -6,6 +6,10 @@ const { retryOnFail } = require('./util/retryOnFail');
 */
 const RELOAD_INTERVAL = 6 * 60 * 1000;
 
+if (RELOAD_INTERVAL < 6 * 60 * 1000) {
+  console.warn('RELOAD INTERVAL SET EXTREMELY LOW');
+}
+
 // Provides #dispatch method by which the express router endpoints can interact with processed data
 function createMultiprocessActionDispatcher () {
   let freshProcess = createDispatchableChildProcess();
@@ -25,7 +29,7 @@ function createMultiprocessActionDispatcher () {
 				*/
         await new Promise(resolve => setTimeout(resolve, 5000));
         await staleProcess.dispatch('CLEAR_PARSED_DATA');
-        await staleProcess.restart();
+        // await staleProcess.restart();
         // Wait until snapshot data is expired
         await new Promise(resolve => setTimeout(resolve, RELOAD_INTERVAL));
         await staleProcess.dispatch('LOAD_AND_PROCESS_SNAPSHOTS');

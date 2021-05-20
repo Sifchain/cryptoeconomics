@@ -9,10 +9,13 @@ const { processVSGlobalState } = require('./process-vs');
 
 const {
   EVENT_INTERVAL_MINUTES,
-  NUMBER_OF_INTERVALS_TO_RUN,
-  VS_STARTING_GLOBAL_STATE,
-  LM_STARTING_GLOBAL_STATE
+  NUMBER_OF_INTERVALS_TO_RUN
 } = require('./config');
+const { GlobalTimestampState } = require('./types');
+
+const fs = require('fs');
+const path = require('path');
+const { getTimeIndex } = require('./util/getTimeIndex');
 // const { getTimeIndex } = require("./util/getTimeIndex");
 
 // const snapshotLM = require("../snapshots/snapshot_lm_latest.json");
@@ -26,7 +29,7 @@ exports.getProcessedLMData = snapshotLM => {
     EVENT_INTERVAL_MINUTES
   );
 
-  const LMGlobalStates = [LM_STARTING_GLOBAL_STATE];
+  const LMGlobalStates = [GlobalTimestampState.getInitial()];
 
   for (let i = 0; i < NUMBER_OF_INTERVALS_TO_RUN; i++) {
     const lastGlobalState = LMGlobalStates[LMGlobalStates.length - 1];
@@ -57,8 +60,26 @@ exports.getProcessedVSData = snapshotVS => {
   console.timeEnd('remapVS');
 
   console.time('processvs');
-  const VSGlobalStates = [VS_STARTING_GLOBAL_STATE];
+  const VSGlobalStates = [GlobalTimestampState.getInitial()];
+  let currentTimeIndex = getTimeIndex('now');
+  const snapshotOrigin =
+    process.env.LOCAL_SNAPSHOT_DEV_MODE === 'enabled' ? 'local' : 'live';
+  let cacheEnabled = false;
   for (let i = 0; i < NUMBER_OF_INTERVALS_TO_RUN; i++) {
+    const isSimulatedFutureInterval = currentTimeIndex < i;
+    const cachePath = path.join(
+      __dirname,
+      `./cache/state.${snapshotOrigin}.${i}.json`
+    );
+    if (!isSimulatedFutureInterval && cacheEnabled) {
+      if (fs.existsSync(cachePath)) {
+        try {
+          let cached = JSON.parse(fs.readFileSync(cachePath).toString());
+          VSGlobalStates.push(GlobalTimestampState.fromJSON(cached));
+          continue;
+        } catch (e) {}
+      }
+    }
     const lastGlobalState = VSGlobalStates[VSGlobalStates.length - 1];
     const timestamp = i * EVENT_INTERVAL_MINUTES;
     const events = VSTimeIntervalEvents['' + timestamp] || [];
@@ -67,6 +88,8 @@ exports.getProcessedVSData = snapshotVS => {
       timestamp,
       events
     );
+    if (cacheEnabled)
+      fs.writeFileSync(cachePath, JSON.stringify(newGlobalState));
     VSGlobalStates.push(newGlobalState);
   }
   console.timeEnd('processvs');

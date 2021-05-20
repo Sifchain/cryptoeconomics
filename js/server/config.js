@@ -34,39 +34,14 @@ const REWARD_ACCRUAL_DURATION_INTERVAL_COUNT = ~~(
 );
 
 const config = {
-  LM_STARTING_GLOBAL_STATE: {
-    timestamp: -1,
-    rewardBuckets: [],
-    users: {},
-    bucketEvent: {
-      rowan: 45_000_000,
-      initialRowan: 45_000_000,
-      duration: REWARD_ACCRUAL_DURATION_INTERVAL_COUNT
-    }
-  },
-  VS_STARTING_GLOBAL_STATE: {
-    timestamp: -1,
-    rewardBuckets: [],
-    users: {
-      /* 
-      [*]: {
-        
-      }
-      */
-    },
-    bucketEvent: {
-      rowan: 45_000_000,
-      initialRowan: 45_000_000,
-      duration: REWARD_ACCRUAL_DURATION_INTERVAL_COUNT
-    }
-  },
   START_DATETIME,
   DEPOSIT_CUTOFF_DATETIME,
   END_OF_REWARD_ACCRUAL_DATETIME,
   EVENT_INTERVAL_MINUTES,
   DEPOSITS_ALLOWED_DURATION_MS,
   MULTIPLIER_MATURITY: 864, // 4 months in in 200minute intervals,
-  NUMBER_OF_INTERVALS_TO_RUN: REWARD_ACCRUAL_DURATION_INTERVAL_COUNT + 864 // duration of bucket drain + duration to latest possible multiplier maturity
+  NUMBER_OF_INTERVALS_TO_RUN: REWARD_ACCRUAL_DURATION_INTERVAL_COUNT + 864, // duration of bucket drain + duration to latest possible multiplier maturity
+  REWARD_ACCRUAL_DURATION_INTERVAL_COUNT
 };
 
 module.exports = config;

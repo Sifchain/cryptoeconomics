@@ -10,3 +10,4 @@ env.sh
 !.elasticbeanstalk/*.global.yml
 .vscode
 rust
+.DS_Store

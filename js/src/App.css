@@ -40,6 +40,59 @@ html {
   cursor: pointer;
 }
 
+.loading-screen {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: wait;
+}
+
+.loading-screen > .logo-loader {
+  position: relative;
+  height: 200px;
+  width: 200px;
+}
+.loading-screen > .logo-loader > img {
+  width: 100%;
+  height: 100%;
+}
+.loading-screen > .logo-loader .logo-loader-overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  width: 200px;
+}
+.logo-loader-overlay {
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(26, 26, 26, 0),
+    rgba(26, 26, 26, 1) 200px,
+    rgba(26, 26, 26, 1) 100px,
+    rgba(26, 26, 26, 0)
+  );
+  background-size: 400px 400px;
+  animation: GradientSwoosh 1s linear infinite;
+}
+
+@keyframes GradientSwoosh {
+  0% {
+    background-position: 150% 150%;
+  }
+
+  100% {
+    background-position: -50% -50%;
+  }
+}
 .App {
   text-align: center;
   background-color: #282c34;

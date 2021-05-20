@@ -8,6 +8,10 @@ import moment from 'moment';
 import Chart from './Chart';
 import StackAll from './StackAll';
 
+// show all fields locally
+const SHOULD_HIDE_NON_USER_FRIENDLY_FIELDS = !!process.env
+  .REACT_APP_DEPLOYMENT_TAG;
+
 const userFieldsToHide = [
   'reservedReward',
   'nextRewardShare',
@@ -109,7 +113,14 @@ class App extends React.Component {
 
   render () {
     if (!this.state.usersLM || !this.state.usersVS) {
-      return <div>Loading...</div>;
+      return (
+        <div className='loading-screen'>
+          <div className='logo-loader'>
+            <img src='Sifchain-logo-gold.svg' />
+            <div className='logo-loader-overlay' />
+          </div>
+        </div>
+      );
     }
     const users =
       this.state.type === 'lm' ? this.state.usersLM : this.state.usersVS;
@@ -119,7 +130,9 @@ class App extends React.Component {
       const data = this.state.userData[this.state.timestamp + 1];
       userTimestampJSON = {
         ...data,
-        user: !data.user
+        user: !SHOULD_HIDE_NON_USER_FRIENDLY_FIELDS
+          ? data.user
+          : !data.user
           ? null
           : Object.fromEntries(
               Object.entries(data.user).filter(([key, val]) => {

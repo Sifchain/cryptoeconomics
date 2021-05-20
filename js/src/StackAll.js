@@ -10,6 +10,7 @@ class StackAll extends React.Component {
     super(props);
     this.myRef = React.createRef();
     this.state = {};
+    console.log('working');
   }
 
   renderD3 () {

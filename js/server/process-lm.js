@@ -5,7 +5,9 @@ const {
   MULTIPLIER_MATURITY,
   DEPOSITS_ALLOWED_DURATION_MS
 } = require('./config');
+const { GlobalTimestampState, User } = require('./types');
 const { processRewardBuckets } = require('./util/bucket-util');
+
 function processLMGlobalState (lastGlobalState, timestamp, events) {
   const { rewardBuckets, globalRewardAccrued } = processRewardBuckets(
     lastGlobalState.rewardBuckets,
@@ -13,11 +15,11 @@ function processLMGlobalState (lastGlobalState, timestamp, events) {
   );
   let users = processUserTickets(lastGlobalState.users, globalRewardAccrued);
   users = processUserEvents(users, events);
-  return {
-    timestamp,
-    rewardBuckets,
-    users
-  };
+  let globalState = new GlobalTimestampState();
+  globalState.timestamp = timestamp;
+  globalState.rewardBuckets = rewardBuckets;
+  globalState.users = users;
+  return globalState;
 }
 
 function processUserTickets (users, globalRewardAccrued) {
@@ -38,7 +40,8 @@ function processUserTickets (users, globalRewardAccrued) {
         return {
           ...ticket,
           mul: Math.min(ticket.mul + 0.75 / MULTIPLIER_MATURITY, 1),
-          reward: ticket.reward + additionalAmount
+          reward: ticket.reward + additionalAmount,
+          rewardDelta: additionalAmount
         };
       })
     };
@@ -48,12 +51,7 @@ function processUserTickets (users, globalRewardAccrued) {
 
 function processUserEvents (users, events) {
   events.forEach(event => {
-    const user = users[event.address] || {
-      tickets: [],
-      claimed: 0,
-      dispensed: 0,
-      forfeited: 0
-    };
+    const user = users[event.address] || new User();
     if (event.amount > 0) {
       if (
         // is after deposits are allowed
@@ -79,13 +77,13 @@ function processUserEvents (users, events) {
         user.tickets
       );
       const { claimed, forfeited } = calculateClaimReward(burnedTickets);
-      user.claimed += claimed;
+      user.claimableRewardsOnWithdrawnAssets += claimed;
       user.forfeited += forfeited;
       user.tickets = remainingTickets;
     }
     if (event.claim) {
       const { claimed, forfeited } = calculateClaimReward(user.tickets);
-      user.claimed += claimed;
+      user.claimableRewardsOnWithdrawnAssets += claimed;
       user.forfeited += forfeited;
       user.tickets = resetTickets(user.tickets);
     }
@@ -107,9 +105,7 @@ function burnTickets (amount, tickets) {
     }
     let amountToRemove = Math.min(amountLeft, ticket.amount);
     const proportionBurned =
-      ticket.amount === 0
-        ? 0
-        : parseFloat(amountToRemove) / parseFloat(ticket.amount);
+      ticket.amount === 0 ? 0 : +amountToRemove / parseFloat(ticket.amount);
     const burnedTicket = {
       ...ticket,
       amount: amountToRemove,
