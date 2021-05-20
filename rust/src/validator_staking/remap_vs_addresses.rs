@@ -1,13 +1,18 @@
+use std::collections::HashMap;
+
+use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
+
 use super::types::{self, DelegationEvent};
 
 pub fn remap_vs_addresses<'a>(
     snapshot: types::Snapshot,
     timeInterval: f64,
-) -> Vec<DelegationEvent> {
-    let allDelegationEvents = snapshot.data.snapshots_validators[0]
+) -> HashMap<&'a String, Vec<DelegationEvent>> {
+    let allDelegationEvents = HashMap::new();
+    snapshot.data.snapshots_validators[0]
         .snapshot_data
-        .iter()
-        .map(move |(valStakeAddress, snapshotDataItem)| {
+        .par_iter()
+        .for_each(move |(valStakeAddress, snapshotDataItem)| {
             let commissionTimeIntervals: Vec<f64> = process_commission_events(snapshotDataItem);
 
             let valDelegateEventsIterator = snapshotDataItem
@@ -31,10 +36,8 @@ pub fn remap_vs_addresses<'a>(
                 .filter(|events| events.len() != 0);
             let valDelegateEvents = Iterator::flatten(valDelegateEventsIterator)
                 .collect::<Vec<types::DelegationEvent>>();
-            return valDelegateEvents;
-        })
-        .flatten()
-        .collect::<Vec<DelegationEvent>>();
+            allDelegationEvents.insert(valStakeAddress, valDelegateEvents);
+        });
 
     // .collect::<Vec<(f64, std::result::Iter<&types::DelegationEvent>)>>()
     // .map(|(ts, deVec)| {

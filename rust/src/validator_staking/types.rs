@@ -42,12 +42,13 @@ impl User {
 pub struct ValidatorStakingRewardState {
     pub timestamp: i64,
     pub rewardBuckets: Vec<ValidatorStakingBucketEvent>,
-    pub users: Vec<User>,
+    pub users: HashMap<String, User>,
     pub bucketEvent: Option<ValidatorStakingBucketEvent>,
 }
+
 impl ValidatorStakingRewardState {
     pub fn findUser(mut self, addr: String) -> Option<&'static User> {
-        self.users.par_iter().find_any(|user| user.address == addr)
+        self.users.get(&addr)
     }
     pub fn findOrCreateUser(mut self, addr: String) -> &'static User {
         match self.findUser(addr) {
@@ -61,7 +62,7 @@ impl ValidatorStakingRewardState {
                     commissionClaimedAsValidator: 0_f64,
                     address: addr,
                 };
-                self.users.push(user);
+                self.users.insert(addr, user);
                 &user
             }
         }
