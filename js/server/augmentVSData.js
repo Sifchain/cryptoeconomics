@@ -4,27 +4,27 @@ const { START_DATETIME } = require('./config');
 const { GlobalTimestampState, User } = require('./types');
 
 exports.augmentVSData = (globalTimestampStates) => {
-  globalTimestampStates.forEach((state) => {
-    state.users = _.forEach(state.users, (user, delegatorSifAddress) => {
-      /* 
-        Must be run first on every user because delegators
-        store validators' addresses as references (and vice-versa) to be used in
-        `User(Validator)#recalculateTotalClaimableCommissionsOnDelegatorRewards`
-        via the user getter function passed as a callback.
+  // globalTimestampStates.forEach((state) => {
+  //   state.users = _.forEach(state.users, (user, delegatorSifAddress) => {
+  //     /*
+  //       Must be run first on every user because delegators
+  //       store validators' addresses as references (and vice-versa) to be used in
+  //       `User(Validator)#recalculateTotalClaimableCommissionsOnDelegatorRewards`
+  //       via the user getter function passed as a callback.
 
-        If `User#recalculateTotalClaimableCommissionsOnDelegatorRewards` is run
-        immediately after this, within this loop iteration, it will only 
-        account for delegate rewards on delegates that were processed before it
-        and leave out all those processed after.
-      */
-      user.collectValidatorsCommissionsOnLatestUnclaimedRewards(
-        (validatorSifAddress) => {
-          return state.users[validatorSifAddress];
-        },
-        delegatorSifAddress
-      );
-    });
-  });
+  //       If `User#recalculateTotalClaimableCommissionsOnDelegatorRewards` is run
+  //       immediately after this, within this loop iteration, it will only
+  //       account for delegate rewards on delegates that were processed before it
+  //       and leave out all those processed after.
+  //     */
+  //     // user.collectValidatorsCommissionsOnLatestUnclaimedRewards(
+  //     //   (validatorSifAddress) => {
+  //     //     return state.users[validatorSifAddress];
+  //     //   },
+  //     //   delegatorSifAddress
+  //     // );
+  //   });
+  // });
 
   globalTimestampStates.forEach((state) => {
     _.forEach(state.users, (user, address) => {
@@ -38,10 +38,10 @@ exports.augmentVSData = (globalTimestampStates) => {
         })
       );
       state.totalTicketsAmountSum = timestampTicketsAmountSum;
-      user.recalculateTotalClaimableCommissionsOnDelegatorRewards(
-        (addr) => state.users[addr],
-        address
-      );
+      // user.recalculateTotalClaimableCommissionsOnDelegatorRewards(
+      //   (addr) => state.users[addr],
+      //   address
+      // );
       /* 
         Must be run on every user before `User#updateUserMaturityRewards`
         `User#updateUserMaturityRewards` uses the rewards calulated here.

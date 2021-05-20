@@ -163,14 +163,6 @@ class User {
     this.totalClaimableCommissionsOnDelegatorRewards = total;
   }
 
-  setClaimableCommissionOnDelegatorReward (
-    claimableCommissionsOnDelegatorReward,
-    delegatorSifAddress
-  ) {
-    // this.claimableCommissionsByDelegatorAddress[delegatorSifAddress] =
-    //   claimableCommissionsOnDelegatorReward;
-  }
-
   withdrawStakeAsDelegator (delegateEvent) {
     const burnedThisValTickets = this.removeBurnedTickets(delegateEvent);
     const { claimable, forfeited } = this.calculateClaimableReward(
