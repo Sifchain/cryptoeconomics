@@ -8,10 +8,10 @@ pub fn remap_vs_addresses<'a>(
     snapshot: types::Snapshot,
     timeInterval: f64,
 ) -> HashMap<&'a String, Vec<DelegationEvent>> {
-    let allDelegationEvents = HashMap::new();
+    let mut allDelegationEvents = HashMap::new();
     snapshot.data.snapshots_validators[0]
         .snapshot_data
-        .par_iter()
+        .iter()
         .for_each(move |(valStakeAddress, snapshotDataItem)| {
             let commissionTimeIntervals: Vec<f64> = process_commission_events(snapshotDataItem);
 
