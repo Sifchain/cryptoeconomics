@@ -117,24 +117,30 @@ class BackgroundProcessor {
       );
     }
 
-    const [lMSnapshot, vsSnapshot] =
-      process.env.LOCAL_SNAPSHOT_DEV_MODE === 'enabled'
-        ? [
-            require('../snapshots/snapshot_lm_latest.json'),
-            require('../snapshots/test.vs.json')
-          ]
-        : await Promise.all([
-            retryOnFail({
-              fn: () => loadLiquidityMinersSnapshot(),
-              iterations: 5,
-              waitFor: 1000
-            }),
-            retryOnFail({
-              fn: () => loadValidatorsSnapshot(),
-              iterations: 5,
-              waitFor: 1000
-            })
-          ]);
+    const isInLocalSnapshotDevMode =
+      process.env.LOCAL_SNAPSHOT_DEV_MODE === 'enabled';
+    if (isInLocalSnapshotDevMode) {
+      console.warn(
+        'Local Snapshot Dev Mode Enabled! Will not load fresh snapshot data!'
+      );
+    }
+    const [lMSnapshot, vsSnapshot] = isInLocalSnapshotDevMode
+      ? [
+          require('../snapshots/snapshot_lm_latest.json'),
+          require('../snapshots/test.vs.json')
+        ]
+      : await Promise.all([
+          retryOnFail({
+            fn: () => loadLiquidityMinersSnapshot(),
+            iterations: 5,
+            waitFor: 1000
+          }),
+          retryOnFail({
+            fn: () => loadValidatorsSnapshot(),
+            iterations: 5,
+            waitFor: 1000
+          })
+        ]);
 
     /*
       V8 performance hack.

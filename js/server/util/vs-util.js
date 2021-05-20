@@ -7,7 +7,10 @@ function remapVSAddresses (vaLAddresses, timeInterval) {
   const mapped = _.map(
     vaLAddresses,
     ({ commission: commissionEvents, ...valAddressData }, valStakeAddress) => {
-      const commissionTimeIntervals = processCommissionEvents(commissionEvents);
+      // Per data team, commission rates with value of zero are actually 0% commissions
+      // and shouldn't be ignored as in `processCommissionEvents(commissionEvents)`
+      // const commissionTimeIntervals = processCommissionEvents(commissionEvents);
+      const commissionTimeIntervals = commissionEvents;
       const delegates = Object.keys(valAddressData);
 
       const valDelegateEvents = delegates
@@ -74,22 +77,22 @@ function remapVSAddresses (vaLAddresses, timeInterval) {
   return allTimeIntervalAddressEvents;
 }
 
-function processCommissionEvents (commissionEvents) {
-  const commission = [commissionEvents[0]];
-  for (let i = 1; i < commissionEvents.length; i++) {
-    const event = commissionEvents[i];
-    if (event < 0) {
-      console.log('COMMISSION RATE < 0. NEEDS HANDLING');
-    }
-    if (event === 0) {
-      const lastEvent = commission[i - 1];
-      commission.push(lastEvent);
-    } else {
-      commission.push(event);
-    }
-  }
-  return commission;
-}
+// function processCommissionEvents(commissionEvents) {
+//   const commission = [commissionEvents[0]];
+//   for (let i = 1; i < commissionEvents.length; i++) {
+//     const event = commissionEvents[i];
+//     if (event < 0) {
+//       console.log('COMMISSION RATE < 0. NEEDS HANDLING');
+//     }
+//     if (event === 0) {
+//       const lastEvent = commission[i - 1];
+//       commission.push(lastEvent);
+//     } else {
+//       commission.push(event);
+//     }
+//   }
+//   return commission;
+// }
 
 module.exports = {
   remapVSAddresses

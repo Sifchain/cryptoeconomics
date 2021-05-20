@@ -5,7 +5,10 @@ const { retryOnFail } = require('./util/retryOnFail');
   Reloads & re-processes Miner & Validator data once every `RELOAD_INTERVAL`
 */
 const RELOAD_INTERVAL = 6 * 60 * 1000;
-console.log('RELOAD INTERVAL SET EXTREMELY LOW');
+
+if (RELOAD_INTERVAL < 6 * 60 * 1000) {
+  console.warn('RELOAD INTERVAL SET EXTREMELY LOW');
+}
 
 // Provides #dispatch method by which the express router endpoints can interact with processed data
 function createMultiprocessActionDispatcher () {

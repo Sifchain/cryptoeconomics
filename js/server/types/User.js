@@ -18,6 +18,7 @@ class User {
 
     // neccessary because we can otherwise not calculate `totalClaimableCommissionsOnDelegatorRewards` if there are no remaining tickets
     // this.claimableCommissionsByDelegatorAddress = {};
+    this.delegatorAddresses = [];
 
     this.totalRewardAtMaturity = 0;
     this.ticketAmountAtMaturity = 0;
@@ -63,6 +64,7 @@ class User {
     if (!props.tickets) {
       next.tickets = this.tickets.map(t => t.cloneWith({}));
     }
+    next.delegatorAddresses = [...next.delegatorAddresses];
     // if (!props.claimableCommissionsByDelegatorAddress) {
     //   next.claimableCommissionsByDelegatorAddress = {
     //     ...next.claimableCommissionsByDelegatorAddress,
@@ -105,19 +107,26 @@ class User {
         .add(currentTimestampInMinutes, 'm');
       maturityDate = maturityDateMoment.format('MMMM Do YYYY, h:mm:ss a');
       maturityDateMs = maturityDateMoment.valueOf();
-      maturityDateISO = this.maturityDateISO = maturityDateMoment.toISOString();
+      maturityDateISO = maturityDateMoment.toISOString();
     }
     this.maturityDate = maturityDate;
     this.maturityDateISO = maturityDateISO;
     this.maturityDateMs = maturityDateMs;
     this.futureReward =
       this.totalRewardAtMaturity - this.currentTotalClaimableReward;
-    this.currentYieldOnTickets = this.futureReward / this.totalTicketsAmountSum;
+    this.currentYieldOnTickets =
+      // likely scenario for validators (no tickets)
+      this.totalTicketsAmountSum === 0
+        ? 0
+        : this.futureReward / this.totalTicketsAmountSum;
     this.nextReward = this.nextRewardShare * nextBucketGlobalReward;
     this.nextRewardProjectedFutureReward =
       (this.nextReward / 200) * 60 * 24 * 365;
     this.nextRewardProjectedAPYOnTickets =
-      this.nextRewardProjectedFutureReward / this.totalTicketsAmountSum;
+      // likely scenario for validators (no tickets)
+      this.totalTicketsAmountSum === 0
+        ? 0
+        : this.nextRewardProjectedFutureReward / this.totalTicketsAmountSum;
   }
 
   updateUserMaturityRewards (userAtMaturity) {
@@ -125,18 +134,33 @@ class User {
     this.ticketAmountAtMaturity = _.sum(
       userAtMaturity.tickets.map(ticket => ticket.amount)
     );
-    this.yieldAtMaturity =
-      this.totalRewardAtMaturity / this.ticketAmountAtMaturity;
+
+    // to avoid NaN (serialized as `null` in JSON) as a result of `0/0`
+    // and when user is a validator (with a `ticketAmountAtMaturity` of zero)
+    if (this.ticketAmountAtMaturity === 0) {
+      this.yieldAtMaturity = 0;
+    } else {
+      this.yieldAtMaturity =
+        this.totalRewardAtMaturity / this.ticketAmountAtMaturity;
+    }
   }
 
   addTicket (ticket) {
     this.tickets = this.tickets.concat(ticket);
   }
 
-  recalculateTotalClaimableCommissionsOnDelegatorRewards () {
-    // this.totalClaimableCommissionsOnDelegatorRewards = _.sum(
-    //   Object.values(this.claimableCommissionsByDelegatorAddress)
-    // );
+  recalculateTotalClaimableCommissionsOnDelegatorRewards (
+    getUserByAddress = addr => new User(),
+    userAddress
+  ) {
+    let total = 0;
+    this.delegatorAddresses.forEach(address => {
+      const delegator = getUserByAddress(address);
+      delegator.tickets.forEach(ticket => {
+        total += ticket.getClaimableCommissionRewardByValidator(userAddress);
+      });
+    });
+    this.totalClaimableCommissionsOnDelegatorRewards = total;
   }
 
   setClaimableCommissionOnDelegatorReward (
@@ -167,7 +191,7 @@ class User {
         const forefeitedMultiplier = 1 - ticket.mul;
         const reward = ticket.reward || 0;
         const result = {
-          claimable: accum.claimed + reward * ticket.mul,
+          claimable: accum.claimable + reward * ticket.mul,
           forfeited: accum.forfeited + reward * forefeitedMultiplier
         };
         return result;
@@ -176,8 +200,14 @@ class User {
     );
   }
 
+  addDelegatorAddress (delegatorSifAddress) {
+    if (!this.delegatorAddresses.includes(delegatorSifAddress)) {
+      this.delegatorAddresses.push(delegatorSifAddress);
+    }
+  }
+
   collectValidatorsCommissionsOnLatestUnclaimedRewards (
-    getValidatorByAddressCb = addr => new User(),
+    getUserByAddress = addr => new User(),
     delegatorSifAddress
   ) {
     /*
@@ -191,7 +221,7 @@ class User {
           * Add to sum of all `ticket#commissionRewardsClaimedByValidators`'s (`validatorCommissionRewards`)
     */
     for (let ticket of this.tickets) {
-      const validator = getValidatorByAddressCb(ticket.validatorSifAddress);
+      const validator = getUserByAddress(ticket.validatorSifAddress);
       let commissionOnReward = ticket.rewardDelta * ticket.commission;
       if (commissionOnReward < 0) {
         console.log('less than zero');
@@ -200,13 +230,7 @@ class User {
         commissionOnReward,
         ticket.validatorSifAddress
       );
-      const claimableRewardByValidator = ticket.getClaimableCommissionRewardByValidator(
-        ticket.validatorSifAddress
-      );
-      validator.setClaimableCommissionOnDelegatorReward(
-        claimableRewardByValidator,
-        delegatorSifAddress
-      );
+      validator.addDelegatorAddress(delegatorSifAddress);
     }
   }
 
