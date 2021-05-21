@@ -9,6 +9,9 @@ import Chart from './Chart';
 import StackAll from './StackAll';
 import DataChart from './DataChart';
 import DataStackAll from './DataStackAll';
+import { StatBlocks } from './StatBlocks';
+
+const DATE_FORMAT = 'MMMM Do YYYY [at] h:mm';
 
 // show all fields locally
 const SHOULD_HIDE_NON_USER_FRIENDLY_FIELDS =
@@ -46,7 +49,7 @@ class App extends React.Component {
     const [address, type] = window.location.hash.substr(1).split('&type=');
     this.state = {
       timestamp: 0,
-      date: moment.utc(START_DATETIME).format('MMMM Do YYYY, h:mm:ss a'),
+      date: moment.utc(START_DATETIME).format(DATE_FORMAT),
       address: address || undefined,
       type: type || 'lm',
       dataDisplayPoints: [],
@@ -62,7 +65,7 @@ class App extends React.Component {
   initDateTime() {
     const now = moment.utc(Date.parse(new Date()));
     this.setState({
-      date: moment.utc(now).format('MMMM Do YYYY, h:mm:ss a'),
+      date: moment.utc(now).format(DATE_FORMAT),
       timestamp: Math.floor(
         moment.duration(now.diff(START_DATETIME)).asMinutes() / 200
       ),
@@ -104,10 +107,8 @@ class App extends React.Component {
   updateTimestamp(event) {
     const timestamp = parseInt(event.target.value);
     const minutes = timestamp * 200;
-    const date = moment
-      .utc(START_DATETIME)
-      .add(minutes, 'm')
-      .format('MMMM Do YYYY, h:mm:ss a');
+    const dateObj = moment.utc(START_DATETIME).add(minutes, 'm');
+    const date = dateObj.format(DATE_FORMAT);
     this.setState({
       date,
       timestamp,
@@ -168,6 +169,24 @@ class App extends React.Component {
         this.state.address !== undefined &&
         !timeSeriesData) ||
       !userTimestampJSON;
+
+    const provideSearchCache = () => {
+      const key = 'recent-addresses-searched';
+      return {
+        getCache() {
+          let cache;
+          try {
+            cache = JSON.parse(localStorage.getItem(key));
+          } catch (e) {
+            cache = [];
+          }
+          return cache;
+        },
+        addCacheItem(value) {
+          localStorage.setItem(key, value);
+        },
+      };
+    };
     return (
       <div className="App">
         <header className="App-header">
@@ -208,15 +227,17 @@ class App extends React.Component {
             <div className="address-container">
               <div className="dropdown-container">
                 <select
-                  onChange={(e) => {
+                  onInput={(e) => {
                     this.updateAddressEvent(e);
-                    if (addressInputRef.current.value !== e.target.value) {
-                      addressInputRef.current.value = e.target.value;
+                    if (
+                      addressInputRef.current.value !== e.currentTarget.value
+                    ) {
+                      addressInputRef.current.value = e.currentTarget.value;
                     }
                   }}
                   ref={addressSelectRef}
                   style={{ display: 'block' }}
-                  value={this.state.address}
+                  value={''}
                   className="dropdown"
                 >
                   <option key="none" value="">
@@ -301,9 +322,33 @@ class App extends React.Component {
           {this.state.address !== 'leaderboard' &&
             this.state.address !== undefined && (
               <div className="timestamp-slider-description">
-                Timestamp: {this.state.date}{' '}
+                {this.state.date}
               </div>
             )}
+
+          {this.state.address !== 'leaderboard' &&
+          this.state.address !== undefined &&
+          !!userTimestampJSON &&
+          userTimestampJSON.user
+            ? Object.entries(userTimestampJSON.user).map(
+                ([key, statNumVal]) => {
+                  const block = StatBlocks[this.state.type][key];
+                  if (!block || !block.shouldDisplay(statNumVal)) return null;
+                  return (
+                    <div className="stat-card">
+                      <div className="stat-subtitle">{block.subtitle}</div>
+                      <div className="stat-title">{block.title}</div>
+                      <div className="stat-data">
+                        {block.prefix}
+                        {block.data(statNumVal)}
+                        {block.suffix}
+                      </div>
+                    </div>
+                  );
+                }
+              )
+            : null}
+
           {this.state.address !== 'leaderboard' &&
             this.state.address !== undefined && (
               <JSONPretty

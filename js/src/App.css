@@ -3,6 +3,7 @@
   --page-background-color: #1a1a1a;
   --active-content-color: rgba(30, 34, 42, 1);
   --accent-gold: #c1a04f;
+  --accent-blue: rgba(59, 127, 186);
   --layout-width: 65%;
 }
 html {
@@ -199,8 +200,44 @@ input[type='radio']:checked + span {
   text-shadow: 2px 0px 5px rgba(212, 181, 83, 0.5);
 }
 
+.stat-card {
+  color: white;
+  background-color: var(--active-content-color);
+  box-shadow: 0px 2px 30px -45px rgba(0, 0, 0, 0.5);
+  padding: 15px 30px;
+  border-radius: 10px;
+  margin: 20px;
+}
+
+.stat-title {
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+
+.stat-subtitle {
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  opacity: 0.5;
+  margin: 5px 0px;
+}
+
+.stat-data {
+  font-weight: 700;
+  font-size: 3rem;
+  text-transform: uppercase;
+  white-space: pre-wrap;
+  display: flex;
+  align-items: center;
+  color: var(--accent-blue);
+  margin-top: 2px;
+}
+
 .info-text {
   color: white;
+  width: 100%;
+  text-align: center;
+  margin-top: 15px;
 }
 .radios {
   display: flex;
@@ -262,13 +299,13 @@ input[type='radio']:checked + label {
   outline: none;
 }
 .dropdown-container select {
-  width: 10%;
-  padding-right: 10px;
+  width: 8.5%;
   background-color: var(--accent-gold);
   cursor: pointer;
   color: white;
-  font-weight: 800;
+  font-weight: 900;
   font-family: monospace;
+  /* text-transform: uppercase; */
 }
 .dropdown-container option {
   color: black;
@@ -308,9 +345,12 @@ input[type='radio']:checked + label {
 
 .timestamp-slider-description {
   text-align: center;
-  width: 835px;
+  width: 100%;
   color: var(--white);
   margin-bottom: 8px;
+  margin-top: 20px;
+  font-weight: 700;
+  font-size: 2rem;
 }
 
 .App-link {
