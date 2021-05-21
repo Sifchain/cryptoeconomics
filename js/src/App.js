@@ -137,7 +137,7 @@ class App extends React.Component {
     const users =
       this.state.type === 'lm' ? this.state.usersLM : this.state.usersVS;
 
-    let userTimestampJSON = 'Loading...';
+    let userTimestampJSON = '';
     if (this.state.userData) {
       const data = this.state.userData[this.state.timestamp + 1];
       userTimestampJSON = {
@@ -300,7 +300,9 @@ class App extends React.Component {
           )}
           {this.state.address !== 'leaderboard' &&
             this.state.address !== undefined &&
-            !timeSeriesData && <div>Loading...</div>}
+            !timeSeriesData && (
+              <div style={{ color: 'turquoise' }}>Loading Rewards...</div>
+            )}
           {this.state.address !== 'leaderboard' &&
             this.state.address !== undefined &&
             timeSeriesData && <DataChart data={timeSeriesData} />}

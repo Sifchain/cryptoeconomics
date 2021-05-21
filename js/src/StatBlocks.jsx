@@ -36,11 +36,14 @@ const roundTo = (num, oneWithZeros = 100) =>
 const defaultStatBlocks = {
   currentTotalClaimableReward: createStatBlock({
     title: 'Claimable',
-    subtitle: 'ROWAN',
+    subtitle: 'Rewards',
   }),
+  get claimableReward() {
+    return this.currentTotalClaimableReward;
+  },
   totalRewardAtMaturity: createStatBlock({
     title: 'Potential',
-    subtitle: 'ROWAN',
+    subtitle: 'Rewards',
   }),
 };
 export const StatBlocks = {
@@ -48,15 +51,21 @@ export const StatBlocks = {
     ...defaultStatBlocks,
     totalTicketsAmountSum: createStatBlock({
       title: 'Staked',
-      subtitle: 'ROWAN',
+      subtitle: 'DEPOSIT',
     }),
+    get totalTickets() {
+      return this.totalTicketsAmountSum;
+    },
   },
   lm: {
     ...defaultStatBlocks,
     totalTicketsAmountSum: createStatBlock({
       title: 'Pooled',
-      subtitle: 'ROWAN',
+      subtitle: 'DEPOSIT',
     }),
+    get totalTickets() {
+      return this.totalTicketsAmountSum;
+    },
     currentAPYOnTickets: createStatBlock({
       title: 'APY',
       subtitle: 'Annual Percentage Yield',

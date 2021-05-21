@@ -125,7 +125,7 @@ class DataStackAll extends React.Component {
 
   render () {
     if (!this.state.rewardData) {
-      <div>Loading...</div>;
+      <div style={{ color: 'turquoise' }}>Loading Leaderboard...</div>;
     }
     return (
       <div className='chart-container'>
