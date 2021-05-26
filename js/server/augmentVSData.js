@@ -4,29 +4,7 @@ const { START_DATETIME } = require('./config');
 const { GlobalTimestampState, User } = require('./types');
 
 exports.augmentVSData = (globalTimestampStates) => {
-  globalTimestampStates.forEach((state) => {
-    state.users = _.forEach(state.users, (user, delegatorSifAddress) => {
-      /*
-        Must be run first on every user because delegators
-        store validators' addresses as references (and vice-versa) to be used in
-        `User(Validator)#recalculateTotalClaimableCommissionsOnDelegatorRewards`
-        via the user getter function passed as a callback.
-
-        If `User#recalculateTotalClaimableCommissionsOnDelegatorRewards` is run
-        immediately after this, within this loop iteration, it will only
-        account for delegate rewards on delegates that were processed before it
-        and leave out all those processed after.
-      */
-      user.collectValidatorsCommissionsOnLatestUnclaimedRewards(
-        (validatorSifAddress) => {
-          return state.users[validatorSifAddress];
-        },
-        delegatorSifAddress
-      );
-    });
-  });
-
-  globalTimestampStates.forEach((state) => {
+  globalTimestampStates.forEach((state, stateIndex) => {
     const timestampTicketsAmountSum = _.sum(
       _.map(state.users, (user) => {
         return _.sum(user.tickets.map((t) => t.amount));
@@ -35,18 +13,10 @@ exports.augmentVSData = (globalTimestampStates) => {
     state.totalTicketsAmountSum = timestampTicketsAmountSum;
     _.forEach(state.users, (user, address) => {
       /*
-        used to calculate ROI stats (APY, yield, etc.)
-        in `User#updateRewards`
-      */
-      user.recalculateTotalClaimableCommissionsOnDelegatorRewards(
-        (addr) => state.users[addr],
-        address
-      );
-      /*
         Must be run on every user before `User#updateUserMaturityRewards`
         `User#updateUserMaturityRewards` uses the rewards calulated here.
-        Must be run after `User#recalculateTotalClaimableCommissionsOnDelegatorRewards`
-        because `User#updateRewards` uses `User.totalClaimableCommissionsOnDelegatorRewards`,
+        Must be run after `User#recalculateCurrentTotalCommissionsOnClaimableDelegatorRewards`
+        because `User#updateRewards` uses `User.currentTotalCommissionsOnClaimableDelegatorRewards`,
         which is calculated in the former method.
       */
       user.updateRewards(timestampTicketsAmountSum);

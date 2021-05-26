@@ -15,6 +15,7 @@ function processVSGlobalState (lastGlobalState, timestamp, eventsByUser) {
   );
   let users = processUserTickets(lastGlobalState.users, globalRewardAccrued);
   users = processUserEvents(users, eventsByUser);
+  users = calculateUserCommissions(users);
   let globalState = new GlobalTimestampState();
   Object.assign(globalState, {
     timestamp,
@@ -36,7 +37,7 @@ function processUserTickets (users, globalRewardAccrued) {
   const updatedUsers = _.mapValues(users, user => {
     return user.cloneWith({
       // reset each round because this is both incrementally calculated and based upon multiplier
-      totalClaimableCommissionsOnDelegatorRewards: 0,
+      currentTotalCommissionsOnClaimableDelegatorRewards: 0,
       tickets: user.tickets.map(ticket => {
         const poolDominanceRatio = ticket.amount / (totalShares || 1);
         const rewardDelta = poolDominanceRatio * globalRewardAccrued;
@@ -68,36 +69,45 @@ function processUserEvents (users, eventsByUser) {
       const validator = users[event.validatorSifAddress] || new User();
       users[event.validatorSifAddress] = validator;
 
+      // is this really proof of redelegation?
+      // or just a probable scenario during redelegation?
+      const isRedelegation =
+        userEvents.length > 1 &&
+        userEvents.some(other => {
+          return other.amount === -event.amount;
+        });
       // Is deposit (adding funds)
       if (event.amount > 0) {
-        // is this really proof of redelegation?
-        // or just a probable scenario during redelegation?
-        const isRedelegation =
-          userEvents.length > 1 &&
-          userEvents.some(other => {
-            return other.amount === -event.amount;
-          });
-
+        const redelegatedTicket = isRedelegation
+          ? previousTickets.find(t => t.amount === event.amount)
+          : false;
         const isAfterDepositsAreAllowed =
           event.timestamp > config.DEPOSITS_ALLOWED_DURATION_MS / 1000 / 60;
 
         if (!isRedelegation && isAfterDepositsAreAllowed) {
-          return;
+          // nada
+        } else {
+          if (isRedelegation && !!redelegatedTicket) {
+            user.redelegateTicketWithEvent(event, redelegatedTicket);
+          } else {
+            // need to clone previous ticket instead to maintain
+            const newTicket = UserTicket.fromEvent(event);
+            user.addTicket(newTicket);
+          }
         }
-        const redelegatedTicket = isRedelegation
-          ? previousTickets.find(t => t.amount === event.amount)
-          : false;
-
-        const newTicket = UserTicket.fromEvent(
-          event,
-          redelegatedTicket ? redelegatedTicket.mul : 0.25
-        );
-        user.addTicket(newTicket);
       }
 
       // Withdrawing funds
       if (event.amount < 0) {
-        user.withdrawStakeAsDelegator(event, validator);
+        if (isRedelegation) {
+          // nada
+        } else {
+          user.withdrawStakeAsDelegator(event, address => {
+            const validator = users[address] || new User();
+            users[address] = validator;
+            return validator;
+          });
+        }
       }
 
       /* 
@@ -110,13 +120,46 @@ function processUserEvents (users, eventsByUser) {
       //     claimed * (1 - event.commission);
       //   validator.claimableRewardsOnWithdrawnAssets +=
       //     claimed * event.commission;
-      //   validator.totalClaimableCommissionsOnDelegatorRewards +=
+      //   validator.currentTotalCommissionsOnClaimableDelegatorRewards +=
       //     claimed * event.commission;
       //   user.forfeited += forfeited;
       //   user.tickets = resetTickets(user.tickets);
       // }
     });
   });
+  return users;
+}
+
+function calculateUserCommissions (users) {
+  for (let addr in users) {
+    /*
+        Must be run first on every user because delegators
+        store validators' addresses as references (and vice-versa) to be used in
+        `User(Validator)#recalculateCurrentTotalCommissionsOnClaimableDelegatorRewards`
+        via the user getter function passed as a callback.
+
+        If `User#recalculateCurrentTotalCommissionsOnClaimableDelegatorRewards` is run
+        immediately after this, within this loop iteration, it will only
+        account for delegate rewards on delegates that were processed before it
+        and leave out all those processed after.
+      */
+    users[addr].collectValidatorsCommissionsOnLatestUnclaimedRewards(
+      validatorSifAddress => {
+        return users[validatorSifAddress];
+      },
+      addr
+    );
+  }
+  for (let addr in users) {
+    /*
+        used to calculate ROI stats (APY, yield, etc.)
+        in `User#updateRewards`
+      */
+    users[addr].recalculateCurrentTotalCommissionsOnClaimableDelegatorRewards(
+      address => users[address],
+      addr
+    );
+  }
   return users;
 }
 

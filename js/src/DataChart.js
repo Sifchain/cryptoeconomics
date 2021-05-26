@@ -2,10 +2,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import { timestampToDate } from './utils';
 import { Chart, _adapters, registerables } from 'chart.js';
 import { registerChartDateAdapter } from './registerChartDateAdapter';
+import zoomPlugin from 'chartjs-plugin-zoom';
+
 // let margin = { top: 10, right: 30, bottom: 30, left: 60 };
 // let width = 860 - margin.left - margin.right;
 // let height = 400 - margin.top - margin.bottom;
-Chart.register(...registerables);
+Chart.register(...registerables, zoomPlugin);
 registerChartDateAdapter(_adapters);
 
 export default props => {
@@ -26,6 +28,7 @@ export default props => {
   return (
     <div className='chart-container'>
       <canvas
+        onClick={() => chart.resetZoom()}
         className='chart'
         ref={myRef}
         id='myChart'
@@ -112,7 +115,18 @@ function renderChart (canvasElement, data, chart) {
         intersect: false
       },
       plugins: {
-        legend: false
+        legend: false,
+        zoom: {
+          zoom: {
+            wheel: {
+              enabled: true
+            },
+            pinch: {
+              enabled: true
+            },
+            mode: 'x'
+          }
+        }
       },
       scales: {
         x: {

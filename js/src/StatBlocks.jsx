@@ -56,6 +56,31 @@ export const StatBlocks = {
     get totalTickets() {
       return this.totalTicketsAmountSum;
     },
+    // delegatorAddresses: createStatBlock({
+    //   title: 'Delegators',
+    //   subtitle: 'Addresses',
+    //   prefix: null,
+    //   data(data) {
+    //     return (
+    //       <div style={{ fontSize: '1rem' }}>
+    //         <details>
+    //           <summary>Click to Expand</summary>
+    //           <p>
+    //             {data.map((d) => {
+    //               return (
+    //                 <p key={d}>
+    //                   <a target="_blank" href={`/#${d}&type=vs`}>
+    //                     {d}
+    //                   </a>
+    //                 </p>
+    //               );
+    //             })}
+    //           </p>
+    //         </details>
+    //       </div>
+    //     );
+    //   },
+    // }),
   },
   lm: {
     ...defaultStatBlocks,
