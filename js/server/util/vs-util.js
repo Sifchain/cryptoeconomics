@@ -29,7 +29,7 @@ function remapVSAddresses (vaLAddresses, timeInterval) {
               if (commissionRate < 0) {
                 console.log('COMMISSION RATE < 0. NEEDS HANDLING');
               }
-              return Object.assign(new DelegateEvent(), {
+              return DelegateEvent.fromJSON({
                 timestamp: (index + 1) * timeInterval,
                 commission: commissionRate,
                 amount,

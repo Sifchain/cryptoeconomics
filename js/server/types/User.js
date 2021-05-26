@@ -14,9 +14,10 @@ class User {
     this.currentTotalClaimableReward = 0;
     this.reservedReward = 0;
     this.totalTicketsAmountSum = 0;
-    this.totalClaimableCommissionsOnDelegatorRewards = 0;
+    this.currentTotalCommissionsOnClaimableDelegatorRewards = 0;
+    this.claimableCommissions = 0;
 
-    // neccessary because we can otherwise not calculate `totalClaimableCommissionsOnDelegatorRewards` if there are no remaining tickets
+    // neccessary because we can otherwise not calculate `currentTotalCommissionsOnClaimableDelegatorRewards` if there are no remaining tickets
     // this.claimableCommissionsByDelegatorAddress = {};
     this.delegatorAddresses = [];
 
@@ -48,12 +49,21 @@ class User {
       this.currentYieldOnTickets / this.yearsToMaturity;
   }
 
+  redelegateTicketWithEvent (event, ticket) {
+    this.tickets = this.tickets.map(t => {
+      if (t === ticket) {
+        return t.cloneWith({
+          commission: event.commission,
+          validatorSifAddress: event.validatorSifAddress
+        });
+      }
+      return t;
+    });
+  }
+
   static fromJSON (props) {
     let next = new this();
     Object.assign(next, props);
-    // next.claimableCommissionsByDelegatorAddress = {
-    //   ...props.claimableCommissionsByDelegatorAddress,
-    // };
     next.tickets = next.tickets.map(t => UserTicket.fromJSON(t));
     return next;
   }
@@ -64,13 +74,8 @@ class User {
     if (!props.tickets) {
       next.tickets = this.tickets.map(t => t.cloneWith({}));
     }
-    next.delegatorAddresses = [...next.delegatorAddresses];
-    // if (!props.claimableCommissionsByDelegatorAddress) {
-    //   next.claimableCommissionsByDelegatorAddress = {
-    //     ...next.claimableCommissionsByDelegatorAddress,
-    //   };
-    // }
     Object.assign(next, props);
+    next.delegatorAddresses = [...next.delegatorAddresses];
     return next;
   }
 
@@ -78,16 +83,24 @@ class User {
     let totalAmount = 0;
     let totalReward = 0;
     let totalClaimableReward = 0;
+    // console.log(`Calculating updateRewards commissions correctly?`);
     this.tickets.forEach(t => {
+      const totalValidatorCommissions = t.calculateTotalValidatorCommissions();
+      const claimableReward =
+        t.reward * t.mul - totalValidatorCommissions * t.mul;
+      const remainingReward =
+        (1 - t.mul) * t.reward - (1 - t.mul) * totalValidatorCommissions;
+      const expectedReward = claimableReward + remainingReward;
       totalAmount += t.amount;
-      totalReward += t.reward;
-      totalClaimableReward += t.reward * t.mul;
+      totalReward += expectedReward;
+      totalClaimableReward += claimableReward;
     });
     this.totalTicketsAmountSum = totalAmount;
     this.currentTotalClaimableReward =
       this.claimableRewardsOnWithdrawnAssets +
       totalClaimableReward +
-      this.totalClaimableCommissionsOnDelegatorRewards;
+      this.currentTotalCommissionsOnClaimableDelegatorRewards +
+      this.claimableCommissions;
     this.reservedReward = this.claimableRewardsOnWithdrawnAssets + totalReward;
     this.nextRewardShare =
       this.totalTicketsAmountSum / timestampTicketsAmountSum;
@@ -155,7 +168,15 @@ class User {
     this.tickets = this.tickets.concat(ticket);
   }
 
-  recalculateTotalClaimableCommissionsOnDelegatorRewards (
+  removeTicket (ticket) {
+    this.tickets = this.tickets.filter(t => t !== ticket);
+  }
+
+  addClaimableCommission (claimableCommission) {
+    this.claimableCommissions += claimableCommission;
+  }
+
+  recalculateCurrentTotalCommissionsOnClaimableDelegatorRewards (
     getUserByAddress = addr => new User(),
     userAddress
   ) {
@@ -166,31 +187,61 @@ class User {
         total += ticket.getClaimableCommissionRewardByValidator(userAddress);
       });
     });
-    this.totalClaimableCommissionsOnDelegatorRewards = total;
+    // console.error(
+    //   'need to add `claimableCommissions` property for when delegator claims'
+    // );
+    this.currentTotalCommissionsOnClaimableDelegatorRewards = total;
+  }
+  // Locked, Claimable, Claimed, Dispensed
+
+  calculateClaimableCommissionsAndAssignToValidator (
+    getUserByAddress = addr => new User(),
+    burnedTickets
+  ) {
+    let totalClaimableCommissions = 0;
+    let totalForfeitedCommissions = 0;
+    for (let ticket of burnedTickets)
+      for (let validatorSifAddress in ticket.commissionRewardsByValidator) {
+        const validator = getUserByAddress(validatorSifAddress);
+        const claimableCommission = ticket.getClaimableCommissionRewardByValidator(
+          validatorSifAddress
+        );
+        const forfeitedCommission = ticket.getForfeitedCommissionRewardByValidator(
+          validatorSifAddress
+        );
+        validator.addClaimableCommission(claimableCommission);
+        ticket.resetCommissionRewardsByValidator(validatorSifAddress);
+        totalClaimableCommissions += claimableCommission;
+        totalForfeitedCommissions += forfeitedCommission;
+      }
+    return { totalClaimableCommissions, totalForfeitedCommissions };
   }
 
-  withdrawStakeAsDelegator (delegateEvent) {
+  withdrawStakeAsDelegator (delegateEvent, getUserByAddress) {
     const burnedThisValTickets = this.removeBurnedTickets(delegateEvent);
     const { claimable, forfeited } = this.calculateClaimableReward(
       burnedThisValTickets
     );
+
+    const {
+      totalClaimableCommissions: totalCommissionsClaimedByValidators,
+      totalForfeitedCommissions: totalCommissionsForfeitedByValidators
+    } = this.calculateClaimableCommissionsAndAssignToValidator(
+      getUserByAddress,
+      burnedThisValTickets
+    );
     this.claimableRewardsOnWithdrawnAssets +=
-      claimable * (1 - delegateEvent.commission);
-    this.forfeited += forfeited;
-    /*
-      Skip adding validator rewards here because they are added in total via 
-     `User#collectValidatorsCommissionsOnLatestUnclaimedRewards()` ?
-    */
+      claimable - totalCommissionsClaimedByValidators;
+    this.forfeited += forfeited - totalCommissionsForfeitedByValidators;
   }
 
   calculateClaimableReward (tickets) {
     return tickets.reduce(
       (accum, ticket) => {
-        const forefeitedMultiplier = 1 - ticket.mul;
         const reward = ticket.reward || 0;
         const result = {
           claimable: accum.claimable + reward * ticket.mul,
-          forfeited: accum.forfeited + reward * forefeitedMultiplier
+          forfeited: accum.forfeited + reward * (1 - ticket.mul)
         };
         return result;
       },
@@ -243,29 +294,29 @@ class User {
       }
     });
     const sortedTickets = _.sortBy(tickets, 'mul');
-    let amountLeft = -delegateEvent.amount;
+
+    // withdrawal events are identified by negative `DelegateEvent.amount` fields.
+    let remainingWithdrawalAmount = Math.abs(delegateEvent.amount);
     const burnedTickets = [];
     const remainingTickets = [];
     sortedTickets.forEach(ticket => {
-      if (amountLeft === 0) {
+      // if done withdrawing, keep the ticket
+      if (remainingWithdrawalAmount === 0) {
         remainingTickets.push(ticket);
         return;
       }
-      let amountToRemove = Math.min(amountLeft, ticket.amount);
-      const proportionBurned =
-        ticket.amount === 0 ? 0 : +amountToRemove / parseFloat(ticket.amount);
-      const burnedTicket = ticket.cloneWith({
-        amount: amountToRemove,
-        reward: proportionBurned * parseFloat(ticket.reward || 0)
-      });
+      const amountToRemove = Math.min(remainingWithdrawalAmount, ticket.amount);
+
+      const { burnedTicket, remainderTicket, hasRemainder } = ticket.burn(
+        amountToRemove
+      );
+
       burnedTickets.push(burnedTicket);
-      amountLeft = amountLeft - amountToRemove;
-      if (amountLeft === 0) {
-        const remainingTicket = ticket.cloneWith({
-          amount: ticket.amount - amountToRemove,
-          reward: (1 - proportionBurned) * parseFloat(ticket.reward || 0)
-        });
-        remainingTickets.push(remainingTicket);
+      remainingWithdrawalAmount -= amountToRemove;
+
+      // if done withdrawing and ticket has remaining balance
+      if (remainingWithdrawalAmount === 0 && hasRemainder) {
+        remainingTickets.push(remainderTicket);
       }
     });
     this.tickets = otherValidatorTickets.concat(remainingTickets);
