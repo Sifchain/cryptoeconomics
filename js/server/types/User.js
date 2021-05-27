@@ -11,9 +11,11 @@ class User {
     this.claimableRewardsOnWithdrawnAssets = 0;
     this.dispensed = 0;
     this.forfeited = 0;
-    this.currentTotalClaimableReward = 0;
+    this.totalAccruedCommissionsAndClaimableRewards = 0;
+    this.totalClaimableCommissionsAndClaimableRewards = 0;
     this.reservedReward = 0;
-    this.totalTicketsAmountSum = 0;
+    this.totalDepositedAmount = 0;
+    this.totalClaimableRewardsOnDepositedAssets = 0;
     this.currentTotalCommissionsOnClaimableDelegatorRewards = 0;
     this.claimableCommissions = 0;
 
@@ -31,7 +33,7 @@ class User {
     this.maturityDateISO = undefined;
     this.yearsToMaturity = undefined;
     this.currentAPYOnTickets = undefined;
-    this.maturityDateMs = undefined;
+    this.maturityDateMs = 0;
     // timevalues
     this.futureReward = undefined;
     this.nextReward = undefined;
@@ -54,7 +56,8 @@ class User {
       if (t === ticket) {
         return t.cloneWith({
           commission: event.commission,
-          validatorSifAddress: event.validatorSifAddress
+          validatorRewardAddress: event.validatorRewardAddress,
+          validatorStakeAddress: event.validatorStakeAddress
         });
       }
       return t;
@@ -95,15 +98,20 @@ class User {
       totalReward += expectedReward;
       totalClaimableReward += claimableReward;
     });
-    this.totalTicketsAmountSum = totalAmount;
-    this.currentTotalClaimableReward =
+    this.totalDepositedAmount = totalAmount;
+    this.totalClaimableRewardsOnDepositedAssets = totalClaimableReward;
+    this.totalClaimableCommissionsAndClaimableRewards =
       this.claimableRewardsOnWithdrawnAssets +
-      totalClaimableReward +
+      this.totalClaimableRewardsOnDepositedAssets +
+      this.claimableCommissions;
+    this.totalAccruedCommissionsAndClaimableRewards =
+      this.claimableRewardsOnWithdrawnAssets +
+      this.totalClaimableRewardsOnDepositedAssets +
       this.currentTotalCommissionsOnClaimableDelegatorRewards +
       this.claimableCommissions;
     this.reservedReward = this.claimableRewardsOnWithdrawnAssets + totalReward;
     this.nextRewardShare =
-      this.totalTicketsAmountSum / timestampTicketsAmountSum;
+      this.totalDepositedAmount / timestampTicketsAmountSum;
   }
 
   updateUserMaturityDates (
@@ -119,7 +127,7 @@ class User {
     if (
       maturityDate === undefined && // maturity date not yet reached
       isAfterRewardPeriod && // reward period is over
-      this.currentTotalClaimableReward === this.reservedReward // rewards have matured
+      this.totalClaimableRewardsOnDepositedAssets === this.reservedReward // rewards have matured
     ) {
       maturityDateMoment = moment
         .utc(config.START_DATETIME)
@@ -132,24 +140,25 @@ class User {
     this.maturityDateISO = maturityDateISO;
     this.maturityDateMs = maturityDateMs;
     this.futureReward =
-      this.totalRewardAtMaturity - this.currentTotalClaimableReward;
+      this.totalRewardAtMaturity - this.totalClaimableRewardsOnDepositedAssets;
     this.currentYieldOnTickets =
       // likely scenario for validators (no tickets)
-      this.totalTicketsAmountSum === 0
+      this.totalDepositedAmount === 0
         ? 0
-        : this.futureReward / this.totalTicketsAmountSum;
+        : this.futureReward / this.totalDepositedAmount;
     this.nextReward = this.nextRewardShare * nextBucketGlobalReward;
     this.nextRewardProjectedFutureReward =
       (this.nextReward / 200) * 60 * 24 * 365;
     this.nextRewardProjectedAPYOnTickets =
       // likely scenario for validators (no tickets)
-      this.totalTicketsAmountSum === 0
+      this.totalDepositedAmount === 0
         ? 0
-        : this.nextRewardProjectedFutureReward / this.totalTicketsAmountSum;
+        : this.nextRewardProjectedFutureReward / this.totalDepositedAmount;
   }
 
   updateUserMaturityRewards (userAtMaturity) {
-    this.totalRewardAtMaturity = userAtMaturity.currentTotalClaimableReward;
+    this.totalRewardAtMaturity =
+      userAtMaturity.totalClaimableRewardsOnDepositedAssets;
     this.ticketAmountAtMaturity = _.sum(
       userAtMaturity.tickets.map(ticket => ticket.amount)
     );
@@ -201,26 +210,28 @@ class User {
     let totalClaimableCommissions = 0;
     let totalForfeitedCommissions = 0;
     for (let ticket of burnedTickets)
-      for (let validatorSifAddress in ticket.commissionRewardsByValidator) {
-        const validator = getUserByAddress(validatorSifAddress);
+      for (let validatorRewardAddress in ticket.commissionRewardsByValidator) {
+        const validator = getUserByAddress(validatorRewardAddress);
         const claimableCommission = ticket.getClaimableCommissionRewardByValidator(
-          validatorSifAddress
+          validatorRewardAddress
         );
         const forfeitedCommission = ticket.getForfeitedCommissionRewardByValidator(
-          validatorSifAddress
+          validatorRewardAddress
         );
         validator.addClaimableCommission(claimableCommission);
-        ticket.resetCommissionRewardsByValidator(validatorSifAddress);
+        ticket.resetCommissionRewardsByValidator(validatorRewardAddress);
         totalClaimableCommissions += claimableCommission;
         totalForfeitedCommissions += forfeitedCommission;
       }
     return { totalClaimableCommissions, totalForfeitedCommissions };
   }
 
-  withdrawStakeAsDelegator (delegateEvent, getUserByAddress) {
-    const burnedThisValTickets = this.removeBurnedTickets(delegateEvent);
+  withdrawStakeAsDelegator (delegateEvent, getUserByAddress, burnedTickets) {
+    if (!burnedTickets) {
+      burnedTickets = this.removeBurnedTickets(delegateEvent);
+    }
     const { claimable, forfeited } = this.calculateClaimableReward(
-      burnedThisValTickets
+      burnedTickets
     );
 
     const {
@@ -228,7 +239,7 @@ class User {
       totalForfeitedCommissions: totalCommissionsForfeitedByValidators
     } = this.calculateClaimableCommissionsAndAssignToValidator(
       getUserByAddress,
-      burnedThisValTickets
+      burnedTickets
     );
     this.claimableRewardsOnWithdrawnAssets +=
       claimable - totalCommissionsClaimedByValidators;
@@ -261,7 +272,7 @@ class User {
   ) {
     /*
       Need to: 
-        * Loop through delegator's (`this`) tickets with validator's `validatorSifAddress`
+        * Loop through delegator's (`this`) tickets with validator's `validatorRewardAddress`
           * Calculate claimable reward
           * Calculate commission on reward
           * Subtract commission already claimed (`ticket#commissionRewardsClaimedByValidators`)
@@ -270,14 +281,14 @@ class User {
           * Add to sum of all `ticket#commissionRewardsClaimedByValidators`'s (`validatorCommissionRewards`)
     */
     for (let ticket of this.tickets) {
-      const validator = getUserByAddress(ticket.validatorSifAddress);
+      const validator = getUserByAddress(ticket.validatorRewardAddress);
       let commissionOnReward = ticket.rewardDelta * ticket.commission;
       if (commissionOnReward < 0) {
         console.log('less than zero');
       }
       ticket.addCommissionRewardByValidator(
         commissionOnReward,
-        ticket.validatorSifAddress
+        ticket.validatorRewardAddress
       );
       validator.addDelegatorAddress(delegatorSifAddress);
     }
@@ -287,7 +298,9 @@ class User {
     const tickets = [];
     const otherValidatorTickets = [];
     this.tickets.forEach(ticket => {
-      if (ticket.validatorSifAddress === delegateEvent.validatorSifAddress) {
+      if (
+        ticket.validatorRewardAddress === delegateEvent.validatorRewardAddress
+      ) {
         tickets.push(ticket);
       } else {
         otherValidatorTickets.push(ticket);

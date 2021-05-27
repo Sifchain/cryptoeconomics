@@ -10,7 +10,8 @@ exports.getUserTimeSeriesData = (all, address) => {
   return all
     .map(timestampData => {
       const userData = timestampData.users[address] || new User();
-      const userClaimableReward = userData.currentTotalClaimableReward;
+      const userClaimableReward =
+        userData.totalAccruedCommissionsAndClaimableRewards;
       const userReservedReward = userData.reservedReward;
       return {
         timestamp: timestampData.timestamp,
@@ -100,7 +101,7 @@ async function getUserMaturityAPY (userData, address) {
     return nextRewardProjectedAPYOnCurrentLiquidity;
 
     /* UI Version (calculates APY, but we're actually looking for realizable ROI as measured above) */
-    // let alreadyEarned = userData.currentTotalClaimableReward;
+    // let alreadyEarned = userData.totalAccruedCommissionsAndClaimableRewards;
     // let futureTotalEarningsAtMaturity = userData.totalRewardAtMaturity;
     // let remainingFutureYieldAmount =
     //   futureTotalEarningsAtMaturity - alreadyEarned;

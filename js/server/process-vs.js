@@ -8,12 +8,22 @@ const { User, GlobalTimestampState, UserTicket } = require('./types');
   Filter out deposit events after config.DEPOSIT_CUTOFF_DATETIME,
   but continue accruing rewards until config.END_OF_REWARD_ACCRUAL_DATETIME
 */
-function processVSGlobalState (lastGlobalState, timestamp, eventsByUser) {
+function processVSGlobalState (
+  lastGlobalState,
+  timestamp,
+  eventsByUser,
+  getCurrentCommissionRateByValidatorStakeAddress
+) {
   const { rewardBuckets, globalRewardAccrued } = processRewardBuckets(
     lastGlobalState.rewardBuckets,
     lastGlobalState.bucketEvent
   );
-  let users = processUserTickets(lastGlobalState.users, globalRewardAccrued);
+
+  let users = processUserTickets(
+    lastGlobalState.users,
+    globalRewardAccrued,
+    getCurrentCommissionRateByValidatorStakeAddress
+  );
   users = processUserEvents(users, eventsByUser);
   users = calculateUserCommissions(users);
   let globalState = new GlobalTimestampState();
@@ -25,7 +35,11 @@ function processVSGlobalState (lastGlobalState, timestamp, eventsByUser) {
   return globalState;
 }
 
-function processUserTickets (users, globalRewardAccrued) {
+function processUserTickets (
+  users,
+  globalRewardAccrued,
+  getCurrentCommissionRateByValidatorStakeAddress
+) {
   // process reward accruals and multiplier updates
   const totalShares = _.sum(
     _.flatten(
@@ -45,7 +59,10 @@ function processUserTickets (users, globalRewardAccrued) {
           mul: Math.min(ticket.mul + 0.75 / MULTIPLIER_MATURITY, 1),
           reward: ticket.reward + rewardDelta,
           rewardDelta: rewardDelta,
-          poolDominanceRatio
+          poolDominanceRatio,
+          commission: getCurrentCommissionRateByValidatorStakeAddress(
+            ticket.validatorStakeAddress
+          )
         });
       })
     });
@@ -53,21 +70,57 @@ function processUserTickets (users, globalRewardAccrued) {
   return updatedUsers;
 }
 
+/* 
+  Determine redelegation by if the absolute value of the sum 
+  of all withdrawal event amounts is equal to the amount of 
+  one deposit event.
+
+  Example 1.
+    -1, -4, +5 
+
+  Example 2.
+    -1, -1, -1, +2, -2, +5 
+
+  Warning: This too is problematic because it does not handle edge cases.
+  Could instead filter by only including negative amount events where a 
+  corresponding ticket exist, but this might not include withdrawals made
+  on desposits within the event series. Need to debug.
+
+  Real-World Example: (Adds deposit, creating 1 ticket, then redelegates all 3 tickets to new validator) 
+    https://blockexplorer.sifchain.finance/account/sif1zfxa20g8j2hqhxencyqtfhd95wvxsnen08pw97
+*/
+// function checkForBulkRedelegation(userEvents) {
+//   let sumOfNegativeEvents = 0;
+//   for (let event of userEvents) {
+//     if (event.amount < 0) {
+//       sumOfNegativeEvents += event.amount;
+//     }
+//   }
+//   sumOfNegativeEvents = Math.abs(sumOfNegativeEvents);
+//   for (let event of userEvents) {
+//     if (event.amount === sumOfNegativeEvents) {
+//       return true;
+//     }
+//   }
+//   return false;
+// }
+
 function processUserEvents (users, eventsByUser) {
   _.forEach(eventsByUser, userEvents => {
+    // const burnedThisValTickets = this.removeBurnedTickets(delegateEvent);
+
     const previousUser =
       userEvents.length > 0 && users[userEvents[0].delegateAddress];
-
     const previousTickets = previousUser ? previousUser.tickets : [];
 
     userEvents.forEach(event => {
+      // const isBulkRedelegation = checkForBulkRedelegation(userEvents);
       // find or create user/delegator
       const user = users[event.delegateAddress] || new User();
       users[event.delegateAddress] = user;
-
       // find or create validator
-      const validator = users[event.validatorSifAddress] || new User();
-      users[event.validatorSifAddress] = validator;
+      const validator = users[event.validatorRewardAddress] || new User();
+      users[event.validatorRewardAddress] = validator;
 
       // is this really proof of redelegation?
       // or just a probable scenario during redelegation?
@@ -76,6 +129,7 @@ function processUserEvents (users, eventsByUser) {
         userEvents.some(other => {
           return other.amount === -event.amount;
         });
+
       // Is deposit (adding funds)
       if (event.amount > 0) {
         const redelegatedTicket = isRedelegation
@@ -144,8 +198,8 @@ function calculateUserCommissions (users) {
         and leave out all those processed after.
       */
     users[addr].collectValidatorsCommissionsOnLatestUnclaimedRewards(
-      validatorSifAddress => {
-        return users[validatorSifAddress];
+      validatorRewardAddress => {
+        return users[validatorRewardAddress];
       },
       addr
     );

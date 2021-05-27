@@ -49,14 +49,11 @@ exports.getProcessedLMData = snapshotLM => {
 };
 
 exports.getProcessedVSData = snapshotVS => {
-  const VSValidatorAddresses =
+  const validatorSnapshotData =
     snapshotVS.data.snapshots_validators[0].snapshot_data;
 
   console.time('remapVS');
-  const VSTimeIntervalEvents = remapVSAddresses(
-    VSValidatorAddresses,
-    EVENT_INTERVAL_MINUTES
-  );
+  const { userEventsByTimestamp } = remapVSAddresses(validatorSnapshotData);
   console.timeEnd('remapVS');
 
   console.time('processvs');
@@ -80,16 +77,30 @@ exports.getProcessedVSData = snapshotVS => {
         } catch (e) {}
       }
     }
+    function getCurrentCommissionRateByValidatorStakeAddress (
+      validatorStakeAddress
+    ) {
+      const validatorCommissionData =
+        validatorSnapshotData[validatorStakeAddress].commission;
+      const commissionIndex =
+        i < validatorCommissionData.length
+          ? i
+          : validatorCommissionData.length - 1;
+      const rate = validatorCommissionData[commissionIndex];
+      return rate;
+    }
     const lastGlobalState = VSGlobalStates[VSGlobalStates.length - 1];
     const timestamp = i * EVENT_INTERVAL_MINUTES;
-    const events = VSTimeIntervalEvents['' + timestamp] || [];
+    const userEvents = userEventsByTimestamp[timestamp.toString()] || [];
     const newGlobalState = processVSGlobalState(
       lastGlobalState,
       timestamp,
-      events
+      userEvents,
+      getCurrentCommissionRateByValidatorStakeAddress
     );
-    if (cacheEnabled)
+    if (cacheEnabled) {
       fs.writeFileSync(cachePath, JSON.stringify(newGlobalState));
+    }
     VSGlobalStates.push(newGlobalState);
   }
   console.timeEnd('processvs');

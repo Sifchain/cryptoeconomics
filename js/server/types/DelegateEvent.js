@@ -2,7 +2,8 @@ class DelegateEvent {
   constructor () {
     this.timestamp = 0;
     this.delegateAddress = null;
-    this.validatorSifAddress = null;
+    this.validatorRewardAddress = null;
+    this.validatorStakeAddress = null;
     this.commission = 0;
     this.amount = 0;
   }

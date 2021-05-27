@@ -2,7 +2,7 @@ const config = require('../config');
 const { User } = require('./User');
 class GlobalTimestampState {
   constructor () {
-    this.totalTicketsAmountSum = 0;
+    this.totalDepositedAmount = 0;
     this.users = {};
     this.timestamp = -1;
     this.rewardBuckets = [];

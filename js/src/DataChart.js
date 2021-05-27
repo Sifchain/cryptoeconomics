@@ -119,7 +119,7 @@ function renderChart (canvasElement, data, chart) {
         zoom: {
           zoom: {
             wheel: {
-              enabled: true
+              enabled: false
             },
             pinch: {
               enabled: true
