@@ -6,7 +6,8 @@ class UserTicket {
     this.amount = 0;
     this.mul = 0;
     this.reward = 0;
-    this.validatorSifAddress = null;
+    this.validatorRewardAddress = null;
+    this.validatorStakeAddress = null;
     this.timestamp = null;
     this.rewardDelta = 0;
     this.poolDominanceRatio = 0;
@@ -78,34 +79,35 @@ class UserTicket {
     return next;
   }
 
-  addCommissionRewardByValidator (commissionReward, validatorSifAddress) {
+  addCommissionRewardByValidator (commissionReward, validatorRewardAddress) {
     let currentClaims =
-      this.commissionRewardsByValidator[validatorSifAddress] || 0;
-    this.commissionRewardsByValidator[validatorSifAddress] =
+      this.commissionRewardsByValidator[validatorRewardAddress] || 0;
+    this.commissionRewardsByValidator[validatorRewardAddress] =
       currentClaims + commissionReward;
   }
 
-  getClaimableCommissionRewardByValidator (validatorSifAddress) {
+  getClaimableCommissionRewardByValidator (validatorRewardAddress) {
     let currentClaims =
-      this.commissionRewardsByValidator[validatorSifAddress] || 0;
+      this.commissionRewardsByValidator[validatorRewardAddress] || 0;
     return currentClaims * this.mul;
   }
 
-  getForfeitedCommissionRewardByValidator (validatorSifAddress) {
+  getForfeitedCommissionRewardByValidator (validatorRewardAddress) {
     let currentClaims =
-      this.commissionRewardsByValidator[validatorSifAddress] || 0;
+      this.commissionRewardsByValidator[validatorRewardAddress] || 0;
     return currentClaims * (1 - this.mul);
   }
 
-  resetCommissionRewardsByValidator (validatorSifAddress) {
-    this.commissionRewardsByValidator[validatorSifAddress] = 0;
+  resetCommissionRewardsByValidator (validatorRewardAddress) {
+    this.commissionRewardsByValidator[validatorRewardAddress] = 0;
   }
 
   static fromEvent (event) {
     let instance = new this();
     Object.assign(instance, {
       commission: event.commission,
-      validatorSifAddress: event.validatorSifAddress,
+      validatorRewardAddress: event.validatorRewardAddress,
+      validatorStakeAddress: event.validatorStakeAddress,
       amount: event.amount,
       mul: 0.25,
       reward: 0,

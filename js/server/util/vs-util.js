@@ -1,9 +1,10 @@
 const _ = require('lodash');
+const { EVENT_INTERVAL_MINUTES } = require('../config');
 const { DelegateEvent } = require('../types');
 
 // Restructure snapshot address liquidity event entries into per-time interval aggregated event form
 // (see global-state.md for example)
-function remapVSAddresses (vaLAddresses, timeInterval) {
+function remapVSAddresses (vaLAddresses) {
   const mapped = _.map(
     vaLAddresses,
     ({ commission: commissionEvents, ...valAddressData }, valStakeAddress) => {
@@ -16,9 +17,8 @@ function remapVSAddresses (vaLAddresses, timeInterval) {
         `rewardAddressDesignatedByValidator` is purposefully being set by the data team 
          as the first property key in the validator's delegate dictionary
       */
-      const [rewardAddressDesignatedByValidator, ...delegates] = Object.keys(
-        valAddressData
-      );
+      const delegates = Object.keys(valAddressData);
+      const rewardAddressDesignatedByValidator = delegates[0];
 
       const valDelegateEvents = delegates
         .map(delegateAddress => {
@@ -30,11 +30,12 @@ function remapVSAddresses (vaLAddresses, timeInterval) {
                 console.log('COMMISSION RATE < 0. NEEDS HANDLING');
               }
               return DelegateEvent.fromJSON({
-                timestamp: (index + 1) * timeInterval,
+                timestamp: (index + 1) * EVENT_INTERVAL_MINUTES,
                 commission: commissionRate,
                 amount,
                 delegateAddress,
-                validatorSifAddress: rewardAddressDesignatedByValidator
+                validatorStakeAddress: valStakeAddress,
+                validatorRewardAddress: rewardAddressDesignatedByValidator
               });
             })
             .filter(e => e.amount !== 0);
@@ -81,7 +82,9 @@ function remapVSAddresses (vaLAddresses, timeInterval) {
     }
   );
 
-  return allTimeIntervalAddressEvents;
+  return {
+    userEventsByTimestamp: allTimeIntervalAddressEvents
+  };
 }
 
 // function processCommissionEvents(commissionEvents) {
