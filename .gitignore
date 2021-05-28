@@ -11,3 +11,4 @@ env.sh
 .vscode
 rust
 .DS_Store
+*.log
