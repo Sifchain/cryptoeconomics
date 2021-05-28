@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const { getTimeIndex } = require('./util/getTimeIndex');
 const compression = require('compression');
-
+const fs = require('fs');
 // implements process.js in separate thread
 const { createMultiprocessActionDispatcher } = require('./processing-handler');
 
@@ -20,6 +20,19 @@ app.use(compression());
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
+});
+
+const logFilePath = '/tmp/cryptoecon.log';
+
+app.get('/logs', (req, res, next) => {
+  fs.readFile(logFilePath, (err, data) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    res.setHeader('Content-Type', 'text/plain');
+    res.send(data.toString());
+  });
 });
 
 app.get('/status', (req, res, next) => {
