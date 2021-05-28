@@ -31,12 +31,14 @@ exports.augmentLMData = (data) => {
   data.forEach((timestamp) => {
     _.forEach(timestamp.users, (user, address) => {
       const userAtMaturity = finalTimestamp.users[address] || {};
-      user.totalRewardAtMaturity = userAtMaturity.claimableReward;
+      user.totalRewardsOnDepositedAssetsAtMaturity =
+        userAtMaturity.claimableReward;
       user.ticketAmountAtMaturity = _.sum(
         finalTimestamp.users[address].tickets.map((ticket) => ticket.amount)
       );
       user.yieldAtMaturity =
-        user.totalRewardAtMaturity / user.ticketAmountAtMaturity;
+        user.totalRewardsOnDepositedAssetsAtMaturity /
+        user.ticketAmountAtMaturity;
     });
   });
 
@@ -69,7 +71,7 @@ exports.augmentLMData = (data) => {
       user.maturityDateISO = maturityDateISO;
       user.maturityDateMS = maturityDateMS;
       user.futureReward =
-        user.totalRewardAtMaturity -
+        user.totalRewardsOnDepositedAssetsAtMaturity -
         user.totalAccruedCommissionsAndClaimableRewards;
       user.currentYieldOnTickets =
         user.futureReward / user.totalDepositedAmount;
@@ -124,7 +126,7 @@ exports.augmentLMData = (data) => {
   }));
   const top50Users = _.orderBy(
     finalTimestampUsers,
-    ['totalRewardAtMaturity'],
+    ['totalRewardsOnDepositedAssetsAtMaturity'],
     ['desc']
   ).slice(0, 50);
   const blankUserRewards = top50Users.reduce((accum, user) => {

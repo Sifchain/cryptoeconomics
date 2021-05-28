@@ -19,9 +19,13 @@ export const fetchUsers = type => {
     .then(response => response.json());
 };
 
-export const fetchUserData = (address, type) => {
+export const fetchUserData = (address, type, timestamp) => {
   return window
-    .fetch(`${serverURL}/${type}?key=userData&address=${address}`)
+    .fetch(
+      `${serverURL}/${type}?key=userData&address=${address}${
+        timestamp ? `&timestamp=${new Date(timestamp).toISOString()}` : ``
+      }`
+    )
     .then(response => response.json());
 };
 

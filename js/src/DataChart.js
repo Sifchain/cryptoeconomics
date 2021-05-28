@@ -49,10 +49,12 @@ function renderChart (canvasElement, data, chart) {
         radius: 0,
         backgroundColor: 'rgba(59, 127, 186, 0.2)',
         fill: true,
-        data: data.map(d => ({
-          y: d.userClaimableReward,
-          x: timestampToDate(d.timestamp)
-        }))
+        data: data.map((d, index) => {
+          return {
+            y: typeof d === 'object' ? d.userClaimableReward : d,
+            x: timestampToDate(index * 200)
+          };
+        })
       }
       // {
       //   borderColor: Utils.CHART_COLORS.blue,

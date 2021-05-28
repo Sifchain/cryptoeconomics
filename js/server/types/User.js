@@ -17,13 +17,15 @@ class User {
     this.totalDepositedAmount = 0;
     this.totalClaimableRewardsOnDepositedAssets = 0;
     this.currentTotalCommissionsOnClaimableDelegatorRewards = 0;
+    this.totalAccruedCommissionsAtMaturity = 0;
+    this.totalCommissionsAndRewardsAtMaturity = 0;
     this.claimableCommissions = 0;
 
     // neccessary because we can otherwise not calculate `currentTotalCommissionsOnClaimableDelegatorRewards` if there are no remaining tickets
     // this.claimableCommissionsByDelegatorAddress = {};
     this.delegatorAddresses = [];
 
-    this.totalRewardAtMaturity = 0;
+    this.totalRewardsOnDepositedAssetsAtMaturity = 0;
     this.ticketAmountAtMaturity = 0;
     this.yieldAtMaturity = 0;
     this.nextRewardShare = 0;
@@ -109,7 +111,7 @@ class User {
       this.totalClaimableRewardsOnDepositedAssets +
       this.currentTotalCommissionsOnClaimableDelegatorRewards +
       this.claimableCommissions;
-    this.reservedReward = this.claimableRewardsOnWithdrawnAssets + totalReward;
+    this.reservedReward = totalReward;
     this.nextRewardShare =
       this.totalDepositedAmount / timestampTicketsAmountSum;
   }
@@ -127,7 +129,7 @@ class User {
     if (
       maturityDate === undefined && // maturity date not yet reached
       isAfterRewardPeriod && // reward period is over
-      this.totalClaimableRewardsOnDepositedAssets === this.reservedReward // rewards have matured
+      this.totalClaimableRewardsOnDepositedAssets >= this.reservedReward // rewards have matured
     ) {
       maturityDateMoment = moment
         .utc(config.START_DATETIME)
@@ -140,7 +142,8 @@ class User {
     this.maturityDateISO = maturityDateISO;
     this.maturityDateMs = maturityDateMs;
     this.futureReward =
-      this.totalRewardAtMaturity - this.totalClaimableRewardsOnDepositedAssets;
+      this.totalRewardsOnDepositedAssetsAtMaturity -
+      this.totalClaimableRewardsOnDepositedAssets;
     this.currentYieldOnTickets =
       // likely scenario for validators (no tickets)
       this.totalDepositedAmount === 0
@@ -157,8 +160,12 @@ class User {
   }
 
   updateUserMaturityRewards (userAtMaturity) {
-    this.totalRewardAtMaturity =
+    this.totalRewardsOnDepositedAssetsAtMaturity =
       userAtMaturity.totalClaimableRewardsOnDepositedAssets;
+    this.totalAccruedCommissionsAtMaturity =
+      userAtMaturity.currentTotalCommissionsOnClaimableDelegatorRewards;
+    this.totalCommissionsAndRewardsAtMaturity =
+      userAtMaturity.totalAccruedCommissionsAndClaimableRewards;
     this.ticketAmountAtMaturity = _.sum(
       userAtMaturity.tickets.map(ticket => ticket.amount)
     );
@@ -169,7 +176,8 @@ class User {
       this.yieldAtMaturity = 0;
     } else {
       this.yieldAtMaturity =
-        this.totalRewardAtMaturity / this.ticketAmountAtMaturity;
+        this.totalRewardsOnDepositedAssetsAtMaturity /
+        this.ticketAmountAtMaturity;
     }
   }
 

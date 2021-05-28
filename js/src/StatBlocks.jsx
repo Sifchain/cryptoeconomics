@@ -35,15 +35,15 @@ const roundTo = (num, oneWithZeros = 100) =>
 
 const defaultStatBlocks = {
   totalAccruedCommissionsAndClaimableRewards: createStatBlock({
-    title: 'Earned',
-    subtitle: 'Accrued Commissions & Rewards',
+    title: 'Current Earnings',
+    subtitle: 'Commissions + Rewards',
   }),
   get claimableReward() {
     return this.totalAccruedCommissionsAndClaimableRewards;
   },
-  totalRewardAtMaturity: createStatBlock({
-    title: 'Potential',
-    subtitle: 'Projected Stake Rewards',
+  totalCommissionsAndRewardsAtMaturity: createStatBlock({
+    title: 'Potential Earnings',
+    subtitle: 'Commissions + Rewards at Maturity',
   }),
   maturityDateISO: createStatBlock({
     title: 'Maturity Date',
@@ -51,8 +51,8 @@ const defaultStatBlocks = {
     data: (data) => <div>{new Date(data).toLocaleDateString()}</div>,
     prefix: null,
   }),
-  currentAPYOnTickets: createStatBlock({
-    title: 'APY',
+  nextRewardProjectedAPYOnTickets: createStatBlock({
+    title: 'Projected APY',
     subtitle: 'Annual Percentage Yield',
     data: (data) => {
       return (
@@ -84,19 +84,19 @@ export const StatBlocks = {
     ...defaultStatBlocks,
     totalDepositedAmount: createStatBlock({
       title: 'Staked',
-      subtitle: 'Deposited as Delegator',
+      subtitle: 'Delegated Assets',
     }),
     get totalTickets() {
       return this.totalDepositedAmount;
     },
-    currentTotalCommissionsOnClaimableDelegatorRewards: createStatBlock({
-      title: 'Commissions',
-      subtitle: 'Awaiting Delegator Claims',
-    }),
-    totalClaimableCommissionsAndClaimableRewards: createStatBlock({
-      title: 'Claimable',
-      subtitle: 'Claimable Commissions & Rewards',
-    }),
+    // currentTotalCommissionsOnClaimableDelegatorRewards: createStatBlock({
+    //   title: 'Commissions',
+    //   subtitle: 'Awaiting Delegator Claims',
+    // }),
+    // totalClaimableCommissionsAndClaimableRewards: createStatBlock({
+    //   title: 'Claimable',
+    //   subtitle: 'Claimable Commissions & Rewards',
+    // }),
 
     // delegatorAddresses: createStatBlock({
     //   title: 'Delegators',
@@ -128,7 +128,7 @@ export const StatBlocks = {
     ...defaultStatBlocks,
     totalDepositedAmount: createStatBlock({
       title: 'Pooled',
-      subtitle: 'DEPOSIT',
+      subtitle: 'Deposited Assets',
     }),
     get totalTickets() {
       return this.totalDepositedAmount;

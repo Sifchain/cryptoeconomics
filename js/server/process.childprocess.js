@@ -127,7 +127,7 @@ class BackgroundProcessor {
     const [lMSnapshot, vsSnapshot] = isInLocalSnapshotDevMode
       ? [
           require('../snapshots/snapshot_lm_latest.json'),
-          require('../snapshots/test.vs.json')
+          require('../snapshots/snapshot_vs_latest.json')
         ]
       : await Promise.all([
           retryOnFail({

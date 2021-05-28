@@ -11,6 +11,7 @@
     "@testing-library/user-event": "^12.1.10",
     "chart.js": "^3.2.1",
     "chartjs-plugin-zoom": "^1.0.0",
+    "compression": "^1.7.4",
     "cors": "^2.8.5",
     "cross-fetch": "^3.1.4",
     "d3": "^6.7.0",
@@ -26,7 +27,7 @@
   },
   "scripts": {
     "start": "FAST_REFRESH=false react-scripts start",
-    "server": "node -r dotenv/config --max-old-space-size=15360 server/main.js",
+    "server": "node -r dotenv/config --trace-warnings --max-old-space-size=40960 server/main.js",
     "dev": "node -r dotenv/config --max-old-space-size=8192 server/main.js",
     "refresh-lm-snapshot": "source .env && curl -H 'Content-Type: application/json' -H \"$HEADER_SECRET\" -X POST -d '{\"query\": \"query GetSnapshot { snapshots_new(limit: 1 order_by: {id: desc}) { snapshot_data } }\"}' $SNAPSHOT_URL -o ./snapshots/snapshot_lm_latest.json",
     "refresh-vs-snapshot": "source .env && curl -H 'Content-Type: application/json' -H \"$HEADER_SECRET\" -X POST -d '{\"query\": \"query GetCommissionSnapshot { snapshots_validators(limit: 1 order_by: {id: desc}) { snapshot_data } }\"}' $SNAPSHOT_URL -o ./snapshots/snapshot_vs_latest.json",
