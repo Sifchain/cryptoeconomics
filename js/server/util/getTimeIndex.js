@@ -10,11 +10,11 @@ function getTimeIndex (timestampFromClient) {
   if (timestampFromClient === 'now') {
     nowMoment = moment(Date.parse(new Date()));
   } else {
-    nowMoment = moment(timestampFromClient);
+    nowMoment = moment(new Date(timestampFromClient));
   }
-  return Math.floor(
-    moment.duration(nowMoment.diff(START_DATETIME)).asMinutes() / 200
-  );
+  const diff = nowMoment.diff(START_DATETIME);
+  const rtn = Math.floor(moment.duration(diff).asMinutes() / 200);
+  return rtn;
 }
 
 module.exports = {

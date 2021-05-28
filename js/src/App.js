@@ -5,17 +5,16 @@ import { fetchUsers, fetchUserData, fetchUserTimeSeriesData } from './api';
 import JSONPretty from 'react-json-pretty';
 import 'react-json-pretty/themes/monikai.css';
 import moment from 'moment';
-import Chart from './Chart';
-import StackAll from './StackAll';
 import DataChart from './DataChart';
 import DataStackAll from './DataStackAll';
 import { StatBlocks } from './StatBlocks';
+import { UserDataSummary } from './UserDataSummary';
 
 const DATE_FORMAT = 'MMMM Do YYYY [at] h:mm';
 
 // show all fields locally
-const SHOULD_HIDE_NON_USER_FRIENDLY_FIELDS =
-  !!process.env.REACT_APP_DEPLOYMENT_TAG;
+const SHOULD_HIDE_NON_USER_FRIENDLY_FIELDS = !!process.env
+  .REACT_APP_DEPLOYMENT_TAG;
 
 const userFieldsToHide = [
   'reservedReward',
@@ -25,7 +24,7 @@ const userFieldsToHide = [
   'nextReward',
   'nextRewardProjectedFutureReward',
   'yearsToMaturity',
-  'currentAPYOnTickets',
+  'currentAPYOnTickets'
 ];
 
 const debounce = (fn, ms) => {
@@ -43,16 +42,18 @@ const debounce = (fn, ms) => {
 // }
 
 class App extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
 
     const [address, type] = window.location.hash.substr(1).split('&type=');
     this.state = {
       timestamp: 0,
-      date: moment.utc(START_DATETIME).format(DATE_FORMAT),
+      date: moment.utc(new Date()),
       address: address || undefined,
       type: type || 'lm',
       dataDisplayPoints: [],
+      userData: null,
+      bulkUserData: null
     };
 
     this.updateAddressEvent = this.updateAddressEvent.bind(this);
@@ -62,28 +63,28 @@ class App extends React.Component {
     this.updateAddress(this.state.address);
   }
 
-  initDateTime() {
+  initDateTime () {
     const now = moment.utc(Date.parse(new Date()));
     this.setState({
-      date: moment.utc(now).format(DATE_FORMAT),
+      date: moment.utc(now),
       timestamp: Math.floor(
         moment.duration(now.diff(START_DATETIME)).asMinutes() / 200
-      ),
+      )
     });
   }
 
-  componentDidMount() {
-    fetchUsers('lm').then((usersLM) => this.setState({ usersLM }));
-    fetchUsers('vs').then((usersVS) => this.setState({ usersVS }));
+  componentDidMount () {
+    fetchUsers('lm').then(usersLM => this.setState({ usersLM }));
+    fetchUsers('vs').then(usersVS => this.setState({ usersVS }));
     this.initDateTime();
   }
 
-  updateAddressEvent(event) {
+  updateAddressEvent (event) {
     const address = event.target.value;
     this.updateAddress(address);
   }
 
-  updateAddress(address) {
+  updateAddress (address) {
     window.history.pushState(
       undefined,
       '',
@@ -91,45 +92,81 @@ class App extends React.Component {
     );
     if (address !== 'leaderboard' && address !== undefined) {
       fetchUserTimeSeriesData(address, this.state.type).then(
-        (userTimeSeriesData) => this.setState({ userTimeSeriesData })
+        userTimeSeriesData => this.setState({ userTimeSeriesData })
       );
-      fetchUserData(address, this.state.type).then((userData) =>
-        this.setState({ userData })
+      fetchUserData(address, this.state.type, this.state.date.valueOf()).then(
+        userData => {
+          this.setState({
+            userData
+          });
+        }
       );
+      fetchUserData(address, this.state.type).then(bulkUserData => {
+        this.setState({
+          bulkUserData
+        });
+      });
     }
     this.setState({
       address,
       userData: undefined,
-      userTimeSeriesData: undefined,
+      userTimeSeriesData: undefined
     });
   }
 
-  updateTimestamp(event) {
+  updateTimestamp (event) {
     const timestamp = parseInt(event.target.value);
     const minutes = timestamp * 200;
-    const dateObj = moment.utc(START_DATETIME).add(minutes, 'm');
-    const date = dateObj.format(DATE_FORMAT);
+    const dateObj = moment
+      .utc(START_DATETIME)
+      .add(minutes, 'm')
+      .utc(false);
+    const date = dateObj;
     this.setState({
       date,
       timestamp,
+      userData: null
     });
+    const address = this.state.address;
+    if (address && address.startsWith('sif')) {
+      if (this.state.bulkUserData) {
+        this.setState({
+          userData: this.state.bulkUserData[this.state.timestamp]
+        });
+      } else {
+        if (this.debouncedTimestampTimeout !== undefined) {
+          clearTimeout(this.debouncedTimestampTimeout);
+        }
+        this.debouncedTimestampTimeout = setTimeout(() => {
+          fetchUserData(
+            address,
+            this.state.type,
+            this.state.date.valueOf()
+          ).then(userData =>
+            this.setState({
+              userData
+            })
+          );
+        }, 500);
+      }
+    }
   }
 
-  updateType(type) {
+  updateType (type) {
     window.history.pushState(undefined, '', `#&type=${type}`);
     this.setState({
       type,
-      address: undefined,
+      address: undefined
     });
   }
 
-  render() {
+  render () {
     if (!this.state.usersLM || !this.state.usersVS) {
       return (
-        <div className="loading-screen">
-          <div className="logo-loader">
-            <img src="Sifchain-logo-gold.svg" />
-            <div className="logo-loader-overlay" />
+        <div className='loading-screen'>
+          <div className='logo-loader'>
+            <img src='Sifchain-logo-gold.svg' />
+            <div className='logo-loader-overlay' />
           </div>
         </div>
       );
@@ -138,20 +175,22 @@ class App extends React.Component {
       this.state.type === 'lm' ? this.state.usersLM : this.state.usersVS;
 
     let userTimestampJSON = '';
-    if (this.state.userData) {
-      const data = this.state.userData[this.state.timestamp + 1];
-      userTimestampJSON = {
-        ...data,
-        user: !SHOULD_HIDE_NON_USER_FRIENDLY_FIELDS
-          ? data.user
-          : !data.user
-          ? null
-          : Object.fromEntries(
-              Object.entries(data.user).filter(([key, val]) => {
-                return !userFieldsToHide.includes(key);
-              })
-            ),
-      };
+    const userData =
+      this.state.userData ||
+      (this.state.bulkUserData
+        ? this.state.bulkUserData[this.state.address + '']
+        : null);
+    if (userData) {
+      const data = userData;
+      userTimestampJSON = !SHOULD_HIDE_NON_USER_FRIENDLY_FIELDS
+        ? data
+        : !data
+        ? null
+        : Object.fromEntries(
+            Object.entries(data).filter(([key, val]) => {
+              return !userFieldsToHide.includes(key);
+            })
+          );
       console.log(data, userTimestampJSON);
     }
 
@@ -170,38 +209,21 @@ class App extends React.Component {
         !timeSeriesData) ||
       !userTimestampJSON;
 
-    const provideSearchCache = () => {
-      const key = 'recent-addresses-searched';
-      return {
-        getCache() {
-          let cache;
-          try {
-            cache = JSON.parse(localStorage.getItem(key));
-          } catch (e) {
-            cache = [];
-          }
-          return cache;
-        },
-        addCacheItem(value) {
-          localStorage.setItem(key, value);
-        },
-      };
-    };
     return (
-      <div className="App">
-        <header className="App-header">
-          <div className="logo-container">
+      <div className='App'>
+        <header className='App-header'>
+          <div className='logo-container'>
             <img
               className={`${isLoading ? 'loading' : ''}`}
-              src="sifchain-s.svg"
+              src='sifchain-s.svg'
             />
           </div>
           <div
             style={{ width: '100%', display: 'flex', flexDirection: 'row' }}
-            className="tab-group"
+            className='tab-group'
           >
             <div
-              onClick={(e) => {
+              onClick={e => {
                 this.updateType('lm');
                 clearInput();
               }}
@@ -212,7 +234,7 @@ class App extends React.Component {
               Liquidity Pool Mining Rewards
             </div>
             <div
-              onClick={(e) => {
+              onClick={e => {
                 this.updateType('vs');
                 clearInput();
               }}
@@ -223,11 +245,11 @@ class App extends React.Component {
               Validator Staking & Delegating Rewards
             </div>
           </div>
-          <div className="select-container">
-            <div className="address-container">
-              <div className="dropdown-container">
+          <div className='select-container'>
+            <div className='address-container'>
+              <div className='dropdown-container'>
                 <select
-                  onInput={(e) => {
+                  onInput={e => {
                     this.updateAddressEvent(e);
                     if (
                       addressInputRef.current.value !== e.currentTarget.value
@@ -237,18 +259,18 @@ class App extends React.Component {
                   }}
                   ref={addressSelectRef}
                   style={{ display: 'block' }}
-                  value={''}
-                  className="dropdown"
+                  value=''
+                  className='dropdown'
                 >
-                  <option key="none" value="">
+                  <option key='none' value=''>
                     Select
                   </option>
                   {
-                    <option key="leaderboard" value="leaderboard">
+                    <option key='leaderboard' value='leaderboard'>
                       Leaderboard
                     </option>
                   }
-                  {users.sort().map((user) => (
+                  {users.sort().map(user => (
                     <option key={user} value={user}>
                       {user}
                     </option>
@@ -256,37 +278,34 @@ class App extends React.Component {
                 </select>
 
                 <input
-                  autoComplete="off"
+                  autoComplete='off'
                   ref={addressInputRef}
                   defaultValue={this.state.address}
-                  list="address-search"
-                  name="address-search"
-                  placeholder={`Search or Select a Sif Address`}
-                  className="dropdown"
-                  onChange={debounce((e) => {
-                    if (e.target.value != this.state.address) {
+                  list='address-search'
+                  name='address-search'
+                  placeholder='Search or Select a Sif Address'
+                  className='dropdown'
+                  onChange={debounce(e => {
+                    if (e.target.value !== this.state.address) {
                       let isValid = users.includes(e.target.value);
                       if (isValid) this.updateAddressEvent(e);
                     }
                   }, 500)}
-                  onBlur={(e) => {
-                    if (e.target.value != this.state.address) {
+                  onBlur={e => {
+                    if (e.target.value !== this.state.address) {
                       this.updateAddressEvent(e);
                     }
                   }}
                   spellCheck={false}
-                ></input>
-                <datalist id="address-search">
-                  {users.map((user) => (
+                />
+                <datalist id='address-search'>
+                  {users.map(user => (
                     <option key={user} value={user}>
                       {user}
                     </option>
                   ))}
                 </datalist>
-                <button
-                  onClick={(e) => clearInput()}
-                  className="clear-input-btn"
-                >
+                <button onClick={e => clearInput()} className='clear-input-btn'>
                   clear
                 </button>
               </div>
@@ -294,7 +313,7 @@ class App extends React.Component {
           </div>
         </header>
 
-        <div className="content">
+        <div className='content'>
           {this.state.address === 'leaderboard' && (
             <DataStackAll type={this.state.type} />
           )}
@@ -311,73 +330,93 @@ class App extends React.Component {
             this.state.address !== undefined &&
             timeSeriesData && (
               <input
-                id="timestamp"
-                className="timestamp-slider"
-                type="range"
-                min="0"
+                id='timestamp'
+                className='timestamp-slider'
+                type='range'
+                min='0'
                 max={timeSeriesData.length - 1}
                 value={this.state.timestamp}
-                onChange={(e) => this.updateTimestamp(e)}
-                step="1"
+                onChange={e => this.updateTimestamp(e)}
+                step='1'
               />
             )}
           {this.state.address !== 'leaderboard' &&
             this.state.address !== undefined && (
-              <div className="timestamp-slider-description">
-                {this.state.date}
+              <div className='timestamp-slider-description'>
+                {this.state.date.format(DATE_FORMAT)}
               </div>
             )}
 
           {this.state.address !== 'leaderboard' &&
-          this.state.address !== undefined &&
-          !!userTimestampJSON &&
-          userTimestampJSON.user
-            ? Object.entries(userTimestampJSON.user).map(
-                ([key, statNumVal]) => {
-                  const block = StatBlocks[this.state.type][key];
-                  if (!block || !block.shouldDisplay(statNumVal)) return null;
-                  return (
-                    <div className="stat-card">
-                      <div className="stat-subtitle">{block.subtitle}</div>
-                      <div className="stat-title">{block.title}</div>
-                      <div className="stat-data">
-                        {block.prefix}
-                        {block.data(statNumVal)}
-                        {block.suffix}
+          this.state.address !== undefined ? (
+            <UserDataSummary
+              user={userTimestampJSON.user}
+              type={this.state.type}
+            />
+          ) : null}
+
+          <div
+            style={{
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'stretch',
+              justifyContent: 'flex-start',
+              flexWrap: 'wrap'
+            }}
+          >
+            {' '}
+            {this.state.address !== 'leaderboard' &&
+            this.state.address !== undefined &&
+            userTimestampJSON &&
+            userTimestampJSON.user
+              ? Object.entries(userTimestampJSON.user).map(
+                  ([key, statNumVal]) => {
+                    const block = StatBlocks[this.state.type][key];
+                    if (!block || !block.shouldDisplay(statNumVal)) return null;
+                    return (
+                      <div key={block.title} className='stat-card'>
+                        <div className='stat-subtitle'>{block.subtitle}</div>
+                        <div className='stat-title'>{block.title}</div>
+                        <div className='stat-data'>
+                          {block.prefix}
+                          {block.data(statNumVal)}
+                          {block.suffix}
+                        </div>
                       </div>
-                    </div>
-                  );
-                }
-              )
-            : null}
+                    );
+                  }
+                )
+              : null}
+          </div>
 
           {this.state.address !== 'leaderboard' &&
-            this.state.address !== undefined && (
-              <JSONPretty
-                className="json-metadata"
-                id="json-pretty"
-                data={userTimestampJSON}
-              />
-            )}
-          {this.state.type == 'vs' ? (
-            <div className="info-text">
+          this.state.address !== undefined ? (
+            <JSONPretty
+              className='json-metadata'
+              id='json-pretty'
+              data={userTimestampJSON}
+            />
+          ) : null}
+          {this.state.type === 'vs' ? (
+            <div className='info-text'>
               Learn more about Sifchain Validator Staking & Delegation{' '}
               <a
-                target="_blank"
-                rel="noreferrer"
-                href="https://docs.sifchain.finance/roles/validators"
+                target='_blank'
+                rel='noopener noreferrer'
+                href='https://docs.sifchain.finance/roles/validators'
               >
                 here
               </a>
               .
             </div>
           ) : (
-            <div className="info-text">
+            <div className='info-text'>
               Learn more about Sifchain Liquidity Pooling{' '}
               <a
-                target="_blank"
-                rel="noreferrer"
-                href="https://docs.sifchain.finance/roles/liquidity-providers"
+                target='_blank'
+                rel='noopener noreferrer'
+                href='https://docs.sifchain.finance/roles/liquidity-providers'
               >
                 here
               </a>

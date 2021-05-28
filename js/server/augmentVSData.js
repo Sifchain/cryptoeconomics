@@ -90,7 +90,7 @@ exports.augmentVSData = globalTimestampStates => {
   );
   const top50Users = _.orderBy(
     finalTimestampStateUsers,
-    ['totalRewardAtMaturity'],
+    ['totalRewardsOnDepositedAssetsAtMaturity'],
     ['desc']
   ).slice(0, 50);
   const blankUserRewards = top50Users.reduce((accum, user) => {

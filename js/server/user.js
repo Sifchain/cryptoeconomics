@@ -7,47 +7,52 @@ const clpFetch = new RateLimitProtector({ padding: 100 }).buildAsyncShield(
   fetch
 );
 exports.getUserTimeSeriesData = (all, address) => {
-  return all
-    .map(timestampData => {
-      const userData = timestampData.users[address] || new User();
-      const userClaimableReward =
-        userData.totalAccruedCommissionsAndClaimableRewards;
-      const userReservedReward = userData.reservedReward;
-      return {
-        timestamp: timestampData.timestamp,
-        userClaimableReward,
-        userReservedReward
-      };
-    })
-    .slice(1);
+  const rtn = all.map(timestampData => {
+    const userData = timestampData.users[address] || new User();
+    return userData.totalAccruedCommissionsAndClaimableRewards;
+  });
+  rtn.shift();
+  return rtn;
 };
 
-exports.getUserData = async (all, payload) => {
-  const data = all.map(timestampGlobalState => {
-    return {
-      ...timestampGlobalState,
-      users: undefined,
-      user: timestampGlobalState.users[payload.address]
-    };
-  });
-  if (!payload.timeIndex) {
+exports.getUserData = async (all, { timeIndex, address }) => {
+  console.log({ timeIndex });
+  if (!timeIndex) {
+    const data = all.map(timestampGlobalState => {
+      let user = timestampGlobalState.users[address];
+      if (user) {
+        user.delegatorAddresses = [];
+      }
+      return {
+        ...timestampGlobalState,
+        users: undefined,
+        user: user
+      };
+    });
     return data;
   }
-  const userData = data[payload.timeIndex];
-  return {
-    ...userData,
-    user: {
-      ...userData.user,
-      maturityAPY: await getUserMaturityAPY(userData, payload.address)
-    }
-  };
+  try {
+    const { users, ...globalState } = all[timeIndex];
+    const user = users[address];
+    return {
+      ...globalState,
+      user: user
+        ? {
+            ...user,
+            delegatorAddresses: [],
+            maturityAPY: await getUserMaturityAPY(user, address)
+          }
+        : null
+    };
+  } catch (e) {
+    console.error(e);
+  }
 };
 
-async function getUserMaturityAPY (userData, address) {
-  if (!userData) {
+async function getUserMaturityAPY (user, address) {
+  if (!user) {
     return 0;
   }
-  userData = userData.user || userData;
   try {
     const assets = await clpFetch(
       `https://api.sifchain.finance/clp/getAssets?lpAddress=${address}`
@@ -97,12 +102,12 @@ async function getUserMaturityAPY (userData, address) {
     });
     // Only works for "now" timestamp
     const nextRewardProjectedAPYOnCurrentLiquidity =
-      userData.nextRewardProjectedFutureReward / totalPooled;
+      user.nextRewardProjectedFutureReward / totalPooled;
     return nextRewardProjectedAPYOnCurrentLiquidity;
 
     /* UI Version (calculates APY, but we're actually looking for realizable ROI as measured above) */
     // let alreadyEarned = userData.totalAccruedCommissionsAndClaimableRewards;
-    // let futureTotalEarningsAtMaturity = userData.totalRewardAtMaturity;
+    // let futureTotalEarningsAtMaturity = userData.totalRewardsOnDepositedAssetsAtMaturity;
     // let remainingFutureYieldAmount =
     //   futureTotalEarningsAtMaturity - alreadyEarned;
     // let remainingYieldPercent = remainingFutureYieldAmount / totalPooled;

@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const { getTimeIndex } = require('./util/getTimeIndex');
+const compression = require('compression');
+
 // implements process.js in separate thread
 const { createMultiprocessActionDispatcher } = require('./processing-handler');
 
@@ -10,6 +12,10 @@ const processingHandler = createMultiprocessActionDispatcher();
 
 const port = process.env.PORT || 3000;
 const app = express();
+
+// compress responses
+app.use(compression());
+
 app.use(cors());
 
 app.listen(port, () => {
@@ -44,15 +50,15 @@ app.get('/api/lm', async (req, res, next) => {
       break;
     }
     case 'stack': {
-      let rewardData = await activeProcess.dispatch('GET_LM_STACK_DATA', null);
-      responseJSON = { rewardData };
+      responseJSON = await activeProcess.dispatch('GET_LM_STACK_DATA', null);
       break;
     }
     default: {
       responseJSON = await activeProcess.dispatch('GET_LM_KEY_VALUE', key);
     }
   }
-  res.json(responseJSON);
+  res.setHeader('Content-Type', 'application/json');
+  res.send(responseJSON);
 });
 
 app.get('/api/vs', async (req, res, next) => {
@@ -82,13 +88,13 @@ app.get('/api/vs', async (req, res, next) => {
       break;
     }
     case 'stack': {
-      let rewardData = await activeProcess.dispatch('GET_VS_STACK_DATA', null);
-      responseJSON = { rewardData };
+      responseJSON = await activeProcess.dispatch('GET_VS_STACK_DATA', null);
       break;
     }
     default: {
       responseJSON = await activeProcess.dispatch('GET_VS_KEY_VALUE', key);
     }
   }
-  res.json(responseJSON);
+  res.setHeader('Content-Type', 'application/json');
+  res.send(responseJSON);
 });

@@ -114,7 +114,7 @@ class DataStackAll extends React.Component {
   }
 
   componentDidMount () {
-    fetchStack(this.props.type).then(({ rewardData }) => {
+    fetchStack(this.props.type).then(rewardData => {
       this.setState({ rewardData }, this.renderD3);
     });
   }
