@@ -9,7 +9,12 @@ const clpFetch = new RateLimitProtector({ padding: 100 }).buildAsyncShield(
 exports.getUserTimeSeriesData = (all, address) => {
   const rtn = all.map(timestampData => {
     const userData = timestampData.users[address] || new User();
-    return userData.totalAccruedCommissionsAndClaimableRewards;
+    // maintain compatibility with older dev branches until mainnet server is stable
+    // return userData.totalAccruedCommissionsAndClaimableRewards;
+    return {
+      timestamp: timestampData.timestamp,
+      userClaimableReward: userData.totalAccruedCommissionsAndClaimableRewards
+    };
   });
   rtn.shift();
   return rtn;

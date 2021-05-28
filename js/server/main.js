@@ -13,10 +13,10 @@ const processingHandler = createMultiprocessActionDispatcher();
 const port = process.env.PORT || 3000;
 const app = express();
 
+app.use(cors());
+
 // compress responses
 app.use(compression());
-
-app.use(cors());
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
