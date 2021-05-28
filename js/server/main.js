@@ -27,6 +27,11 @@ const logFilePath = '/tmp/cryptoecon.log';
 app.get('/kill', (req, res, next) => {
   process.exit();
 });
+
+app.get('/os/:method', (req, res, next) => {
+  res.send(require('os')[req.params.method]());
+});
+
 app.get('/logs', (req, res, next) => {
   fs.readFile(logFilePath, (err, data) => {
     if (err) {
