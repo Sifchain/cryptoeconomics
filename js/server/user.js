@@ -1,7 +1,7 @@
 const { fetch } = require('cross-fetch');
 const { User } = require('./types');
 const { RateLimitProtector } = require('./util/RateLimitProtector');
-
+const config = require('./config');
 const clpFetch = new RateLimitProtector({ padding: 100 }).buildAsyncShield(
   fetch,
   fetch
@@ -39,12 +39,16 @@ exports.getUserData = async (all, { timeIndex, address }) => {
   try {
     const { users, ...globalState } = all[timeIndex];
     const user = users[address];
+    const matureUser = all[config.NUMBER_OF_INTERVALS_TO_RUN - 1];
     return {
       ...globalState,
       user: user
         ? {
             ...user,
             delegatorAddresses: [],
+            __allDelegatorAddressesAtMaturity: matureUser
+              ? matureUser.delegatorAddresses
+              : null,
             maturityAPY: await getUserMaturityAPY(user, address)
           }
         : null
