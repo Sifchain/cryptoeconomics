@@ -74,18 +74,17 @@ function createDispatchableChildProcess () {
 
   async function waitForReadyState () {
     return new Promise((resolve, reject) => {
-      let didExpire = false;
-      setTimeout(() => {
-        didExpire = true;
-        // expires after 5 minutes
-      }, 1000 * 60 * 5);
+      // expires after 5 minutes
+      const fiveMins = 1000 * 60 * 5;
+      let expiresAt = Date.now() + fiveMins;
       (async () => {
         while (true) {
           let isReady = await dispatch('CHECK_IF_PARSED_DATA_READY');
           if (isReady) return resolve(true);
-          if (didExpire) {
+          if (Date.now() > expiresAt) {
             console.log('Timed out waiting for child process. Reloading');
             childProcess.kill();
+            expiresAt = Date.now() + fiveMins;
           }
           await new Promise(resolve => setTimeout(resolve, 100));
         }
