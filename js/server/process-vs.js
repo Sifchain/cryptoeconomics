@@ -125,9 +125,6 @@ function processUserEvents (users, eventsByUser) {
     //     depositAmount += Math.abs(uEvent.amount);
     //   }
     // }
-    // find or create user/delegator
-    const user = users[userAddress] || new User();
-    users[userAddress] = user;
 
     // is net withdrawal or net zero
     // if (withdrawalAmount > depositAmount) {
@@ -135,6 +132,9 @@ function processUserEvents (users, eventsByUser) {
     // } else if (withdrawalAmount < depositAmount) {
     // }
     userEvents.forEach(event => {
+      // find or create user/delegator
+      const user = users[event.delegateAddress] || new User();
+      users[event.delegateAddress] = user;
       // const isBulkRedelegation = checkForBulkRedelegation(userEvents);
       // find or create validator
       const validator = users[event.validatorRewardAddress] || new User();
