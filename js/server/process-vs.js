@@ -106,18 +106,36 @@ function processUserTickets (
 // }
 
 function processUserEvents (users, eventsByUser) {
-  _.forEach(eventsByUser, userEvents => {
+  _.forEach(eventsByUser, (userEvents, userAddress) => {
     // const burnedThisValTickets = this.removeBurnedTickets(delegateEvent);
+
+    userEvents = _.orderBy(userEvents, ['amount'], ['asc']);
 
     const previousUser =
       userEvents.length > 0 && users[userEvents[0].delegateAddress];
     const previousTickets = previousUser ? previousUser.tickets : [];
 
+    // let withdrawalAmount = 0;
+    // let depositAmount = 0;
+    // for (let uEvent of userEvents) {
+    //   if (uEvent.amount < 0) {
+    //     withdrawalAmount += Math.abs(uEvent.amount);
+    //   }
+    //   if (uEvent.amount > 0) {
+    //     depositAmount += Math.abs(uEvent.amount);
+    //   }
+    // }
+    // find or create user/delegator
+    const user = users[userAddress] || new User();
+    users[userAddress] = user;
+
+    // is net withdrawal or net zero
+    // if (withdrawalAmount > depositAmount) {
+    //   user.removeBurnedTickets();
+    // } else if (withdrawalAmount < depositAmount) {
+    // }
     userEvents.forEach(event => {
       // const isBulkRedelegation = checkForBulkRedelegation(userEvents);
-      // find or create user/delegator
-      const user = users[event.delegateAddress] || new User();
-      users[event.delegateAddress] = user;
       // find or create validator
       const validator = users[event.validatorRewardAddress] || new User();
       users[event.validatorRewardAddress] = validator;
