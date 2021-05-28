@@ -29,7 +29,7 @@ function createMultiprocessActionDispatcher () {
 				*/
         await new Promise(resolve => setTimeout(resolve, 5000));
         await staleProcess.dispatch('CLEAR_PARSED_DATA');
-        // await staleProcess.restart();
+        await staleProcess.restart();
         // Wait until snapshot data is expired
         await new Promise(resolve => setTimeout(resolve, RELOAD_INTERVAL));
         await staleProcess.dispatch('LOAD_AND_PROCESS_SNAPSHOTS');
@@ -84,7 +84,8 @@ function createDispatchableChildProcess () {
           let isReady = await dispatch('CHECK_IF_PARSED_DATA_READY');
           if (isReady) return resolve(true);
           if (didExpire) {
-            return reject(new Error('Timed out waiting for child process'));
+            console.log('Timed out waiting for child process. Reloading');
+            childProcess.kill();
           }
           await new Promise(resolve => setTimeout(resolve, 100));
         }
