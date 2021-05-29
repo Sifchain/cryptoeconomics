@@ -117,7 +117,6 @@ function processUserEvents (users, eventsByUser) {
         const redelegateWithdrawalEvent = wEvent.cloneWith({
           amount: amountOfWithdrawalToRedelegate
         });
-        // Burn the deposit amount
         const {
           burnedTickets: burnedTicketsForRedelegation
         } = user.removeBurnedTickets(redelegateWithdrawalEvent);
