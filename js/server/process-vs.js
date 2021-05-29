@@ -8,7 +8,7 @@ const { User, GlobalTimestampState, UserTicket } = require('./types');
   Filter out deposit events after config.DEPOSIT_CUTOFF_DATETIME,
   but continue accruing rewards until config.END_OF_REWARD_ACCRUAL_DATETIME
 */
-function processVSGlobalState(
+function processVSGlobalState (
   lastGlobalState,
   timestamp,
   eventsByUser,
@@ -30,12 +30,12 @@ function processVSGlobalState(
   Object.assign(globalState, {
     timestamp,
     rewardBuckets,
-    users,
+    users
   });
   return globalState;
 }
 
-function processUserTickets(
+function processUserTickets (
   users,
   globalRewardAccrued,
   getCurrentCommissionRateByValidatorStakeAddress
@@ -44,15 +44,15 @@ function processUserTickets(
   const totalShares = _.sum(
     _.flatten(
       _.map(users, (user, address) => {
-        return user.tickets.map((ticket) => ticket.amount);
+        return user.tickets.map(ticket => ticket.amount);
       })
     )
   );
-  const updatedUsers = _.mapValues(users, (user) => {
+  const updatedUsers = _.mapValues(users, user => {
     return user.cloneWith({
       // reset each round because this is both incrementally calculated and based upon multiplier
       currentTotalCommissionsOnClaimableDelegatorRewards: 0,
-      tickets: user.tickets.map((ticket) => {
+      tickets: user.tickets.map(ticket => {
         const poolDominanceRatio = ticket.amount / (totalShares || 1);
         const rewardDelta = poolDominanceRatio * globalRewardAccrued;
         return ticket.cloneWith({
@@ -62,53 +62,21 @@ function processUserTickets(
           poolDominanceRatio,
           commission: getCurrentCommissionRateByValidatorStakeAddress(
             ticket.validatorStakeAddress
-          ),
+          )
         });
-      }),
+      })
     });
   });
   return updatedUsers;
 }
 
 /* 
-  Determine redelegation by if the absolute value of the sum 
-  of all withdrawal event amounts is equal to the amount of 
-  one deposit event.
-
-  Example 1.
-    -1, -4, +5 
-
-  Example 2.
-    -1, -1, -1, +2, -2, +5 
-
-  Warning: This too is problematic because it does not handle edge cases.
-  Could instead filter by only including negative amount events where a 
-  corresponding ticket exist, but this might not include withdrawals made
-  on desposits within the event series. Need to debug.
-
   Real-World Example: (Adds deposit, creating 1 ticket, then redelegates all 3 tickets to new validator) 
     https://blockexplorer.sifchain.finance/account/sif1zfxa20g8j2hqhxencyqtfhd95wvxsnen08pw97
 */
-// function checkForBulkRedelegation(userEvents) {
-//   let sumOfNegativeEvents = 0;
-//   for (let event of userEvents) {
-//     if (event.amount < 0) {
-//       sumOfNegativeEvents += event.amount;
-//     }
-//   }
-//   sumOfNegativeEvents = Math.abs(sumOfNegativeEvents);
-//   for (let event of userEvents) {
-//     if (event.amount === sumOfNegativeEvents) {
-//       return true;
-//     }
-//   }
-//   return false;
-// }
 
-function processUserEvents(users, eventsByUser) {
+function processUserEvents (users, eventsByUser) {
   _.forEach(eventsByUser, (userEvents, userAddress) => {
-    // const burnedThisValTickets = this.removeBurnedTickets(delegateEvent);
-
     userEvents = _.orderBy(userEvents, ['amount'], ['asc']);
 
     let withdrawalAmount = 0;
@@ -126,7 +94,7 @@ function processUserEvents(users, eventsByUser) {
       }
     }
 
-    const getUserByAddress = (address) => {
+    const getUserByAddress = address => {
       const user = users[address] || new User();
       users[address] = user;
       return user;
@@ -147,16 +115,17 @@ function processUserEvents(users, eventsByUser) {
 
       if (amountOfWithdrawalToRedelegate !== 0) {
         const redelegateWithdrawalEvent = wEvent.cloneWith({
-          amount: amountOfWithdrawalToRedelegate,
+          amount: amountOfWithdrawalToRedelegate
         });
         // Burn the deposit amount
-        const { burnedTickets: burnedTicketsForRedelegation } =
-          user.removeBurnedTickets(redelegateWithdrawalEvent);
+        const {
+          burnedTickets: burnedTicketsForRedelegation
+        } = user.removeBurnedTickets(redelegateWithdrawalEvent);
         ticketsToRedelegate.push(...burnedTicketsForRedelegation);
       }
       if (amountOfWithdrawalToWithdraw !== 0) {
         const traditionalWithdrawalEvent = wEvent.cloneWith({
-          amount: amountOfWithdrawalToWithdraw,
+          amount: amountOfWithdrawalToWithdraw
         });
         user.withdrawStakeAsDelegator(
           traditionalWithdrawalEvent,
@@ -170,10 +139,10 @@ function processUserEvents(users, eventsByUser) {
       with the validators with the lowest commissions to maximize 
       their gains over time.
     */
-    const sortedDepositEvents = _.sortBy(depositEvents, (event) => {
+    const sortedDepositEvents = _.sortBy(depositEvents, event => {
       return event.commission;
     });
-    ticketsToRedelegate = _.sortBy(ticketsToRedelegate, (t) => {
+    ticketsToRedelegate = _.sortBy(ticketsToRedelegate, t => {
       const remainingReward =
         (t.reward - t.calculateTotalValidatorCommissions()) * (1 - t.mul);
       const remainingRatio = remainingReward / t.reward;
@@ -185,7 +154,7 @@ function processUserEvents(users, eventsByUser) {
       let nextTicketsToRedelegate = [];
       let amountToDeposit = dEvent.amount;
       for (let redelegatedTicket of ticketsToRedelegate) {
-        if (amountToDeposit == 0) {
+        if (amountToDeposit === 0) {
           nextTicketsToRedelegate.push(redelegatedTicket);
           continue;
         }
@@ -194,8 +163,11 @@ function processUserEvents(users, eventsByUser) {
           amountToDeposit
         );
         amountToDeposit -= amountToRemove;
-        const { burnedTicket, remainderTicket, hasRemainder } =
-          redelegatedTicket.burn(amountToRemove);
+        const {
+          burnedTicket,
+          remainderTicket,
+          hasRemainder
+        } = redelegatedTicket.burn(amountToRemove);
         user.addTicket(burnedTicket.cloneAndRedelegateFromEvent(dEvent));
         if (hasRemainder) {
           nextTicketsToRedelegate.push(remainderTicket);
@@ -208,7 +180,7 @@ function processUserEvents(users, eventsByUser) {
         user.addTicket(
           UserTicket.fromEvent(
             dEvent.cloneWith({
-              amount: amountToDeposit,
+              amount: amountToDeposit
             })
           )
         );
@@ -218,7 +190,7 @@ function processUserEvents(users, eventsByUser) {
   return users;
 }
 
-function calculateUserCommissions(users) {
+function calculateUserCommissions (users) {
   for (let addr in users) {
     /*
         Must be run first on every user because delegators
@@ -232,7 +204,7 @@ function calculateUserCommissions(users) {
         and leave out all those processed after.
       */
     users[addr].collectValidatorsCommissionsOnLatestUnclaimedRewards(
-      (validatorRewardAddress) => {
+      validatorRewardAddress => {
         return users[validatorRewardAddress];
       },
       addr
@@ -244,7 +216,7 @@ function calculateUserCommissions(users) {
         in `User#updateRewards`
       */
     users[addr].recalculateCurrentTotalCommissionsOnClaimableDelegatorRewards(
-      (address) => users[address],
+      address => users[address],
       addr
     );
   }
@@ -261,5 +233,5 @@ function calculateUserCommissions(users) {
 // }
 
 module.exports = {
-  processVSGlobalState,
+  processVSGlobalState
 };
