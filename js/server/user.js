@@ -21,7 +21,6 @@ exports.getUserTimeSeriesData = (all, address) => {
 };
 
 exports.getUserData = async (all, { timeIndex, address }) => {
-  console.log({ timeIndex });
   if (!timeIndex) {
     const data = all.map(timestampGlobalState => {
       let user = timestampGlobalState.users[address];
