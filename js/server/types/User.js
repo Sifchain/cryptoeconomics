@@ -236,7 +236,10 @@ class User {
 
   withdrawStakeAsDelegator (delegateEvent, getUserByAddress, burnedTickets) {
     if (!burnedTickets) {
-      burnedTickets = this.removeBurnedTickets(delegateEvent);
+      let { burnedTickets: newBurnedTickets } = this.removeBurnedTickets(
+        delegateEvent
+      );
+      burnedTickets = newBurnedTickets;
     }
     const { claimable, forfeited } = this.calculateClaimableReward(
       burnedTickets
@@ -341,7 +344,7 @@ class User {
       }
     });
     this.tickets = otherValidatorTickets.concat(remainingTickets);
-    return burnedTickets;
+    return { burnedTickets, remainder: remainingWithdrawalAmount };
   }
 }
 module.exports = { User };

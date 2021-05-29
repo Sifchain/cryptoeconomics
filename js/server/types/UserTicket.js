@@ -79,6 +79,14 @@ class UserTicket {
     return next;
   }
 
+  cloneAndRedelegateFromEvent (event) {
+    return this.cloneWith({
+      commission: event.commission,
+      validatorRewardAddress: event.validatorRewardAddress,
+      validatorStakeAddress: event.validatorStakeAddress
+    });
+  }
+
   addCommissionRewardByValidator (commissionReward, validatorRewardAddress) {
     let currentClaims =
       this.commissionRewardsByValidator[validatorRewardAddress] || 0;

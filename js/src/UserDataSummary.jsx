@@ -2,15 +2,15 @@ import React from 'react';
 
 const numFormatter = new Intl.NumberFormat();
 
-const styleData = (data) => ({
+const styleData = data => ({
   __styled: true,
-  data,
+  data
 });
 const say = (template, ...substitutions) => {
   // if (!substitutions.every((s) => !!s)) {
   //   return null;
   // }
-  return template.map((str) => {
+  return template.map(str => {
     let item = substitutions.shift();
     const isStyled = item && item.__styled;
     item = isStyled ? item.data : item;
@@ -54,13 +54,13 @@ export const UserDataSummary = ({ user, type = 'vs' }) => {
   )} rowan in commissions will be claimable when they reach maturity or when their respective delegators claim their rewards.`}`}
       </div>
     ) : null;
-  const stakerText = say`Thanks to your total ${
-    type === 'vs' ? 'stake' : 'pool contribution'
-  } of ${user.totalDepositedAmount} rowan, you can claim ${styleData(
+  const stakerText = say`You are currently ${
+    type === 'vs' ? 'staking' : 'pooling'
+  } ${user.totalDepositedAmount} rowan and you can claim ${styleData(
     user.totalClaimableRewardsOnDepositedAssets +
       user.claimableRewardsOnWithdrawnAssets
   )} rowan in rewards today. `;
-  const stakerText2 = say`${
+  const stakerText2 =
     user.reservedReward > user.totalClaimableRewardsOnDepositedAssets
       ? say`But if you wait until ${styleData(
           user.maturityDate
@@ -69,11 +69,10 @@ export const UserDataSummary = ({ user, type = 'vs' }) => {
         } rowan. ${say`(a projected APY of ${styleData(
           user.nextRewardProjectedAPYOnTickets * 100
         )}%)`}`
-      : null
-  }`;
+      : null;
   return (
     <div style={{ width: '100%', padding: '0% 0%' }}>
-      <div className="user-data-summary-container">
+      <div className='user-data-summary-container'>
         <div style={{}}>
           {stakerText}
           {stakerText2}

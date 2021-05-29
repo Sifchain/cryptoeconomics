@@ -13,10 +13,14 @@ const serverURL = (() => {
   }
 })();
 
+function handleFailedRequest () {
+  window.location.reload();
+}
 export const fetchUsers = type => {
   return window
     .fetch(`${serverURL}/${type}?key=users`)
-    .then(response => response.json());
+    .then(response => response.json())
+    .catch(handleFailedRequest);
 };
 
 export const fetchUserData = (address, type, timestamp) => {
@@ -26,17 +30,20 @@ export const fetchUserData = (address, type, timestamp) => {
         timestamp ? `&timestamp=${new Date(timestamp).toISOString()}` : ``
       }`
     )
-    .then(response => response.json());
+    .then(response => response.json())
+    .catch(handleFailedRequest);
 };
 
 export const fetchUserTimeSeriesData = (address, type) => {
   return window
     .fetch(`${serverURL}/${type}?key=userTimeSeriesData&address=${address}`)
-    .then(response => response.json());
+    .then(response => response.json())
+    .catch(handleFailedRequest);
 };
 
 export const fetchStack = type => {
   return window
     .fetch(`${serverURL}/${type}?key=stack`)
-    .then(response => response.json());
+    .then(response => response.json())
+    .catch(handleFailedRequest);
 };
