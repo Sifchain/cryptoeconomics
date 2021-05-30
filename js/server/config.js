@@ -1,4 +1,5 @@
-/* 
+const moment = require('moment');
+/*
   - The network was started prior to the DEX launch. There is roughly ~week worth of blocks that had no meaningful transactions as the product was not launched.
     Because the snapshots start at the genesis block, they include that week of null activity epochs. This has an impact on the reward distribution. The changes we make to the snapshot will remove those null epochs and balance out the rewards distribution.
     Because we are extending the program to June 30th(initially ended ~May 14th) there was initially a 6 week accumulation period after the official end of the program. So users could accumulate rewards up until ~June 19th.
@@ -17,13 +18,13 @@ const EVENT_INTERVAL_MINUTES = 200;
 
 // Amount of time that users can accrue rewards
 const REWARD_ACCRUAL_DURATION_MS =
-  new Date(END_OF_REWARD_ACCRUAL_DATETIME).valueOf() -
-  new Date(START_DATETIME).valueOf();
+  moment.utc(END_OF_REWARD_ACCRUAL_DATETIME).valueOf() -
+  moment.utc(START_DATETIME).valueOf();
 
 // Amount of time that users can deposit with opportunity to gain rewards
 const DEPOSITS_ALLOWED_DURATION_MS =
-  new Date(DEPOSIT_CUTOFF_DATETIME).valueOf() -
-  new Date(START_DATETIME).valueOf();
+  moment.utc(DEPOSIT_CUTOFF_DATETIME).valueOf() -
+  moment.utc(START_DATETIME).valueOf();
 
 // Amount of 200min intervals before users can no-longer gain rewards
 const REWARD_ACCRUAL_DURATION_INTERVAL_COUNT = ~~(
