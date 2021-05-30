@@ -73,7 +73,7 @@ exports.augmentLMData = (data) => {
       user.maturityDateMS = maturityDateMS;
       user.futureReward =
         user.totalRewardsOnDepositedAssetsAtMaturity - user.claimableReward;
-      if (user.futureReward == NaN) {
+      if (user.futureReward === NaN) {
         //
       }
       user.currentYieldOnTickets =
