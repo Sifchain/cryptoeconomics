@@ -1,40 +1,41 @@
 const _ = require('lodash');
 const moment = require('moment');
 const { START_DATETIME } = require('./config');
+const { User } = require('./types');
 
-exports.augmentLMData = data => {
+exports.augmentLMData = (data) => {
   const users = _.uniq(
-    _.flatten(data.map(timestamp => Object.keys(timestamp.users)))
+    _.flatten(data.map((timestamp) => Object.keys(timestamp.users)))
   );
 
-  data.forEach(timestamp => {
+  data.forEach((timestamp) => {
     const timestampTotalTickets = _.sum(
-      _.map(timestamp.users, user => {
-        return _.sum(user.tickets.map(t => t.amount));
+      _.map(timestamp.users, (user) => {
+        return _.sum(user.tickets.map((t) => t.amount));
       })
     );
     timestamp.totalDepositedAmount = timestampTotalTickets;
-    timestamp.users = _.forEach(timestamp.users, user => {
-      const totalDepositedAmount = _.sum(user.tickets.map(t => t.amount));
+    timestamp.users = _.forEach(timestamp.users, (user) => {
+      const totalDepositedAmount = _.sum(user.tickets.map((t) => t.amount));
       user.totalAccruedCommissionsAndClaimableRewards =
         user.claimableRewardsOnWithdrawnAssets +
-        _.sum(user.tickets.map(t => t.reward * t.mul));
+        _.sum(user.tickets.map((t) => t.reward * t.mul));
       user.reservedReward =
         user.claimableRewardsOnWithdrawnAssets +
-        _.sum(user.tickets.map(t => t.reward));
+        _.sum(user.tickets.map((t) => t.reward));
       user.totalDepositedAmount = totalDepositedAmount;
       user.nextRewardShare = totalDepositedAmount / timestampTotalTickets;
     });
   });
 
   const finalTimestamp = data[data.length - 1] || { users: [] };
-  data.forEach(timestamp => {
+  data.forEach((timestamp) => {
     _.forEach(timestamp.users, (user, address) => {
-      const userAtMaturity = finalTimestamp.users[address] || {};
+      const userAtMaturity = finalTimestamp.users[address] || new User();
       user.totalRewardsOnDepositedAssetsAtMaturity =
         userAtMaturity.claimableReward;
       user.ticketAmountAtMaturity = _.sum(
-        finalTimestamp.users[address].tickets.map(ticket => ticket.amount)
+        finalTimestamp.users[address].tickets.map((ticket) => ticket.amount)
       );
       user.yieldAtMaturity =
         user.totalRewardsOnDepositedAssetsAtMaturity /
@@ -45,7 +46,7 @@ exports.augmentLMData = data => {
   data.forEach((timestamp, timestampIndex) => {
     _.forEach(timestamp.users, (user, address) => {
       const prevTimestamp = data[timestampIndex - 1] || { users: [] };
-      const lastUser = prevTimestamp.users[address] || {};
+      const lastUser = prevTimestamp.users[address] || new User();
       const lastUserMaturityDate = lastUser.maturityDate;
       const lastUserMaturityDateISO = lastUser.maturityDateISO;
       const lastUserMaturityDateMS = lastUser.maturityDateMS;
@@ -71,8 +72,10 @@ exports.augmentLMData = data => {
       user.maturityDateISO = maturityDateISO;
       user.maturityDateMS = maturityDateMS;
       user.futureReward =
-        user.totalRewardsOnDepositedAssetsAtMaturity -
-        user.totalAccruedCommissionsAndClaimableRewards;
+        user.totalRewardsOnDepositedAssetsAtMaturity - user.claimableReward;
+      if (user.futureReward == NaN) {
+        //
+      }
       user.currentYieldOnTickets =
         user.futureReward / user.totalDepositedAmount;
       const nextBucketGlobalReward = timestamp.rewardBuckets.reduce(
@@ -91,12 +94,12 @@ exports.augmentLMData = data => {
 
   // fill in old timestamps with maturity date now that we have it
   const lastTimestamp = data[data.length - 1] || { users: [] };
-  data.forEach(timestamp => {
+  data.forEach((timestamp) => {
     const timestampDate = moment
       .utc(START_DATETIME)
       .add(timestamp.timestamp, 'm');
     _.forEach(timestamp.users, (user, address) => {
-      const lastUser = lastTimestamp.users[address] || {};
+      const lastUser = lastTimestamp.users[address] || new User();
       user.maturityDate = lastUser.maturityDate;
       user.maturityDateISO = lastUser.maturityDateISO;
       const msToMaturity = lastUser.maturityDateMS - timestampDate.valueOf();
@@ -109,12 +112,12 @@ exports.augmentLMData = data => {
   const rewardBucketsTimeSeries = data
     .map((timestampData, timestamp) => {
       const rewardBuckets = timestampData.rewardBuckets;
-      const totalCurrentRowan = _.sum(rewardBuckets.map(b => b.rowan));
-      const totalInitialRowan = _.sum(rewardBuckets.map(b => b.initialRowan));
+      const totalCurrentRowan = _.sum(rewardBuckets.map((b) => b.rowan));
+      const totalInitialRowan = _.sum(rewardBuckets.map((b) => b.initialRowan));
       return {
         timestamp,
         totalCurrentRowan,
-        totalInitialRowan
+        totalInitialRowan,
       };
     })
     .slice(1);
@@ -122,7 +125,7 @@ exports.augmentLMData = data => {
   const stackClaimableRewardData = [];
   const finalTimestampUsers = _.map(finalTimestamp.users, (u, address) => ({
     ...u,
-    address
+    address,
   }));
   const top50Users = _.orderBy(
     finalTimestampUsers,
@@ -136,7 +139,7 @@ exports.augmentLMData = data => {
   for (let i = 1; i < data.length; i++) {
     const timestamp = data[i];
     const userRewards = top50Users.reduce((accum, user) => {
-      const userAtTimestamp = timestamp.users[user.address] || {};
+      const userAtTimestamp = timestamp.users[user.address] || new User();
       if (userAtTimestamp.totalAccruedCommissionsAndClaimableRewards) {
         accum[user.address] =
           userAtTimestamp.totalAccruedCommissionsAndClaimableRewards;
@@ -146,7 +149,7 @@ exports.augmentLMData = data => {
     stackClaimableRewardData.push({
       timestamp: timestamp.timestamp,
       ...blankUserRewards,
-      ...userRewards
+      ...userRewards,
     });
   }
 
@@ -154,6 +157,6 @@ exports.augmentLMData = data => {
     users,
     processedData: data,
     rewardBucketsTimeSeries,
-    stackClaimableRewardData
+    stackClaimableRewardData,
   };
 };

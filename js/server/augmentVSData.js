@@ -4,12 +4,14 @@ const { START_DATETIME } = require('./config');
 const { GlobalTimestampState, User } = require('./types');
 
 exports.augmentVSData = globalTimestampStates => {
+  console.time('augment/updateRewards');
   globalTimestampStates.forEach((state, stateIndex) => {
     const timestampTicketsAmountSum = _.sum(
       _.map(state.users, user => {
         return _.sum(user.tickets.map(t => t.amount));
       })
     );
+
     state.totalDepositedAmount = timestampTicketsAmountSum;
     _.forEach(state.users, (user, address) => {
       /*
@@ -22,10 +24,13 @@ exports.augmentVSData = globalTimestampStates => {
       user.updateRewards(timestampTicketsAmountSum);
     });
   });
+  console.timeEnd('augment/updateRewards');
 
   const finalTimestampState =
     globalTimestampStates[globalTimestampStates.length - 1] ||
     new GlobalTimestampState();
+
+  console.time('augment/updateUserMaturityRewards');
 
   globalTimestampStates.forEach(timestamp => {
     _.forEach(timestamp.users, (user, address) => {
@@ -33,6 +38,9 @@ exports.augmentVSData = globalTimestampStates => {
       user.updateUserMaturityRewards(userAtMaturity);
     });
   });
+  console.timeEnd('augment/updateUserMaturityRewards');
+
+  console.time('augment/updateUserMaturityDates');
 
   globalTimestampStates.forEach((timestampState, timestampIndex) => {
     _.forEach(timestampState.users, (user, address) => {
@@ -55,11 +63,14 @@ exports.augmentVSData = globalTimestampStates => {
       );
     });
   });
+  console.timeEnd('augment/updateUserMaturityDates');
 
   // fill in old timestamps with maturity date now that we have it
   const lastTimestamp =
     globalTimestampStates[globalTimestampStates.length - 1] ||
     new GlobalTimestampState();
+
+  console.time('augment/updateMaturityTimeProps');
   globalTimestampStates.forEach(timestampState => {
     const timestampDate = moment
       .utc(START_DATETIME)
@@ -69,6 +80,7 @@ exports.augmentVSData = globalTimestampStates => {
       user.updateMaturityTimeProps(lastUser, timestampDate.valueOf());
     });
   });
+  console.timeEnd('augment/updateMaturityTimeProps');
 
   const rewardBucketsTimeSeries = globalTimestampStates
     .map((timestampData, timestamp) => {
@@ -83,6 +95,7 @@ exports.augmentVSData = globalTimestampStates => {
     })
     .slice(1);
 
+  console.time('augment/stackData');
   const stackClaimableRewardData = [];
   const finalTimestampStateUsers = _.map(
     finalTimestampState.users,
@@ -113,6 +126,7 @@ exports.augmentVSData = globalTimestampStates => {
       ...userRewards
     });
   }
+  console.timeEnd('augment/stackData');
 
   const uniqueUserAddresses = _.uniq(
     _.flatten(globalTimestampStates.map(state => Object.keys(state.users)))

@@ -3,6 +3,10 @@ const { MULTIPLIER_MATURITY } = require('./config');
 const { processRewardBuckets } = require('./util/bucket-util');
 const config = require('./config');
 const { User, GlobalTimestampState, UserTicket } = require('./types');
+const {
+  VALIDATOR_STAKING,
+  LIQUIDITY_MINING
+} = require('./constants/reward-program-types');
 
 /*
   Filter out deposit events after config.DEPOSIT_CUTOFF_DATETIME,
@@ -12,7 +16,8 @@ function processVSGlobalState (
   lastGlobalState,
   timestamp,
   eventsByUser,
-  getCurrentCommissionRateByValidatorStakeAddress
+  getCurrentCommissionRateByValidatorStakeAddress,
+  rewardProgramType = VALIDATOR_STAKING
 ) {
   const { rewardBuckets, globalRewardAccrued } = processRewardBuckets(
     lastGlobalState.rewardBuckets,
@@ -24,8 +29,10 @@ function processVSGlobalState (
     globalRewardAccrued,
     getCurrentCommissionRateByValidatorStakeAddress
   );
-  users = processUserEvents(users, eventsByUser);
-  users = calculateUserCommissions(users);
+  users = processUserEvents(users, eventsByUser, rewardProgramType);
+  if (rewardProgramType === VALIDATOR_STAKING) {
+    users = calculateUserCommissions(users);
+  }
   let globalState = new GlobalTimestampState();
   Object.assign(globalState, {
     timestamp,
@@ -74,119 +81,150 @@ function processUserTickets (
   Real-World Example: (Adds deposit, creating 1 ticket, then redelegates all 3 tickets to new validator) 
     https://blockexplorer.sifchain.finance/account/sif1zfxa20g8j2hqhxencyqtfhd95wvxsnen08pw97
 */
-
-function processUserEvents (users, eventsByUser) {
-  _.forEach(eventsByUser, (userEvents, userAddress) => {
-    userEvents = _.orderBy(userEvents, ['amount'], ['asc']);
-
-    let withdrawalAmount = 0;
-    let depositAmount = 0;
-    const withdrawalEvents = [];
-    const depositEvents = [];
-    for (let uEvent of userEvents) {
-      if (uEvent.amount < 0) {
-        withdrawalAmount += Math.abs(uEvent.amount);
-        withdrawalEvents.push(uEvent);
-      }
-      if (uEvent.amount > 0) {
-        depositAmount += Math.abs(uEvent.amount);
-        depositEvents.push(uEvent);
-      }
+function processUserEvents (
+  users,
+  eventsByUser = new Map(),
+  rewardProgramType = VALIDATOR_STAKING
+) {
+  const getUserByAddress = address => {
+    const user = users[address] || new User();
+    users[address] = user;
+    return user;
+  };
+  switch (rewardProgramType) {
+    case VALIDATOR_STAKING: {
+      eventsByUser.forEach(userEvents => {
+        if (userEvents.length > 1) {
+          processRedelegationEvents(userEvents, getUserByAddress);
+        } else {
+          processAccountEvents(userEvents, getUserByAddress);
+        }
+      });
+      break;
     }
+    case LIQUIDITY_MINING: {
+      eventsByUser.forEach(userEvents => {
+        processAccountEvents(userEvents, getUserByAddress);
+      });
+      break;
+    }
+  }
+  return users;
+}
 
-    const getUserByAddress = address => {
-      const user = users[address] || new User();
-      users[address] = user;
-      return user;
-    };
+function processAccountEvents (userEvents, getUserByAddress) {
+  for (let uEvent of userEvents) {
+    const user = getUserByAddress(uEvent.delegateAddress);
+    if (uEvent.amount < 0) {
+      user.withdrawStakeAsDelegator(uEvent, getUserByAddress);
+    } else if (uEvent.amount > 0) {
+      user.addTicket(UserTicket.fromEvent(uEvent));
+    }
+  }
+}
 
-    let ticketsToRedelegate = [];
+function processRedelegationEvents (userEvents, getUserByAddress) {
+  userEvents = _.orderBy(userEvents, ['amount'], ['asc']);
+  let withdrawalAmount = 0;
+  let depositAmount = 0;
+  const withdrawalEvents = [];
+  const depositEvents = [];
+  for (let uEvent of userEvents) {
+    if (uEvent.amount < 0) {
+      withdrawalAmount += Math.abs(uEvent.amount);
+      withdrawalEvents.push(uEvent);
+    }
+    if (uEvent.amount > 0) {
+      depositAmount += Math.abs(uEvent.amount);
+      depositEvents.push(uEvent);
+    }
+  }
 
-    let amountToRedelegate = Math.min(depositAmount, withdrawalAmount);
-    for (let wEvent of withdrawalEvents) {
-      const user = getUserByAddress(wEvent.delegateAddress);
-      const amountOfWithdrawalToRedelegate = Math.max(
-        -amountToRedelegate,
-        wEvent.amount
+  let ticketsToRedelegate = [];
+
+  let amountToRedelegate = Math.min(depositAmount, withdrawalAmount);
+  for (let wEvent of withdrawalEvents) {
+    const user = getUserByAddress(wEvent.delegateAddress);
+    const amountOfWithdrawalToRedelegate = Math.max(
+      -amountToRedelegate,
+      wEvent.amount
+    );
+    amountToRedelegate -= Math.abs(amountOfWithdrawalToRedelegate);
+    const amountOfWithdrawalToWithdraw =
+      wEvent.amount - amountOfWithdrawalToRedelegate;
+
+    if (amountOfWithdrawalToRedelegate !== 0) {
+      const redelegateWithdrawalEvent = wEvent.cloneWith({
+        amount: amountOfWithdrawalToRedelegate
+      });
+      const {
+        burnedTickets: burnedTicketsForRedelegation
+      } = user.removeBurnedTickets(redelegateWithdrawalEvent);
+      ticketsToRedelegate.push(...burnedTicketsForRedelegation);
+    }
+    if (amountOfWithdrawalToWithdraw !== 0) {
+      const traditionalWithdrawalEvent = wEvent.cloneWith({
+        amount: amountOfWithdrawalToWithdraw
+      });
+      user.withdrawStakeAsDelegator(
+        traditionalWithdrawalEvent,
+        getUserByAddress
       );
-      amountToRedelegate -= Math.abs(amountOfWithdrawalToRedelegate);
-      const amountOfWithdrawalToWithdraw =
-        wEvent.amount - amountOfWithdrawalToRedelegate;
-
-      if (amountOfWithdrawalToRedelegate !== 0) {
-        const redelegateWithdrawalEvent = wEvent.cloneWith({
-          amount: amountOfWithdrawalToRedelegate
-        });
-        const {
-          burnedTickets: burnedTicketsForRedelegation
-        } = user.removeBurnedTickets(redelegateWithdrawalEvent);
-        ticketsToRedelegate.push(...burnedTicketsForRedelegation);
-      }
-      if (amountOfWithdrawalToWithdraw !== 0) {
-        const traditionalWithdrawalEvent = wEvent.cloneWith({
-          amount: amountOfWithdrawalToWithdraw
-        });
-        user.withdrawStakeAsDelegator(
-          traditionalWithdrawalEvent,
-          getUserByAddress
-        );
-      }
     }
+  }
 
-    /* 
+  /* 
       Match the tickets with the highest remaining rewards
       with the validators with the lowest commissions to maximize 
       their gains over time.
     */
-    const sortedDepositEvents = _.sortBy(depositEvents, event => {
-      return event.commission;
-    });
-    ticketsToRedelegate = _.sortBy(ticketsToRedelegate, t => {
-      const remainingReward =
-        (t.reward - t.calculateTotalValidatorCommissions()) * (1 - t.mul);
-      const remainingRatio = remainingReward / t.reward;
-      // make negative to sort in descending order
-      return -remainingRatio;
-    });
-    for (let dEvent of sortedDepositEvents) {
-      const user = getUserByAddress(dEvent.delegateAddress);
-      let nextTicketsToRedelegate = [];
-      let amountToDeposit = dEvent.amount;
-      for (let redelegatedTicket of ticketsToRedelegate) {
-        if (amountToDeposit === 0) {
-          nextTicketsToRedelegate.push(redelegatedTicket);
-          continue;
-        }
-        const amountToRemove = Math.min(
-          redelegatedTicket.amount,
-          amountToDeposit
-        );
-        amountToDeposit -= amountToRemove;
-        const {
-          burnedTicket,
-          remainderTicket,
-          hasRemainder
-        } = redelegatedTicket.burn(amountToRemove);
-        user.addTicket(burnedTicket.cloneAndRedelegateFromEvent(dEvent));
-        if (hasRemainder) {
-          nextTicketsToRedelegate.push(remainderTicket);
-        }
+  const sortedDepositEvents = _.sortBy(depositEvents, event => {
+    return event.commission;
+  });
+  ticketsToRedelegate = _.sortBy(ticketsToRedelegate, t => {
+    const remainingReward =
+      (t.reward - t.calculateTotalValidatorCommissions()) * (1 - t.mul);
+    const remainingRatio = remainingReward / t.reward;
+    // make negative to sort in descending order
+    return -remainingRatio;
+  });
+  for (let dEvent of sortedDepositEvents) {
+    const user = getUserByAddress(dEvent.delegateAddress);
+    let nextTicketsToRedelegate = [];
+    let amountToDeposit = dEvent.amount;
+    for (let redelegatedTicket of ticketsToRedelegate) {
+      if (amountToDeposit === 0) {
+        nextTicketsToRedelegate.push(redelegatedTicket);
+        continue;
       }
-      ticketsToRedelegate = nextTicketsToRedelegate;
-      const isAfterDepositsAreAllowed =
-        dEvent.timestamp > config.DEPOSITS_ALLOWED_DURATION_MS / 1000 / 60;
-      if (amountToDeposit > 0 && !isAfterDepositsAreAllowed) {
-        user.addTicket(
-          UserTicket.fromEvent(
-            dEvent.cloneWith({
-              amount: amountToDeposit
-            })
-          )
-        );
+      const amountToRemove = Math.min(
+        redelegatedTicket.amount,
+        amountToDeposit
+      );
+      amountToDeposit -= amountToRemove;
+      const {
+        burnedTicket,
+        remainderTicket,
+        hasRemainder
+      } = redelegatedTicket.burn(amountToRemove);
+      user.addTicket(burnedTicket.cloneAndRedelegateFromEvent(dEvent));
+      if (hasRemainder) {
+        nextTicketsToRedelegate.push(remainderTicket);
       }
     }
-  });
-  return users;
+    ticketsToRedelegate = nextTicketsToRedelegate;
+    const isAfterDepositsAreAllowed =
+      dEvent.timestamp > config.DEPOSITS_ALLOWED_DURATION_MS / 1000 / 60;
+    if (amountToDeposit > 0 && !isAfterDepositsAreAllowed) {
+      user.addTicket(
+        UserTicket.fromEvent(
+          dEvent.cloneWith({
+            amount: amountToDeposit
+          })
+        )
+      );
+    }
+  }
 }
 
 function calculateUserCommissions (users) {

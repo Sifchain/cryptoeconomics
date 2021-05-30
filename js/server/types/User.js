@@ -293,6 +293,10 @@ class User {
     */
     for (let ticket of this.tickets) {
       const validator = getUserByAddress(ticket.validatorRewardAddress);
+      if (!validator) {
+        // is LM
+        continue;
+      }
       let commissionOnReward = ticket.rewardDelta * ticket.commission;
       if (commissionOnReward < 0) {
         console.log('less than zero');
