@@ -6,7 +6,7 @@ const { DelegateEvent } = require('../types');
 // (see global-state.md for example)
 function remapLMAddresses (addresses) {
   const mapped = _.map(addresses, (tokens, address) => {
-    const addressTokenEvents = _.map(tokens, (timeIntervals, token) => {
+    const addressTokenEvents = _.map(tokens, timeIntervals => {
       return timeIntervals
         .map((amount, index) => {
           if (amount < 0) {
@@ -15,8 +15,7 @@ function remapLMAddresses (addresses) {
           return DelegateEvent.fromJSON({
             timestamp: (index + 1) * EVENT_INTERVAL_MINUTES,
             amount,
-            delegateAddress: address,
-            token
+            delegateAddress: address
           });
         })
         .filter(e => e.amount !== 0);
