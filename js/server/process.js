@@ -121,7 +121,7 @@ function processUserEventsByTimestamp (
 
     const lastGlobalState = VSGlobalStates[VSGlobalStates.length - 1];
     const timestamp = i * EVENT_INTERVAL_MINUTES;
-    const userEvents = userEventsByTimestamp.get(timestamp) || [];
+    const userEvents = userEventsByTimestamp['' + timestamp] || [];
     const newGlobalState = processVSGlobalState(
       lastGlobalState,
       timestamp,

@@ -166,9 +166,7 @@ class User {
       userAtMaturity.currentTotalCommissionsOnClaimableDelegatorRewards;
     this.totalCommissionsAndRewardsAtMaturity =
       userAtMaturity.totalAccruedCommissionsAndClaimableRewards;
-    this.ticketAmountAtMaturity = _.sum(
-      userAtMaturity.tickets.map(ticket => ticket.amount)
-    );
+    this.ticketAmountAtMaturity = userAtMaturity.totalDepositedAmount;
 
     // to avoid NaN (serialized as `null` in JSON) as a result of `0/0`
     // and when user is a validator (with a `ticketAmountAtMaturity` of zero)
@@ -310,17 +308,21 @@ class User {
   }
 
   removeBurnedTickets (delegateEvent) {
-    const tickets = [];
+    let tickets = [];
     const otherValidatorTickets = [];
-    this.tickets.forEach(ticket => {
-      if (
-        ticket.validatorRewardAddress === delegateEvent.validatorRewardAddress
-      ) {
-        tickets.push(ticket);
-      } else {
-        otherValidatorTickets.push(ticket);
-      }
-    });
+    if (delegateEvent.validatorRewardAddress) {
+      this.tickets.forEach(ticket => {
+        if (
+          ticket.validatorRewardAddress === delegateEvent.validatorRewardAddress
+        ) {
+          tickets.push(ticket);
+        } else {
+          otherValidatorTickets.push(ticket);
+        }
+      });
+    } else {
+      tickets.push(...this.tickets);
+    }
     const sortedTickets = _.sortBy(tickets, 'mul');
 
     // withdrawal events are identified by negative `DelegateEvent.amount` fields.

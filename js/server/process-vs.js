@@ -83,7 +83,7 @@ function processUserTickets (
 */
 function processUserEvents (
   users,
-  eventsByUser = new Map(),
+  eventsByUser,
   rewardProgramType = VALIDATOR_STAKING
 ) {
   const getUserByAddress = address => {
@@ -93,7 +93,7 @@ function processUserEvents (
   };
   switch (rewardProgramType) {
     case VALIDATOR_STAKING: {
-      eventsByUser.forEach(userEvents => {
+      _.forEach(eventsByUser, userEvents => {
         if (userEvents.length > 1) {
           processRedelegationEvents(userEvents, getUserByAddress);
         } else {
@@ -103,7 +103,7 @@ function processUserEvents (
       break;
     }
     case LIQUIDITY_MINING: {
-      eventsByUser.forEach(userEvents => {
+      _.forEach(eventsByUser, userEvents => {
         processAccountEvents(userEvents, getUserByAddress);
       });
       break;
