@@ -28,7 +28,7 @@ function remapLMAddresses (addresses) {
   allTimeIntervalEvents = _.mapValues(
     allTimeIntervalEvents,
     timeIntervalEvents => {
-      return timeIntervalEvents.map(event => _.omit(event, 'timestamp'));
+      return timeIntervalEvents.map(event => event.clearTimestamp());
     }
   );
 
