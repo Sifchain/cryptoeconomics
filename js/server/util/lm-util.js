@@ -28,7 +28,10 @@ function remapLMAddresses (addresses) {
   allTimeIntervalEvents = _.mapValues(
     allTimeIntervalEvents,
     timeIntervalEvents => {
-      return timeIntervalEvents.map(event => event.clearTimestamp());
+      return timeIntervalEvents.map(event => {
+        event.clearTimestamp();
+        return event;
+      });
     }
   );
 
