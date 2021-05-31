@@ -9,6 +9,10 @@ class GlobalTimestampState {
     this.bucketEvent = undefined;
   }
 
+  setTotalDepositedAmount (totalDepositedAmount) {
+    this.totalDepositedAmount = totalDepositedAmount;
+  }
+
   static fromJSON (props) {
     let next = Object.assign(new this(), props);
     next.users = Object.fromEntries(

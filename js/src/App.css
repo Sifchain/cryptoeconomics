@@ -251,6 +251,24 @@ input[type='radio']:checked + span {
   margin: 7.5px 7.5px;
 }
 
+details.metadata-container {
+  width: 95%;
+  margin: 1rem;
+  /* font-family: monospace; */
+}
+
+details.metadata-container summary {
+  color: #FAFAFA;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+details.metadata-container summary::marker {
+  color: var(--accent-blue);
+  cursor: pointer;
+}
+
 .info-text {
   color: white;
   width: 100%;

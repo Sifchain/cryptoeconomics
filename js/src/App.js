@@ -160,6 +160,10 @@ class App extends React.Component {
     });
   }
 
+  getCurrentUsers () {
+    return this.state.type === 'lm' ? this.state.usersLM : this.state.usersVS;
+  }
+
   render () {
     if (!this.state.usersLM || !this.state.usersVS) {
       return (
@@ -171,8 +175,7 @@ class App extends React.Component {
         </div>
       );
     }
-    const users =
-      this.state.type === 'lm' ? this.state.usersLM : this.state.usersVS;
+    const users = this.getCurrentUsers();
 
     let userTimestampJSON = '';
     const userData =
@@ -207,7 +210,7 @@ class App extends React.Component {
       (this.state.address !== 'leaderboard' &&
         this.state.address !== undefined &&
         !timeSeriesData) ||
-      !userTimestampJSON;
+      (!!this.state.address && !userTimestampJSON);
 
     return (
       <div className='App'>
@@ -392,11 +395,14 @@ class App extends React.Component {
 
           {this.state.address !== 'leaderboard' &&
           this.state.address !== undefined ? (
-            <JSONPretty
-              className='json-metadata'
-              id='json-pretty'
-              data={userTimestampJSON}
-            />
+            <details className='metadata-container'>
+              <summary>JSON Metadata</summary>
+              <JSONPretty
+                className='json-metadata'
+                id='json-pretty'
+                data={userTimestampJSON}
+              />
+            </details>
           ) : null}
           {this.state.type === 'vs' ? (
             <div className='info-text'>
