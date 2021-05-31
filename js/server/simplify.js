@@ -1,5 +1,4 @@
-const { graphqlRequest } = require('./loaders/graphqlRequest');
-const { loadValidatorsSnapshot } = require('./loaders/loadValidatorsSnapshot');
+const { loadValidatorsSnapshot, graphqlRequest } = require('./loaders');
 const config = require('./config');
 async function createValidatorStakingTimeSeries () {
   const snapshotRes = await loadValidatorsSnapshot();

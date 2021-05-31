@@ -1,6 +1,6 @@
 const { fetch } = require('cross-fetch');
 
-module.exports.loadLiquidityMinersSnapshot = async function () {
+module.exports.default = async function () {
   if (!process.env.HEADER_SECRET) {
     throw new Error('process.env.HEADER_SECRET not defined!');
   }

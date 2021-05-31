@@ -1,8 +1,8 @@
 if (process.env.NODE_ENV !== 'production') require('dotenv').config();
 const {
-  loadLiquidityMinersSnapshot
-} = require('./loaders/loadLiquidityMinersSnapshot');
-const { loadValidatorsSnapshot } = require('./loaders/loadValidatorsSnapshot');
+  loadLiquidityMinersSnapshot,
+  loadValidatorsSnapshot
+} = require('./loaders');
 // eslint-disable-next-line
 const { getProcessedLMData, getProcessedVSData } = require('./process');
 const { getUserData, getUserTimeSeriesData } = require('./user');

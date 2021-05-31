@@ -1,6 +1,6 @@
 const { fetch } = require('cross-fetch');
 
-async function loadValidatorsSnapshot () {
+exports.default = async function () {
   if (!process.env.HEADER_SECRET) {
     throw new Error('process.env.HEADER_SECRET not defined!');
   }
@@ -23,8 +23,4 @@ async function loadValidatorsSnapshot () {
       `
     })
   }).then(r => r.json());
-}
-
-module.exports = {
-  loadValidatorsSnapshot
 };
