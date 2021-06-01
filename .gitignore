@@ -12,3 +12,4 @@ env.sh
 rust
 .DS_Store
 *.log
+js/server/cache/*

@@ -21,6 +21,7 @@ class User {
     this.totalCommissionsAndRewardsAtMaturity = 0;
     this.claimableCommissions = 0;
 
+    this.claimedCommissionsAndRewardsAwaitingDispensation = 0;
     // neccessary because we can otherwise not calculate `currentTotalCommissionsOnClaimableDelegatorRewards` if there are no remaining tickets
     // this.claimableCommissionsByDelegatorAddress = {};
     this.delegatorAddresses = [];
@@ -230,6 +231,31 @@ class User {
         totalForfeitedCommissions += forfeitedCommission;
       }
     return { totalClaimableCommissions, totalForfeitedCommissions };
+  }
+
+  claimAllCurrentCommissionsAndRewards (getUserByAddress) {
+    const { claimable, forfeited } = this.calculateClaimableReward(
+      this.tickets
+    );
+
+    const {
+      totalClaimableCommissions: totalCommissionsClaimedByValidators,
+      totalForfeitedCommissions: totalCommissionsForfeitedByValidators
+    } = this.calculateClaimableCommissionsAndAssignToValidator(
+      getUserByAddress,
+      this.tickets
+    );
+    // important to set this _after_ assigning commissions to validators (for self-delegators)
+    this.claimedCommissionsAndRewardsAwaitingDispensation +=
+      this.claimableCommissions +
+      this.claimableRewardsOnWithdrawnAssets +
+      claimable -
+      totalCommissionsClaimedByValidators;
+    this.claimableCommissions = 0;
+    this.claimableRewardsOnWithdrawnAssets = 0;
+    this.tickets.forEach(t => t.resetAfterClaim());
+    this.forfeited += forfeited - totalCommissionsForfeitedByValidators;
+    console.log('cool');
   }
 
   withdrawStakeAsDelegator (delegateEvent, getUserByAddress, burnedTickets) {

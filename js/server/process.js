@@ -1,7 +1,7 @@
 // const { augmentLMData } = require('./augmentLMData');
 const { augmentVSData } = require('./augmentVSData');
 
-const { remapLMAddresses } = require('./util/lm-util');
+const { remapLMAddresses, createClaimEvents } = require('./util/lm-util');
 const { remapVSAddresses } = require('./util/vs-util');
 
 // const { processLMGlobalState } = require('./process-lm');
@@ -20,6 +20,7 @@ const {
   VALIDATOR_STAKING,
   LIQUIDITY_MINING
 } = require('./constants/reward-program-types');
+const { mockMinerClaims } = require('./mock');
 // const { getTimeIndex } = require("./util/getTimeIndex");
 
 // const snapshotLM = require("../snapshots/snapshot_lm_latest.json");
@@ -54,13 +55,15 @@ const {
 
 exports.getProcessedLMData = snapshotLM => {
   const LMAddresses = snapshotLM.data.snapshots_new[0].snapshot_data;
-
+  const { claimsSnapshotData } = mockMinerClaims(snapshotLM);
+  const claimEventsByUserByTimestamp = createClaimEvents(claimsSnapshotData);
   const userEventsByTimestamp = remapLMAddresses(LMAddresses);
 
   return processUserEventsByTimestamp(
     userEventsByTimestamp,
     () => 0,
-    LIQUIDITY_MINING
+    LIQUIDITY_MINING,
+    claimEventsByUserByTimestamp
   );
 
   // TODO: remove past dispensations
@@ -95,22 +98,25 @@ exports.getProcessedVSData = snapshotVS => {
 function processUserEventsByTimestamp (
   userEventsByTimestamp,
   getCurrentCommissionRate = (address, stateIndex) => 0,
-  rewardProgramType
+  rewardProgramType,
+  claimEventsByUserByTimestamp = {}
 ) {
   console.time('processvs');
   const VSGlobalStates = [GlobalTimestampState.getInitial()];
   let currentTimeIndex = getTimeIndex('now');
   const snapshotOrigin =
     process.env.LOCAL_SNAPSHOT_DEV_MODE === 'enabled' ? 'local' : 'live';
-  let cacheEnabled = false;
+  let cacheEnabled = true;
   for (let i = 0; i < NUMBER_OF_INTERVALS_TO_RUN; i++) {
     const isSimulatedFutureInterval = currentTimeIndex < i;
     const cachePath = path.join(
       __dirname,
-      `./cache/state.${snapshotOrigin}.${i}.json`
+      `./cache/state.${snapshotOrigin}.${rewardProgramType.toLowerCase()}.${i}.json`
     );
     if (!isSimulatedFutureInterval && cacheEnabled) {
-      if (fs.existsSync(cachePath)) {
+      const doesExist = fs.existsSync(cachePath);
+
+      if (doesExist) {
         try {
           let cached = JSON.parse(fs.readFileSync(cachePath).toString());
           VSGlobalStates.push(GlobalTimestampState.fromJSON(cached));
@@ -122,12 +128,16 @@ function processUserEventsByTimestamp (
     const lastGlobalState = VSGlobalStates[VSGlobalStates.length - 1];
     const timestamp = i * EVENT_INTERVAL_MINUTES;
     const userEvents = userEventsByTimestamp['' + timestamp] || [];
+    const claimEventsByUser =
+      claimEventsByUserByTimestamp['' + timestamp] || {};
+
     const newGlobalState = processVSGlobalState(
       lastGlobalState,
       timestamp,
       userEvents,
       address => getCurrentCommissionRate(address, i),
-      rewardProgramType
+      rewardProgramType,
+      claimEventsByUser
     );
     if (cacheEnabled) {
       fs.writeFileSync(cachePath, JSON.stringify(newGlobalState));

@@ -26,6 +26,12 @@ class UserTicket {
     return Object.assign(new this(), props);
   }
 
+  resetAfterClaim () {
+    this.mul = 0.25;
+    this.reward = 0;
+    this.rewardDelta = 0;
+  }
+
   burn (amountToBurn) {
     if (amountToBurn < 0) {
       throw new Error('amountToBurn must be a non-negative number');

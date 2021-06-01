@@ -17,7 +17,8 @@ function processVSGlobalState (
   timestamp,
   eventsByUser,
   getCurrentCommissionRateByValidatorStakeAddress,
-  rewardProgramType = VALIDATOR_STAKING
+  rewardProgramType = VALIDATOR_STAKING,
+  claimEventsByUser
 ) {
   const { rewardBuckets, globalRewardAccrued } = processRewardBuckets(
     lastGlobalState.rewardBuckets,
@@ -29,7 +30,11 @@ function processVSGlobalState (
     globalRewardAccrued,
     getCurrentCommissionRateByValidatorStakeAddress
   );
+  users = processUserClaims(users, claimEventsByUser);
   users = processUserEvents(users, eventsByUser, rewardProgramType);
+  if (Object.keys(claimEventsByUser).length) {
+    console.log('claim');
+  }
   if (rewardProgramType === VALIDATOR_STAKING) {
     users = calculateUserCommissions(users);
   }
@@ -40,6 +45,23 @@ function processVSGlobalState (
     users
   });
   return globalState;
+}
+
+function processUserClaims (users, claimEventsByUser) {
+  const getUserByAddress = address => {
+    const user = users[address] || new User();
+    users[address] = user;
+    return user;
+  };
+  for (const address in claimEventsByUser) {
+    const didClaim = claimEventsByUser[address];
+    if (!didClaim) {
+      continue;
+    }
+    const user = users[address];
+    user.claimAllCurrentCommissionsAndRewards(getUserByAddress);
+  }
+  return users;
 }
 
 function processUserTickets (

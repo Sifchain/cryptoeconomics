@@ -65,6 +65,24 @@ function remapLMAddresses (addresses) {
   return allTimeIntervalAddressEvents;
 }
 
+function createClaimEvents (addresses) {
+  const claimEventsByUserByTimestamp = {};
+  for (const addr in addresses) {
+    const claimEventsTimeSeries = addresses[addr];
+    for (let i = 0; i < claimEventsTimeSeries.length; i++) {
+      const didClaim = !!claimEventsTimeSeries[i];
+      const timestamp = (i + 1) * EVENT_INTERVAL_MINUTES;
+      claimEventsByUserByTimestamp[timestamp] =
+        claimEventsByUserByTimestamp[timestamp] || {};
+      if (didClaim) {
+        claimEventsByUserByTimestamp[timestamp][addr] = true;
+      }
+    }
+  }
+  return claimEventsByUserByTimestamp;
+}
+
 module.exports = {
-  remapLMAddresses
+  remapLMAddresses,
+  createClaimEvents
 };
