@@ -4,7 +4,7 @@ const { retryOnFail } = require('./util/retryOnFail');
 /* 
   Reloads & re-processes Miner & Validator data once every `RELOAD_INTERVAL`
 */
-const RELOAD_INTERVAL = 6 * 60 * 1000;
+const RELOAD_INTERVAL = 0.1 * 60 * 1000;
 
 if (RELOAD_INTERVAL < 6 * 60 * 1000) {
   console.warn('RELOAD INTERVAL SET EXTREMELY LOW');

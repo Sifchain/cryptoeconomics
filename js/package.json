@@ -36,7 +36,7 @@
     "eject": "react-scripts eject",
     "build-fe": "node lib/process.js --silent > ./src/data.json",
     "lint": "prettier-standard --lint '**/*.js'",
-    "prepare": "cd .. && husky install js/.husky",
+    "prepare": "cd .. && husky install js/.husky --fix",
     "preinstall": "node lock-node-version.js"
   },
   "lint-staged": {

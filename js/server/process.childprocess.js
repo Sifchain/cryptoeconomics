@@ -22,6 +22,10 @@ class BackgroundProcessor {
     this.vsDataParsed = null;
   }
 
+  dispatch (action, payload) {
+    return this.actions[action](payload);
+  }
+
   /*
     Actions invokable from `./main.js` via `processingHandler#dispatch(...)`
     Actions can only take one argument. Consolidate multiple args into an object.
@@ -98,6 +102,7 @@ class BackgroundProcessor {
           }
         });
       } catch (e) {
+        console.error(e);
         process.send({
           action: 'return',
           payload: {
@@ -183,4 +188,6 @@ class BackgroundProcessor {
     instance.listenForParentThreadInvokations();
   }
 }
-BackgroundProcessor.start();
+if (require.main === module) {
+  BackgroundProcessor.start();
+}
