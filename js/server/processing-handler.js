@@ -4,23 +4,37 @@ const { retryOnFail } = require('./util/retryOnFail');
 /* 
   Reloads & re-processes Miner & Validator data once every `RELOAD_INTERVAL`
 */
-const RELOAD_INTERVAL = 6 * 60 * 1000;
+const RELOAD_INTERVAL = 0.1 * 60 * 1000;
 
 if (RELOAD_INTERVAL < 6 * 60 * 1000) {
   console.warn('RELOAD INTERVAL SET EXTREMELY LOW');
 }
 
 // Provides #dispatch method by which the express router endpoints can interact with processed data
-function createMultiprocessActionDispatcher () {
-  let freshProcess = createDispatchableChildProcess();
-  let staleProcess = createDispatchableChildProcess();
-  freshProcess.dispatch('LOAD_AND_PROCESS_SNAPSHOTS');
-  (async () => {
-    if (process.env.LOCAL_SNAPSHOT_DEV_MODE === 'enabled') {
-      staleProcess.childProcess.kill();
-      return;
-    }
-    await freshProcess.waitForReadyState();
+class ProcessingHandler {
+  constructor () {
+    this.freshProcess = new SubscriberProcess();
+    this.staleProcess = new SubscriberProcess();
+  }
+
+  static init () {
+    const instance = new this();
+    instance.start();
+    return instance;
+  }
+
+  dispatch (...args) {
+    return this.freshProcess.dispatch(...args);
+  }
+
+  async start () {
+    await Promise.all([this.freshProcess.start(), this.staleProcess.start()]);
+    this.beginProcessRotation();
+  }
+
+  async beginProcessRotation () {
+    this.freshProcess.dispatch('LOAD_AND_PROCESS_SNAPSHOTS');
+    await this.freshProcess.waitForReadyState();
     while (true) {
       try {
         /* 
@@ -28,101 +42,50 @@ function createMultiprocessActionDispatcher () {
 					before we clear out the data
 				*/
         await new Promise(resolve => setTimeout(resolve, 5000));
-        await staleProcess.dispatch('CLEAR_PARSED_DATA');
-        await staleProcess.restart();
+        await this.staleProcess.dispatch('CLEAR_PARSED_DATA');
+        // await this.staleProcess.restart();
         // Wait until snapshot data is expired
         await new Promise(resolve => setTimeout(resolve, RELOAD_INTERVAL));
-        await staleProcess.dispatch('LOAD_AND_PROCESS_SNAPSHOTS');
+        await this.staleProcess.dispatch('LOAD_AND_PROCESS_SNAPSHOTS');
         console.log('switching child processes');
-        [freshProcess, staleProcess] = [staleProcess, freshProcess];
+        [this.freshProcess, this.staleProcess] = [
+          this.staleProcess,
+          this.freshProcess
+        ];
       } catch (e) {
         console.error(e);
       }
     }
-  })();
-
-  return {
-    getActiveProcess () {
-      return freshProcess;
-    }
-  };
+  }
 }
 
-function createDispatchableChildProcess () {
-  const createChildProcess = () => {
-    const p = fork(path.join(__dirname, `process.childprocess.js`));
-    p.setMaxListeners(100000);
-    return p;
-  };
-  let childProcess = createChildProcess();
+class SubscriberProcess {
+  constructor () {
+    this.childProcess = null;
+    this.isRestarting = false;
+  }
 
-  childProcess.on('error', e => {
-    if (!childProcess.killed) childProcess.kill();
-    childProcess = createChildProcess();
-    console.error(e);
-  });
-  childProcess.on('exit', code => {
-    childProcess = createChildProcess();
-    if (code !== 0) {
-      // ignore
-    }
-  });
-
-  const dispatch = (...args) => {
-    return createChildProcessActionDispatcher(childProcess)(...args);
-  };
-
-  async function waitForReadyState () {
-    return new Promise((resolve, reject) => {
-      // expires after 5 minutes
-      const fiveMins = 1000 * 60 * 5;
-      let expiresAt = Date.now() + fiveMins;
-      (async () => {
-        while (true) {
-          let isReady = await dispatch('CHECK_IF_PARSED_DATA_READY');
-          if (isReady) return resolve(true);
-          if (Date.now() > expiresAt) {
-            console.log('Timed out waiting for child process. Reloading');
-            childProcess.kill();
-            expiresAt = Date.now() + fiveMins;
-          }
-          await new Promise(resolve => setTimeout(resolve, 100));
-        }
-      })();
+  start () {
+    this.childProcess = this.fork();
+    setTimeout(() => {
+      this.childProcess.kill();
+    }, 2 * 60 * 1000 * Math.random());
+    return new Promise(resolve => {
+      this.childProcess.on('spawn', resolve);
     });
   }
-  return {
-    restart () {
-      if (childProcess.killed) {
-        return Promise.resolve();
-      }
-      const promise = new Promise(resolve => {
-        childProcess.once('exit', () => {
-          // new childProcess is created above in `exit` event handler, which will execute before this
-          resolve(childProcess);
-        });
-      });
-      childProcess.kill();
-      return promise;
-    },
-    // Remotely invokes child process actions in `./process.childprocess.js` `BackgroundProcessor#actions`
-    dispatch: (...args) =>
-      retryOnFail({
-        fn: () => dispatch(...args),
-        iterations: 20,
-        waitFor: 250
-      }),
-    waitForReadyState,
-    get childProcess () {
-      return childProcess;
-    }
-  };
-}
 
-function createChildProcessActionDispatcher (childProcess) {
-  return async function dispatch (method, payload) {
+  dispatch (...args) {
+    return retryOnFail({
+      fn: () => this.unsafeDispatch(...args),
+      iterations: 20,
+      waitFor: 250
+    });
+  }
+
+  unsafeDispatch (method, payload) {
     const invokationId = Math.random().toString();
-    childProcess.send({
+    this.childProcess.send({
       action: 'invoke',
       payload: {
         fn: method,
@@ -139,13 +102,76 @@ function createChildProcessActionDispatcher (childProcess) {
           reject(msg.payload.error);
         }
         resolve(msg.payload.out);
-        childProcess.off('message', handler);
+        this.childProcess.off('message', handler);
       };
-      childProcess.on('message', handler);
+      this.childProcess.on('message', handler);
     });
-  };
+  }
+
+  async waitForReadyState () {
+    return new Promise((resolve, reject) => {
+      // expires after 5 minutes
+      const killAfter = 1000 * 60 * 5;
+      let expiresAt = Date.now() + killAfter;
+      (async () => {
+        while (true) {
+          let isReady = await this.dispatch('CHECK_IF_PARSED_DATA_READY');
+          if (isReady) return resolve(true);
+          if (Date.now() > expiresAt) {
+            console.log('Timed out waiting for child process. Reloading');
+            this.restart();
+            expiresAt = Date.now() + killAfter;
+          }
+          await new Promise(resolve => setTimeout(resolve, 100));
+        }
+      })();
+    });
+  }
+
+  async restart () {
+    this.isRestarting = true;
+    try {
+      const exited = this.childProcess.killed
+        ? Promise.resolve()
+        : new Promise(resolve => {
+            this.childProcess.once('exit', () => {
+              // new childProcess is created above in `exit` event handler, which will execute before this
+              resolve();
+            });
+            this.childProcess.kill();
+          });
+      this.childProcess = this.fork();
+      const restarted = this.childProcess.connected
+        ? Promise.resolve()
+        : new Promise(resolve => {
+            this.childProcess.once('spawn', () => {
+              // new childProcess is created above in `exit` event handler, which will execute before this
+              resolve();
+            });
+          });
+      await Promise.all([exited, restarted]);
+    } catch (e) {
+      console.error(e);
+    }
+    this.isRestarting = false;
+  }
+
+  fork () {
+    const p = fork(path.join(__dirname, `process.childprocess.js`));
+
+    p.setMaxListeners(100000);
+    p.on('error', e => {
+      if (!this.isRestarting) this.restart();
+      console.error(e);
+    });
+    p.on('exit', code => {
+      if (!this.isRestarting) this.restart();
+      console.log('childprocess exited with code ' + code);
+    });
+    return p;
+  }
 }
 
 module.exports = {
-  createMultiprocessActionDispatcher
+  ProcessingHandler
 };

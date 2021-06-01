@@ -107,7 +107,7 @@ function processUserEventsByTimestamp (
     const isSimulatedFutureInterval = currentTimeIndex < i;
     const cachePath = path.join(
       __dirname,
-      `./cache/state.${snapshotOrigin}.${i}.json`
+      `./cache/state.${snapshotOrigin}.${rewardProgramType.toLowerCase()}.${i}.json`
     );
     if (!isSimulatedFutureInterval && cacheEnabled) {
       if (fs.existsSync(cachePath)) {

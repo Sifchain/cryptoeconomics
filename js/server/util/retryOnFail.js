@@ -7,7 +7,7 @@ module.exports.retryOnFail = async function retryOnFail ({
   let count = 0;
   let resolved = false;
   let rtn;
-  const shouldRun = _ => count < iterations && !resolved;
+  const shouldRun = () => count < iterations && !resolved;
   while (shouldRun()) {
     count++;
     try {
@@ -15,6 +15,7 @@ module.exports.retryOnFail = async function retryOnFail ({
       resolved = true;
       break;
     } catch (e) {
+      console.error(e);
       if (!shouldRun()) {
         throw e;
       }

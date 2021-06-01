@@ -4,11 +4,11 @@ const { getTimeIndex } = require('./util/getTimeIndex');
 const compression = require('compression');
 const fs = require('fs');
 // implements process.js in separate thread
-const { createMultiprocessActionDispatcher } = require('./processing-handler');
+const { ProcessingHandler } = require('./processing-handler');
 
 // require("./simple").createValidatorStakingTimeSeries();
 // interfaces with `./process.childprocess.js`
-const processingHandler = createMultiprocessActionDispatcher();
+const processingHandler = ProcessingHandler.init();
 
 const port = process.env.PORT || 3000;
 const app = express();
@@ -50,7 +50,7 @@ app.get('/status', (req, res, next) => {
 app.get('/api/lm', async (req, res, next) => {
   const key = req.query.key;
   let responseJSON;
-  const activeProcess = processingHandler.getActiveProcess();
+  const activeProcess = processingHandler.freshProcess;
   await activeProcess.waitForReadyState();
   switch (key) {
     case 'userTimeSeriesData': {
@@ -66,7 +66,7 @@ app.get('/api/lm', async (req, res, next) => {
       const timeIndex = getTimeIndex(req.query.timestamp);
       responseJSON = await activeProcess.dispatch('GET_LM_USER_DATA', {
         address,
-        timeIndex
+        timeIndex,
       });
       break;
     }
@@ -85,7 +85,7 @@ app.get('/api/lm', async (req, res, next) => {
 app.get('/api/vs', async (req, res, next) => {
   const key = req.query.key;
   let responseJSON;
-  const activeProcess = processingHandler.getActiveProcess();
+  const activeProcess = processingHandler.freshProcess;
   await activeProcess.waitForReadyState();
   switch (key) {
     case 'unclaimedDelegatedRewards': {
@@ -104,7 +104,7 @@ app.get('/api/vs', async (req, res, next) => {
       const timeIndex = getTimeIndex(req.query.timestamp);
       responseJSON = await activeProcess.dispatch('GET_VS_USER_DATA', {
         address,
-        timeIndex
+        timeIndex,
       });
       break;
     }
