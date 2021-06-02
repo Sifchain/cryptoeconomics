@@ -43,12 +43,12 @@ app.get('/logs', (req, res, next) => {
   });
 });
 
-app.get('/status', (req, res, next) => {
-  res.status(200).send({ status: 'OK' });
-});
-
 app.get('/env', (req, res, next) => {
   res.send(Object.keys(process.env).join('<br/>'));
+});
+
+app.get('/status', (req, res, next) => {
+  res.status(200).send({ status: 'OK' });
 });
 
 app.get('/api/lm', async (req, res, next) => {

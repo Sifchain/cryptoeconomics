@@ -138,18 +138,10 @@ class SubscriberProcess {
               // new childProcess is created above in `exit` event handler, which will execute before this
               resolve();
             });
-            this.childProcess.kill();
+            this.childProcess.kill(101);
           });
+      await Promise.all([exited]);
       this.childProcess = this.fork();
-      const restarted = this.childProcess.connected
-        ? Promise.resolve()
-        : new Promise(resolve => {
-            this.childProcess.once('spawn', () => {
-              // new childProcess is created above in `exit` event handler, which will execute before this
-              resolve();
-            });
-          });
-      await Promise.all([exited, restarted]);
     } catch (e) {
       console.error(e);
     }
