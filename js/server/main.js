@@ -69,7 +69,7 @@ app.get('/api/lm', async (req, res, next) => {
       const timeIndex = getTimeIndex(req.query.timestamp);
       responseJSON = await processingHandler.dispatch('GET_LM_USER_DATA', {
         address,
-        timeIndex,
+        timeIndex
       });
       break;
     }
@@ -109,7 +109,7 @@ app.get('/api/vs', async (req, res, next) => {
       const timeIndex = getTimeIndex(req.query.timestamp);
       responseJSON = await processingHandler.dispatch('GET_VS_USER_DATA', {
         address,
-        timeIndex,
+        timeIndex
       });
       break;
     }
