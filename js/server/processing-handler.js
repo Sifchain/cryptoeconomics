@@ -107,7 +107,7 @@ class SubscriberProcess {
   async waitForReadyState () {
     return new Promise((resolve, reject) => {
       // expires after 5 minutes
-      const killAfter = 1000 * 60 * 0;
+      const killAfter = 1000 * 60 * 5;
       let expiresAt = Date.now() + killAfter;
       (async () => {
         while (true) {
