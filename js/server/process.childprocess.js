@@ -1,6 +1,6 @@
 if (process.env.NODE_ENV !== 'production') require('dotenv').config();
 const {
-  loadLiquidityMinersSnapshot
+  loadLiquidityMinersSnapshot,
 } = require('./loaders/loadLiquidityMinersSnapshot');
 const { loadValidatorsSnapshot } = require('./loaders/loadValidatorsSnapshot');
 // eslint-disable-next-line
@@ -16,13 +16,13 @@ process.setMaxListeners(100000);
     * Remote invokation of getter actions on processor outputs
 */
 class BackgroundProcessor {
-  constructor () {
+  constructor() {
     // Set in this#reloadAndReprocessOnLoop
     this.lmDataParsed = null;
     this.vsDataParsed = null;
   }
 
-  dispatch (action, payload) {
+  dispatch(action, payload) {
     return this.actions[action](payload);
   }
 
@@ -30,7 +30,7 @@ class BackgroundProcessor {
     Actions invokable from `./main.js` via `processingHandler#dispatch(...)`
     Actions can only take one argument. Consolidate multiple args into an object.
   */
-  get actions () {
+  get actions() {
     // Use `KEY: () => {}` syntax to ensure `this` is bound correctly.
     return {
       /* Internal Actions */
@@ -45,13 +45,13 @@ class BackgroundProcessor {
         return this.loadAndProcessSnapshots();
       },
       /* LM Actions */
-      GET_LM_KEY_VALUE: key => {
+      GET_LM_KEY_VALUE: (key) => {
         return this.lmDataParsed[key];
       },
-      GET_LM_USER_TIME_SERIES_DATA: address => {
+      GET_LM_USER_TIME_SERIES_DATA: (address) => {
         return getUserTimeSeriesData(this.lmDataParsed.processedData, address);
       },
-      GET_LM_USER_DATA: payload => {
+      GET_LM_USER_DATA: (payload) => {
         return getUserData(this.lmDataParsed.processedData, payload);
       },
       GET_LM_STACK_DATA: () => {
@@ -62,28 +62,28 @@ class BackgroundProcessor {
       // GET_VS_UNCLAIMED_DELEGATED_REWARDS: (key) => {
       //   this.lmDataParsed;
       // },
-      GET_VS_KEY_VALUE: key => {
+      GET_VS_KEY_VALUE: (key) => {
         return this.vsDataParsed[key];
       },
-      GET_VS_USER_TIME_SERIES_DATA: address => {
+      GET_VS_USER_TIME_SERIES_DATA: (address) => {
         return getUserTimeSeriesData(this.vsDataParsed.processedData, address);
       },
       GET_VS_USER_DATA: async ({ address, timeIndex }) => {
         const userDataOut = await getUserData(this.vsDataParsed.processedData, {
           address,
-          timeIndex
+          timeIndex,
         });
         return userDataOut;
       },
       GET_VS_STACK_DATA: () => {
         return this.vsDataParsed.stackClaimableRewardData;
-      }
+      },
     };
   }
 
   // listens for actions dispatched to child process (this one)
-  async listenForParentThreadInvokations () {
-    process.on('message', async msg => {
+  async listenForParentThreadInvokations() {
+    process.on('message', async (msg) => {
       if (
         typeof msg !== 'object' ||
         msg.action !== 'invoke' ||
@@ -98,8 +98,8 @@ class BackgroundProcessor {
           payload: {
             id: msg.payload.id,
             out,
-            error: undefined
-          }
+            error: undefined,
+          },
         });
       } catch (e) {
         console.error(e);
@@ -108,14 +108,14 @@ class BackgroundProcessor {
           payload: {
             id: msg.payload.id,
             out: undefined,
-            error: e
-          }
+            error: e,
+          },
         });
       }
     });
   }
 
-  async loadAndProcessSnapshots () {
+  async loadAndProcessSnapshots() {
     if (process.env.LOCAL_SNAPSHOT_DEV_MODE === 'enabled') {
       console.log(
         'LOCAL_SNAPSHOT_DEV_MODE enabled - Will not refresh or reprocess snapshots.'
@@ -132,19 +132,19 @@ class BackgroundProcessor {
     const [lMSnapshot, vsSnapshot] = isInLocalSnapshotDevMode
       ? [
           require('../snapshots/snapshot_lm_latest.json'),
-          require('../snapshots/snapshot_vs_latest.json')
+          require('../snapshots/snapshot_vs_latest.json'),
         ]
       : await Promise.all([
           retryOnFail({
             fn: () => loadLiquidityMinersSnapshot(),
             iterations: 5,
-            waitFor: 1000
+            waitFor: 1000,
           }),
           retryOnFail({
             fn: () => loadValidatorsSnapshot(),
             iterations: 5,
-            waitFor: 1000
-          })
+            waitFor: 1000,
+          }),
         ]);
 
     /*
@@ -183,11 +183,11 @@ class BackgroundProcessor {
     }
   }
 
-  static start () {
+  static start() {
     const instance = new this();
     instance.listenForParentThreadInvokations();
   }
 }
-if (require.main === module) {
-  BackgroundProcessor.start();
-}
+// if (require.main === module) {
+BackgroundProcessor.start();
+// }
