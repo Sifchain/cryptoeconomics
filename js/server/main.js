@@ -54,12 +54,11 @@ app.get('/env', (req, res, next) => {
 app.get('/api/lm', async (req, res, next) => {
   const key = req.query.key;
   let responseJSON;
-  const activeProcess = processingHandler.freshProcess;
-  await activeProcess.waitForReadyState();
+  await processingHandler.waitForReadyState();
   switch (key) {
     case 'userTimeSeriesData': {
       const address = req.query.address;
-      responseJSON = await activeProcess.dispatch(
+      responseJSON = await processingHandler.dispatch(
         'GET_LM_USER_TIME_SERIES_DATA',
         address
       );
@@ -68,18 +67,21 @@ app.get('/api/lm', async (req, res, next) => {
     case 'userData': {
       const address = req.query.address;
       const timeIndex = getTimeIndex(req.query.timestamp);
-      responseJSON = await activeProcess.dispatch('GET_LM_USER_DATA', {
+      responseJSON = await processingHandler.dispatch('GET_LM_USER_DATA', {
         address,
-        timeIndex
+        timeIndex,
       });
       break;
     }
     case 'stack': {
-      responseJSON = await activeProcess.dispatch('GET_LM_STACK_DATA', null);
+      responseJSON = await processingHandler.dispatch(
+        'GET_LM_STACK_DATA',
+        null
+      );
       break;
     }
     default: {
-      responseJSON = await activeProcess.dispatch('GET_LM_KEY_VALUE', key);
+      responseJSON = await processingHandler.dispatch('GET_LM_KEY_VALUE', key);
     }
   }
   res.setHeader('Content-Type', 'application/json');
@@ -89,15 +91,14 @@ app.get('/api/lm', async (req, res, next) => {
 app.get('/api/vs', async (req, res, next) => {
   const key = req.query.key;
   let responseJSON;
-  const activeProcess = processingHandler.freshProcess;
-  await activeProcess.waitForReadyState();
+  await processingHandler.waitForReadyState();
   switch (key) {
     case 'unclaimedDelegatedRewards': {
       break;
     }
     case 'userTimeSeriesData': {
       const address = req.query.address;
-      responseJSON = await activeProcess.dispatch(
+      responseJSON = await processingHandler.dispatch(
         'GET_VS_USER_TIME_SERIES_DATA',
         address
       );
@@ -106,18 +107,21 @@ app.get('/api/vs', async (req, res, next) => {
     case 'userData': {
       const address = req.query.address;
       const timeIndex = getTimeIndex(req.query.timestamp);
-      responseJSON = await activeProcess.dispatch('GET_VS_USER_DATA', {
+      responseJSON = await processingHandler.dispatch('GET_VS_USER_DATA', {
         address,
-        timeIndex
+        timeIndex,
       });
       break;
     }
     case 'stack': {
-      responseJSON = await activeProcess.dispatch('GET_VS_STACK_DATA', null);
+      responseJSON = await processingHandler.dispatch(
+        'GET_VS_STACK_DATA',
+        null
+      );
       break;
     }
     default: {
-      responseJSON = await activeProcess.dispatch('GET_VS_KEY_VALUE', key);
+      responseJSON = await processingHandler.dispatch('GET_VS_KEY_VALUE', key);
     }
   }
   res.setHeader('Content-Type', 'application/json');

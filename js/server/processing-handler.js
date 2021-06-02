@@ -26,7 +26,11 @@ class ProcessingHandler {
   }
 
   dispatch (...args) {
-    return this.freshProcess.dispatch(...args);
+    return retryOnFail({
+      fn: () => this.freshProcess.dispatch(...args),
+      iterations: 5,
+      waitFor: 1000
+    });
   }
 
   async start () {
@@ -34,9 +38,31 @@ class ProcessingHandler {
     this.beginProcessRotation();
   }
 
+  async waitForReadyState () {
+    return new Promise((resolve, reject) => {
+      // expires after 5 minutes
+      const killAfter = 1000 * 60 * 5;
+      let expiresAt = Date.now() + killAfter;
+      (async () => {
+        while (true) {
+          const isReady = await this.freshProcess.dispatch(
+            'CHECK_IF_PARSED_DATA_READY'
+          );
+          if (isReady) return resolve(true);
+          if (Date.now() > expiresAt) {
+            console.log('Timed out waiting for child process.');
+            // this.restart();
+            expiresAt = Date.now() + killAfter;
+          }
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+      })();
+    });
+  }
+
   async beginProcessRotation () {
     this.freshProcess.dispatch('LOAD_AND_PROCESS_SNAPSHOTS');
-    await this.freshProcess.waitForReadyState();
+    await this.waitForReadyState();
     while (true) {
       try {
         /* 
@@ -71,15 +97,7 @@ class SubscriberProcess {
     this.childProcess = this.fork();
   }
 
-  dispatch (...args) {
-    return retryOnFail({
-      fn: () => this.unsafeDispatch(...args),
-      iterations: 20,
-      waitFor: 250
-    });
-  }
-
-  unsafeDispatch (method, payload) {
+  dispatch (method, payload) {
     const invokationId = Math.random().toString();
     this.childProcess.send({
       action: 'invoke',
@@ -101,26 +119,6 @@ class SubscriberProcess {
         this.childProcess.off('message', handler);
       };
       this.childProcess.on('message', handler);
-    });
-  }
-
-  async waitForReadyState () {
-    return new Promise((resolve, reject) => {
-      // expires after 5 minutes
-      const killAfter = 1000 * 60 * 5;
-      let expiresAt = Date.now() + killAfter;
-      (async () => {
-        while (true) {
-          let isReady = await this.dispatch('CHECK_IF_PARSED_DATA_READY');
-          if (isReady) return resolve(true);
-          if (Date.now() > expiresAt) {
-            console.log('Timed out waiting for child process. Reloading');
-            // this.restart();
-            expiresAt = Date.now() + killAfter;
-          }
-          await new Promise(resolve => setTimeout(resolve, 100));
-        }
-      })();
     });
   }
 
@@ -159,9 +157,9 @@ class SubscriberProcess {
       if (!this.isRestarting) this.restart();
       console.error(e);
     });
-    p.on('exit', code => {
+    p.on('exit', (code, signal) => {
       if (!this.isRestarting) this.restart();
-      console.log('childprocess exited with code ' + code);
+      console.log(`childprocess exited with code ${code}, signal: ${signal}`);
     });
     return p;
   }
