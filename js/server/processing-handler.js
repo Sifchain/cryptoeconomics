@@ -99,7 +99,7 @@ class SubscriberProcess {
   sleep () {
     this.isSleeping = true;
     if (this.childProcess && this.childProcess.connected) {
-      this.childProcess.kill(100);
+      this.childProcess.kill();
     }
   }
 
@@ -138,7 +138,7 @@ class SubscriberProcess {
               // new childProcess is created above in `exit` event handler, which will execute before this
               resolve();
             });
-            this.childProcess.kill(101);
+            this.childProcess.kill();
           });
       await Promise.all([exited]);
       this.childProcess = this.fork();
