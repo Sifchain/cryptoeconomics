@@ -34,7 +34,6 @@ class ProcessingHandler {
   }
 
   async start () {
-    await Promise.all([this.freshProcess.start(), this.staleProcess.start()]);
     this.beginProcessRotation();
   }
 
@@ -61,20 +60,18 @@ class ProcessingHandler {
   }
 
   async beginProcessRotation () {
-    this.freshProcess.dispatch('LOAD_AND_PROCESS_SNAPSHOTS');
-    await this.waitForReadyState();
     while (true) {
       try {
         /* 
 					a little buffer for any code still using a reference to staleProcess
 					before we clear out the data
 				*/
+        this.freshProcess.wake();
         await new Promise(resolve => setTimeout(resolve, 5000));
-        await this.staleProcess.dispatch('CLEAR_PARSED_DATA');
-        // await this.staleProcess.restart();
+        await this.staleProcess.sleep();
         // Wait until snapshot data is expired
         await new Promise(resolve => setTimeout(resolve, RELOAD_INTERVAL));
-        await this.staleProcess.dispatch('LOAD_AND_PROCESS_SNAPSHOTS');
+        await this.waitForReadyState();
         console.log('switching child processes');
         [this.freshProcess, this.staleProcess] = [
           this.staleProcess,
@@ -91,10 +88,19 @@ class SubscriberProcess {
   constructor () {
     this.childProcess = null;
     this.isRestarting = false;
+    this.isSleeping = true;
   }
 
-  start () {
+  wake () {
+    this.isSleeping = false;
     this.childProcess = this.fork();
+  }
+
+  sleep () {
+    this.isSleeping = true;
+    if (this.childProcess && this.childProcess.connected) {
+      this.childProcess.kill(100);
+    }
   }
 
   dispatch (method, payload) {
@@ -158,7 +164,7 @@ class SubscriberProcess {
       console.error(e);
     });
     p.on('exit', (code, signal) => {
-      if (!this.isRestarting) this.restart();
+      if (!this.isRestarting && !this.isSleeping) this.restart();
       console.log(`childprocess exited with code ${code}, signal: ${signal}`);
     });
     return p;

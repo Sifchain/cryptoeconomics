@@ -41,9 +41,6 @@ class BackgroundProcessor {
         this.lmDataParsed = undefined;
         this.vsDataParsed = undefined;
       },
-      LOAD_AND_PROCESS_SNAPSHOTS: () => {
-        return this.loadAndProcessSnapshots();
-      },
       /* LM Actions */
       GET_LM_KEY_VALUE: (key) => {
         return this.lmDataParsed[key];
@@ -190,6 +187,7 @@ class BackgroundProcessor {
   static start() {
     const instance = new this();
     instance.listenForParentThreadInvokations();
+    instance.loadAndProcessSnapshots();
   }
 }
 // if (require.main === module) {
