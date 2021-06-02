@@ -48,13 +48,7 @@ app.get('/status', (req, res, next) => {
 });
 
 app.get('/env', (req, res, next) => {
-  res.send(
-    Object.fromEntries(
-      Object.entries(process.env).map(([k, v]) => {
-        return [k, true];
-      })
-    )
-  );
+  res.send(Object.keys(process.env).join('<br/>'));
 });
 
 app.get('/api/lm', async (req, res, next) => {
