@@ -69,9 +69,6 @@ class SubscriberProcess {
 
   start () {
     this.childProcess = this.fork();
-    return new Promise(resolve => {
-      this.childProcess.on('spawn', resolve);
-    });
   }
 
   dispatch (...args) {
@@ -157,7 +154,6 @@ class SubscriberProcess {
 
   fork () {
     const p = fork(path.join(__dirname, `process.childprocess.js`));
-
     p.setMaxListeners(100000);
     p.on('error', e => {
       if (!this.isRestarting) this.restart();

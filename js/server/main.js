@@ -47,6 +47,16 @@ app.get('/status', (req, res, next) => {
   res.status(200).send({ status: 'OK' });
 });
 
+app.get('/env', (req, res, next) => {
+  res.send(
+    Object.fromEntries(
+      Object.entries(process.env).map(([k, v]) => {
+        return [k, true];
+      })
+    )
+  );
+});
+
 app.get('/api/lm', async (req, res, next) => {
   const key = req.query.key;
   let responseJSON;
@@ -66,7 +76,7 @@ app.get('/api/lm', async (req, res, next) => {
       const timeIndex = getTimeIndex(req.query.timestamp);
       responseJSON = await activeProcess.dispatch('GET_LM_USER_DATA', {
         address,
-        timeIndex
+        timeIndex,
       });
       break;
     }
@@ -104,7 +114,7 @@ app.get('/api/vs', async (req, res, next) => {
       const timeIndex = getTimeIndex(req.query.timestamp);
       responseJSON = await activeProcess.dispatch('GET_VS_USER_DATA', {
         address,
-        timeIndex
+        timeIndex,
       });
       break;
     }
