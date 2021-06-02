@@ -5,7 +5,7 @@ const { retryOnFail } = require('./util/retryOnFail');
   Reloads & re-processes Miner & Validator data once every `RELOAD_INTERVAL`
 */
 
-const minutesUntilReload = process.env.NODE_ENV === 'production' ? 6 : 0.1;
+const minutesUntilReload = 6;
 const RELOAD_INTERVAL = minutesUntilReload * 60 * 1000;
 
 if (RELOAD_INTERVAL < 6 * 60 * 1000) {
@@ -118,7 +118,7 @@ class SubscriberProcess {
           if (isReady) return resolve(true);
           if (Date.now() > expiresAt) {
             console.log('Timed out waiting for child process. Reloading');
-            this.restart();
+            // this.restart();
             expiresAt = Date.now() + killAfter;
           }
           await new Promise(resolve => setTimeout(resolve, 100));
