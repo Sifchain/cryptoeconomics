@@ -2,15 +2,15 @@ import React from 'react';
 
 const numFormatter = new Intl.NumberFormat();
 
-const styleData = data => ({
+const styleData = (data) => ({
   __styled: true,
-  data
+  data,
 });
 const say = (template, ...substitutions) => {
   // if (!substitutions.every((s) => !!s)) {
   //   return null;
   // }
-  return template.map(str => {
+  return template.map((str) => {
     let item = substitutions.shift();
     const isStyled = item && item.__styled;
     item = isStyled ? item.data : item;
@@ -32,15 +32,15 @@ const say = (template, ...substitutions) => {
 };
 export const UserDataSummary = ({ user, type = 'vs' }) => {
   if (!user) return null;
-  if (
-    // type !== 'vs' ||
-    !(
-      !process.env.REACT_APP_DEPLOYMENT_TAG ||
-      process.env.REACT_APP_DEPLOYMENT_TAG === 'devnet'
-    )
-  ) {
-    return null;
-  }
+  // if (
+  //   // type !== 'vs' ||
+  //   !(
+  //     !process.env.REACT_APP_DEPLOYMENT_TAG ||
+  //     process.env.REACT_APP_DEPLOYMENT_TAG === 'devnet'
+  //   )
+  // ) {
+  //   return null;
+  // }
   const validatorText =
     user.claimableCommissions +
       user.currentTotalCommissionsOnClaimableDelegatorRewards !==
@@ -72,7 +72,7 @@ export const UserDataSummary = ({ user, type = 'vs' }) => {
       : null;
   return (
     <div style={{ width: '100%', padding: '0% 0%' }}>
-      <div className='user-data-summary-container'>
+      <div className="user-data-summary-container">
         <div style={{}}>
           {stakerText}
           {stakerText2}
