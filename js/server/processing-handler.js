@@ -131,15 +131,16 @@ class SubscriberProcess {
   async restart () {
     this.isRestarting = true;
     try {
-      const exited = this.childProcess.killed
-        ? Promise.resolve()
-        : new Promise(resolve => {
-            this.childProcess.once('exit', () => {
-              // new childProcess is created above in `exit` event handler, which will execute before this
-              resolve();
-            });
-            this.childProcess.kill();
+      let exited = Promise.resolve();
+      if (this.childProcess.connected) {
+        exited = new Promise(resolve => {
+          this.childProcess.once('exit', () => {
+            // new childProcess is created above in `exit` event handler, which will execute before this
+            resolve();
           });
+          this.childProcess.kill();
+        });
+      }
       await Promise.all([exited]);
       this.childProcess = this.fork();
     } catch (e) {
