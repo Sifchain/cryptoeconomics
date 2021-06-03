@@ -4,7 +4,7 @@ const { getTimeIndex } = require('./util/getTimeIndex');
 const compression = require('compression');
 const fs = require('fs');
 // implements process.js in separate thread
-const { ProcessingHandler } = require('./processing-handler');
+const { ProcessingHandler } = require('./worker');
 // const { BackgroundProcessor } = require('./process.childprocess.js');
 // require("./simple").createValidatorStakingTimeSeries();
 // interfaces with `./process.childprocess.js`
