@@ -22,7 +22,7 @@ async function loadValidatorsSnapshot () {
         }
       `
     })
-  }).then(r => r.json());
+  });
 }
 
 module.exports = {

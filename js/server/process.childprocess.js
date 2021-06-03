@@ -1,4 +1,5 @@
 if (process.env.NODE_ENV !== 'production') require('dotenv').config();
+const { augmentUserVSData } = require('./augmentVSData');
 const {
   loadLiquidityMinersSnapshot
 } = require('./loaders/loadLiquidityMinersSnapshot');
@@ -20,10 +21,32 @@ class BackgroundProcessor {
     // Set in this#reloadAndReprocessOnLoop
     this.lmDataParsed = null;
     this.vsDataParsed = null;
+    this.previousLMSnapshotLength = 0;
+    this.previousVSSnapshotLength = 0;
   }
 
   dispatch (action, payload) {
     return this.actions[action](payload);
+  }
+
+  async waitForReadyState (processToWaitFor = undefined) {
+    return new Promise((resolve, reject) => {
+      // expires after 5 minutes
+      const killAfter = 1000 * 60 * 5;
+      let expiresAt = Date.now() + killAfter;
+      (async () => {
+        while (true) {
+          const isReady = await this.dispatch('CHECK_IF_PARSED_DATA_READY');
+          if (isReady) return resolve(true);
+          if (Date.now() > expiresAt) {
+            console.log('Timed out waiting for child process.');
+            // this.restart();
+            expiresAt = Date.now() + killAfter;
+          }
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+      })();
+    });
   }
 
   /*
@@ -46,9 +69,11 @@ class BackgroundProcessor {
         return this.lmDataParsed[key];
       },
       GET_LM_USER_TIME_SERIES_DATA: address => {
+        augmentUserVSData(address, this.lmDataParsed.processedData);
         return getUserTimeSeriesData(this.lmDataParsed.processedData, address);
       },
       GET_LM_USER_DATA: payload => {
+        augmentUserVSData(payload.address, this.lmDataParsed.processedData);
         return getUserData(this.lmDataParsed.processedData, payload);
       },
       GET_LM_STACK_DATA: () => {
@@ -63,9 +88,11 @@ class BackgroundProcessor {
         return this.vsDataParsed[key];
       },
       GET_VS_USER_TIME_SERIES_DATA: address => {
+        augmentUserVSData(address, this.vsDataParsed.processedData);
         return getUserTimeSeriesData(this.vsDataParsed.processedData, address);
       },
       GET_VS_USER_DATA: async ({ address, timeIndex }) => {
+        augmentUserVSData(address, this.vsDataParsed.processedData);
         const userDataOut = await getUserData(this.vsDataParsed.processedData, {
           address,
           timeIndex
@@ -126,7 +153,7 @@ class BackgroundProcessor {
         'Local Snapshot Dev Mode Enabled! Will not load fresh snapshot data!'
       );
     }
-    const [lMSnapshot, vsSnapshot] = isInLocalSnapshotDevMode
+    const [lmSnapshotRes, vsSnapshotRes] = isInLocalSnapshotDevMode
       ? [
           require('../snapshots/snapshot_lm_latest.json'),
           require('../snapshots/snapshot_vs_latest.json')
@@ -144,18 +171,24 @@ class BackgroundProcessor {
           })
         ]);
 
-    /*
-      V8 performance hack.
-      Remove reference to previous results so they can be garbage collected.
-      Otherwise, we run out of memory on `--max-old-space-size=4096`
-    */
-    this.lmDataParsed = undefined;
-    this.vsDataParsed = undefined;
-
     try {
-      console.time('getProcessedLMData');
-      this.lmDataParsed = getProcessedLMData(lMSnapshot);
-      console.timeEnd('getProcessedLMData');
+      const lMSnapshotText = await lmSnapshotRes.text();
+      const snapshotLen = lMSnapshotText.length;
+      if (this.previousLMSnapshotLength < snapshotLen) {
+        /*
+          V8 performance hack.
+          Remove reference to previous results so they can be garbage collected.
+          Otherwise, we run out of memory on `--max-old-space-size=4096`
+        */
+        this.lmDataParsed = undefined;
+        console.time('getProcessedLMData');
+        const json = JSON.parse(lMSnapshotText);
+        this.lmDataParsed = getProcessedLMData(json);
+        console.timeEnd('getProcessedLMData');
+        this.previousLMSnapshotLength = snapshotLen;
+      } else {
+        console.log('LM: ✅');
+      }
     } catch (error) {
       console.error('Error processing LM data');
       console.error(error);
@@ -163,20 +196,34 @@ class BackgroundProcessor {
     }
 
     try {
-      console.time('getProcessedVSData');
-      this.vsDataParsed = getProcessedVSData(vsSnapshot);
-      console.timeEnd('getProcessedVSData');
+      const vsSnapshotText = await vsSnapshotRes.text();
+      const snapshotLen = vsSnapshotText.length;
+
+      if (this.previousVSSnapshotLength < snapshotLen) {
+        /*
+          V8 performance hack.
+          Remove reference to previous results so they can be garbage collected.
+          Otherwise, we run out of memory on `--max-old-space-size=4096`
+        */
+        this.vsDataParsed = undefined;
+        const json = JSON.parse(vsSnapshotText);
+        console.time('getProcessedVSData');
+        this.vsDataParsed = getProcessedVSData(json);
+        console.timeEnd('getProcessedVSData');
+        this.previousVSSnapshotLength = snapshotLen;
+        const used = process.memoryUsage();
+        for (let key in used) {
+          console.log(
+            `${key} ${Math.round((used[key] / 1024 / 1024) * 100) / 100} MB`
+          );
+        }
+      } else {
+        console.log('VS: ✅');
+      }
     } catch (error) {
       console.error('Error processing VS data');
       console.error(error);
       throw error;
-    }
-
-    const used = process.memoryUsage();
-    for (let key in used) {
-      console.log(
-        `${key} ${Math.round((used[key] / 1024 / 1024) * 100) / 100} MB`
-      );
     }
   }
 
@@ -184,13 +231,36 @@ class BackgroundProcessor {
     setInterval(() => {}, 1 << 30);
   }
 
-  static start () {
+  static startAsChildProcess () {
     const instance = new this();
     instance.listenForParentThreadInvokations();
     instance.loadAndProcessSnapshots();
   }
+
+  static startAsMainProcess () {
+    const instance = new this();
+    (async () => {
+      while (true) {
+        try {
+          await retryOnFail({
+            fn: () => instance.loadAndProcessSnapshots(),
+            waitFor: 6000,
+            iterations: 5
+          });
+          await new Promise(resolve => setTimeout(resolve, 1000 * 60 * 6));
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    })();
+    return instance;
+  }
 }
-// if (require.main === module) {
-BackgroundProcessor.keepAlive();
-BackgroundProcessor.start();
-// }
+if (require.main === module) {
+  BackgroundProcessor.keepAlive();
+  BackgroundProcessor.startAsChildProcess();
+}
+
+module.exports = {
+  BackgroundProcessor
+};

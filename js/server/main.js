@@ -4,11 +4,12 @@ const { getTimeIndex } = require('./util/getTimeIndex');
 const compression = require('compression');
 const fs = require('fs');
 // implements process.js in separate thread
-const { ProcessingHandler } = require('./processing-handler');
-
+// const { ProcessingHandler } = require('./processing-handler');
+const { BackgroundProcessor } = require('./process.childprocess.js');
 // require("./simple").createValidatorStakingTimeSeries();
 // interfaces with `./process.childprocess.js`
-const processingHandler = ProcessingHandler.init();
+// const processingHandler = ProcessingHandler.init();
+const processingHandler = BackgroundProcessor.startAsMainProcess();
 
 const port = process.env.PORT || 3000;
 const app = express();

@@ -37,23 +37,32 @@ class ProcessingHandler {
     this.beginProcessRotation();
   }
 
-  async waitForReadyState () {
+  async waitForReadyState (processToWaitFor = undefined) {
     return new Promise((resolve, reject) => {
       // expires after 5 minutes
       const killAfter = 1000 * 60 * 5;
       let expiresAt = Date.now() + killAfter;
       (async () => {
         while (true) {
-          const isReady = await this.freshProcess.dispatch(
-            'CHECK_IF_PARSED_DATA_READY'
-          );
-          if (isReady) return resolve(true);
-          if (Date.now() > expiresAt) {
-            console.log('Timed out waiting for child process.');
-            // this.restart();
-            expiresAt = Date.now() + killAfter;
+          try {
+            processToWaitFor =
+              processToWaitFor ||
+              (this.freshProcess.isSleeping
+                ? this.staleProcess
+                : this.freshProcess);
+            const isReady = await processToWaitFor.dispatch(
+              'CHECK_IF_PARSED_DATA_READY'
+            );
+            if (isReady) return resolve(true);
+            if (Date.now() > expiresAt) {
+              console.log('Timed out waiting for child process.');
+              // this.restart();
+              expiresAt = Date.now() + killAfter;
+            }
+            await new Promise(resolve => setTimeout(resolve, 1000));
+          } catch (e) {
+            console.error(e);
           }
-          await new Promise(resolve => setTimeout(resolve, 1000));
         }
       })();
     });
@@ -62,21 +71,27 @@ class ProcessingHandler {
   async beginProcessRotation () {
     while (true) {
       try {
-        /* 
-					a little buffer for any code still using a reference to staleProcess
-					before we clear out the data
-				*/
-        this.freshProcess.wake();
-        await new Promise(resolve => setTimeout(resolve, 5000));
-        await this.staleProcess.sleep();
-        // Wait until snapshot data is expired
-        await new Promise(resolve => setTimeout(resolve, RELOAD_INTERVAL));
-        await this.waitForReadyState();
-        console.log('switching child processes');
+        console.log(`Waking stale process: #${this.staleProcess.id}.`);
+        this.staleProcess.wake();
+        await this.waitForReadyState(this.staleProcess);
+
+        console.log(
+          `Process #${this.staleProcess.id} ready. Rotated from Process #${this.freshProcess.id} to Process #${this.staleProcess.id}`
+        );
         [this.freshProcess, this.staleProcess] = [
           this.staleProcess,
           this.freshProcess
         ];
+
+        // free up the memory in what was previously `this.freshProcess`
+        this.staleProcess.sleep();
+
+        console.log(`Waiting for snapshot data to expire...`);
+        // Wait until snapshot data is expired
+        await new Promise(resolve => {
+          setTimeout(resolve, RELOAD_INTERVAL);
+        });
+        console.log(`Snapshot data expired.`);
       } catch (e) {
         console.error(e);
       }
@@ -84,8 +99,10 @@ class ProcessingHandler {
   }
 }
 
+let idCounter = 0;
 class SubscriberProcess {
   constructor () {
+    this.id = idCounter++;
     this.childProcess = null;
     this.isRestarting = false;
     this.isSleeping = true;
@@ -158,7 +175,14 @@ class SubscriberProcess {
     });
     p.on('exit', (code, signal) => {
       if (!this.isRestarting && !this.isSleeping) this.restart();
-      console.log(`childprocess exited with code ${code}, signal: ${signal}`);
+      const prefix = this.isRestarting
+        ? 'RESTART:'
+        : this.isSleeping
+        ? 'SLEEP:'
+        : 'EXIT:';
+      console.log(
+        `${prefix} childprocess exited with code ${code}, signal: ${signal}`
+      );
     });
     return p;
   }

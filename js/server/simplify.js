@@ -2,7 +2,7 @@ const { graphqlRequest } = require('./loaders/graphqlRequest');
 const { loadValidatorsSnapshot } = require('./loaders/loadValidatorsSnapshot');
 const config = require('./config');
 async function createValidatorStakingTimeSeries () {
-  const snapshotRes = await loadValidatorsSnapshot();
+  const snapshotRes = await loadValidatorsSnapshot().then(r => r.json());
   const data = await graphqlRequest(`{
     events_audit
   }`);
