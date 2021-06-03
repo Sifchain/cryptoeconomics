@@ -13,6 +13,18 @@ class GlobalTimestampState {
     this.totalDepositedAmount = totalDepositedAmount;
   }
 
+  updateTotalDepositedAmount () {
+    const users = this.users;
+    let timestampTicketsAmountSum = 0;
+    for (let addr in users) {
+      users[addr].tickets.forEach(t => {
+        timestampTicketsAmountSum += t.amount;
+      });
+    }
+    this.totalDepositedAmount = timestampTicketsAmountSum;
+    return timestampTicketsAmountSum;
+  }
+
   static fromJSON (props) {
     let next = Object.assign(new this(), props);
     next.users = Object.fromEntries(

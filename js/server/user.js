@@ -1,5 +1,4 @@
 const { fetch } = require('cross-fetch');
-const { User } = require('./types');
 const { RateLimitProtector } = require('./util/RateLimitProtector');
 const config = require('./config');
 const clpFetch = new RateLimitProtector({ padding: 100 }).buildAsyncShield(
@@ -8,12 +7,14 @@ const clpFetch = new RateLimitProtector({ padding: 100 }).buildAsyncShield(
 );
 exports.getUserTimeSeriesData = (all, address) => {
   const rtn = all.map(timestampData => {
-    const userData = timestampData.users[address] || new User();
+    const userData = timestampData.users[address];
     // maintain compatibility with older dev branches until mainnet server is stable
     // return userData.totalAccruedCommissionsAndClaimableRewards;
     return {
       timestamp: timestampData.timestamp,
-      userClaimableReward: userData.totalAccruedCommissionsAndClaimableRewards
+      userClaimableReward: !userData
+        ? 0
+        : userData.totalAccruedCommissionsAndClaimableRewards
     };
   });
   rtn.shift();

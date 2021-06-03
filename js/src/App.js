@@ -68,7 +68,7 @@ class App extends React.Component {
     this.setState({
       date: moment.utc(now),
       timestamp: Math.floor(
-        moment.duration(now.diff(START_DATETIME)).asMinutes() / 200
+        moment.duration(now.diff(moment.utc(START_DATETIME))).asMinutes() / 200
       )
     });
   }

@@ -8,7 +8,6 @@ const {
   LIQUIDITY_MINING
 } = require('./constants/reward-program-types');
 
-// const history = {};
 /*
   Filter out deposit events after config.DEPOSIT_CUTOFF_DATETIME,
   but continue accruing rewards until config.END_OF_REWARD_ACCRUAL_DATETIME
@@ -18,22 +17,26 @@ function processVSGlobalState (
   timestamp,
   eventsByUser,
   getCurrentCommissionRateByValidatorStakeAddress,
-  rewardProgramType = VALIDATOR_STAKING
+  rewardProgramType = VALIDATOR_STAKING,
+  isSimulatedFutureInterval
 ) {
-  // if (history[timestamp]) {
-  //   return history[timestamp];
-  // }
   const { rewardBuckets, globalRewardAccrued } = processRewardBuckets(
     lastGlobalState.rewardBuckets,
     lastGlobalState.bucketEvent
   );
 
+  // console.time('processUserTickets');
   let users = processUserTickets(
     lastGlobalState.users,
     globalRewardAccrued,
-    getCurrentCommissionRateByValidatorStakeAddress
+    getCurrentCommissionRateByValidatorStakeAddress,
+    rewardProgramType,
+    isSimulatedFutureInterval
   );
+  // console.timeEnd('processUserTickets');
+  // console.time('processUserEvents');
   users = processUserEvents(users, eventsByUser, rewardProgramType);
+  // console.timeEnd('processUserEvents');
   if (rewardProgramType === VALIDATOR_STAKING) {
     users = calculateUserCommissions(users);
   }
@@ -43,32 +46,66 @@ function processVSGlobalState (
     rewardBuckets,
     users
   });
-  // history[timestamp] = globalState;
+  // console.time('processUserRewards');
+  processUserRewards(globalState);
+  // console.timeEnd('processUserRewards');
   return globalState;
 }
 
+function processUserRewards (state) {
+  const timestampTicketsAmountSum = state.updateTotalDepositedAmount();
+  // can be lazy evaluated
+  _.forEach(state.users, user => {
+    /*
+        Must be run on every user before `User#updateUserMaturityRewards`
+        `User#updateUserMaturityRewards` uses the rewards calulated here.
+        Must be run after `User#recalculateCurrentTotalCommissionsOnClaimableDelegatorRewards`
+        because `User#updateRewards` uses `User.currentTotalCommissionsOnClaimableDelegatorRewards`,
+        which is calculated in the former method.
+      */
+    user.updateRewards(timestampTicketsAmountSum);
+  });
+}
+const prevUserRewardsByProgramType = {
+  [VALIDATOR_STAKING]: {},
+  [LIQUIDITY_MINING]: {}
+};
 function processUserTickets (
   users,
   globalRewardAccrued,
-  getCurrentCommissionRateByValidatorStakeAddress
+  getCurrentCommissionRateByValidatorStakeAddress,
+  rewardProgramType,
+  isSimulatedFutureInterval
 ) {
   // process reward accruals and multiplier updates
-  const totalShares = _.sum(
-    _.flatten(
-      _.map(users, (user, address) => {
-        return user.tickets.map(ticket => ticket.amount);
-      })
-    )
-  );
-  const updatedUsers = _.mapValues(users, user => {
+  let totalShares = 0;
+  for (let addr in users) {
+    users[addr].tickets.forEach(t => {
+      totalShares += t.amount;
+    });
+  }
+  const prevUserRewards = prevUserRewardsByProgramType[rewardProgramType];
+  const updatedUsers = _.mapValues(users, (user, address) => {
+    // Don't deep clone users whose rewards can no longer change
+    if (
+      isSimulatedFutureInterval &&
+      prevUserRewards[address] ===
+        user.totalClaimableCommissionsAndClaimableRewards
+    ) {
+      // skip cloning
+      return user;
+    }
+    prevUserRewards[address] =
+      user.totalClaimableCommissionsAndClaimableRewards;
     return user.cloneWith({
       // reset each round because this is both incrementally calculated and based upon multiplier
       currentTotalCommissionsOnClaimableDelegatorRewards: 0,
       tickets: user.tickets.map(ticket => {
         const poolDominanceRatio = ticket.amount / (totalShares || 1);
         const rewardDelta = poolDominanceRatio * globalRewardAccrued;
+        const nextMul = ticket.mul + 0.75 / MULTIPLIER_MATURITY;
         return ticket.cloneWith({
-          mul: Math.min(ticket.mul + 0.75 / MULTIPLIER_MATURITY, 1),
+          mul: nextMul < 1 ? nextMul : 1,
           reward: ticket.reward + rewardDelta,
           rewardDelta: rewardDelta,
           poolDominanceRatio,
@@ -92,8 +129,11 @@ function processUserEvents (
   rewardProgramType = VALIDATOR_STAKING
 ) {
   const getUserByAddress = address => {
-    const user = users[address] || new User();
-    users[address] = user;
+    let user = users[address];
+    if (!user) {
+      user = new User();
+      users[address] = user;
+    }
     return user;
   };
   switch (rewardProgramType) {
@@ -118,7 +158,9 @@ function processUserEvents (
 }
 
 function processAccountEvents (userEvents, getUserByAddress) {
-  for (let uEvent of userEvents) {
+  const len = userEvents.length;
+  for (let i = 0; i < len; i++) {
+    const uEvent = userEvents[i];
     const user = getUserByAddress(uEvent.delegateAddress);
     if (uEvent.amount < 0) {
       user.withdrawStakeAsDelegator(uEvent, getUserByAddress);
@@ -129,18 +171,21 @@ function processAccountEvents (userEvents, getUserByAddress) {
 }
 
 function processRedelegationEvents (userEvents, getUserByAddress) {
-  userEvents = _.orderBy(userEvents, ['amount'], ['asc']);
   let withdrawalAmount = 0;
   let depositAmount = 0;
   const withdrawalEvents = [];
   const depositEvents = [];
-  for (let uEvent of userEvents) {
+
+  let uELen = userEvents.length;
+  for (let i = 0; i < uELen; i++) {
+    const uEvent = userEvents[i];
     if (uEvent.amount < 0) {
-      withdrawalAmount += Math.abs(uEvent.amount);
+      // turn amount to positive and add
+      withdrawalAmount += -uEvent.amount;
       withdrawalEvents.push(uEvent);
     }
     if (uEvent.amount > 0) {
-      depositAmount += Math.abs(uEvent.amount);
+      depositAmount += uEvent.amount;
       depositEvents.push(uEvent);
     }
   }
@@ -148,7 +193,9 @@ function processRedelegationEvents (userEvents, getUserByAddress) {
   let ticketsToRedelegate = [];
 
   let amountToRedelegate = Math.min(depositAmount, withdrawalAmount);
-  for (let wEvent of withdrawalEvents) {
+  const wELen = withdrawalEvents.length;
+  for (let i = 0; i < wELen; i++) {
+    const wEvent = withdrawalEvents[i];
     const user = getUserByAddress(wEvent.delegateAddress);
     const amountOfWithdrawalToRedelegate = Math.max(
       -amountToRedelegate,
@@ -179,10 +226,10 @@ function processRedelegationEvents (userEvents, getUserByAddress) {
   }
 
   /* 
-      Match the tickets with the highest remaining rewards
-      with the validators with the lowest commissions to maximize 
-      their gains over time.
-    */
+    Match the tickets with the highest remaining rewards
+    with the validators with the lowest commissions to maximize 
+    their gains over time.
+  */
   const sortedDepositEvents = _.sortBy(depositEvents, event => {
     return event.commission;
   });
@@ -193,7 +240,8 @@ function processRedelegationEvents (userEvents, getUserByAddress) {
     // make negative to sort in descending order
     return -remainingRatio;
   });
-  for (let dEvent of sortedDepositEvents) {
+  for (let i = 0; i < sortedDepositEvents.length; i++) {
+    const dEvent = sortedDepositEvents[i];
     const user = getUserByAddress(dEvent.delegateAddress);
     let nextTicketsToRedelegate = [];
     let amountToDeposit = dEvent.amount;
