@@ -13,6 +13,7 @@ async function loadValidatorsSnapshot () {
       'x-hasura-admin-secret': process.env.HEADER_SECRET,
       'Content-Type': 'application/json'
     },
+    // snapshots_validators_dev
     body: JSON.stringify({
       query: /* GraphQL */ `
         query GetCommissionSnapshot {

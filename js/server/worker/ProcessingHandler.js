@@ -43,10 +43,8 @@ class ProcessingHandler {
   }
 
   async waitForReadyState (processToWaitFor = undefined) {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       // expires after 5 minutes
-      const killAfter = 1000 * 60 * 5;
-      let expiresAt = Date.now() + killAfter;
       (async () => {
         while (true) {
           try {
@@ -59,11 +57,6 @@ class ProcessingHandler {
               CHECK_IF_PARSED_DATA_READY
             );
             if (isReady) return resolve(true);
-            if (Date.now() > expiresAt) {
-              console.log('Timed out waiting for child process.');
-              // this.restart();
-              expiresAt = Date.now() + killAfter;
-            }
             await new Promise(resolve => setTimeout(resolve, 1000));
           } catch (e) {
             console.error(e);
@@ -95,9 +88,7 @@ class ProcessingHandler {
 
         console.log(`Waiting for snapshot data to expire...`);
         // Wait until snapshot data is expired
-        await new Promise(resolve => {
-          setTimeout(resolve, RELOAD_INTERVAL);
-        });
+        await new Promise(resolve => setTimeout(resolve, RELOAD_INTERVAL));
         console.log(`Snapshot data expired.`);
       } catch (e) {
         console.error(e);

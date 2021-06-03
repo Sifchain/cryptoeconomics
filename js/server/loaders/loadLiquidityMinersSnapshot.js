@@ -11,8 +11,9 @@ module.exports.loadLiquidityMinersSnapshot = async function () {
     method: 'POST',
     headers: Object.entries({
       'x-hasura-admin-secret': process.env.HEADER_SECRET,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     }),
+    // snapshots_new_dev
     body: JSON.stringify({
       query: /* GraphQL */ `
         query GetSnapshot {
@@ -20,7 +21,7 @@ module.exports.loadLiquidityMinersSnapshot = async function () {
             snapshot_data
           }
         }
-      `
-    })
+      `,
+    }),
   });
 };
