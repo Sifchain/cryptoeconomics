@@ -1,10 +1,6 @@
-// const { augmentLMData } = require('./augmentLMData');
 const { augmentVSData } = require('./augmentVSData');
-
 const { remapLMAddresses } = require('./util/lm-util');
 const { remapVSAddresses } = require('./util/vs-util');
-
-// const { processLMGlobalState } = require('./process-lm');
 const { processVSGlobalState } = require('./process-vs');
 
 const {
@@ -32,7 +28,6 @@ exports.getProcessedLMData = snapshotLM => {
 
   // TODO: remove past dispensations
   // TODO: return unpaid balances
-  // return augmentLMData(LMGlobalStates);
 };
 
 exports.getProcessedVSData = snapshotVS => {
