@@ -83,7 +83,10 @@ const runTests = (type, parsedData, network) => {
 };
 
 const bp = new BackgroundProcessor();
-bp.reloadAndReprocessSnapshots({ network: MAINNET }).then(() => {
-  runTests('lm', bp.lmDataParsed, MAINNET);
-  runTests('vs', bp.vsDataParsed, MAINNET);
-});
+bp.reloadAndReprocessSnapshots({ network: MAINNET })
+  // test reload caching
+  .then(async () => bp.reloadAndReprocessSnapshots({ network: MAINNET }))
+  .then(async () => {
+    await runTests('lm', bp.lmDataParsed, MAINNET);
+    await runTests('vs', bp.vsDataParsed, MAINNET);
+  });
