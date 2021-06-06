@@ -20,8 +20,8 @@ const {
 // Use `KEY: () => {}` syntax to ensure `processor` is bound correctly.
 function actions (processor) {
   return {
-    [RELOAD_AND_REPROCESS_SNAPSHOTS]: async () => {
-      return processor.reloadAndReprocessSnapshots();
+    [RELOAD_AND_REPROCESS_SNAPSHOTS]: async ({ network }) => {
+      return processor.reloadAndReprocessSnapshots({ network });
     },
     /* Internal Actions */
     [CHECK_IF_PARSED_DATA_READY]: () => {

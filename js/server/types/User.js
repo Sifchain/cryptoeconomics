@@ -20,6 +20,7 @@ class User {
     this.totalAccruedCommissionsAtMaturity = 0;
     this.totalCommissionsAndRewardsAtMaturity = 0;
     this.claimableCommissions = 0;
+    this.forfeitedCommissions = 0;
 
     // neccessary because we can otherwise not calculate `currentTotalCommissionsOnClaimableDelegatorRewards` if there are no remaining tickets
     // this.claimableCommissionsByDelegatorAddress = {};
@@ -197,6 +198,10 @@ class User {
     this.claimableCommissions += claimableCommission;
   }
 
+  addForfeitedCommission (forfeitedCommission) {
+    this.forfeitedCommissions += forfeitedCommission;
+  }
+
   recalculateCurrentTotalCommissionsOnClaimableDelegatorRewards (
     getUserByAddress = addr => new User(),
     userAddress
@@ -231,6 +236,7 @@ class User {
           validatorRewardAddress
         );
         validator.addClaimableCommission(claimableCommission);
+        validator.addForfeitedCommission(forfeitedCommission);
         ticket.resetCommissionRewardsByValidator(validatorRewardAddress);
         totalClaimableCommissions += claimableCommission;
         totalForfeitedCommissions += forfeitedCommission;

@@ -4,6 +4,7 @@ const {
   CHECK_IF_PARSED_DATA_READY,
   RELOAD_AND_REPROCESS_SNAPSHOTS
 } = require('../constants/action-names');
+const { MAINNET } = require('../constants/snapshot-source-names');
 const { retryOnFail } = require('../util/retryOnFail');
 
 /* 
@@ -19,13 +20,14 @@ if (RELOAD_INTERVAL < 6 * 60 * 1000) {
 
 // Provides #dispatch method by which the express router endpoints can interact with processed data
 class ProcessingHandler {
-  constructor () {
+  constructor (network = MAINNET) {
+    this.network = network;
     this.freshProcess = new SubscriberProcess();
     this.staleProcess = new SubscriberProcess();
   }
 
-  static init () {
-    const instance = new this();
+  static init (network = MAINNET) {
+    const instance = new this(network);
     instance.start();
     return instance;
   }
@@ -69,11 +71,21 @@ class ProcessingHandler {
   async beginProcessRotation () {
     this.freshProcess.wake();
     this.staleProcess.wake();
+    this.freshProcess.dispatch(RELOAD_AND_REPROCESS_SNAPSHOTS, {
+      network: this.network
+    });
     while (true) {
       try {
+        console.log(`Waiting for snapshot data to expire...`);
+        // Wait until snapshot data is expired
+        await new Promise(resolve => setTimeout(resolve, RELOAD_INTERVAL));
+        console.log(`Snapshot data expired.`);
+
         // console.log(`Waking stale process: #${this.staleProcess.id}.`);
         // this.staleProcess.wake();
-        await this.staleProcess.dispatch(RELOAD_AND_REPROCESS_SNAPSHOTS);
+        await this.staleProcess.dispatch(RELOAD_AND_REPROCESS_SNAPSHOTS, {
+          network: this.network
+        });
         await this.waitForReadyState(this.staleProcess);
 
         console.log(
@@ -85,11 +97,6 @@ class ProcessingHandler {
         ];
         // free up the memory in what was previously `this.freshProcess`
         // this.staleProcess.sleep();
-
-        console.log(`Waiting for snapshot data to expire...`);
-        // Wait until snapshot data is expired
-        await new Promise(resolve => setTimeout(resolve, RELOAD_INTERVAL));
-        console.log(`Snapshot data expired.`);
       } catch (e) {
         console.error(e);
       }
