@@ -21,7 +21,7 @@ const DEVNET_QUERY = /* GraphQL */ `
   }
 `;
 
-const getQueryByNetwork = (network) => {
+const getQueryByNetwork = network => {
   network = network ? network.toLowerCase() : network;
   switch (network) {
     case DEVNET: {
@@ -44,10 +44,10 @@ module.exports.loadLiquidityMinersSnapshot = async function (network) {
     method: 'POST',
     headers: Object.entries({
       'x-hasura-admin-secret': process.env.HEADER_SECRET,
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     }),
     body: JSON.stringify({
-      query: getQueryByNetwork(network),
-    }),
+      query: getQueryByNetwork(network)
+    })
   });
 };
