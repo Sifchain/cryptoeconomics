@@ -1,6 +1,11 @@
 const { fetch } = require('cross-fetch');
 const { DEVNET } = require('../constants/snapshot-source-names');
 
+/* 
+  WARNING: DO NOT ADD MORE QUERIES OR FIELDS TO THE GRAPHQL QUERY.
+  QUERIES ARE CACHED USING THE LENGTH OF THE TEXT CONTENT OF THE RESPONSE OBJECT
+*/
+
 const MAINNET_QUERY = /* GraphQL */ `
   query GetSnapshot {
     snapshots_new(limit: 1, order_by: { id: desc }) {
@@ -16,7 +21,7 @@ const DEVNET_QUERY = /* GraphQL */ `
   }
 `;
 
-const getQueryByNetwork = network => {
+const getQueryByNetwork = (network) => {
   network = network ? network.toLowerCase() : network;
   switch (network) {
     case DEVNET: {
@@ -39,10 +44,10 @@ module.exports.loadLiquidityMinersSnapshot = async function (network) {
     method: 'POST',
     headers: Object.entries({
       'x-hasura-admin-secret': process.env.HEADER_SECRET,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     }),
     body: JSON.stringify({
-      query: getQueryByNetwork(network)
-    })
+      query: getQueryByNetwork(network),
+    }),
   });
 };

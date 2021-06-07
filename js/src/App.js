@@ -69,12 +69,18 @@ class App extends React.Component {
     this.updateAddress(this.state.address);
   }
 
+  getTimeIndex (time) {
+    time = moment.utc(time);
+    return (
+      Math.floor(
+        moment.duration(time.diff(moment.utc(START_DATETIME))).asMinutes() / 200
+      ) + 1
+    );
+  }
+
   initDateTime () {
     const now = moment.utc(Date.now());
-    const currentTimeIndex =
-      Math.floor(
-        moment.duration(now.diff(moment.utc(START_DATETIME))).asMinutes() / 200
-      ) + 1;
+    const currentTimeIndex = this.getTimeIndex(now);
     this.setState({
       date: now,
       timeIndex: currentTimeIndex,

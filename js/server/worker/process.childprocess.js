@@ -67,6 +67,7 @@ class BackgroundProcessor {
     try {
       const lMSnapshotText = await lmSnapshotRes.text();
       const snapshotLen = lMSnapshotText.length;
+
       if (this.previousLMSnapshotLength < snapshotLen) {
         /*
           V8 performance hack.

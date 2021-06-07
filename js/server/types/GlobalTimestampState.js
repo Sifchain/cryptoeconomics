@@ -7,6 +7,11 @@ class GlobalTimestampState {
     this.timestamp = -1;
     this.rewardBuckets = [];
     this.bucketEvent = undefined;
+    this.isSimulated = false;
+  }
+
+  markAsSimulated () {
+    this.isSimulated = true;
   }
 
   setTotalDepositedAmount (totalDepositedAmount) {

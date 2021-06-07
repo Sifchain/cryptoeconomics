@@ -1,6 +1,11 @@
 const { fetch } = require('cross-fetch');
 const { DEVNET } = require('../constants/snapshot-source-names');
 
+/* 
+  WARNING: DO NOT ADD MORE QUERIES OR FIELDS TO THE GRAPHQL QUERY.
+  QUERIES ARE CACHED USING THE LENGTH OF THE TEXT CONTENT OF THE RESPONSE OBJECT
+*/
+
 const MAINNET_QUERY = /* GraphQL */ `
   query GetSnapshot {
     snapshots_validators(limit: 1, order_by: { id: desc }) {

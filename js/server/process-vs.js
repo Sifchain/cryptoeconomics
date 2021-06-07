@@ -46,6 +46,9 @@ function processVSGlobalState (
     rewardBuckets,
     users
   });
+  if (isSimulatedFutureInterval) {
+    globalState.markAsSimulated();
+  }
   // console.time('processUserRewards');
   processUserRewards(globalState);
   // console.timeEnd('processUserRewards');
