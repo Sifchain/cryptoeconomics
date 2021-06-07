@@ -3,7 +3,7 @@ const moment = require('moment');
 const { START_DATETIME } = require('./config');
 const { GlobalTimestampState, User } = require('./types');
 
-exports.augmentVSData = (globalTimestampStates) => {
+exports.augmentVSData = globalTimestampStates => {
   // console.time('augmentVSData');
   const finalTimestampState =
     globalTimestampStates[globalTimestampStates.length - 1] ||
@@ -66,12 +66,12 @@ exports.augmentVSData = (globalTimestampStates) => {
   const rewardBucketsTimeSeries = globalTimestampStates
     .map((timestampData, timestamp) => {
       const rewardBuckets = timestampData.rewardBuckets;
-      const totalCurrentRowan = _.sum(rewardBuckets.map((b) => b.rowan));
-      const totalInitialRowan = _.sum(rewardBuckets.map((b) => b.initialRowan));
+      const totalCurrentRowan = _.sum(rewardBuckets.map(b => b.rowan));
+      const totalInitialRowan = _.sum(rewardBuckets.map(b => b.initialRowan));
       return {
         timestamp,
         totalCurrentRowan,
-        totalInitialRowan,
+        totalInitialRowan
       };
     })
     .slice(1);
@@ -104,20 +104,20 @@ exports.augmentVSData = (globalTimestampStates) => {
     stackClaimableRewardData.push({
       timestamp: timestamp.timestamp,
       ...blankUserRewards,
-      ...userRewards,
+      ...userRewards
     });
   }
   // console.timeEnd('augment/stackData');
 
   const uniqueUserAddresses = _.uniq(
-    _.flatten(globalTimestampStates.map((state) => Object.keys(state.users)))
+    _.flatten(globalTimestampStates.map(state => Object.keys(state.users)))
   );
   // console.timeEnd('augmentVSData');
   return {
     users: uniqueUserAddresses,
     processedData: globalTimestampStates,
     rewardBucketsTimeSeries,
-    stackClaimableRewardData,
+    stackClaimableRewardData
   };
 };
 
@@ -128,7 +128,7 @@ exports.augmentUserVSData = (userAddress, globalTimestampStates) => {
 
   // console.time('augmentUserVSData');
   // can be lazy evaluated
-  globalTimestampStates.forEach((timestamp) => {
+  globalTimestampStates.forEach(timestamp => {
     const user = timestamp.users[userAddress];
     if (!user) return;
     const userAtMaturity = finalTimestampState.users[userAddress] || new User();
@@ -164,7 +164,7 @@ exports.augmentUserVSData = (userAddress, globalTimestampStates) => {
     new GlobalTimestampState();
 
   // can be lazy evaluated
-  globalTimestampStates.forEach((timestampState) => {
+  globalTimestampStates.forEach(timestampState => {
     const user = timestampState.users[userAddress];
     if (!user) return;
     const timestampDate = moment
