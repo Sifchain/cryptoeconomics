@@ -10,21 +10,17 @@ const { DEVNET, MAINNET } = require('./constants/snapshot-source-names');
 // require("./simple").createValidatorStakingTimeSeries();
 // interfaces with `./process.childprocess.js`
 
+let devnetHandler;
 const processingHandlers = {
   [MAINNET]: ProcessingHandler.init(MAINNET),
-  [DEVNET]: null
+  get [DEVNET] () {
+    if (devnetHandler) {
+      return devnetHandler;
+    }
+    devnetHandler = ProcessingHandler.init(DEVNET);
+    return devnetHandler;
+  }
 };
-
-console.log({ HOSTNAME: process.env.HOSTNAME });
-
-const isDeployedDevelopmentServer =
-  process.env.HOSTNAME && /(devnet|testnet)/.test(process.env.HOSTNAME);
-
-const isLocalServer = !process.env.HOSTNAME;
-
-if (isLocalServer || isDeployedDevelopmentServer) {
-  processingHandlers[DEVNET] = ProcessingHandler.init(DEVNET);
-}
 
 // const processingHandler = BackgroundProcessor.startAsMainProcess();
 
