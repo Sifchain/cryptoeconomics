@@ -3,75 +3,24 @@ const moment = require('moment');
 const { START_DATETIME } = require('./config');
 const { GlobalTimestampState, User } = require('./types');
 
-exports.augmentVSData = globalTimestampStates => {
+exports.augmentVSData = (
+  globalTimestampStates,
+  currentSnapshotTimeseriesLength
+) => {
   // console.time('augmentVSData');
   const finalTimestampState =
     globalTimestampStates[globalTimestampStates.length - 1] ||
     new GlobalTimestampState();
 
-  // console.time('augment/updateUserMaturityRewards');
-  // // can be lazy evaluated
-  // globalTimestampStates.forEach((timestamp) => {
-  //   _.forEach(timestamp.users, (user, address) => {
-  //     const userAtMaturity = finalTimestampState.users[address] || new User();
-  //     user.updateUserMaturityRewards(userAtMaturity);
-  //   });
-  // });
-  // console.timeEnd('augment/updateUserMaturityRewards');
-
-  // console.time('augment/updateUserMaturityDates');
-
-  // // can be lazy evaluated
-  // globalTimestampStates.forEach((timestampState, timestampIndex) => {
-  //   _.forEach(timestampState.users, (user, address) => {
-  //     const prevTimestamp =
-  //       globalTimestampStates[timestampIndex - 1] || new GlobalTimestampState();
-  //     const userAtPrevTimestamp = prevTimestamp.users[address] || new User();
-  //     const isAfterRewardPeriod = timestampState.rewardBuckets.length === 0;
-  //     const currentTimestampInMinutes = timestampState.timestamp;
-  //     const nextBucketGlobalReward = timestampState.rewardBuckets.reduce(
-  //       (accum, bucket) => {
-  //         return accum + bucket.initialRowan / bucket.duration;
-  //       },
-  //       0
-  //     );
-  //     user.updateUserMaturityDates(
-  //       userAtPrevTimestamp,
-  //       isAfterRewardPeriod,
-  //       currentTimestampInMinutes,
-  //       nextBucketGlobalReward
-  //     );
-  //   });
-  // });
-  // console.timeEnd('augment/updateUserMaturityDates');
-
-  // // fill in old timestamps with maturity date now that we have it
-  // const lastTimestamp =
-  //   globalTimestampStates[globalTimestampStates.length - 1] ||
-  //   new GlobalTimestampState();
-
-  // console.time('augment/updateMaturityTimeProps');
-  // // can be lazy evaluated
-  // globalTimestampStates.forEach((timestampState) => {
-  //   const timestampDate = moment
-  //     .utc(START_DATETIME)
-  //     .add(timestampState.timestamp, 'm');
-  //   _.forEach(timestampState.users, (user, address) => {
-  //     const lastUser = lastTimestamp.users[address] || new User();
-  //     user.updateMaturityTimeProps(lastUser, timestampDate.valueOf());
-  //   });
-  // });
-  // console.timeEnd('augment/updateMaturityTimeProps');
-
   const rewardBucketsTimeSeries = globalTimestampStates
     .map((timestampData, timestamp) => {
       const rewardBuckets = timestampData.rewardBuckets;
-      const totalCurrentRowan = _.sum(rewardBuckets.map(b => b.rowan));
-      const totalInitialRowan = _.sum(rewardBuckets.map(b => b.initialRowan));
+      const totalCurrentRowan = _.sum(rewardBuckets.map((b) => b.rowan));
+      const totalInitialRowan = _.sum(rewardBuckets.map((b) => b.initialRowan));
       return {
         timestamp,
         totalCurrentRowan,
-        totalInitialRowan
+        totalInitialRowan,
       };
     })
     .slice(1);
@@ -104,20 +53,21 @@ exports.augmentVSData = globalTimestampStates => {
     stackClaimableRewardData.push({
       timestamp: timestamp.timestamp,
       ...blankUserRewards,
-      ...userRewards
+      ...userRewards,
     });
   }
   // console.timeEnd('augment/stackData');
 
   const uniqueUserAddresses = _.uniq(
-    _.flatten(globalTimestampStates.map(state => Object.keys(state.users)))
+    _.flatten(globalTimestampStates.map((state) => Object.keys(state.users)))
   );
   // console.timeEnd('augmentVSData');
   return {
     users: uniqueUserAddresses,
     processedData: globalTimestampStates,
     rewardBucketsTimeSeries,
-    stackClaimableRewardData
+    stackClaimableRewardData,
+    currentSnapshotTimeseriesLength,
   };
 };
 
@@ -128,7 +78,7 @@ exports.augmentUserVSData = (userAddress, globalTimestampStates) => {
 
   // console.time('augmentUserVSData');
   // can be lazy evaluated
-  globalTimestampStates.forEach(timestamp => {
+  globalTimestampStates.forEach((timestamp) => {
     const user = timestamp.users[userAddress];
     if (!user) return;
     const userAtMaturity = finalTimestampState.users[userAddress] || new User();
@@ -164,7 +114,7 @@ exports.augmentUserVSData = (userAddress, globalTimestampStates) => {
     new GlobalTimestampState();
 
   // can be lazy evaluated
-  globalTimestampStates.forEach(timestampState => {
+  globalTimestampStates.forEach((timestampState) => {
     const user = timestampState.users[userAddress];
     if (!user) return;
     const timestampDate = moment

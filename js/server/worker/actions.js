@@ -1,6 +1,9 @@
 const { getUserData, getUserTimeSeriesData } = require('../user');
 const { augmentUserVSData } = require('../augmentVSData');
 const {
+  getDateFromSnapshotIndex
+} = require('../util/getDateFromSnapshotIndex');
+const {
   CHECK_IF_PARSED_DATA_READY,
   CLEAR_PARSED_DATA,
   GET_LM_KEY_VALUE,
@@ -11,8 +14,10 @@ const {
   GET_VS_USER_TIME_SERIES_DATA,
   GET_VS_USER_DATA,
   GET_VS_STACK_DATA,
-  RELOAD_AND_REPROCESS_SNAPSHOTS
+  RELOAD_AND_REPROCESS_SNAPSHOTS,
+  GET_SNAPSHOT_UPDATE_TIME_STATS
 } = require('../constants/action-names');
+const { EVENT_INTERVAL_MINUTES } = require('../config');
 /*
   Actions invokable from `./main.js` via `processingHandler#dispatch(...)`
   Actions can only take one argument. Consolidate multiple args into an object.
@@ -20,6 +25,19 @@ const {
 // Use `KEY: () => {}` syntax to ensure `processor` is bound correctly.
 function actions (processor) {
   return {
+    [GET_SNAPSHOT_UPDATE_TIME_STATS] () {
+      const lastUpdatedAt = getDateFromSnapshotIndex(
+        processor.lmDataParsed.currentSnapshotTimeseriesLength - 1
+      ).valueOf();
+      // add 6 to account for maximum server reload delay
+      // add 2 to account for maximum server processing time
+      const nextExpectedUpdateAt =
+        lastUpdatedAt + (EVENT_INTERVAL_MINUTES + 6 + 2) * 60 * 1000;
+      return {
+        lastUpdatedAt,
+        nextExpectedUpdateAt
+      };
+    },
     [RELOAD_AND_REPROCESS_SNAPSHOTS]: async ({ network }) => {
       return processor.reloadAndReprocessSnapshots({ network });
     },

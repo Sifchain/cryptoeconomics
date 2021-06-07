@@ -46,6 +46,7 @@ class BackgroundProcessor {
         'Local Snapshot Dev Mode Enabled! Will not load fresh snapshot data!'
       );
     }
+    console.time('loadandparse');
     const [lmSnapshotRes, vsSnapshotRes] = isInLocalSnapshotDevMode
       ? [
           require('../../snapshots/snapshot_lm_latest.json'),
@@ -67,6 +68,7 @@ class BackgroundProcessor {
     try {
       const lMSnapshotText = await lmSnapshotRes.text();
       const snapshotLen = lMSnapshotText.length;
+      console.timeEnd('loadandparse');
 
       if (this.previousLMSnapshotLength < snapshotLen) {
         /*
