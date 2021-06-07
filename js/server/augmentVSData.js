@@ -126,7 +126,7 @@ exports.augmentUserVSData = (userAddress, globalTimestampStates) => {
     globalTimestampStates[globalTimestampStates.length - 1] ||
     new GlobalTimestampState();
 
-  console.time('augmentUserVSData');
+  // console.time('augmentUserVSData');
   // can be lazy evaluated
   globalTimestampStates.forEach((timestamp) => {
     const user = timestamp.users[userAddress];
@@ -173,5 +173,5 @@ exports.augmentUserVSData = (userAddress, globalTimestampStates) => {
     const lastUser = lastTimestamp.users[userAddress] || new User();
     user.updateMaturityTimeProps(lastUser, timestampDate.valueOf());
   });
-  console.timeEnd('augmentUserVSData');
+  // console.timeEnd('augmentUserVSData');
 };

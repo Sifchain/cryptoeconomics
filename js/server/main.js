@@ -17,7 +17,12 @@ const processingHandlers = {
 
 console.log({ HOSTNAME: process.env.HOSTNAME });
 
-if (process.env.HOSTNAME && /(devnet|testnet)/.test(process.env.HOSTNAME)) {
+const isDeployedDevelopmentServer =
+  process.env.HOSTNAME && /(devnet|testnet)/.test(process.env.HOSTNAME);
+
+const isLocalServer = !process.env.HOSTNAME;
+
+if (isLocalServer || isDeployedDevelopmentServer) {
   processingHandlers[DEVNET] = ProcessingHandler.init(DEVNET);
 }
 
