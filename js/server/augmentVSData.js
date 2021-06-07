@@ -3,8 +3,8 @@ const moment = require('moment');
 const { START_DATETIME } = require('./config');
 const { GlobalTimestampState, User } = require('./types');
 
-exports.augmentVSData = globalTimestampStates => {
-  console.time('augmentVSData');
+exports.augmentVSData = (globalTimestampStates) => {
+  // console.time('augmentVSData');
   const finalTimestampState =
     globalTimestampStates[globalTimestampStates.length - 1] ||
     new GlobalTimestampState();
@@ -66,17 +66,17 @@ exports.augmentVSData = globalTimestampStates => {
   const rewardBucketsTimeSeries = globalTimestampStates
     .map((timestampData, timestamp) => {
       const rewardBuckets = timestampData.rewardBuckets;
-      const totalCurrentRowan = _.sum(rewardBuckets.map(b => b.rowan));
-      const totalInitialRowan = _.sum(rewardBuckets.map(b => b.initialRowan));
+      const totalCurrentRowan = _.sum(rewardBuckets.map((b) => b.rowan));
+      const totalInitialRowan = _.sum(rewardBuckets.map((b) => b.initialRowan));
       return {
         timestamp,
         totalCurrentRowan,
-        totalInitialRowan
+        totalInitialRowan,
       };
     })
     .slice(1);
 
-  console.time('augment/stackData');
+  // console.time('augment/stackData');
   const stackClaimableRewardData = [];
   const finalTimestampStateUsers = _.map(
     finalTimestampState.users,
@@ -104,20 +104,20 @@ exports.augmentVSData = globalTimestampStates => {
     stackClaimableRewardData.push({
       timestamp: timestamp.timestamp,
       ...blankUserRewards,
-      ...userRewards
+      ...userRewards,
     });
   }
-  console.timeEnd('augment/stackData');
+  // console.timeEnd('augment/stackData');
 
   const uniqueUserAddresses = _.uniq(
-    _.flatten(globalTimestampStates.map(state => Object.keys(state.users)))
+    _.flatten(globalTimestampStates.map((state) => Object.keys(state.users)))
   );
-  console.timeEnd('augmentVSData');
+  // console.timeEnd('augmentVSData');
   return {
     users: uniqueUserAddresses,
     processedData: globalTimestampStates,
     rewardBucketsTimeSeries,
-    stackClaimableRewardData
+    stackClaimableRewardData,
   };
 };
 
@@ -126,9 +126,9 @@ exports.augmentUserVSData = (userAddress, globalTimestampStates) => {
     globalTimestampStates[globalTimestampStates.length - 1] ||
     new GlobalTimestampState();
 
-  console.time('augmentUserVSData');
+  // console.time('augmentUserVSData');
   // can be lazy evaluated
-  globalTimestampStates.forEach(timestamp => {
+  globalTimestampStates.forEach((timestamp) => {
     const user = timestamp.users[userAddress];
     if (!user) return;
     const userAtMaturity = finalTimestampState.users[userAddress] || new User();
@@ -164,7 +164,7 @@ exports.augmentUserVSData = (userAddress, globalTimestampStates) => {
     new GlobalTimestampState();
 
   // can be lazy evaluated
-  globalTimestampStates.forEach(timestampState => {
+  globalTimestampStates.forEach((timestampState) => {
     const user = timestampState.users[userAddress];
     if (!user) return;
     const timestampDate = moment
@@ -173,5 +173,5 @@ exports.augmentUserVSData = (userAddress, globalTimestampStates) => {
     const lastUser = lastTimestamp.users[userAddress] || new User();
     user.updateMaturityTimeProps(lastUser, timestampDate.valueOf());
   });
-  console.timeEnd('augmentUserVSData');
+  // console.timeEnd('augmentUserVSData');
 };

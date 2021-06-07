@@ -9,8 +9,8 @@ registerChartDateAdapter(_adapters);
 // const totalInitialRowan = rewardBucketsTimeSeries[0].totalInitialRowan
 
 class DataStackAll extends React.Component {
-  constructor (props) {
-    super(props);
+  constructor ({ onLoadingStateChange = isLoading => {}, ...props }) {
+    super({ onLoadingStateChange, ...props });
     this.myRef = React.createRef();
     this.state = {};
     console.log('working');
@@ -114,9 +114,13 @@ class DataStackAll extends React.Component {
   }
 
   componentDidMount () {
-    fetchStack(this.props.type).then(rewardData => {
-      this.setState({ rewardData }, this.renderD3);
-    });
+    this.props.onLoadingStateChange(true);
+    fetchStack(this.props.type)
+      .then(rewardData => {
+        this.setState({ rewardData }, this.renderD3);
+        this.props.onLoadingStateChange(false);
+      })
+      .catch(e => this.props.onLoadingStateChange(false));
   }
 
   componentWillUnmount () {
@@ -133,8 +137,8 @@ class DataStackAll extends React.Component {
           className='chart'
           ref={this.myRef}
           id='myChart'
-          width='225'
-          height='100'
+          width='900'
+          height='350'
         />
       </div>
     );

@@ -1,6 +1,37 @@
 const { fetch } = require('cross-fetch');
+const { DEVNET } = require('../constants/snapshot-source-names');
 
-async function loadValidatorsSnapshot () {
+const MAINNET_QUERY = /* GraphQL */ `
+  query GetSnapshot {
+    snapshots_validators(limit: 1, order_by: { id: desc }) {
+      snapshot_data
+    }
+  }
+`;
+const DEVNET_QUERY = /* GraphQL */ `
+  query GetDevSnapshot {
+    snapshots_validators: snapshots_validators_dev(
+      limit: 1
+      order_by: { id: desc }
+    ) {
+      snapshot_data
+    }
+  }
+`;
+
+const getQueryByNetwork = network => {
+  network = network ? network.toLowerCase() : network;
+  switch (network) {
+    case DEVNET: {
+      return DEVNET_QUERY;
+    }
+    default: {
+      return MAINNET_QUERY;
+    }
+  }
+};
+
+exports.loadValidatorsSnapshot = async function (network) {
   if (!process.env.HEADER_SECRET) {
     throw new Error('process.env.HEADER_SECRET not defined!');
   }
@@ -15,17 +46,7 @@ async function loadValidatorsSnapshot () {
     },
     // snapshots_validators_dev
     body: JSON.stringify({
-      query: /* GraphQL */ `
-        query GetCommissionSnapshot {
-          snapshots_validators(limit: 1, order_by: { id: desc }) {
-            snapshot_data
-          }
-        }
-      `
+      query: getQueryByNetwork(network)
     })
   });
-}
-
-module.exports = {
-  loadValidatorsSnapshot
 };

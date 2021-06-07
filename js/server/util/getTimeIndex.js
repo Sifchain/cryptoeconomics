@@ -8,11 +8,11 @@ function getTimeIndex (timestampFromClient) {
   }
   let nowMoment;
   if (timestampFromClient === 'now') {
-    nowMoment = moment(Date.parse(new Date()));
+    nowMoment = moment.utc(new Date());
   } else {
-    nowMoment = moment(new Date(timestampFromClient));
+    nowMoment = moment.utc(new Date(timestampFromClient));
   }
-  const diff = nowMoment.diff(START_DATETIME);
+  const diff = nowMoment.diff(moment.utc(START_DATETIME));
   const rtn = Math.floor(moment.duration(diff).asMinutes() / 200);
   return rtn;
 }

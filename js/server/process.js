@@ -74,12 +74,10 @@ function processUserEventsByTimestamp (
     const userEvents = userEventsByTimestamp['' + timestamp] || [];
     let nextGlobalState;
     const isSimulatedFutureInterval = currentTimeIndex < i;
-    if (
-      history[rewardProgramType][timestamp] &&
-      !isSimulatedFutureInterval &&
-      cacheEnabled
-    ) {
-      nextGlobalState = history[rewardProgramType][timestamp];
+    const rewardProgramCache = history[rewardProgramType];
+    const cachedTimestampState = rewardProgramCache[timestamp];
+    if (cachedTimestampState && !isSimulatedFutureInterval && cacheEnabled) {
+      nextGlobalState = cachedTimestampState;
     } else {
       nextGlobalState = processVSGlobalState(
         lastGlobalState,
@@ -90,12 +88,8 @@ function processUserEventsByTimestamp (
         isSimulatedFutureInterval
       );
     }
-    if (
-      cacheEnabled &&
-      !isSimulatedFutureInterval &&
-      !history[rewardProgramType][timestamp]
-    ) {
-      history[rewardProgramType][timestamp] = nextGlobalState;
+    if (cacheEnabled && !isSimulatedFutureInterval && !cachedTimestampState) {
+      rewardProgramCache[timestamp] = nextGlobalState;
     }
     VSGlobalStates.push(nextGlobalState);
   }

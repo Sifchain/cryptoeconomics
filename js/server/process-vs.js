@@ -87,16 +87,17 @@ function processUserTickets (
   const prevUserRewards = prevUserRewardsByProgramType[rewardProgramType];
   const updatedUsers = _.mapValues(users, (user, address) => {
     // Don't deep clone users whose rewards can no longer change
+    const rewardSynopsis =
+      user.totalClaimableCommissionsAndClaimableRewards +
+      user.totalAccruedCommissionsAndClaimableRewards;
     if (
       isSimulatedFutureInterval &&
-      prevUserRewards[address] ===
-        user.totalClaimableCommissionsAndClaimableRewards
+      prevUserRewards[address] === rewardSynopsis
     ) {
       // skip cloning
       return user;
     }
-    prevUserRewards[address] =
-      user.totalClaimableCommissionsAndClaimableRewards;
+    prevUserRewards[address] = rewardSynopsis;
     return user.cloneWith({
       // reset each round because this is both incrementally calculated and based upon multiplier
       currentTotalCommissionsOnClaimableDelegatorRewards: 0,
@@ -171,6 +172,7 @@ function processAccountEvents (userEvents, getUserByAddress) {
 }
 
 function processRedelegationEvents (userEvents, getUserByAddress) {
+  userEvents = _.orderBy(userEvents, ['amount'], ['asc']);
   let withdrawalAmount = 0;
   let depositAmount = 0;
   const withdrawalEvents = [];

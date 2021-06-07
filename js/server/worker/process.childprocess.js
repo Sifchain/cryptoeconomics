@@ -32,7 +32,7 @@ class BackgroundProcessor {
     return this.actions[action](payload);
   }
 
-  async reloadAndReprocessSnapshots () {
+  async reloadAndReprocessSnapshots ({ network }) {
     if (process.env.LOCAL_SNAPSHOT_DEV_MODE === 'enabled') {
       console.log(
         'LOCAL_SNAPSHOT_DEV_MODE enabled - Will not refresh or reprocess snapshots.'
@@ -53,12 +53,12 @@ class BackgroundProcessor {
         ]
       : await Promise.all([
           retryOnFail({
-            fn: () => loadLiquidityMinersSnapshot(),
+            fn: () => loadLiquidityMinersSnapshot(network),
             iterations: 5,
             waitFor: 1000
           }),
           retryOnFail({
-            fn: () => loadValidatorsSnapshot(),
+            fn: () => loadValidatorsSnapshot(network),
             iterations: 5,
             waitFor: 1000
           })
@@ -91,7 +91,6 @@ class BackgroundProcessor {
     try {
       const vsSnapshotText = await vsSnapshotRes.text();
       const snapshotLen = vsSnapshotText.length;
-
       if (this.previousVSSnapshotLength < snapshotLen) {
         /*
           V8 performance hack.
@@ -150,6 +149,7 @@ class BackgroundProcessor {
         !this.actions[msg.payload.fn]
       )
         return;
+      // console.log(`ACTION: ${msg.payload.fn}`);
       try {
         const out = await this.actions[msg.payload.fn](...msg.payload.args);
         process.send({
@@ -181,16 +181,18 @@ class BackgroundProcessor {
   static startAsChildProcess () {
     const instance = new this();
     instance.listenForParentThreadInvokations();
-    // instance.dispatch(RELOAD_AND_REPROCESS_SNAPSHOTS);
   }
 
-  static startAsMainProcess () {
+  static startAsMainProcess (network) {
     const instance = new this();
     (async () => {
       while (true) {
         try {
           await retryOnFail({
-            fn: () => instance.dispatch(RELOAD_AND_REPROCESS_SNAPSHOTS),
+            fn: () =>
+              instance.dispatch(RELOAD_AND_REPROCESS_SNAPSHOTS, {
+                network: network
+              }),
             waitFor: 6000,
             iterations: 5
           });

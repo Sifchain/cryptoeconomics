@@ -12,6 +12,7 @@ registerChartDateAdapter(_adapters);
 
 export default props => {
   const myRef = useRef();
+  const containerRef = useRef();
   const [chart, setChart] = useState(undefined);
   useEffect(() => {
     if (!(myRef.current && props.data)) return;
@@ -25,15 +26,17 @@ export default props => {
     if (chart) chart.destroy();
   }, [props.data]);
 
+  const [w, h] = [900, 350];
+
   return (
-    <div className='chart-container'>
+    <div ref={containerRef} className='chart-container' style={{ height: h }}>
       <canvas
         onClick={() => chart.resetZoom()}
         className='chart'
         ref={myRef}
         id='myChart'
-        width='225'
-        height='100'
+        width={w}
+        height={h}
       />
     </div>
   );
@@ -112,6 +115,7 @@ function renderChart (canvasElement, data, chart) {
       datasets: createDatasets()
     },
     options: {
+      // animation: false,
       animation,
       interaction: {
         intersect: false
@@ -155,5 +159,6 @@ function renderChart (canvasElement, data, chart) {
   };
   const ctx = canvasElement.getContext('2d');
 
-  return new Chart(ctx, config);
+  const c = new Chart(ctx, config);
+  return c;
 }

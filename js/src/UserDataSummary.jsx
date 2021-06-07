@@ -2,15 +2,15 @@ import React from 'react';
 
 const numFormatter = new Intl.NumberFormat();
 
-const styleData = data => ({
+const styleData = (data) => ({
   __styled: true,
-  data
+  data,
 });
 const say = (template, ...substitutions) => {
   // if (!substitutions.every((s) => !!s)) {
   //   return null;
   // }
-  return template.map(str => {
+  return template.map((str, index) => {
     let item = substitutions.shift();
     const isStyled = item && item.__styled;
     item = isStyled ? item.data : item;
@@ -23,7 +23,7 @@ const say = (template, ...substitutions) => {
         ? { color: 'var(--accent-blue)', fontWeight: 700 }
         : {};
     return (
-      <span key={item}>
+      <span key={`${item}${index}`}>
         {str}
         <span style={style}>{formattedData}</span>
       </span>
@@ -49,7 +49,7 @@ export const UserDataSummary = ({ user, type = 'vs' }) => {
         {say`As a validator, you have ${styleData(
           user.claimableCommissions
         )} rowan in commissions ready to claim. 
-  ${say`And ${styleData(
+  ${say`${styleData(
     user.currentTotalCommissionsOnClaimableDelegatorRewards
   )} rowan in commissions will be claimable when they reach maturity or when their respective delegators claim their rewards.`}`}
       </div>
@@ -71,13 +71,15 @@ export const UserDataSummary = ({ user, type = 'vs' }) => {
         )}%)`}`
       : null;
   return (
-    <div style={{ width: '100%', padding: '0% 0%' }}>
-      <div className='user-data-summary-container'>
-        <div style={{}}>
+    <div style={{ width: '100%', padding: 0 }}>
+      <div className="user-data-summary-container">
+        <div style={{ width: validatorText ? '50%' : '100%' }}>
           {stakerText}
           {stakerText2}
         </div>
-        {validatorText}
+        {validatorText ? (
+          <div style={{ width: '50%' }}>{validatorText}</div>
+        ) : null}
       </div>
     </div>
   );

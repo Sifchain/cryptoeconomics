@@ -5,12 +5,30 @@ const compression = require('compression');
 const fs = require('fs');
 // implements process.js in separate thread
 const { ProcessingHandler } = require('./worker');
+const { DEVNET, MAINNET } = require('./constants/snapshot-source-names');
 // const { BackgroundProcessor } = require('./process.childprocess.js');
 // require("./simple").createValidatorStakingTimeSeries();
 // interfaces with `./process.childprocess.js`
-const processingHandler = ProcessingHandler.init();
+
+const processingHandlers = {
+  [MAINNET]: ProcessingHandler.init(MAINNET),
+  [DEVNET]: null
+};
+
+console.log({ HOSTNAME: process.env.HOSTNAME });
+
+const isDeployedDevelopmentServer =
+  process.env.HOSTNAME && /(devnet|testnet)/.test(process.env.HOSTNAME);
+
+const isLocalServer = !process.env.HOSTNAME;
+
+if (isLocalServer || isDeployedDevelopmentServer) {
+  processingHandlers[DEVNET] = ProcessingHandler.init(DEVNET);
+}
+
 // const processingHandler = BackgroundProcessor.startAsMainProcess();
 
+const SNAPSHOT_SOURCE_KEY = 'snapshot-source';
 const port = process.env.PORT || 3000;
 const app = express();
 
@@ -53,6 +71,12 @@ app.get('/status', (req, res, next) => {
 });
 
 app.get('/api/lm', async (req, res, next) => {
+  const snapshotSource =
+    req.query[SNAPSHOT_SOURCE_KEY] ||
+    req.headers[SNAPSHOT_SOURCE_KEY] ||
+    MAINNET;
+  const processingHandler =
+    processingHandlers[snapshotSource] || processingHandlers[MAINNET];
   const key = req.query.key;
   let responseJSON;
   await processingHandler.waitForReadyState();
@@ -90,6 +114,12 @@ app.get('/api/lm', async (req, res, next) => {
 });
 
 app.get('/api/vs', async (req, res, next) => {
+  const snapshotSource =
+    req.query[SNAPSHOT_SOURCE_KEY] ||
+    req.headers[SNAPSHOT_SOURCE_KEY] ||
+    MAINNET;
+  const processingHandler =
+    processingHandlers[snapshotSource] || processingHandlers[MAINNET];
   const key = req.query.key;
   let responseJSON;
   await processingHandler.waitForReadyState();

@@ -4,10 +4,10 @@ const numFormatter = new Intl.NumberFormat();
 const createStatBlock = ({
   title,
   subtitle,
-  data = data => {
+  data = (data) => {
     return <div title={data}>{numFormatter.format(roundTo(data, 100))}</div>;
   },
-  shouldDisplay = data => data !== 0,
+  shouldDisplay = (data) => data !== 0,
   prefix = (
     <img
       style={{
@@ -16,53 +16,53 @@ const createStatBlock = ({
         opacity: 0.7,
         marginBottom: -6,
         marginRight: 5,
-        filter: 'brightness(1000%)'
+        filter: 'brightness(1000%)',
       }}
-      src='sifchain-s.svg'
+      src="sifchain-s.svg"
     />
   ),
-  suffix = null
+  suffix = null,
 }) => ({
   title,
   subtitle,
   prefix,
   suffix,
   data,
-  shouldDisplay
+  shouldDisplay,
 });
 const roundTo = (num, oneWithZeros = 100) =>
-  ~~(num * oneWithZeros) / oneWithZeros;
+  Math.floor(num * oneWithZeros) / oneWithZeros;
 
 const defaultStatBlocks = {
   totalAccruedCommissionsAndClaimableRewards: createStatBlock({
     title: 'Current Earnings',
-    subtitle: 'Commissions + Rewards'
+    subtitle: 'Commissions + Rewards',
   }),
-  get claimableReward () {
+  get claimableReward() {
     return this.totalAccruedCommissionsAndClaimableRewards;
   },
   totalCommissionsAndRewardsAtMaturity: createStatBlock({
     title: 'Potential Earnings',
-    subtitle: 'Commissions + Rewards at Maturity'
+    subtitle: 'Commissions + Rewards at Maturity',
   }),
   maturityDateISO: createStatBlock({
     title: 'Maturity Date',
     subtitle: 'Max Rewards',
-    data: data => <div>{new Date(data).toLocaleDateString()}</div>,
-    prefix: null
+    data: (data) => <div>{new Date(data).toLocaleDateString()}</div>,
+    prefix: null,
   }),
   nextRewardProjectedAPYOnTickets: createStatBlock({
     title: 'Projected APY',
     subtitle: 'Annual Percentage Yield',
-    data: data => {
+    data: (data) => {
       return (
         <div title={data}>
-          {numFormatter.format(~~(roundTo(data, 100) * 100))}
+          {numFormatter.format(Math.floor(roundTo(data, 100) * 100))}
         </div>
       );
     },
     prefix: null,
-    shouldDisplay (data) {
+    shouldDisplay(data) {
       return data > 0;
     },
     suffix: (
@@ -71,24 +71,24 @@ const defaultStatBlocks = {
           color: 'white',
           fontWeight: 400,
           opacity: 0.7,
-          fontSize: '1em'
+          fontSize: '1em',
         }}
       >
         %
       </span>
-    )
-  })
+    ),
+  }),
 };
 export const StatBlocks = {
   vs: {
     ...defaultStatBlocks,
     totalDepositedAmount: createStatBlock({
       title: 'Staked',
-      subtitle: 'Delegated Assets'
+      subtitle: 'Delegated Assets',
     }),
-    get totalTickets () {
+    get totalTickets() {
       return this.totalDepositedAmount;
-    }
+    },
     // currentTotalCommissionsOnClaimableDelegatorRewards: createStatBlock({
     //   title: 'Commissions',
     //   subtitle: 'Awaiting Delegator Claims',
@@ -128,10 +128,10 @@ export const StatBlocks = {
     ...defaultStatBlocks,
     totalDepositedAmount: createStatBlock({
       title: 'Pooled',
-      subtitle: 'Deposited Assets'
+      subtitle: 'Deposited Assets',
     }),
-    get totalTickets () {
+    get totalTickets() {
       return this.totalDepositedAmount;
-    }
-  }
+    },
+  },
 };
