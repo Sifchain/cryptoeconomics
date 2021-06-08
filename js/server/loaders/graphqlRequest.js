@@ -1,6 +1,6 @@
 const { fetch } = require('cross-fetch');
 
-module.exports.default = async function graphqlRequest (query) {
+exports.graphqlRequest = async function graphqlRequest (query) {
   if (!process.env.HEADER_SECRET) {
     throw new Error('process.env.HEADER_SECRET not defined!');
   }

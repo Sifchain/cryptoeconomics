@@ -1,5 +1,2 @@
-module.exports = {
-  loadLiquidityMinersSnapshot: require('./loadLiquidityMinersSnapshot').default,
-  loadValidatorsSnapshot: require('./loadValidatorsSnapshot').default,
-  graphqlRequest: require('./graphqlRequest').default
-};
+exports.loadLiquidityMinersSnapshot = require('./loadLiquidityMinersSnapshot').loadLiquidityMinersSnapshot;
+exports.loadValidatorsSnapshot = require('./loadValidatorsSnapshot').loadValidatorsSnapshot;

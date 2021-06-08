@@ -1,4 +1,4 @@
-import { START_DATETIME } from './config';
+import { START_DATETIME, networks, NETWORK_STORAGE_KEY } from './config';
 import './App.css';
 import React from 'react';
 import { fetchUsers, fetchUserData, fetchUserTimeSeriesData } from './api';
@@ -10,7 +10,7 @@ import DataStackAll from './DataStackAll';
 import { StatBlocks } from './StatBlocks';
 import { UserDataSummary } from './UserDataSummary';
 
-const DATE_FORMAT = 'MMMM Do YYYY [at] h:mm';
+const DATE_FORMAT = 'ddd MMMM Do YYYY[,] h:mm A';
 
 // show all fields locally
 const SHOULD_HIDE_NON_USER_FRIENDLY_FIELDS = !!process.env
@@ -47,13 +47,19 @@ class App extends React.Component {
 
     const [address, type] = window.location.hash.substr(1).split('&type=');
     this.state = {
-      timestamp: 0,
+      timeIndex: 0,
+      nowTimeIndex: 0,
       date: moment.utc(new Date()),
       address: address || undefined,
       type: type || 'lm',
       dataDisplayPoints: [],
       userData: null,
-      bulkUserData: null
+      bulkUserData: null,
+      network:
+        window.localStorage.getItem(NETWORK_STORAGE_KEY) || networks.MAINNET,
+      usersLM: [],
+      usersVS: [],
+      isLoadingLeaderboard: false
     };
 
     this.updateAddressEvent = this.updateAddressEvent.bind(this);
@@ -63,13 +69,22 @@ class App extends React.Component {
     this.updateAddress(this.state.address);
   }
 
+  getTimeIndex (time) {
+    time = moment.utc(time);
+    return (
+      Math.floor(
+        moment.duration(time.diff(moment.utc(START_DATETIME))).asMinutes() / 200
+      ) + 1
+    );
+  }
+
   initDateTime () {
-    const now = moment.utc(Date.parse(new Date()));
+    const now = moment.utc(Date.now());
+    const currentTimeIndex = this.getTimeIndex(now);
     this.setState({
-      date: moment.utc(now),
-      timestamp: Math.floor(
-        moment.duration(now.diff(START_DATETIME)).asMinutes() / 200
-      )
+      date: now,
+      timeIndex: currentTimeIndex,
+      nowTimeIndex: currentTimeIndex
     });
   }
 
@@ -79,12 +94,22 @@ class App extends React.Component {
     this.initDateTime();
   }
 
+  updateNetwork (network) {
+    window.localStorage.setItem(NETWORK_STORAGE_KEY, network);
+    window.location.assign(`#&type=${this.state.type}`);
+    window.location.reload();
+    this.setState({
+      network
+    });
+  }
+
   updateAddressEvent (event) {
     const address = event.target.value;
     this.updateAddress(address);
   }
 
   updateAddress (address) {
+    address = address ? address.trim() : address;
     window.history.pushState(
       undefined,
       '',
@@ -101,11 +126,13 @@ class App extends React.Component {
           });
         }
       );
-      fetchUserData(address, this.state.type).then(bulkUserData => {
-        this.setState({
-          bulkUserData
+      setTimeout(() => {
+        fetchUserData(address, this.state.type).then(bulkUserData => {
+          this.setState({
+            bulkUserData
+          });
         });
-      });
+      }, 500);
     }
     this.setState({
       address,
@@ -114,54 +141,66 @@ class App extends React.Component {
     });
   }
 
-  updateTimestamp (event) {
-    const timestamp = parseInt(event.target.value);
-    const minutes = timestamp * 200;
+  updateTimestamp (timeIndex) {
+    const minutes = timeIndex * 200;
     const dateObj = moment
       .utc(START_DATETIME)
       .add(minutes, 'm')
-      .utc(false);
+      .utc();
     const date = dateObj;
     this.setState({
       date,
-      timestamp,
+      timeIndex,
       userData: null
     });
     const address = this.state.address;
     if (address && address.startsWith('sif')) {
       if (this.state.bulkUserData) {
         this.setState({
-          userData: this.state.bulkUserData[this.state.timestamp]
+          userData: this.state.bulkUserData[timeIndex]
         });
       } else {
-        if (this.debouncedTimestampTimeout !== undefined) {
-          clearTimeout(this.debouncedTimestampTimeout);
-        }
-        this.debouncedTimestampTimeout = setTimeout(() => {
-          fetchUserData(
-            address,
-            this.state.type,
-            this.state.date.valueOf()
-          ).then(userData =>
-            this.setState({
-              userData
-            })
-          );
-        }, 500);
+        // if (this.debouncedTimestampTimeout !== undefined) {
+        //   clearTimeout(this.debouncedTimestampTimeout);
+        // }
+        // this.debouncedTimestampTimeout = setTimeout(() => {
+        //   fetchUserData(
+        //     address,
+        //     this.state.type,
+        //     this.state.date.valueOf()
+        //   ).then((userData) =>
+        //     this.setState({
+        //       userData,
+        //     })
+        //   );
+        // }, 500);
       }
     }
   }
 
   updateType (type) {
-    window.history.pushState(undefined, '', `#&type=${type}`);
-    this.setState({
-      type,
-      address: undefined
-    });
+    window.history.pushState(
+      undefined,
+      '',
+      `#${this.state.address || ''}&type=${type}`
+    );
+    const users = this.getUsersByType(type);
+    this.setState(
+      {
+        type
+      },
+      () => {
+        this.updateAddress(
+          this.state.address && users.includes(this.state.address)
+            ? this.state.address
+            : undefined
+        );
+      }
+    );
   }
 
-  getCurrentUsers () {
-    return this.state.type === 'lm' ? this.state.usersLM : this.state.usersVS;
+  getUsersByType (type) {
+    return type === 'lm' ? this.state.usersLM : this.state.usersVS;
   }
 
   render () {
@@ -175,7 +214,7 @@ class App extends React.Component {
         </div>
       );
     }
-    const users = this.getCurrentUsers();
+    const users = this.getUsersByType(this.state.type);
 
     let userTimestampJSON = '';
     const userData =
@@ -201,16 +240,21 @@ class App extends React.Component {
     let addressSelectRef = React.createRef();
     const clearInput = () => {
       addressInputRef.current.value = '';
-      addressSelectRef.current.value = '';
+    };
+
+    const clearInputIfAddressIncompatibile = nextType => {
+      if (!this.getUsersByType(nextType).includes(this.state.address)) {
+        clearInput();
+      }
     };
 
     const timeSeriesData = this.state.userTimeSeriesData;
 
-    const isLoading =
-      (this.state.address !== 'leaderboard' &&
-        this.state.address !== undefined &&
-        !timeSeriesData) ||
-      (!!this.state.address && !userTimestampJSON);
+    const isLoadingUserData =
+      this.state.address !== 'leaderboard' &&
+      this.state.address !== undefined &&
+      (!userTimestampJSON || !timeSeriesData);
+    const isLoading = this.state.isLoadingLeaderboard || isLoadingUserData;
 
     return (
       <div className='App'>
@@ -221,6 +265,11 @@ class App extends React.Component {
               src='sifchain-s.svg'
             />
           </div>
+          <div className='logo-network'>
+            {this.state.network !== networks.MAINNET
+              ? this.state.network
+              : null}
+          </div>
           <div
             style={{ width: '100%', display: 'flex', flexDirection: 'row' }}
             className='tab-group'
@@ -228,7 +277,7 @@ class App extends React.Component {
             <div
               onClick={e => {
                 this.updateType('lm');
-                clearInput();
+                clearInputIfAddressIncompatibile('lm');
               }}
               className={['tab', this.state.type === 'lm' ? 'active' : ''].join(
                 ' '
@@ -239,7 +288,7 @@ class App extends React.Component {
             <div
               onClick={e => {
                 this.updateType('vs');
-                clearInput();
+                clearInputIfAddressIncompatibile('vs');
               }}
               className={['tab', this.state.type === 'vs' ? 'active' : ''].join(
                 ' '
@@ -318,12 +367,29 @@ class App extends React.Component {
 
         <div className='content'>
           {this.state.address === 'leaderboard' && (
-            <DataStackAll type={this.state.type} />
+            <DataStackAll
+              onLoadingStateChange={state => {
+                if (state !== this.state.isLoadingLeaderboard) {
+                  this.setState({
+                    isLoadingLeaderboard: state
+                  });
+                }
+              }}
+              type={this.state.type}
+            />
           )}
           {this.state.address !== 'leaderboard' &&
             this.state.address !== undefined &&
             !timeSeriesData && (
-              <div style={{ color: 'turquoise' }}>Loading Rewards...</div>
+              <div
+                style={{
+                  color: 'turquoise',
+                  width: '100%',
+                  textAlign: 'center'
+                }}
+              >
+                Loading Rewards...
+              </div>
             )}
           {this.state.address !== 'leaderboard' &&
             this.state.address !== undefined &&
@@ -332,27 +398,69 @@ class App extends React.Component {
           {this.state.address !== 'leaderboard' &&
             this.state.address !== undefined &&
             timeSeriesData && (
-              <input
-                id='timestamp'
-                className='timestamp-slider'
-                type='range'
-                min='0'
-                max={timeSeriesData.length - 1}
-                value={this.state.timestamp}
-                onChange={e => this.updateTimestamp(e)}
-                step='1'
-              />
+              <div className='timestamp-slider'>
+                <input
+                  onDoubleClick={e =>
+                    this.updateTimestamp(this.state.nowTimeIndex)
+                  }
+                  style={{ width: '100%' }}
+                  id='timestamp'
+                  type='range'
+                  min='0'
+                  max={timeSeriesData.length - 1}
+                  value={this.state.timeIndex}
+                  onChange={e => this.updateTimestamp(e.target.value)}
+                  step='1'
+                />
+              </div>
             )}
           {this.state.address !== 'leaderboard' &&
             this.state.address !== undefined && (
-              <div className='timestamp-slider-description'>
-                {this.state.date.format(DATE_FORMAT)}
+              <div
+                title={new Date(this.state.date.valueOf()).toString()}
+                className='stat-card timestamp-slider-description'
+              >
+                <div className='timestamp-slider-description__title'>
+                  {this.state.timeIndex < this.state.nowTimeIndex
+                    ? 'Past Rewards'
+                    : this.state.timeIndex > this.state.nowTimeIndex
+                    ? 'Future Rewards'
+                    : 'Current Rewards'}
+                </div>
+                <div className='timestamp-slider-description__datetime'>
+                  {this.state.date.format(DATE_FORMAT) + ' UTC'}
+                </div>
               </div>
             )}
-
+          {false &&
+            this.state.address !== 'leaderboard' &&
+            this.state.address !== undefined &&
+            timeSeriesData && (
+              <div
+                style={{
+                  width: '100%',
+                  textAlign: 'center'
+                }}
+              >
+                <input
+                  style={{
+                    color: 'white',
+                    background: 'black'
+                  }}
+                  type='number'
+                  min='0'
+                  max={timeSeriesData.length - 1}
+                  value={this.state.timeIndex}
+                  onChange={e => this.updateTimestamp(e.target.value)}
+                  onInput={e => this.updateTimestamp(e.currentTarget.value)}
+                  step='1'
+                />
+              </div>
+            )}
           {this.state.address !== 'leaderboard' &&
           this.state.address !== undefined ? (
             <UserDataSummary
+              // @ts-ignore
               user={userTimestampJSON.user}
               type={this.state.type}
             />
@@ -364,7 +472,7 @@ class App extends React.Component {
               display: 'flex',
               flexDirection: 'row',
               alignItems: 'stretch',
-              justifyContent: 'flex-start',
+              justifyContent: 'center',
               flexWrap: 'wrap'
             }}
           >
@@ -372,15 +480,32 @@ class App extends React.Component {
             {this.state.address !== 'leaderboard' &&
             this.state.address !== undefined &&
             userTimestampJSON &&
+            // @ts-ignore
             userTimestampJSON.user
-              ? Object.entries(userTimestampJSON.user).map(
-                  ([key, statNumVal]) => {
+              ? // @ts-ignore
+                Object.entries(userTimestampJSON.user)
+                  .map(([key, statNumVal]) => {
                     const block = StatBlocks[this.state.type][key];
-                    if (!block || !block.shouldDisplay(statNumVal)) return null;
+                    if (!block || !block.shouldDisplay(statNumVal))
+                      return false;
+                    return { block, statNumVal };
+                  })
+                  .filter(b => !!b)
+                  .map(({ block, statNumVal }) => {
                     return (
-                      <div key={block.title} className='stat-card'>
-                        <div className='stat-subtitle'>{block.subtitle}</div>
-                        <div className='stat-title'>{block.title}</div>
+                      <div
+                        key={block.title + this.state.timeIndex}
+                        className='stat-card'
+                        style={{ order: block.order }}
+                      >
+                        <div
+                          className='stat-subtitle'
+                          dangerouslySetInnerHTML={{ __html: block.subtitle }}
+                        />
+                        <div
+                          className='stat-title'
+                          dangerouslySetInnerHTML={{ __html: block.title }}
+                        />
                         <div className='stat-data'>
                           {block.prefix}
                           {block.data(statNumVal)}
@@ -388,8 +513,7 @@ class App extends React.Component {
                         </div>
                       </div>
                     );
-                  }
-                )
+                  })
               : null}
           </div>
 
@@ -404,6 +528,16 @@ class App extends React.Component {
               />
             </details>
           ) : null}
+
+          {this.state.address !== 'leaderboard' &&
+            this.state.address !== undefined && (
+              <div
+                style={{ display: 'none' }}
+                className='timestamp-slider-description'
+              >
+                {new Date(this.state.date.toISOString()).toString()}
+              </div>
+            )}
           {this.state.type === 'vs' ? (
             <div className='info-text'>
               Learn more about Sifchain Validator Staking & Delegation{' '}
@@ -429,6 +563,15 @@ class App extends React.Component {
               .
             </div>
           )}
+          <select
+            className='dropdown--select-network'
+            value={this.state.network}
+            onChange={e => this.updateNetwork(e.target.value)}
+            defaultValue={networks.MAINNET}
+          >
+            <option value={networks.MAINNET}>MAINNET</option>
+            <option value={networks.DEVNET}>DEVNET</option>99.9999
+          </select>
         </div>
       </div>
     );

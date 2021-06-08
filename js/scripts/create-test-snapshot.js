@@ -26,7 +26,7 @@ const serverURL = (() => {
     if (type === 'lm') continue;
     switch (type) {
       case 'vs': {
-        data = await loadValidatorsSnapshot();
+        data = await loadValidatorsSnapshot().then(r => r.json());
         break;
       }
       case 'lm': {

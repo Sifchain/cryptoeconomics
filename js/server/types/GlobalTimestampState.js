@@ -1,5 +1,7 @@
 const config = require('../config');
 const { User } = require('./User');
+const moment = require('moment');
+const { validateSifAddress } = require('../util/validateSifAddress');
 class GlobalTimestampState {
   constructor () {
     this.totalDepositedAmount = 0;
@@ -7,10 +9,66 @@ class GlobalTimestampState {
     this.timestamp = -1;
     this.rewardBuckets = [];
     this.bucketEvent = undefined;
+    this.isSimulated = false;
+  }
+
+  // as designated here: https://github.com/Sifchain/sifnode/blob/develop/x/dispensation/Flow-Distribute.md
+  createDispensationJob () {
+    const EROWAN_PRECISION = 1e18;
+    const users = this.users;
+    const output = [];
+    for (const address in users) {
+      const { isValid } = validateSifAddress(address);
+      if (!isValid) {
+        console.warn(
+          `WARNING: ${address} is not valid. Commissions and/or rewards will not be dispensed.`
+        );
+        continue;
+      }
+      const user = users[address];
+      const claimed = user.claimedCommissionsAndRewardsAwaitingDispensation;
+      if (!claimed) continue;
+      const formattedAmount = BigInt(
+        Math.floor(claimed * EROWAN_PRECISION)
+      ).toString();
+      output.push({
+        address: address,
+        coins: [
+          {
+            denom: 'rowan',
+            amount: formattedAmount,
+            __humanReadableAmount: claimed.toPrecision(21)
+          }
+        ]
+      });
+    }
+    return {
+      __meta: {
+        createdAt: moment.utc().toISOString(),
+        timestamp: this.timestamp
+      },
+      Output: output
+    };
+  }
+
+  markAsSimulated () {
+    this.isSimulated = true;
   }
 
   setTotalDepositedAmount (totalDepositedAmount) {
     this.totalDepositedAmount = totalDepositedAmount;
+  }
+
+  updateTotalDepositedAmount () {
+    const users = this.users;
+    let timestampTicketsAmountSum = 0;
+    for (let addr in users) {
+      users[addr].tickets.forEach(t => {
+        timestampTicketsAmountSum += t.amount;
+      });
+    }
+    this.totalDepositedAmount = timestampTicketsAmountSum;
+    return timestampTicketsAmountSum;
   }
 
   static fromJSON (props) {

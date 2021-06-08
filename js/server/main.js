@@ -4,12 +4,31 @@ const { getTimeIndex } = require('./util/getTimeIndex');
 const compression = require('compression');
 const fs = require('fs');
 // implements process.js in separate thread
-const { createMultiprocessActionDispatcher } = require('./processing-handler');
-
+const { ProcessingHandler } = require('./worker');
+const { DEVNET, MAINNET } = require('./constants/snapshot-source-names');
+const {
+  GET_LM_DISPENSATION_JOB,
+  GET_VS_DISPENSATION_JOB
+} = require('./constants/action-names');
+// const { BackgroundProcessor } = require('./process.childprocess.js');
 // require("./simple").createValidatorStakingTimeSeries();
 // interfaces with `./process.childprocess.js`
-const processingHandler = createMultiprocessActionDispatcher();
 
+let devnetHandler;
+const processingHandlers = {
+  [MAINNET]: ProcessingHandler.init(MAINNET),
+  get [DEVNET] () {
+    if (devnetHandler) {
+      return devnetHandler;
+    }
+    devnetHandler = ProcessingHandler.init(DEVNET);
+    return devnetHandler;
+  }
+};
+
+// const processingHandler = BackgroundProcessor.startAsMainProcess();
+
+const SNAPSHOT_SOURCE_KEY = 'snapshot-source';
 const port = process.env.PORT || 3000;
 const app = express();
 
@@ -43,19 +62,32 @@ app.get('/logs', (req, res, next) => {
   });
 });
 
+app.get('/env', (req, res, next) => {
+  res.send(Object.keys(process.env).join('<br/>'));
+});
+
 app.get('/status', (req, res, next) => {
   res.status(200).send({ status: 'OK' });
 });
 
 app.get('/api/lm', async (req, res, next) => {
+  const snapshotSource =
+    req.query[SNAPSHOT_SOURCE_KEY] ||
+    req.headers[SNAPSHOT_SOURCE_KEY] ||
+    MAINNET;
+  const processingHandler =
+    processingHandlers[snapshotSource] || processingHandlers[MAINNET];
   const key = req.query.key;
   let responseJSON;
-  const activeProcess = processingHandler.getActiveProcess();
-  await activeProcess.waitForReadyState();
+  await processingHandler.waitForReadyState();
   switch (key) {
+    case 'userDispensationJob': {
+      responseJSON = await processingHandler.dispatch(GET_LM_DISPENSATION_JOB);
+      break;
+    }
     case 'userTimeSeriesData': {
       const address = req.query.address;
-      responseJSON = await activeProcess.dispatch(
+      responseJSON = await processingHandler.dispatch(
         'GET_LM_USER_TIME_SERIES_DATA',
         address
       );
@@ -64,18 +96,21 @@ app.get('/api/lm', async (req, res, next) => {
     case 'userData': {
       const address = req.query.address;
       const timeIndex = getTimeIndex(req.query.timestamp);
-      responseJSON = await activeProcess.dispatch('GET_LM_USER_DATA', {
+      responseJSON = await processingHandler.dispatch('GET_LM_USER_DATA', {
         address,
         timeIndex
       });
       break;
     }
     case 'stack': {
-      responseJSON = await activeProcess.dispatch('GET_LM_STACK_DATA', null);
+      responseJSON = await processingHandler.dispatch(
+        'GET_LM_STACK_DATA',
+        null
+      );
       break;
     }
     default: {
-      responseJSON = await activeProcess.dispatch('GET_LM_KEY_VALUE', key);
+      responseJSON = await processingHandler.dispatch('GET_LM_KEY_VALUE', key);
     }
   }
   res.setHeader('Content-Type', 'application/json');
@@ -83,17 +118,26 @@ app.get('/api/lm', async (req, res, next) => {
 });
 
 app.get('/api/vs', async (req, res, next) => {
+  const snapshotSource =
+    req.query[SNAPSHOT_SOURCE_KEY] ||
+    req.headers[SNAPSHOT_SOURCE_KEY] ||
+    MAINNET;
+  const processingHandler =
+    processingHandlers[snapshotSource] || processingHandlers[MAINNET];
   const key = req.query.key;
   let responseJSON;
-  const activeProcess = processingHandler.getActiveProcess();
-  await activeProcess.waitForReadyState();
+  await processingHandler.waitForReadyState();
   switch (key) {
+    case 'userDispensationJob': {
+      responseJSON = await processingHandler.dispatch(GET_VS_DISPENSATION_JOB);
+      break;
+    }
     case 'unclaimedDelegatedRewards': {
       break;
     }
     case 'userTimeSeriesData': {
       const address = req.query.address;
-      responseJSON = await activeProcess.dispatch(
+      responseJSON = await processingHandler.dispatch(
         'GET_VS_USER_TIME_SERIES_DATA',
         address
       );
@@ -102,18 +146,21 @@ app.get('/api/vs', async (req, res, next) => {
     case 'userData': {
       const address = req.query.address;
       const timeIndex = getTimeIndex(req.query.timestamp);
-      responseJSON = await activeProcess.dispatch('GET_VS_USER_DATA', {
+      responseJSON = await processingHandler.dispatch('GET_VS_USER_DATA', {
         address,
         timeIndex
       });
       break;
     }
     case 'stack': {
-      responseJSON = await activeProcess.dispatch('GET_VS_STACK_DATA', null);
+      responseJSON = await processingHandler.dispatch(
+        'GET_VS_STACK_DATA',
+        null
+      );
       break;
     }
     default: {
-      responseJSON = await activeProcess.dispatch('GET_VS_KEY_VALUE', key);
+      responseJSON = await processingHandler.dispatch('GET_VS_KEY_VALUE', key);
     }
   }
   res.setHeader('Content-Type', 'application/json');

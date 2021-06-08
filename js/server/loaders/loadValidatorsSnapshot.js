@@ -1,6 +1,48 @@
 const { fetch } = require('cross-fetch');
+const { DEVNET } = require('../constants/snapshot-source-names');
 
-exports.default = async function () {
+/* 
+  WARNING: DO NOT ADD MORE QUERIES OR FIELDS TO THE GRAPHQL QUERY.
+  QUERIES ARE CACHED USING THE LENGTH OF THE TEXT CONTENT OF THE RESPONSE OBJECT
+*/
+
+const MAINNET_QUERY = /* GraphQL */ `
+  query GetSnapshot {
+    snapshots_validators(limit: 1, order_by: { id: desc }) {
+      snapshot_data
+    }
+    snapshots_vs_claims(limit: 1, order_by: { id: desc }) {
+      snapshot_data
+    }
+  }
+`;
+const DEVNET_QUERY = /* GraphQL */ `
+  query GetDevSnapshot {
+    snapshots_validators: snapshots_validators_dev(
+      limit: 1
+      order_by: { id: desc }
+    ) {
+      snapshot_data
+    }
+    snapshots_vs_claims(limit: 1, order_by: { id: desc }) {
+      snapshot_data
+    }
+  }
+`;
+
+const getQueryByNetwork = network => {
+  network = network ? network.toLowerCase() : network;
+  switch (network) {
+    case DEVNET: {
+      return DEVNET_QUERY;
+    }
+    default: {
+      return MAINNET_QUERY;
+    }
+  }
+};
+
+exports.loadValidatorsSnapshot = async function (network) {
   if (!process.env.HEADER_SECRET) {
     throw new Error('process.env.HEADER_SECRET not defined!');
   }
@@ -13,14 +55,9 @@ exports.default = async function () {
       'x-hasura-admin-secret': process.env.HEADER_SECRET,
       'Content-Type': 'application/json'
     },
+    // snapshots_validators_dev
     body: JSON.stringify({
-      query: /* GraphQL */ `
-        query GetCommissionSnapshot {
-          snapshots_validators(limit: 1, order_by: { id: desc }) {
-            snapshot_data
-          }
-        }
-      `
+      query: getQueryByNetwork(network)
     })
-  }).then(r => r.json());
+  });
 };

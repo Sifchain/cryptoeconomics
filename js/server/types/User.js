@@ -20,6 +20,7 @@ class User {
     this.totalAccruedCommissionsAtMaturity = 0;
     this.totalCommissionsAndRewardsAtMaturity = 0;
     this.claimableCommissions = 0;
+    this.forfeitedCommissions = 0;
 
     this.claimedCommissionsAndRewardsAwaitingDispensation = 0;
     // neccessary because we can otherwise not calculate `currentTotalCommissionsOnClaimableDelegatorRewards` if there are no remaining tickets
@@ -90,31 +91,37 @@ class User {
     let totalReward = 0;
     let totalClaimableReward = 0;
     // console.log(`Calculating updateRewards commissions correctly?`);
-    this.tickets.forEach(t => {
+    const tickets = this.tickets;
+    const length = tickets.length;
+    for (let i = 0; i < length; i++) {
+      const t = tickets[i];
+      const multiplier = t.mul;
+      const remainingMultiplier = 1 - multiplier;
       const totalValidatorCommissions = t.calculateTotalValidatorCommissions();
       const claimableReward =
-        t.reward * t.mul - totalValidatorCommissions * t.mul;
+        (t.reward - totalValidatorCommissions) * multiplier;
       const remainingReward =
-        (1 - t.mul) * t.reward - (1 - t.mul) * totalValidatorCommissions;
+        remainingMultiplier * t.reward -
+        remainingMultiplier * totalValidatorCommissions;
       const expectedReward = claimableReward + remainingReward;
       totalAmount += t.amount;
       totalReward += expectedReward;
       totalClaimableReward += claimableReward;
-    });
+    }
     this.totalDepositedAmount = totalAmount;
     this.totalClaimableRewardsOnDepositedAssets = totalClaimableReward;
+    const claimableOnWithdrawalsAndDeposits =
+      this.claimableRewardsOnWithdrawnAssets +
+      this.totalClaimableRewardsOnDepositedAssets;
+    const claimableCommissions = this.claimableCommissions;
     this.totalClaimableCommissionsAndClaimableRewards =
-      this.claimableRewardsOnWithdrawnAssets +
-      this.totalClaimableRewardsOnDepositedAssets +
-      this.claimableCommissions;
+      claimableOnWithdrawalsAndDeposits + claimableCommissions;
     this.totalAccruedCommissionsAndClaimableRewards =
-      this.claimableRewardsOnWithdrawnAssets +
-      this.totalClaimableRewardsOnDepositedAssets +
+      claimableOnWithdrawalsAndDeposits +
       this.currentTotalCommissionsOnClaimableDelegatorRewards +
-      this.claimableCommissions;
+      claimableCommissions;
     this.reservedReward = totalReward;
-    this.nextRewardShare =
-      this.totalDepositedAmount / timestampTicketsAmountSum;
+    this.nextRewardShare = totalAmount / timestampTicketsAmountSum;
   }
 
   updateUserMaturityDates (
@@ -192,6 +199,10 @@ class User {
     this.claimableCommissions += claimableCommission;
   }
 
+  addForfeitedCommission (forfeitedCommission) {
+    this.forfeitedCommissions += forfeitedCommission;
+  }
+
   recalculateCurrentTotalCommissionsOnClaimableDelegatorRewards (
     getUserByAddress = addr => new User(),
     userAddress
@@ -226,11 +237,26 @@ class User {
           validatorRewardAddress
         );
         validator.addClaimableCommission(claimableCommission);
+        validator.addForfeitedCommission(forfeitedCommission);
         ticket.resetCommissionRewardsByValidator(validatorRewardAddress);
         totalClaimableCommissions += claimableCommission;
         totalForfeitedCommissions += forfeitedCommission;
       }
     return { totalClaimableCommissions, totalForfeitedCommissions };
+  }
+
+  distributeClaimedRewards (amountToDistribute) {
+    const awaitingDispensation = this
+      .claimedCommissionsAndRewardsAwaitingDispensation;
+
+    if (amountToDistribute > awaitingDispensation) {
+      // console.warn(
+      //   `WARNING: Distributed amount: ${amountToDistribute} exceeds the user's maximum of ${awaitingDispensation}!`
+      // );
+      amountToDistribute = awaitingDispensation;
+    }
+    this.claimedCommissionsAndRewardsAwaitingDispensation -= amountToDistribute;
+    this.dispensed += amountToDistribute;
   }
 
   claimAllCurrentCommissionsAndRewards (getUserByAddress) {
@@ -255,7 +281,6 @@ class User {
     this.claimableRewardsOnWithdrawnAssets = 0;
     this.tickets.forEach(t => t.resetAfterClaim());
     this.forfeited += forfeited - totalCommissionsForfeitedByValidators;
-    console.log('cool');
   }
 
   withdrawStakeAsDelegator (delegateEvent, getUserByAddress, burnedTickets) {

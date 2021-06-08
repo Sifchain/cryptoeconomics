@@ -27,11 +27,8 @@ const DEPOSITS_ALLOWED_DURATION_MS =
   moment.utc(START_DATETIME).valueOf();
 
 // Amount of 200min intervals before users can no-longer gain rewards
-const REWARD_ACCRUAL_DURATION_INTERVAL_COUNT = ~~(
-  REWARD_ACCRUAL_DURATION_MS /
-  1000 /
-  60 /
-  EVENT_INTERVAL_MINUTES
+const REWARD_ACCRUAL_DURATION_INTERVAL_COUNT = Math.floor(
+  REWARD_ACCRUAL_DURATION_MS / 1000 / 60 / EVENT_INTERVAL_MINUTES
 );
 
 const config = {

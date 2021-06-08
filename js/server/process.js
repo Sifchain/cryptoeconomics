@@ -1,10 +1,14 @@
-// const { augmentLMData } = require('./augmentLMData');
 const { augmentVSData } = require('./augmentVSData');
-
-const { remapLMAddresses, createClaimEvents } = require('./util/lm-util');
-const { remapVSAddresses } = require('./util/vs-util');
-
-// const { processLMGlobalState } = require('./process-lm');
+const {
+  remapLMAddresses,
+  getCurrentLMTimeseriesLength,
+  createClaimEvents,
+  createDispensationEvents
+} = require('./util/lm-util');
+const {
+  remapVSAddresses,
+  getCurrentVSTimeseriesLength
+} = require('./util/vs-util');
 const { processVSGlobalState } = require('./process-vs');
 
 const {
@@ -13,67 +17,61 @@ const {
 } = require('./config');
 const { GlobalTimestampState } = require('./types');
 
-const fs = require('fs');
-const path = require('path');
-const { getTimeIndex } = require('./util/getTimeIndex');
 const {
   VALIDATOR_STAKING,
   LIQUIDITY_MINING
 } = require('./constants/reward-program-types');
-const { mockMinerClaims } = require('./mock');
-// const { getTimeIndex } = require("./util/getTimeIndex");
-
-// const snapshotLM = require("../snapshots/snapshot_lm_latest.json");
-// const snapshotVS = require("../snapshots/snapshot_vs_latest.json");
-
-// exports.getProcessedLMData = snapshotLM => {
-//   const LMAddresses = snapshotLM.data.snapshots_new[0].snapshot_data;
-
-//   const LMTimeIntervalEvents = remapLMAddresses(
-//     LMAddresses,
-//     EVENT_INTERVAL_MINUTES
-//   );
-
-//   const LMGlobalStates = [GlobalTimestampState.getInitial()];
-
-//   for (let i = 0; i < NUMBER_OF_INTERVALS_TO_RUN; i++) {
-//     const lastGlobalState = LMGlobalStates[LMGlobalStates.length - 1];
-//     const timestamp = i * EVENT_INTERVAL_MINUTES;
-//     const events = LMTimeIntervalEvents['' + timestamp] || [];
-//     const newGlobalState = processLMGlobalState(
-//       lastGlobalState,
-//       timestamp,
-//       events
-//     );
-//     LMGlobalStates.push(newGlobalState);
-//   }
-
-//   // TODO: remove past dispensations
-//   // TODO: return unpaid balances
-//   // return augmentLMData(LMGlobalStates);
-// };
+const { mockMinerClaims, mockMinerDispensations } = require('./mock');
 
 exports.getProcessedLMData = snapshotLM => {
-  const LMAddresses = snapshotLM.data.snapshots_new[0].snapshot_data;
-  const { claimsSnapshotData } = mockMinerClaims(snapshotLM);
+  let {
+    snapshots_new: [{ snapshot_data: minerSnapshotData }],
+    snapshots_lm_claims: [{ snapshot_data: claimsSnapshotData = {} } = {}]
+  } = snapshotLM.data;
+
+  const snapshotTimeseriesLength = getCurrentLMTimeseriesLength(
+    minerSnapshotData
+  );
+
+  let dispensationsSnapshotData = {};
+  if (process.env.MOCK_DATA_ENABLED === 'true') {
+    claimsSnapshotData = mockMinerClaims(snapshotLM).claimsSnapshotData;
+    dispensationsSnapshotData = mockMinerDispensations(claimsSnapshotData)
+      .dispensationsSnapshotData;
+  }
+
   const claimEventsByUserByTimestamp = createClaimEvents(claimsSnapshotData);
-  const userEventsByTimestamp = remapLMAddresses(LMAddresses);
+  const dispensationEventsByUserByTimestamp = createDispensationEvents(
+    dispensationsSnapshotData
+  );
+
+  const userEventsByTimestamp = remapLMAddresses(minerSnapshotData);
 
   return processUserEventsByTimestamp(
     userEventsByTimestamp,
     () => 0,
     LIQUIDITY_MINING,
-    claimEventsByUserByTimestamp
+    snapshotTimeseriesLength,
+    claimEventsByUserByTimestamp,
+    dispensationEventsByUserByTimestamp
   );
-
-  // TODO: remove past dispensations
-  // TODO: return unpaid balances
-  // return augmentLMData(LMGlobalStates);
 };
 
 exports.getProcessedVSData = snapshotVS => {
-  const validatorSnapshotData =
-    snapshotVS.data.snapshots_validators[0].snapshot_data;
+  let {
+    snapshots_validators: [{ snapshot_data: validatorSnapshotData }],
+    snapshots_vs_claims: [{ snapshot_data: claimsSnapshotData = {} } = {}]
+  } = snapshotVS.data;
+  let dispensationsSnapshotData = {};
+
+  const snapshotTimeseriesLength = getCurrentVSTimeseriesLength(
+    validatorSnapshotData
+  );
+
+  const claimEventsByUserByTimestamp = createClaimEvents(claimsSnapshotData);
+  const dispensationEventsByUserByTimestamp = createDispensationEvents(
+    dispensationsSnapshotData
+  );
 
   console.time('remapVS');
   const { userEventsByTimestamp } = remapVSAddresses(validatorSnapshotData);
@@ -91,62 +89,61 @@ exports.getProcessedVSData = snapshotVS => {
   return processUserEventsByTimestamp(
     userEventsByTimestamp,
     getCurrentCommissionRate,
-    VALIDATOR_STAKING
+    VALIDATOR_STAKING,
+    snapshotTimeseriesLength,
+    claimEventsByUserByTimestamp,
+    dispensationEventsByUserByTimestamp
   );
+};
+
+const history = {
+  [VALIDATOR_STAKING]: {},
+  [LIQUIDITY_MINING]: {}
 };
 
 function processUserEventsByTimestamp (
   userEventsByTimestamp,
   getCurrentCommissionRate = (address, stateIndex) => 0,
   rewardProgramType,
-  claimEventsByUserByTimestamp = {}
+  snapshotTimeseriesLength,
+  claimEventsByUserByTimestamp = {},
+  dispensationEventsByUserByTimestamp = {}
 ) {
   console.time('processvs');
   const VSGlobalStates = [GlobalTimestampState.getInitial()];
-  let currentTimeIndex = getTimeIndex('now');
-  const snapshotOrigin =
-    process.env.LOCAL_SNAPSHOT_DEV_MODE === 'enabled' ? 'local' : 'live';
   let cacheEnabled = true;
   for (let i = 0; i < NUMBER_OF_INTERVALS_TO_RUN; i++) {
-    const isSimulatedFutureInterval = currentTimeIndex < i;
-    const cachePath = path.join(
-      __dirname,
-      `./cache/state.${snapshotOrigin}.${rewardProgramType.toLowerCase()}.${i}.json`
-    );
-    if (!isSimulatedFutureInterval && cacheEnabled) {
-      const doesExist = fs.existsSync(cachePath);
-
-      if (doesExist) {
-        try {
-          let cached = JSON.parse(fs.readFileSync(cachePath).toString());
-          VSGlobalStates.push(GlobalTimestampState.fromJSON(cached));
-          continue;
-        } catch (e) {}
-      }
-    }
-
-    const lastGlobalState = VSGlobalStates[VSGlobalStates.length - 1];
+    let nextGlobalState;
     const timestamp = i * EVENT_INTERVAL_MINUTES;
-    const userEvents = userEventsByTimestamp['' + timestamp] || [];
-    const claimEventsByUser =
-      claimEventsByUserByTimestamp['' + timestamp] || {};
-
-    const newGlobalState = processVSGlobalState(
-      lastGlobalState,
-      timestamp,
-      userEvents,
-      address => getCurrentCommissionRate(address, i),
-      rewardProgramType,
-      claimEventsByUser
-    );
-    if (cacheEnabled) {
-      fs.writeFileSync(cachePath, JSON.stringify(newGlobalState));
+    const isSimulatedFutureInterval = i >= snapshotTimeseriesLength;
+    const rewardProgramCache = history[rewardProgramType];
+    const cachedTimestampState = rewardProgramCache[timestamp];
+    if (cachedTimestampState && !isSimulatedFutureInterval && cacheEnabled) {
+      nextGlobalState = cachedTimestampState;
+    } else {
+      const lastGlobalState = VSGlobalStates[VSGlobalStates.length - 1];
+      const userEvents = userEventsByTimestamp['' + timestamp] || [];
+      const claimEventsByUser =
+        claimEventsByUserByTimestamp['' + timestamp] || {};
+      const dispensationEventsByUser =
+        dispensationEventsByUserByTimestamp['' + timestamp];
+      nextGlobalState = processVSGlobalState(
+        lastGlobalState,
+        timestamp,
+        userEvents,
+        address => getCurrentCommissionRate(address, i),
+        rewardProgramType,
+        isSimulatedFutureInterval,
+        claimEventsByUser,
+        dispensationEventsByUser
+      );
     }
-    VSGlobalStates.push(newGlobalState);
+    if (cacheEnabled && !isSimulatedFutureInterval && !cachedTimestampState) {
+      rewardProgramCache[timestamp] = nextGlobalState;
+    }
+    VSGlobalStates.push(nextGlobalState);
   }
   console.timeEnd('processvs');
 
-  // TODO: remove past dispensations
-  // TODO: return unpaid balances
-  return augmentVSData(VSGlobalStates);
+  return augmentVSData(VSGlobalStates, snapshotTimeseriesLength);
 }

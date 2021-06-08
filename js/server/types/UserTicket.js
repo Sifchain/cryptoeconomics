@@ -16,8 +16,9 @@ class UserTicket {
 
   calculateTotalValidatorCommissions () {
     let sum = 0;
-    for (let prop in this.commissionRewardsByValidator) {
-      sum += this.commissionRewardsByValidator[prop];
+    const rewards = this.commissionRewardsByValidator;
+    for (let prop in rewards) {
+      sum += rewards[prop];
     }
     return sum;
   }
@@ -79,9 +80,10 @@ class UserTicket {
   cloneWith (props) {
     let next = new UserTicket();
     next = Object.assign(Object.assign(next, this), props);
-    next.commissionRewardsByValidator = {
-      ...next.commissionRewardsByValidator
-    };
+    next.commissionRewardsByValidator = Object.assign(
+      {},
+      next.commissionRewardsByValidator
+    );
     return next;
   }
 

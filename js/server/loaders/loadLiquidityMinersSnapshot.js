@@ -1,6 +1,45 @@
 const { fetch } = require('cross-fetch');
+const { DEVNET } = require('../constants/snapshot-source-names');
 
-module.exports.default = async function () {
+/* 
+  WARNING: DO NOT ADD MORE QUERIES OR FIELDS TO THE GRAPHQL QUERY.
+  QUERIES ARE CACHED USING THE LENGTH OF THE TEXT CONTENT OF THE RESPONSE OBJECT
+*/
+
+const MAINNET_QUERY = /* GraphQL */ `
+  query GetSnapshot {
+    snapshots_new(limit: 1, order_by: { id: desc }) {
+      snapshot_data
+    }
+    snapshots_lm_claims(limit: 1, order_by: { id: desc }) {
+      snapshot_data
+    }
+  }
+`;
+const DEVNET_QUERY = /* GraphQL */ `
+  query GetDevSnapshot {
+    snapshots_new: snapshots_new_dev(limit: 1, order_by: { id: desc }) {
+      snapshot_data
+    }
+    snapshots_lm_claims(limit: 1, order_by: { id: desc }) {
+      snapshot_data
+    }
+  }
+`;
+
+const getQueryByNetwork = network => {
+  network = network ? network.toLowerCase() : network;
+  switch (network) {
+    case DEVNET: {
+      return DEVNET_QUERY;
+    }
+    default: {
+      return MAINNET_QUERY;
+    }
+  }
+};
+
+module.exports.loadLiquidityMinersSnapshot = async function (network) {
   if (!process.env.HEADER_SECRET) {
     throw new Error('process.env.HEADER_SECRET not defined!');
   }
@@ -14,15 +53,7 @@ module.exports.default = async function () {
       'Content-Type': 'application/json'
     }),
     body: JSON.stringify({
-      query: /* GraphQL */ `
-        query GetSnapshot {
-          snapshots_new(limit: 1, order_by: { id: desc }) {
-            snapshot_data
-          }
-        }
-      `
+      query: getQueryByNetwork(network)
     })
-  }).then(async r => {
-    return r.json();
   });
 };
