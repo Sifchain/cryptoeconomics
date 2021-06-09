@@ -30,7 +30,7 @@ const DEVNET_QUERY = /* GraphQL */ `
   }
 `;
 
-const getQueryByNetwork = network => {
+const getQueryByNetwork = (network) => {
   network = network ? network.toLowerCase() : network;
   switch (network) {
     case DEVNET: {
@@ -53,11 +53,11 @@ exports.loadValidatorsSnapshot = async function (network) {
     method: 'POST',
     headers: {
       'x-hasura-admin-secret': process.env.HEADER_SECRET,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
     // snapshots_validators_dev
     body: JSON.stringify({
-      query: getQueryByNetwork(network)
-    })
+      query: getQueryByNetwork(network),
+    }),
   });
 };
