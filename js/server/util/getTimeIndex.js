@@ -13,7 +13,7 @@ function getTimeIndex (timestampFromClient) {
     nowMoment = moment.utc(new Date(timestampFromClient));
   }
   const diff = nowMoment.diff(moment.utc(START_DATETIME));
-  const rtn = Math.floor(moment.duration(diff).asMinutes() / 200);
+  const rtn = Math.floor(moment.duration(diff).asMinutes() / 200) + 1;
   return rtn;
 }
 
