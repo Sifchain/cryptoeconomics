@@ -187,6 +187,7 @@ class App extends React.Component {
   initDateTime () {
     const now = moment.utc(Date.now());
     const currentTimeIndex = this.getTimeIndex(now);
+    console.log({ currentTimeIndex });
     this.setState(
       {
         nowTimeIndex: currentTimeIndex
@@ -265,9 +266,10 @@ class App extends React.Component {
     const date = dateObj;
     this.setState({
       date,
-      timeIndex,
+      timeIndex: +timeIndex,
       userData: null
     });
+    console.log({ timeIndex });
     const address = this.state.address;
     if (address && address.startsWith('sif')) {
       if (this.state.bulkUserData) {
