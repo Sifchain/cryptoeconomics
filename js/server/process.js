@@ -1,13 +1,13 @@
 const { augmentVSData } = require('./augmentVSData');
 const {
   remapLMAddresses,
-  getCurrentLMTimeseriesLength,
+  getLMTimeseriesFinalIndex,
   createClaimEvents,
   createDispensationEvents
 } = require('./util/lm-util');
 const {
   remapVSAddresses,
-  getCurrentVSTimeseriesLength
+  getVSTimeseriesFinalIndex
 } = require('./util/vs-util');
 const { processVSGlobalState } = require('./process-vs');
 
@@ -26,14 +26,16 @@ const { mockMinerClaims, mockMinerDispensations } = require('./mock');
 exports.getProcessedLMData = snapshotLM => {
   let {
     snapshots_new: [{ snapshot_data: minerSnapshotData }],
-    snapshots_lm_claims: [{ snapshot_data: claimsSnapshotData = {} } = {}]
+    snapshots_lm_claims: [{ snapshot_data: claimsSnapshotData = {} } = {}],
+    snapshots_lm_dispensation: [
+      { snapshot_data: dispensationsSnapshotData = {} } = {}
+    ] = []
   } = snapshotLM.data;
-
-  const snapshotTimeseriesLength = getCurrentLMTimeseriesLength(
+  console.log('LM Claims: ' + Object.keys(claimsSnapshotData).join(', '));
+  const snapshotTimeseriesFinalIndex = getLMTimeseriesFinalIndex(
     minerSnapshotData
   );
 
-  let dispensationsSnapshotData = {};
   if (process.env.MOCK_DATA_ENABLED === 'true') {
     claimsSnapshotData = mockMinerClaims(snapshotLM).claimsSnapshotData;
     dispensationsSnapshotData = mockMinerDispensations(claimsSnapshotData)
@@ -51,7 +53,7 @@ exports.getProcessedLMData = snapshotLM => {
     userEventsByTimestamp,
     () => 0,
     LIQUIDITY_MINING,
-    snapshotTimeseriesLength,
+    snapshotTimeseriesFinalIndex,
     claimEventsByUserByTimestamp,
     dispensationEventsByUserByTimestamp
   );
@@ -60,11 +62,15 @@ exports.getProcessedLMData = snapshotLM => {
 exports.getProcessedVSData = snapshotVS => {
   let {
     snapshots_validators: [{ snapshot_data: validatorSnapshotData }],
-    snapshots_vs_claims: [{ snapshot_data: claimsSnapshotData = {} } = {}]
+    snapshots_vs_claims: [{ snapshot_data: claimsSnapshotData = {} } = {}],
+    snapshots_vs_dispensation: [
+      { snapshot_data: dispensationsSnapshotData = {} } = {}
+    ] = []
   } = snapshotVS.data;
-  let dispensationsSnapshotData = {};
 
-  const snapshotTimeseriesLength = getCurrentVSTimeseriesLength(
+  console.log('LM Claims: ' + Object.keys(claimsSnapshotData).join(', '));
+
+  const snapshotTimeseriesFinalIndex = getVSTimeseriesFinalIndex(
     validatorSnapshotData
   );
 
@@ -90,7 +96,7 @@ exports.getProcessedVSData = snapshotVS => {
     userEventsByTimestamp,
     getCurrentCommissionRate,
     VALIDATOR_STAKING,
-    snapshotTimeseriesLength,
+    snapshotTimeseriesFinalIndex,
     claimEventsByUserByTimestamp,
     dispensationEventsByUserByTimestamp
   );
@@ -105,17 +111,17 @@ function processUserEventsByTimestamp (
   userEventsByTimestamp,
   getCurrentCommissionRate = (address, stateIndex) => 0,
   rewardProgramType,
-  snapshotTimeseriesLength,
+  snapshotTimeseriesFinalIndex,
   claimEventsByUserByTimestamp = {},
   dispensationEventsByUserByTimestamp = {}
 ) {
   console.time('processvs');
   const VSGlobalStates = [GlobalTimestampState.getInitial()];
   let cacheEnabled = true;
-  for (let i = 0; i < NUMBER_OF_INTERVALS_TO_RUN; i++) {
+  for (let i = 1; i <= NUMBER_OF_INTERVALS_TO_RUN; i++) {
     let nextGlobalState;
     const timestamp = i * EVENT_INTERVAL_MINUTES;
-    const isSimulatedFutureInterval = i >= snapshotTimeseriesLength;
+    const isSimulatedFutureInterval = i > snapshotTimeseriesFinalIndex - 1;
     const rewardProgramCache = history[rewardProgramType];
     const cachedTimestampState = rewardProgramCache[timestamp];
     if (cachedTimestampState && !isSimulatedFutureInterval && cacheEnabled) {
@@ -145,5 +151,5 @@ function processUserEventsByTimestamp (
   }
   console.timeEnd('processvs');
 
-  return augmentVSData(VSGlobalStates, snapshotTimeseriesLength);
+  return augmentVSData(VSGlobalStates, snapshotTimeseriesFinalIndex);
 }

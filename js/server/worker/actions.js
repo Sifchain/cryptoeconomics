@@ -42,7 +42,7 @@ function actions (processor) {
     },
     [GET_SNAPSHOT_UPDATE_TIME_STATS] () {
       const lastUpdatedAt = getDateFromSnapshotIndex(
-        processor.lmDataParsed.currentSnapshotTimeseriesLength - 1
+        processor.lmDataParsed.snapshotTimeseriesFinalIndex - 1
       ).valueOf();
       // add 6 to account for maximum server reload delay
       // add 2 to account for maximum server processing time

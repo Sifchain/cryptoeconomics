@@ -55,7 +55,7 @@ function renderChart (canvasElement, data, chart) {
         data: data.map((d, index) => {
           return {
             y: typeof d === 'object' ? d.userClaimableReward : d,
-            x: timestampToDate(index * 200)
+            x: timestampToDate((index - 1) * 200)
           };
         })
       }

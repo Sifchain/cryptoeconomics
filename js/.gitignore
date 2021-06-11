@@ -27,3 +27,5 @@ yarn-error.log*
 
 /scripts/*.out.txt
 server/cache/*
+
+snapshots/*.trash.json

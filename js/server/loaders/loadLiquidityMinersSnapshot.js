@@ -1,5 +1,5 @@
 const { fetch } = require('cross-fetch');
-const { DEVNET } = require('../constants/snapshot-source-names');
+const { TESTNET } = require('../constants/snapshot-source-names');
 
 /* 
   WARNING: DO NOT ADD MORE QUERIES OR FIELDS TO THE GRAPHQL QUERY.
@@ -14,14 +14,20 @@ const MAINNET_QUERY = /* GraphQL */ `
     snapshots_lm_claims(limit: 1, order_by: { id: desc }) {
       snapshot_data
     }
+    snapshots_lm_dispensation(limit: 1, order_by: { id: desc }) {
+      snapshot_data
+    }
   }
 `;
-const DEVNET_QUERY = /* GraphQL */ `
+const TESTNET_QUERY = /* GraphQL */ `
   query GetDevSnapshot {
     snapshots_new: snapshots_new_dev(limit: 1, order_by: { id: desc }) {
       snapshot_data
     }
     snapshots_lm_claims(limit: 1, order_by: { id: desc }) {
+      snapshot_data
+    }
+    snapshots_lm_dispensation(limit: 1, order_by: { id: desc }) {
       snapshot_data
     }
   }
@@ -30,8 +36,8 @@ const DEVNET_QUERY = /* GraphQL */ `
 const getQueryByNetwork = network => {
   network = network ? network.toLowerCase() : network;
   switch (network) {
-    case DEVNET: {
-      return DEVNET_QUERY;
+    case TESTNET: {
+      return TESTNET_QUERY;
     }
     default: {
       return MAINNET_QUERY;

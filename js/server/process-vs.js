@@ -180,7 +180,7 @@ function processUserEvents (
   };
   switch (rewardProgramType) {
     case VALIDATOR_STAKING: {
-      _.forEach(eventsByUser, userEvents => {
+      _.forEach(eventsByUser, (userEvents, address) => {
         if (userEvents.length > 1) {
           processRedelegationEvents(userEvents, getUserByAddress);
         } else {

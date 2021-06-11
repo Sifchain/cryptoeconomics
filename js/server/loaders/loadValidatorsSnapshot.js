@@ -1,5 +1,5 @@
 const { fetch } = require('cross-fetch');
-const { DEVNET } = require('../constants/snapshot-source-names');
+const { TESTNET } = require('../constants/snapshot-source-names');
 
 /* 
   WARNING: DO NOT ADD MORE QUERIES OR FIELDS TO THE GRAPHQL QUERY.
@@ -14,9 +14,12 @@ const MAINNET_QUERY = /* GraphQL */ `
     snapshots_vs_claims(limit: 1, order_by: { id: desc }) {
       snapshot_data
     }
+    snapshots_vs_dispensation(limit: 1, order_by: { id: desc }) {
+      snapshot_data
+    }
   }
 `;
-const DEVNET_QUERY = /* GraphQL */ `
+const TESTNET_QUERY = /* GraphQL */ `
   query GetDevSnapshot {
     snapshots_validators: snapshots_validators_dev(
       limit: 1
@@ -27,14 +30,17 @@ const DEVNET_QUERY = /* GraphQL */ `
     snapshots_vs_claims(limit: 1, order_by: { id: desc }) {
       snapshot_data
     }
+    snapshots_vs_dispensation(limit: 1, order_by: { id: desc }) {
+      snapshot_data
+    }
   }
 `;
 
-const getQueryByNetwork = (network) => {
+const getQueryByNetwork = network => {
   network = network ? network.toLowerCase() : network;
   switch (network) {
-    case DEVNET: {
-      return DEVNET_QUERY;
+    case TESTNET: {
+      return TESTNET_QUERY;
     }
     default: {
       return MAINNET_QUERY;
@@ -53,11 +59,11 @@ exports.loadValidatorsSnapshot = async function (network) {
     method: 'POST',
     headers: {
       'x-hasura-admin-secret': process.env.HEADER_SECRET,
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
     // snapshots_validators_dev
     body: JSON.stringify({
-      query: getQueryByNetwork(network),
-    }),
+      query: getQueryByNetwork(network)
+    })
   });
 };

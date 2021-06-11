@@ -1,6 +1,5 @@
 const config = require('../config');
 const { User } = require('./User');
-const moment = require('moment');
 const { validateSifAddress } = require('../util/validateSifAddress');
 class GlobalTimestampState {
   constructor () {
@@ -36,18 +35,16 @@ class GlobalTimestampState {
         coins: [
           {
             denom: 'rowan',
-            amount: formattedAmount,
-            __humanReadableAmount: claimed.toPrecision(21)
+            amount: formattedAmount
           }
         ]
       });
     }
     return {
-      __meta: {
-        createdAt: moment.utc().toISOString(),
-        timestamp: this.timestamp
-      },
-      Output: output
+      internalEpochTimestamp: this.timestamp,
+      job: {
+        Output: output
+      }
     };
   }
 

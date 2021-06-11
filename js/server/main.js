@@ -5,7 +5,11 @@ const compression = require('compression');
 const fs = require('fs');
 // implements process.js in separate thread
 const { ProcessingHandler } = require('./worker');
-const { DEVNET, MAINNET } = require('./constants/snapshot-source-names');
+const {
+  DEVNET,
+  MAINNET,
+  TESTNET
+} = require('./constants/snapshot-source-names');
 const {
   GET_LM_DISPENSATION_JOB,
   GET_VS_DISPENSATION_JOB
@@ -14,16 +18,11 @@ const {
 // require("./simple").createValidatorStakingTimeSeries();
 // interfaces with `./process.childprocess.js`
 
-let devnetHandler;
+const testnetHandler = ProcessingHandler.init(TESTNET);
 const processingHandlers = {
   [MAINNET]: ProcessingHandler.init(MAINNET),
-  get [DEVNET] () {
-    if (devnetHandler) {
-      return devnetHandler;
-    }
-    devnetHandler = ProcessingHandler.init(DEVNET);
-    return devnetHandler;
-  }
+  [DEVNET]: testnetHandler,
+  [TESTNET]: testnetHandler
 };
 
 // const processingHandler = BackgroundProcessor.startAsMainProcess();
@@ -82,8 +81,18 @@ app.get('/api/lm', async (req, res, next) => {
   await processingHandler.waitForReadyState();
   switch (key) {
     case 'userDispensationJob': {
-      responseJSON = await processingHandler.dispatch(GET_LM_DISPENSATION_JOB);
-      break;
+      const { job, internalEpochTimestamp } = await processingHandler.dispatch(
+        GET_LM_DISPENSATION_JOB
+      );
+      if (req.query.download === 'true') {
+        res.setHeader(
+          'Content-Disposition',
+          `attachment; filename=vs-dispensation-${
+            processingHandler.network
+          }-${internalEpochTimestamp}-${Date.now()}.json`
+        );
+      }
+      return res.json(job);
     }
     case 'userTimeSeriesData': {
       const address = req.query.address;
@@ -129,8 +138,18 @@ app.get('/api/vs', async (req, res, next) => {
   await processingHandler.waitForReadyState();
   switch (key) {
     case 'userDispensationJob': {
-      responseJSON = await processingHandler.dispatch(GET_VS_DISPENSATION_JOB);
-      break;
+      const { job, internalEpochTimestamp } = await processingHandler.dispatch(
+        GET_VS_DISPENSATION_JOB
+      );
+      if (req.query.download === 'true') {
+        res.setHeader(
+          'Content-Disposition',
+          `attachment; filename=vs-dispensation-${
+            processingHandler.network
+          }-${internalEpochTimestamp}-${Date.now()}.json`
+        );
+      }
+      return res.json(job);
     }
     case 'unclaimedDelegatedRewards': {
       break;

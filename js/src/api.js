@@ -5,7 +5,8 @@ const serverURL = (() => {
   // environment = 'devnet';
   switch (environment) {
     case 'production':
-      return snapshotNetwork === networks.DEVNET
+      return snapshotNetwork === networks.DEVNET ||
+        snapshotNetwork === networks.TESTNET
         ? 'https://api-cryptoeconomics-devnet.sifchain.finance/api'
         : 'https://api-cryptoeconomics.sifchain.finance/api';
     case 'devnet':

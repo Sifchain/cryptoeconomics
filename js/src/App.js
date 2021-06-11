@@ -1,6 +1,6 @@
 import { START_DATETIME, networks, NETWORK_STORAGE_KEY } from './config';
 import './App.css';
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { fetchUsers, fetchUserData, fetchUserTimeSeriesData } from './api';
 import JSONPretty from 'react-json-pretty';
 import 'react-json-pretty/themes/monikai.css';
@@ -9,8 +9,6 @@ import DataChart from './DataChart';
 import DataStackAll from './DataStackAll';
 import { StatBlocks } from './StatBlocks';
 import { UserDataSummary } from './UserDataSummary';
-
-const DATE_FORMAT = 'ddd MMMM Do YYYY[,] h:mm A';
 
 // show all fields locally
 const SHOULD_HIDE_NON_USER_FRIENDLY_FIELDS = !!process.env
@@ -36,37 +34,145 @@ const debounce = (fn, ms) => {
     }, ms);
   };
 };
+
+class Router {
+  constructor (onChange = router => {}) {
+    this.query = {};
+    this.hashData = undefined;
+    this.evaluateHashQueryAndData();
+    onChange(this);
+    this.onChange = onChange;
+  }
+
+  evaluateHashQueryAndData () {
+    this.query = this.queryStringToObject(window.location.hash);
+    this.hashData = this.extractHashData();
+  }
+
+  push (hash, queryObject) {
+    const queryStr = this.objectToQueryString(queryObject);
+    console.log(queryStr, queryObject);
+    window.history.pushState(undefined, '', `#${hash || ''}&${queryStr}`);
+    this.evaluateHashQueryAndData();
+    // this.onChange(this);
+  }
+
+  extractHashData () {
+    return window.location.hash
+      .substr(1)
+      .split('&')
+      .shift();
+  }
+
+  queryStringToObject (str) {
+    const query = Object.fromEntries(
+      str
+        .split('&')
+        .filter(str => str.includes('='))
+        .map(str => str.split('='))
+    );
+    return query;
+  }
+
+  objectToQueryString (query) {
+    const str = Object.entries(query)
+      .map(arr => arr.join('='))
+      .join('&');
+    return str;
+  }
+}
 // const now = moment.utc(Date.parse(new Date()));
 // function initTimestamp() {
 //   return moment.duration(now.diff(START_DATETIME)).asMinutes() / 200;
 // }
 
+const CountDown = ({ until = moment() }) => {
+  const [currentTime, setCurrentTime] = useState(moment.utc());
+  const remainingTime = useMemo(
+    () =>
+      currentTime.valueOf() > until.valueOf()
+        ? ''
+        : moment
+            .utc(until.utc().diff(currentTime, 'ms', true))
+            .format(`[(]HH[:]mm[:]ss[)]`),
+    [currentTime]
+  );
+  useEffect(() => {
+    let interval = setInterval(() => setCurrentTime(moment.utc()), 1000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+  return (
+    <span>
+      Upcoming Rewards{' '}
+      <span
+        style={{
+          // fontVariant: 'none',
+          fontSize: '1.6rem',
+          verticalAlign: 'center'
+          // fontWeight: 400,
+        }}
+      >
+        {remainingTime}
+      </span>
+    </span>
+  );
+};
+
 class App extends React.Component {
   constructor (props) {
     super(props);
 
-    const [address, type] = window.location.hash.substr(1).split('&type=');
+    const router = new Router(router => {});
+    const {
+      type = 'lm',
+      'snapshot-source': network = Object.values(networks).find(
+        n =>
+          n ===
+          window.localStorage
+            .getItem(NETWORK_STORAGE_KEY)
+            // BACKWARDS COMPATIBILITY -- REMOVE LATER
+            .replace(networks.DEVNET, networks.TESTNET)
+      ) || networks.MAINNET
+    } = router.query;
+    const address = router.hashData;
+
     this.state = {
       timeIndex: 0,
       nowTimeIndex: 0,
       date: moment.utc(new Date()),
-      address: address || undefined,
-      type: type || 'lm',
+      address: address,
+      type: type,
       dataDisplayPoints: [],
       userData: null,
       bulkUserData: null,
-      network:
-        window.localStorage.getItem(NETWORK_STORAGE_KEY) || networks.MAINNET,
+      network: network,
       usersLM: [],
       usersVS: [],
-      isLoadingLeaderboard: false
+      isLoadingLeaderboard: false,
+      originalTitle: window.document.title,
+      router: router
     };
 
+    if (this.state.network !== networks.MAINNET) {
+      window.document.title = window.document.title.replace(
+        'Sifchain',
+        this.state.network
+      );
+    }
     this.updateAddressEvent = this.updateAddressEvent.bind(this);
     this.updateAddress = this.updateAddress.bind(this);
     this.updateTimestamp = this.updateTimestamp.bind(this);
     this.updateType = this.updateType.bind(this);
     this.updateAddress(this.state.address);
+  }
+
+  updateWebsiteTitle () {
+    // window.document.title = `${this.state.type.toLowerCase()}/${this.state.address.slice(
+    //   0,
+    //   3
+    // )}..${this.state.address.slice(-12, -1)}`;
   }
 
   getTimeIndex (time) {
@@ -81,11 +187,14 @@ class App extends React.Component {
   initDateTime () {
     const now = moment.utc(Date.now());
     const currentTimeIndex = this.getTimeIndex(now);
-    this.setState({
-      date: now,
-      timeIndex: currentTimeIndex,
-      nowTimeIndex: currentTimeIndex
-    });
+    this.setState(
+      {
+        nowTimeIndex: currentTimeIndex
+      },
+      () => {
+        this.updateTimestamp(currentTimeIndex);
+      }
+    );
   }
 
   componentDidMount () {
@@ -96,7 +205,12 @@ class App extends React.Component {
 
   updateNetwork (network) {
     window.localStorage.setItem(NETWORK_STORAGE_KEY, network);
-    window.location.assign(`#&type=${this.state.type}`);
+    const router = this.state.router;
+    router.push(router.hashData, {
+      ...router.query,
+      type: this.state.type,
+      'snapshot-source': network
+    });
     window.location.reload();
     this.setState({
       network
@@ -110,29 +224,29 @@ class App extends React.Component {
 
   updateAddress (address) {
     address = address ? address.trim() : address;
-    window.history.pushState(
-      undefined,
-      '',
-      `#${address || ''}&type=${this.state.type}`
-    );
+    this.state.router.push(address, {
+      'snapshot-source': this.state.network,
+      type: this.state.type
+    });
     if (address !== 'leaderboard' && address !== undefined) {
       fetchUserTimeSeriesData(address, this.state.type).then(
-        userTimeSeriesData => this.setState({ userTimeSeriesData })
+        userTimeSeriesData =>
+          this.setState({ userTimeSeriesData }, () => {
+            fetchUserData(address, this.state.type).then(bulkUserData => {
+              this.setState({
+                bulkUserData,
+                userData: bulkUserData[this.state.timeIndex]
+              });
+            });
+          })
       );
-      fetchUserData(address, this.state.type, this.state.date.valueOf()).then(
-        userData => {
-          this.setState({
-            userData
-          });
-        }
-      );
-      setTimeout(() => {
-        fetchUserData(address, this.state.type).then(bulkUserData => {
-          this.setState({
-            bulkUserData
-          });
-        });
-      }, 500);
+      // fetchUserData(address, this.state.type, this.state.date.valueOf()).then(
+      //   (userData) => {
+      //     this.setState({
+      //       userData,
+      //     });
+      //   }
+      // );
     }
     this.setState({
       address,
@@ -142,6 +256,7 @@ class App extends React.Component {
   }
 
   updateTimestamp (timeIndex) {
+    // because genesis block is included
     const minutes = timeIndex * 200;
     const dateObj = moment
       .utc(START_DATETIME)
@@ -179,11 +294,10 @@ class App extends React.Component {
   }
 
   updateType (type) {
-    window.history.pushState(
-      undefined,
-      '',
-      `#${this.state.address || ''}&type=${type}`
-    );
+    this.state.router.push(this.state.router.hashData, {
+      ...this.state.router.query,
+      type: type
+    });
     const users = this.getUsersByType(type);
     this.setState(
       {
@@ -214,6 +328,7 @@ class App extends React.Component {
         </div>
       );
     }
+    this.updateWebsiteTitle();
     const users = this.getUsersByType(this.state.type);
 
     let userTimestampJSON = '';
@@ -421,14 +536,53 @@ class App extends React.Component {
                 className='stat-card timestamp-slider-description'
               >
                 <div className='timestamp-slider-description__title'>
-                  {this.state.timeIndex < this.state.nowTimeIndex
-                    ? 'Past Rewards'
-                    : this.state.timeIndex > this.state.nowTimeIndex
-                    ? 'Future Rewards'
-                    : 'Current Rewards'}
+                  {this.state.timeIndex === this.state.nowTimeIndex ? (
+                    <CountDown until={this.state.date} />
+                  ) : this.state.timeIndex === this.state.nowTimeIndex - 1 ? (
+                    <span>Current Rewards</span>
+                  ) : this.state.timeIndex === 0 ? (
+                    'Genesis'
+                  ) : this.state.timeIndex < this.state.nowTimeIndex ? (
+                    'Past Rewards'
+                  ) : this.state.timeIndex > this.state.nowTimeIndex ? (
+                    'Future Rewards'
+                  ) : (
+                    'Current Rewards'
+                  )}
                 </div>
                 <div className='timestamp-slider-description__datetime'>
-                  {this.state.date.format(DATE_FORMAT) + ' UTC'}
+                  {this.state.date.format(
+                    `ddd MMMM Do YYYY[,] [${this.state.date
+                      .clone()
+                      .subtract(200, 'minutes')
+                      .format(`hh:mm A`)}] - hh:mm A`
+                  ) + ' UTC'}
+                </div>
+                <div
+                  style={{
+                    display: 'none'
+                  }}
+                  className='timestamp-slider-description__datetime'
+                >
+                  {this.state.date
+                    .clone()
+                    .local()
+                    .format(
+                      `ddd MMMM Do YYYY[,] [${this.state.date
+                        .clone()
+                        .local()
+                        .subtract(200, 'minutes')
+                        .format(`hh:mm A`)}] - hh:mm A`
+                    ) + ' LOCAL'}
+                  <hr />
+                  Now:{' '}
+                  {moment()
+                    .utc()
+                    .format(`ddd MMMM Do YYYY hh:mm A`) + ' UTC  '}
+                  <br />
+                  {moment()
+                    .local()
+                    .format(`ddd MMMM Do YYYY hh:mm A`) + ' LOCAL'}
                 </div>
               </div>
             )}
@@ -570,7 +724,7 @@ class App extends React.Component {
             defaultValue={networks.MAINNET}
           >
             <option value={networks.MAINNET}>MAINNET</option>
-            <option value={networks.DEVNET}>DEVNET</option>99.9999
+            <option value={networks.TESTNET}>TESTNET</option>
           </select>
         </div>
       </div>
