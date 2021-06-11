@@ -11,7 +11,7 @@ const { retryOnFail } = require('../util/retryOnFail');
   Reloads & re-processes Miner & Validator data once every `RELOAD_INTERVAL`
 */
 
-const minutesUntilReload = 6;
+const minutesUntilReload = 1;
 const RELOAD_INTERVAL = minutesUntilReload * 60 * 1000;
 
 if (RELOAD_INTERVAL < 6 * 60 * 1000) {
