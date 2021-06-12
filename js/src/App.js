@@ -125,16 +125,10 @@ class App extends React.Component {
     super(props);
 
     const router = new Router(router => {});
+
     const {
       type = 'lm',
-      'snapshot-source': network = Object.values(networks).find(
-        n =>
-          n ===
-          window.localStorage
-            .getItem(NETWORK_STORAGE_KEY)
-            // BACKWARDS COMPATIBILITY -- REMOVE LATER
-            .replace(networks.DEVNET, networks.TESTNET)
-      ) || networks.MAINNET
+      'snapshot-source': network = networks.MAINNET
     } = router.query;
     const address = router.hashData;
 

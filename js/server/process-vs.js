@@ -5,14 +5,14 @@ const config = require('./config');
 const { User, GlobalTimestampState, UserTicket } = require('./types');
 const {
   VALIDATOR_STAKING,
-  LIQUIDITY_MINING
+  LIQUIDITY_MINING,
 } = require('./constants/reward-program-types');
 
 /*
   Filter out deposit events after config.DEPOSIT_CUTOFF_DATETIME,
   but continue accruing rewards until config.END_OF_REWARD_ACCRUAL_DATETIME
 */
-function processVSGlobalState (
+function processVSGlobalState(
   lastGlobalState,
   timestamp,
   eventsByUser,
@@ -46,7 +46,7 @@ function processVSGlobalState (
   Object.assign(globalState, {
     timestamp,
     rewardBuckets,
-    users
+    users,
   });
   if (isSimulatedFutureInterval) {
     globalState.markAsSimulated();
@@ -57,8 +57,8 @@ function processVSGlobalState (
   return globalState;
 }
 
-function processUserClaims (users, claimEventsByUser) {
-  const getUserByAddress = address => {
+function processUserClaims(users, claimEventsByUser) {
+  const getUserByAddress = (address) => {
     const user = users[address] || new User();
     users[address] = user;
     return user;
@@ -74,8 +74,8 @@ function processUserClaims (users, claimEventsByUser) {
   return users;
 }
 
-function processUserDispensations (users, dispensationEventsByUser) {
-  const getUserByAddress = address => {
+function processUserDispensations(users, dispensationEventsByUser) {
+  const getUserByAddress = (address) => {
     const user = users[address] || new User();
     users[address] = user;
     return user;
@@ -85,6 +85,9 @@ function processUserDispensations (users, dispensationEventsByUser) {
     if (amountToDistribute === 0) {
       continue;
     }
+    if (address == 'sif1sul4gxq5m6nvdnte673lrkp85lw3pneddkynnv') {
+      void 0;
+    }
     const user = getUserByAddress(address);
     if (amountToDistribute > 0) {
       user.distributeClaimedRewards(amountToDistribute);
@@ -93,10 +96,10 @@ function processUserDispensations (users, dispensationEventsByUser) {
   return users;
 }
 
-function processUserRewards (state) {
+function processUserRewards(state) {
   const timestampTicketsAmountSum = state.updateTotalDepositedAmount();
   // can be lazy evaluated
-  _.forEach(state.users, user => {
+  _.forEach(state.users, (user) => {
     /*
         Must be run on every user before `User#updateUserMaturityRewards`
         `User#updateUserMaturityRewards` uses the rewards calulated here.
@@ -109,9 +112,9 @@ function processUserRewards (state) {
 }
 const prevUserRewardsByProgramType = {
   [VALIDATOR_STAKING]: {},
-  [LIQUIDITY_MINING]: {}
+  [LIQUIDITY_MINING]: {},
 };
-function processUserTickets (
+function processUserTickets(
   lastGlobalState,
   globalRewardAccrued,
   getCurrentCommissionRateByValidatorStakeAddress,
@@ -124,7 +127,7 @@ function processUserTickets (
   // process reward accruals and multiplier updates
   let totalShares = 0;
   for (let addr in users) {
-    users[addr].tickets.forEach(t => {
+    users[addr].tickets.forEach((t) => {
       totalShares += t.amount;
     });
   }
@@ -149,7 +152,7 @@ function processUserTickets (
     return user.cloneWith({
       // reset each round because this is both incrementally calculated and based upon multiplier
       currentTotalCommissionsOnClaimableDelegatorRewards: 0,
-      tickets: user.tickets.map(ticket => {
+      tickets: user.tickets.map((ticket) => {
         const poolDominanceRatio = ticket.amount / (totalShares || 1);
         const rewardDelta = poolDominanceRatio * globalRewardAccrued;
         const nextMul = ticket.mul + 0.75 / MULTIPLIER_MATURITY;
@@ -160,9 +163,9 @@ function processUserTickets (
           poolDominanceRatio,
           commission: getCurrentCommissionRateByValidatorStakeAddress(
             ticket.validatorStakeAddress
-          )
+          ),
         });
-      })
+      }),
     });
   });
   return updatedUsers;
@@ -172,12 +175,12 @@ function processUserTickets (
   Real-World Example: (Adds deposit, creating 1 ticket, then redelegates all 3 tickets to new validator) 
     https://blockexplorer.sifchain.finance/account/sif1zfxa20g8j2hqhxencyqtfhd95wvxsnen08pw97
 */
-function processUserEvents (
+function processUserEvents(
   users,
   eventsByUser,
   rewardProgramType = VALIDATOR_STAKING
 ) {
-  const getUserByAddress = address => {
+  const getUserByAddress = (address) => {
     let user = users[address];
     if (!user) {
       user = new User();
@@ -197,7 +200,7 @@ function processUserEvents (
       break;
     }
     case LIQUIDITY_MINING: {
-      _.forEach(eventsByUser, userEvents => {
+      _.forEach(eventsByUser, (userEvents) => {
         processAccountEvents(userEvents, getUserByAddress);
       });
       break;
@@ -206,7 +209,7 @@ function processUserEvents (
   return users;
 }
 
-function processAccountEvents (userEvents, getUserByAddress) {
+function processAccountEvents(userEvents, getUserByAddress) {
   const len = userEvents.length;
   for (let i = 0; i < len; i++) {
     const uEvent = userEvents[i];
@@ -219,7 +222,7 @@ function processAccountEvents (userEvents, getUserByAddress) {
   }
 }
 
-function processRedelegationEvents (userEvents, getUserByAddress) {
+function processRedelegationEvents(userEvents, getUserByAddress) {
   userEvents = _.orderBy(userEvents, ['amount'], ['asc']);
   let withdrawalAmount = 0;
   let depositAmount = 0;
@@ -257,16 +260,15 @@ function processRedelegationEvents (userEvents, getUserByAddress) {
 
     if (amountOfWithdrawalToRedelegate !== 0) {
       const redelegateWithdrawalEvent = wEvent.cloneWith({
-        amount: amountOfWithdrawalToRedelegate
+        amount: amountOfWithdrawalToRedelegate,
       });
-      const {
-        burnedTickets: burnedTicketsForRedelegation
-      } = user.removeBurnedTickets(redelegateWithdrawalEvent);
+      const { burnedTickets: burnedTicketsForRedelegation } =
+        user.removeBurnedTickets(redelegateWithdrawalEvent);
       ticketsToRedelegate.push(...burnedTicketsForRedelegation);
     }
     if (amountOfWithdrawalToWithdraw !== 0) {
       const traditionalWithdrawalEvent = wEvent.cloneWith({
-        amount: amountOfWithdrawalToWithdraw
+        amount: amountOfWithdrawalToWithdraw,
       });
       user.withdrawStakeAsDelegator(
         traditionalWithdrawalEvent,
@@ -280,10 +282,10 @@ function processRedelegationEvents (userEvents, getUserByAddress) {
     with the validators with the lowest commissions to maximize 
     their gains over time.
   */
-  const sortedDepositEvents = _.sortBy(depositEvents, event => {
+  const sortedDepositEvents = _.sortBy(depositEvents, (event) => {
     return event.commission;
   });
-  ticketsToRedelegate = _.sortBy(ticketsToRedelegate, t => {
+  ticketsToRedelegate = _.sortBy(ticketsToRedelegate, (t) => {
     const remainingReward =
       (t.reward - t.calculateTotalValidatorCommissions()) * (1 - t.mul);
     const remainingRatio = remainingReward / t.reward;
@@ -305,11 +307,8 @@ function processRedelegationEvents (userEvents, getUserByAddress) {
         amountToDeposit
       );
       amountToDeposit -= amountToRemove;
-      const {
-        burnedTicket,
-        remainderTicket,
-        hasRemainder
-      } = redelegatedTicket.burn(amountToRemove);
+      const { burnedTicket, remainderTicket, hasRemainder } =
+        redelegatedTicket.burn(amountToRemove);
       user.addTicket(burnedTicket.cloneAndRedelegateFromEvent(dEvent));
       if (hasRemainder) {
         nextTicketsToRedelegate.push(remainderTicket);
@@ -322,7 +321,7 @@ function processRedelegationEvents (userEvents, getUserByAddress) {
       user.addTicket(
         UserTicket.fromEvent(
           dEvent.cloneWith({
-            amount: amountToDeposit
+            amount: amountToDeposit,
           })
         )
       );
@@ -330,7 +329,7 @@ function processRedelegationEvents (userEvents, getUserByAddress) {
   }
 }
 
-function calculateUserCommissions (users) {
+function calculateUserCommissions(users) {
   for (let addr in users) {
     /*
         Must be run first on every user because delegators
@@ -344,7 +343,7 @@ function calculateUserCommissions (users) {
         and leave out all those processed after.
       */
     users[addr].collectValidatorsCommissionsOnLatestUnclaimedRewards(
-      validatorRewardAddress => {
+      (validatorRewardAddress) => {
         return users[validatorRewardAddress];
       },
       addr
@@ -356,7 +355,7 @@ function calculateUserCommissions (users) {
         in `User#updateRewards`
       */
     users[addr].recalculateCurrentTotalCommissionsOnClaimableDelegatorRewards(
-      address => users[address],
+      (address) => users[address],
       addr
     );
   }
@@ -373,5 +372,5 @@ function calculateUserCommissions (users) {
 // }
 
 module.exports = {
-  processVSGlobalState
+  processVSGlobalState,
 };

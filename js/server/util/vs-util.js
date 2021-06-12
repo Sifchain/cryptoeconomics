@@ -29,6 +29,7 @@ exports.remapVSAddresses = function (vaLAddresses) {
       const valDelegateEvents = delegates
         .map(delegateAddress => {
           const delegateTimeIntervals = valAddressData[delegateAddress].rowan;
+
           return delegateTimeIntervals
             .map((amount, index) => {
               const commissionRate = commissionTimeIntervals[index];
