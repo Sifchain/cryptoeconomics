@@ -58,10 +58,12 @@ class Router {
   }
 
   extractHashData () {
-    return window.location.hash
-      .substr(1)
-      .split('&')
-      .shift();
+    return (
+      (window.location.hash || '')
+        .substr(1)
+        .split('&')
+        .shift() || undefined
+    );
   }
 
   queryStringToObject (str) {
