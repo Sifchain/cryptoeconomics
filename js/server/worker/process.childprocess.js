@@ -11,6 +11,7 @@ const {
   loadLiquidityMinersSnapshot
 } = require('../loaders');
 process.setMaxListeners(100000);
+const crypto = require('crypto');
 
 /*
   Handles:
@@ -23,8 +24,8 @@ class BackgroundProcessor {
     // Set in this#reloadAndReprocessOnLoop
     this.lmDataParsed = null;
     this.vsDataParsed = null;
-    this.previousLMSnapshotLength = 0;
-    this.previousVSSnapshotLength = 0;
+    this.previousLMSnapshotIdentifier = '';
+    this.previousVSSnapshotIdentifier = '';
     this.actions = createBoundActions(this);
   }
 
@@ -46,7 +47,6 @@ class BackgroundProcessor {
         'Local Snapshot Dev Mode Enabled! Will not load fresh snapshot data!'
       );
     }
-    console.time('loadandparse');
     const [lmSnapshotRes, vsSnapshotRes] = isInLocalSnapshotDevMode
       ? [
           require('../../snapshots/snapshot_lm_latest.json'),
@@ -66,22 +66,28 @@ class BackgroundProcessor {
         ]);
 
     try {
-      const lMSnapshotText = await lmSnapshotRes.text();
-      const snapshotLen = lMSnapshotText.length;
-      console.timeEnd('loadandparse');
+      const text = await lmSnapshotRes.text();
 
-      if (this.previousLMSnapshotLength < snapshotLen) {
+      const snapshotIdentifier = crypto
+        .createHash('md5')
+        .update(text, 'utf8')
+        .digest()
+        .toString('hex');
+      // const snapshotIdentifier = Object.values(json.data)
+      // .map((queryRes) => queryRes[0].id)
+      // .join('---');
+      if (this.previousLMSnapshotIdentifier !== snapshotIdentifier) {
         /*
-          V8 performance hack.
-          Remove reference to previous results so they can be garbage collected.
-          Otherwise, we run out of memory on `--max-old-space-size=4096`
+        V8 performance hack.
+        Remove reference to previous results so they can be garbage collected.
+        Otherwise, we run out of memory on `--max-old-space-size=4096`
         */
+        const json = JSON.parse(text);
         this.lmDataParsed = undefined;
         console.time('getProcessedLMData');
-        const json = JSON.parse(lMSnapshotText);
         this.lmDataParsed = getProcessedLMData(json);
         console.timeEnd('getProcessedLMData');
-        this.previousLMSnapshotLength = snapshotLen;
+        this.previousLMSnapshotIdentifier = snapshotIdentifier;
       } else {
         console.log('LM: ✅');
       }
@@ -92,20 +98,27 @@ class BackgroundProcessor {
     }
 
     try {
-      const vsSnapshotText = await vsSnapshotRes.text();
-      const snapshotLen = vsSnapshotText.length;
-      if (this.previousVSSnapshotLength < snapshotLen) {
+      const text = await vsSnapshotRes.text();
+      // const snapshotIdentifier = Object.values(json.data)
+      //   .map((queryRes) => queryRes[0].id)
+      //   .join('---');
+      const snapshotIdentifier = crypto
+        .createHash('md5')
+        .update(text, 'utf8')
+        .digest()
+        .toString('hex');
+      if (this.previousVSSnapshotIdentifier !== snapshotIdentifier) {
         /*
           V8 performance hack.
           Remove reference to previous results so they can be garbage collected.
           Otherwise, we run out of memory on `--max-old-space-size=4096`
         */
+        const json = JSON.parse(text);
         this.vsDataParsed = undefined;
-        const json = JSON.parse(vsSnapshotText);
         console.time('getProcessedVSData');
         this.vsDataParsed = getProcessedVSData(json);
         console.timeEnd('getProcessedVSData');
-        this.previousVSSnapshotLength = snapshotLen;
+        this.previousVSSnapshotIdentifier = snapshotIdentifier;
         const used = process.memoryUsage();
         for (let key in used) {
           console.log(

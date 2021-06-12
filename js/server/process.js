@@ -122,6 +122,7 @@ function processUserEventsByTimestamp (
     let nextGlobalState;
     const timestamp = i * EVENT_INTERVAL_MINUTES;
     const isSimulatedFutureInterval = i > snapshotTimeseriesFinalIndex - 1;
+    const isPendingInterval = i === snapshotTimeseriesFinalIndex - 1;
     const rewardProgramCache = history[rewardProgramType];
     const cachedTimestampState = rewardProgramCache[timestamp];
     if (cachedTimestampState && !isSimulatedFutureInterval && cacheEnabled) {
@@ -146,6 +147,9 @@ function processUserEventsByTimestamp (
     }
     if (cacheEnabled && !isSimulatedFutureInterval && !cachedTimestampState) {
       rewardProgramCache[timestamp] = nextGlobalState;
+    }
+    if (isPendingInterval) {
+      nextGlobalState.markAsPending();
     }
     VSGlobalStates.push(nextGlobalState);
   }

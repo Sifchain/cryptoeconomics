@@ -29,7 +29,7 @@ function processVSGlobalState (
 
   // console.time('processUserTickets');
   let users = processUserTickets(
-    lastGlobalState.users,
+    lastGlobalState,
     globalRewardAccrued,
     getCurrentCommissionRateByValidatorStakeAddress,
     rewardProgramType,
@@ -112,12 +112,15 @@ const prevUserRewardsByProgramType = {
   [LIQUIDITY_MINING]: {}
 };
 function processUserTickets (
-  users,
+  lastGlobalState,
   globalRewardAccrued,
   getCurrentCommissionRateByValidatorStakeAddress,
   rewardProgramType,
   isSimulatedFutureInterval
 ) {
+  const users = lastGlobalState.users;
+  const lastStateWasPending = lastGlobalState.isPending;
+  const lastStateWasSimulated = lastGlobalState.isSimulated;
   // process reward accruals and multiplier updates
   let totalShares = 0;
   for (let addr in users) {
@@ -130,8 +133,12 @@ function processUserTickets (
     // Don't deep clone users whose rewards can no longer change
     const rewardSynopsis =
       user.totalClaimableCommissionsAndClaimableRewards +
-      user.totalAccruedCommissionsAndClaimableRewards;
+      user.totalAccruedCommissionsAndClaimableRewards +
+      user.claimedCommissionsAndRewardsAwaitingDispensation +
+      user.dispensed;
     if (
+      !lastStateWasPending &&
+      lastStateWasSimulated &&
       isSimulatedFutureInterval &&
       prevUserRewards[address] === rewardSynopsis
     ) {

@@ -9,6 +9,7 @@ class GlobalTimestampState {
     this.rewardBuckets = [];
     this.bucketEvent = undefined;
     this.isSimulated = false;
+    this.isPending = false;
   }
 
   // as designated here: https://github.com/Sifchain/sifnode/blob/develop/x/dispensation/Flow-Distribute.md
@@ -50,6 +51,10 @@ class GlobalTimestampState {
 
   markAsSimulated () {
     this.isSimulated = true;
+  }
+
+  markAsPending () {
+    this.isPending = true;
   }
 
   setTotalDepositedAmount (totalDepositedAmount) {
