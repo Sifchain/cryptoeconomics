@@ -85,9 +85,7 @@ function processUserDispensations(users, dispensationEventsByUser) {
     if (amountToDistribute === 0) {
       continue;
     }
-    if (address == 'sif1sul4gxq5m6nvdnte673lrkp85lw3pneddkynnv') {
-      void 0;
-    }
+
     const user = getUserByAddress(address);
     if (amountToDistribute > 0) {
       user.distributeClaimedRewards(amountToDistribute);

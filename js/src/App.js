@@ -126,10 +126,11 @@ class App extends React.Component {
 
     const router = new Router(router => {});
 
-    const {
+    let {
       type = 'lm',
       'snapshot-source': network = networks.MAINNET
     } = router.query;
+
     const address = router.hashData;
 
     this.state = {
@@ -150,7 +151,7 @@ class App extends React.Component {
     };
 
     if (this.state.network !== networks.MAINNET) {
-      window.document.title = window.document.title.replace(
+      window.document.title = (window.document.title || '').replace(
         'Sifchain',
         this.state.network
       );
