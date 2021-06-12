@@ -116,8 +116,8 @@ function processUserEventsByTimestamp (
   dispensationEventsByUserByTimestamp = {}
 ) {
   console.time('processvs');
-  const VSGlobalStates = [GlobalTimestampState.getInitial()];
   let cacheEnabled = true;
+  const VSGlobalStates = [GlobalTimestampState.getInitial()];
   for (let i = 1; i <= NUMBER_OF_INTERVALS_TO_RUN; i++) {
     let nextGlobalState;
     const timestamp = i * EVENT_INTERVAL_MINUTES;
