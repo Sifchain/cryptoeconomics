@@ -66,7 +66,7 @@ class BackgroundProcessor {
         ]);
 
     try {
-      const lMSnapshotText = await lmSnapshotRes.text();
+      const lMSnapshotText = isInLocalSnapshotDevMode ? lmSnapshotRes : await lmSnapshotRes.text();
       const snapshotLen = lMSnapshotText.length;
       console.timeEnd('loadandparse');
 
@@ -92,7 +92,7 @@ class BackgroundProcessor {
     }
 
     try {
-      const vsSnapshotText = await vsSnapshotRes.text();
+      const vsSnapshotText = isInLocalSnapshotDevMode ? vsSnapshotRes : await vsSnapshotRes.text();
       const snapshotLen = vsSnapshotText.length;
       if (this.previousVSSnapshotLength < snapshotLen) {
         /*
