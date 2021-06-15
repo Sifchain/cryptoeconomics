@@ -8,11 +8,11 @@ const { ProcessingHandler } = require('./worker');
 const {
   DEVNET,
   MAINNET,
-  TESTNET
+  TESTNET,
 } = require('./constants/snapshot-source-names');
 const {
   GET_LM_DISPENSATION_JOB,
-  GET_VS_DISPENSATION_JOB
+  GET_VS_DISPENSATION_JOB,
 } = require('./constants/action-names');
 // const { BackgroundProcessor } = require('./process.childprocess.js');
 // require("./simple").createValidatorStakingTimeSeries();
@@ -22,7 +22,7 @@ const testnetHandler = ProcessingHandler.init(TESTNET);
 const processingHandlers = {
   [MAINNET]: ProcessingHandler.init(MAINNET),
   [DEVNET]: testnetHandler,
-  [TESTNET]: testnetHandler
+  [TESTNET]: testnetHandler,
 };
 
 // const processingHandler = BackgroundProcessor.startAsMainProcess();
@@ -87,7 +87,7 @@ app.get('/api/lm', async (req, res, next) => {
       if (req.query.download === 'true') {
         res.setHeader(
           'Content-Disposition',
-          `attachment; filename=vs-dispensation-${
+          `attachment; filename=lm-dispensation-${
             processingHandler.network
           }-${internalEpochTimestamp}-${Date.now()}.json`
         );
@@ -107,7 +107,7 @@ app.get('/api/lm', async (req, res, next) => {
       const timeIndex = getTimeIndex(req.query.timestamp);
       responseJSON = await processingHandler.dispatch('GET_LM_USER_DATA', {
         address,
-        timeIndex
+        timeIndex,
       });
       break;
     }
@@ -167,7 +167,7 @@ app.get('/api/vs', async (req, res, next) => {
       const timeIndex = getTimeIndex(req.query.timestamp);
       responseJSON = await processingHandler.dispatch('GET_VS_USER_DATA', {
         address,
-        timeIndex
+        timeIndex,
       });
       break;
     }
