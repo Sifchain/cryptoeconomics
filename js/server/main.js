@@ -92,7 +92,7 @@ app.get('/api/lm', async (req, res, next) => {
           }-${internalEpochTimestamp}-${Date.now()}.json`
         );
       }
-      return res.json(job);
+      return res.send(JSON.stringify(job, null, 2));
     }
     case 'userTimeSeriesData': {
       const address = req.query.address;
@@ -149,7 +149,7 @@ app.get('/api/vs', async (req, res, next) => {
           }-${internalEpochTimestamp}-${Date.now()}.json`
         );
       }
-      return res.json(job);
+      return res.send(JSON.stringify(job, null, 2));
     }
     case 'unclaimedDelegatedRewards': {
       break;

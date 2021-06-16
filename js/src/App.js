@@ -1,4 +1,4 @@
-import { START_DATETIME, networks, NETWORK_STORAGE_KEY } from './config';
+import { START_DATETIME, networks } from './config';
 import './App.css';
 import React, { useEffect, useMemo, useState } from 'react';
 import { fetchUsers, fetchUserData, fetchUserTimeSeriesData } from './api';
@@ -133,6 +133,9 @@ class App extends React.Component {
       'snapshot-source': network = networks.MAINNET
     } = router.query;
 
+    network =
+      Object.values(networks).find(n => n === network) || networks.MAINNET;
+
     const address = router.hashData;
 
     this.state = {
@@ -151,7 +154,6 @@ class App extends React.Component {
       originalTitle: window.document.title,
       router: router
     };
-
     if (this.state.network !== networks.MAINNET) {
       window.document.title = (window.document.title || '').replace(
         'Sifchain',
@@ -196,13 +198,16 @@ class App extends React.Component {
   }
 
   componentDidMount () {
-    fetchUsers('lm').then(usersLM => this.setState({ usersLM }));
-    fetchUsers('vs').then(usersVS => this.setState({ usersVS }));
+    fetchUsers('lm', this.state.network).then(usersLM =>
+      this.setState({ usersLM })
+    );
+    fetchUsers('vs', this.state.network).then(usersVS =>
+      this.setState({ usersVS })
+    );
     this.initDateTime();
   }
 
   updateNetwork (network) {
-    window.localStorage.setItem(NETWORK_STORAGE_KEY, network);
     const router = this.state.router;
     router.push(router.hashData, {
       ...router.query,
@@ -227,24 +232,25 @@ class App extends React.Component {
       type: this.state.type
     });
     if (address !== 'leaderboard' && address !== undefined) {
-      fetchUserTimeSeriesData(address, this.state.type).then(
-        userTimeSeriesData =>
-          this.setState({ userTimeSeriesData }, () => {
-            fetchUserData(address, this.state.type).then(bulkUserData => {
-              this.setState({
-                bulkUserData,
-                userData: bulkUserData[this.state.timeIndex]
-              });
+      fetchUserTimeSeriesData(
+        address,
+        this.state.type,
+        this.state.network
+      ).then(userTimeSeriesData =>
+        this.setState({ userTimeSeriesData }, () => {
+          fetchUserData(
+            address,
+            this.state.type,
+            undefined,
+            this.state.network
+          ).then(bulkUserData => {
+            this.setState({
+              bulkUserData,
+              userData: bulkUserData[this.state.timeIndex]
             });
-          })
+          });
+        })
       );
-      // fetchUserData(address, this.state.type, this.state.date.valueOf()).then(
-      //   (userData) => {
-      //     this.setState({
-      //       userData,
-      //     });
-      //   }
-      // );
     }
     this.setState({
       address,
@@ -273,21 +279,6 @@ class App extends React.Component {
         this.setState({
           userData: this.state.bulkUserData[timeIndex]
         });
-      } else {
-        // if (this.debouncedTimestampTimeout !== undefined) {
-        //   clearTimeout(this.debouncedTimestampTimeout);
-        // }
-        // this.debouncedTimestampTimeout = setTimeout(() => {
-        //   fetchUserData(
-        //     address,
-        //     this.state.type,
-        //     this.state.date.valueOf()
-        //   ).then((userData) =>
-        //     this.setState({
-        //       userData,
-        //     })
-        //   );
-        // }, 500);
       }
     }
   }
@@ -482,6 +473,7 @@ class App extends React.Component {
         <div className='content'>
           {this.state.address === 'leaderboard' && (
             <DataStackAll
+              network={this.state.network}
               onLoadingStateChange={state => {
                 if (state !== this.state.isLoadingLeaderboard) {
                   this.setState({
