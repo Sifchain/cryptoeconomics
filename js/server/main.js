@@ -14,6 +14,7 @@ const {
   GET_LM_DISPENSATION_JOB,
   GET_VS_DISPENSATION_JOB
 } = require('./constants/action-names');
+const moment = require('moment');
 // const { BackgroundProcessor } = require('./process.childprocess.js');
 // require("./simple").createValidatorStakingTimeSeries();
 // interfaces with `./process.childprocess.js`
@@ -69,6 +70,13 @@ app.get('/status', (req, res, next) => {
   res.status(200).send({ status: 'OK' });
 });
 
+const createDispensationFileName = (type, network, internalEpochTimestamp) => {
+  // filename-friendly ISO-8601 to enable date-based sorting
+  const fileNameDate = moment.utc().format(`YYYY[]MM[]DD[T]HH[]mm[]ss`);
+  return `${fileNameDate}-${type.toLowerCase()}-${network.toLowerCase()}-${internalEpochTimestamp}-dispensation.json`;
+};
+// 20210616T221025-vs-mainnet-169600.json
+
 app.get('/api/lm', async (req, res, next) => {
   const snapshotSource =
     req.query[SNAPSHOT_SOURCE_KEY] ||
@@ -87,12 +95,14 @@ app.get('/api/lm', async (req, res, next) => {
       if (req.query.download === 'true') {
         res.setHeader(
           'Content-Disposition',
-          `attachment; filename=vs-dispensation-${
-            processingHandler.network
-          }-${internalEpochTimestamp}-${Date.now()}.json`
+          `attachment; filename=${createDispensationFileName(
+            'lm',
+            snapshotSource,
+            internalEpochTimestamp
+          )}`
         );
       }
-      return res.json(job);
+      return res.send(JSON.stringify(job, null, '  '));
     }
     case 'userTimeSeriesData': {
       const address = req.query.address;
@@ -144,12 +154,14 @@ app.get('/api/vs', async (req, res, next) => {
       if (req.query.download === 'true') {
         res.setHeader(
           'Content-Disposition',
-          `attachment; filename=vs-dispensation-${
-            processingHandler.network
-          }-${internalEpochTimestamp}-${Date.now()}.json`
+          `attachment; filename=${createDispensationFileName(
+            'vs',
+            snapshotSource,
+            internalEpochTimestamp
+          )}`
         );
       }
-      return res.json(job);
+      return res.send(JSON.stringify(job, null, '  '));
     }
     case 'unclaimedDelegatedRewards': {
       break;
