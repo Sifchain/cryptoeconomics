@@ -31,7 +31,6 @@ exports.getProcessedLMData = snapshotLM => {
       { snapshot_data: dispensationsSnapshotData = {} } = {}
     ] = []
   } = snapshotLM.data;
-  console.log('LM Claims: ' + Object.keys(claimsSnapshotData).join(', '));
   const snapshotTimeseriesFinalIndex = getLMTimeseriesFinalIndex(
     minerSnapshotData
   );
@@ -67,8 +66,6 @@ exports.getProcessedVSData = snapshotVS => {
       { snapshot_data: dispensationsSnapshotData = {} } = {}
     ] = []
   } = snapshotVS.data;
-
-  console.log('LM Claims: ' + Object.keys(claimsSnapshotData).join(', '));
 
   const snapshotTimeseriesFinalIndex = getVSTimeseriesFinalIndex(
     validatorSnapshotData
