@@ -2,9 +2,9 @@ import React from 'react';
 
 const numFormatter = new Intl.NumberFormat();
 
-const styleData = data => ({
+const styleData = (data) => ({
   __styled: true,
-  data
+  data,
 });
 const say = (template, ...substitutions) => {
   // if (!substitutions.every((s) => !!s)) {
@@ -16,7 +16,7 @@ const say = (template, ...substitutions) => {
     item = isStyled ? item.data : item;
     const formattedData =
       typeof item === 'number'
-        ? numFormatter.format(+item.toFixed(2))
+        ? numFormatter.format(+Math.max(0, item).toFixed(2))
         : item || '';
     const style =
       isStyled || typeof item === 'number'
@@ -72,7 +72,7 @@ export const UserDataSummary = ({ user, type = 'vs' }) => {
       : null;
   return (
     <div style={{ width: '100%', padding: 0 }}>
-      <div className='user-data-summary-container'>
+      <div className="user-data-summary-container">
         <div style={{ width: validatorText ? '50%' : '100%' }}>
           {stakerText}
           {stakerText2}
