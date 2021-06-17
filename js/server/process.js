@@ -116,7 +116,7 @@ function processUserEventsByTimestamp (
   dispensationEventsByUserByTimestamp = {}
 ) {
   console.time('processvs');
-  let cacheEnabled = true;
+  const cacheEnabled = false;
   const VSGlobalStates = [GlobalTimestampState.getInitial()];
   for (let i = 1; i <= NUMBER_OF_INTERVALS_TO_RUN; i++) {
     let nextGlobalState;
@@ -125,7 +125,7 @@ function processUserEventsByTimestamp (
     const isPendingInterval = i === snapshotTimeseriesFinalIndex - 1;
     const rewardProgramCache = history[rewardProgramType];
     const cachedTimestampState = rewardProgramCache[timestamp];
-    if (cachedTimestampState && !isSimulatedFutureInterval && cacheEnabled) {
+    if (cacheEnabled && cachedTimestampState && !isSimulatedFutureInterval) {
       nextGlobalState = cachedTimestampState;
     } else {
       const lastGlobalState = VSGlobalStates[VSGlobalStates.length - 1];

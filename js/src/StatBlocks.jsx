@@ -6,10 +6,10 @@ const roundTo = (num, oneWithZeros = 100) =>
 const createStatBlock = ({
   title,
   subtitle,
-  data = (data) => {
+  data = data => {
     return <div title={data}>{numFormatter.format(roundTo(data, 100))}</div>;
   },
-  shouldDisplay = (data) => true, // data !== 0,
+  shouldDisplay = data => true, // data !== 0,
   order = 0,
   prefix = (
     <img
@@ -19,12 +19,12 @@ const createStatBlock = ({
         opacity: 0.7,
         marginBottom: -6,
         marginRight: 5,
-        filter: 'brightness(1000%)',
+        filter: 'brightness(1000%)'
       }}
-      src="sifchain-s.svg"
+      src='sifchain-s.svg'
     />
   ),
-  suffix = null,
+  suffix = null
 }) => ({
   title,
   subtitle,
@@ -32,46 +32,46 @@ const createStatBlock = ({
   suffix,
   data,
   shouldDisplay,
-  order,
+  order
 });
 
 const defaultStatBlocks = {
   dispensed: createStatBlock({
     title: 'Received Earnings',
     subtitle: 'Dispensed Commissions + Rewards',
-    order: 5,
+    order: 5
   }),
   claimedCommissionsAndRewardsAwaitingDispensation: createStatBlock({
     title: 'Claimed Earnings',
     subtitle: 'Dispensing on friday',
-    order: 4,
+    order: 4
   }),
   totalAccruedCommissionsAndClaimableRewards: createStatBlock({
     title: 'Current Earnings',
     order: 2,
     subtitle: 'Commissions + Rewards',
-    shouldDisplay: () => true,
+    shouldDisplay: () => true
   }),
-  get claimableReward() {
+  get claimableReward () {
     return this.totalAccruedCommissionsAndClaimableRewards;
   },
   totalCommissionsAndRewardsAtMaturity: createStatBlock({
     title: 'Potential Earnings',
     order: 3,
-    subtitle: 'Commissions + Rewards at Maturity',
+    subtitle: 'Commissions + Rewards at Maturity'
   }),
   maturityDateISO: createStatBlock({
     title: 'Maturity Date',
     subtitle: 'Max Rewards',
     order: 6,
-    data: (data) => <div>{new Date(data).toLocaleDateString()}</div>,
-    prefix: null,
+    data: data => <div>{new Date(data).toLocaleDateString()}</div>,
+    prefix: null
   }),
   nextRewardProjectedAPYOnTickets: createStatBlock({
     title: 'Projected APY <small>*until program end<small>',
     subtitle: 'Annual Percentage Yield',
     order: 4,
-    data: (data) => {
+    data: data => {
       return (
         <div title={data}>
           {numFormatter.format(Math.floor(roundTo(data, 100) * 100))}
@@ -88,13 +88,13 @@ const defaultStatBlocks = {
           color: 'white',
           fontWeight: 400,
           opacity: 0.7,
-          fontSize: '1em',
+          fontSize: '1em'
         }}
       >
         %
       </span>
-    ),
-  }),
+    )
+  })
 };
 export const StatBlocks = {
   vs: {
@@ -102,11 +102,11 @@ export const StatBlocks = {
     totalDepositedAmount: createStatBlock({
       order: 0,
       title: 'Staked',
-      subtitle: 'Delegated Assets',
+      subtitle: 'Delegated Assets'
     }),
-    get totalTickets() {
+    get totalTickets () {
       return this.totalDepositedAmount;
-    },
+    }
     // currentTotalCommissionsOnClaimableDelegatorRewards: createStatBlock({
     //   title: 'Commissions',
     //   subtitle: 'Awaiting Delegator Claims',
@@ -147,10 +147,10 @@ export const StatBlocks = {
     totalDepositedAmount: createStatBlock({
       title: 'Pooled',
       order: 0,
-      subtitle: 'Deposited Assets',
+      subtitle: 'Deposited Assets'
     }),
-    get totalTickets() {
+    get totalTickets () {
       return this.totalDepositedAmount;
-    },
-  },
+    }
+  }
 };
