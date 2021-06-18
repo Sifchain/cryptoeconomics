@@ -66,7 +66,9 @@ class BackgroundProcessor {
         ]);
 
     try {
-      const text = await lmSnapshotRes.text();
+      const text = isInLocalSnapshotDevMode
+        ? lmSnapshotRes
+        : await lmSnapshotRes.text();
 
       const snapshotIdentifier = crypto
         .createHash('md5')
@@ -98,7 +100,9 @@ class BackgroundProcessor {
     }
 
     try {
-      const text = await vsSnapshotRes.text();
+      const text = isInLocalSnapshotDevMode
+        ? vsSnapshotRes
+        : await vsSnapshotRes.text();
       // const snapshotIdentifier = Object.values(json.data)
       //   .map((queryRes) => queryRes[0].id)
       //   .join('---');
