@@ -21,6 +21,7 @@ const {
 } = require('../constants/action-names');
 const { EVENT_INTERVAL_MINUTES } = require('../config');
 const { getTimeIndex } = require('../util/getTimeIndex');
+const { retryOnFail } = require('../util/retryOnFail');
 /*
   Actions invokable from `./main.js` via `processingHandler#dispatch(...)`
   Actions can only take one argument. Consolidate multiple args into an object.
@@ -54,7 +55,11 @@ function actions (processor) {
       };
     },
     [RELOAD_AND_REPROCESS_SNAPSHOTS]: async ({ network }) => {
-      return processor.reloadAndReprocessSnapshots({ network });
+      return retryOnFail({
+        fn: () => processor.reloadAndReprocessSnapshots({ network }),
+        iterations: 100000,
+        waitFor: 5000
+      });
     },
     /* Internal Actions */
     [CHECK_IF_PARSED_DATA_READY]: () => {
