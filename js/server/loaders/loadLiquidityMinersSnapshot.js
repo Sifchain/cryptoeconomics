@@ -53,13 +53,13 @@ const getSQLQueryByNetwork = (network) => {
     case TESTNET: {
       return Database.connect((cxn) => {
         return cxn.transaction(async (tx) => {
-          const snapshots_new = await tx.any(
+          const snapshots_new = await tx.many(
             slonik.sql`select snapshot_data from snapshots_new_dev ORDER BY created_at DESC LIMIT 1`
           );
-          const snapshots_lm_claims = await tx.any(
+          const snapshots_lm_claims = await tx.many(
             slonik.sql`select snapshot_data from snapshots_lm_claims ORDER BY created_at DESC LIMIT 1`
           );
-          const snapshots_lm_dispensation = await tx.any(
+          const snapshots_lm_dispensation = await tx.many(
             slonik.sql`select snapshot_data from snapshots_lm_dispensation ORDER BY created_at DESC LIMIT 1`
           );
           return {
@@ -75,13 +75,13 @@ const getSQLQueryByNetwork = (network) => {
     default: {
       return Database.connect((cxn) => {
         return cxn.transaction(async (tx) => {
-          const snapshots_new = await tx.any(
+          const snapshots_new = await tx.many(
             slonik.sql`select snapshot_data from snapshots_new ORDER BY created_at DESC LIMIT 1`
           );
-          const snapshots_lm_claims = await tx.any(
+          const snapshots_lm_claims = await tx.many(
             slonik.sql`select snapshot_data from snapshots_lm_claims ORDER BY created_at DESC LIMIT 1`
           );
-          const snapshots_lm_dispensation = await tx.any(
+          const snapshots_lm_dispensation = await tx.many(
             slonik.sql`select snapshot_data from snapshots_lm_dispensation ORDER BY created_at DESC LIMIT 1`
           );
           return {

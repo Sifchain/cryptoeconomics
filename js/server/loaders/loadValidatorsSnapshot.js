@@ -42,13 +42,13 @@ const getSQLQueryByNetwork = network => {
   switch (network) {
     case TESTNET: {
       return Database.transaction(async tx => {
-        const snapshots_validators = await tx.any(
+        const snapshots_validators = await tx.many(
           slonik.sql`select snapshot_data from snapshots_validators_dev ORDER BY created_at DESC LIMIT 1`
         );
-        const snapshots_vs_claims = await tx.any(
+        const snapshots_vs_claims = await tx.many(
           slonik.sql`select snapshot_data from snapshots_vs_claims ORDER BY created_at DESC LIMIT 1`
         );
-        const snapshots_vs_dispensation = await tx.any(
+        const snapshots_vs_dispensation = await tx.many(
           slonik.sql`select snapshot_data from snapshots_vs_dispensation ORDER BY created_at DESC LIMIT 1`
         );
         return {
@@ -62,13 +62,13 @@ const getSQLQueryByNetwork = network => {
     }
     default: {
       return Database.transaction(async tx => {
-        const snapshots_new = await tx.any(
+        const snapshots_new = await tx.many(
           slonik.sql`select snapshot_data from snapshots_new ORDER BY created_at DESC LIMIT 1`
         );
-        const snapshots_vs_claims = await tx.any(
+        const snapshots_vs_claims = await tx.many(
           slonik.sql`select snapshot_data from snapshots_vs_claims ORDER BY created_at DESC LIMIT 1`
         );
-        const snapshots_vs_dispensation = await tx.any(
+        const snapshots_vs_dispensation = await tx.many(
           slonik.sql`select snapshot_data from snapshots_vs_dispensation ORDER BY created_at DESC LIMIT 1`
         );
         return {
