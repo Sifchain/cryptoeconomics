@@ -48,6 +48,7 @@ const Database = slonik.createPool(process.env.DATABASE_URL);
 // };
 
 const getSQLQueryByNetwork = (network) => {
+  const Database = slonik.createPool(process.env.DATABASE_URL);
   network = network ? network.toLowerCase() : network;
   switch (network) {
     case TESTNET: {

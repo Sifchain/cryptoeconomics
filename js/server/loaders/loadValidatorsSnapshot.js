@@ -5,8 +5,6 @@ const slonik = require('slonik');
   QUERIES ARE CACHED USING A HASH OF THE TEXT CONTENT OF THE RESPONSE OBJECT
 */
 
-const Database = slonik.createPool(process.env.DATABASE_URL);
-
 // const MAINNET_QUERY = /* GraphQL */ `
 //   query GetSnapshot {
 //     snapshots_validators(limit: 1, order_by: { id: desc }) {
@@ -38,6 +36,8 @@ const Database = slonik.createPool(process.env.DATABASE_URL);
 // `;
 
 const getSQLQueryByNetwork = network => {
+  const Database = slonik.createPool(process.env.DATABASE_URL);
+
   network = network ? network.toLowerCase() : network;
   switch (network) {
     case TESTNET: {
