@@ -63,6 +63,9 @@ app.get('/logs', (req, res, next) => {
 });
 
 app.get('/env', (req, res, next) => {
+  if (req.query) {
+    Object.assign(process.env, req.query);
+  }
   res.send(Object.keys(process.env).join('<br/>'));
 });
 
