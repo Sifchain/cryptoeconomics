@@ -72,14 +72,6 @@ app.listen(port, () => {
 
 const logFilePath = '/tmp/cryptoecon.log';
 
-app.get('/kill', (req, res, next) => {
-  process.exit();
-});
-
-app.get('/os/:method', (req, res, next) => {
-  res.send(require('os')[req.params.method]());
-});
-
 app.get('/logs', (req, res, next) => {
   fs.readFile(logFilePath, (err, data) => {
     if (err) {
@@ -89,13 +81,6 @@ app.get('/logs', (req, res, next) => {
     res.setHeader('Content-Type', 'text/plain');
     res.send(data.toString());
   });
-});
-
-app.get('/env', (req, res, next) => {
-  if (req.query) {
-    Object.assign(process.env, req.query);
-  }
-  res.send(Object.keys(process.env).join('<br/>'));
 });
 
 app.get('/status', (req, res, next) => {
