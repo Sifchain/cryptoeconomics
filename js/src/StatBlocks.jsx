@@ -1,6 +1,8 @@
 import React from 'react';
 
 const numFormatter = new Intl.NumberFormat();
+const roundTo = (num, oneWithZeros = 100) =>
+  Math.max(Math.floor(num * oneWithZeros) / oneWithZeros, 0);
 const createStatBlock = ({
   title,
   subtitle,
@@ -32,8 +34,6 @@ const createStatBlock = ({
   shouldDisplay,
   order
 });
-const roundTo = (num, oneWithZeros = 100) =>
-  Math.floor(num * oneWithZeros) / oneWithZeros;
 
 const defaultStatBlocks = {
   dispensed: createStatBlock({
@@ -79,9 +79,9 @@ const defaultStatBlocks = {
       );
     },
     prefix: null,
-    shouldDisplay (data) {
-      return data > 0;
-    },
+    // shouldDisplay(data) {
+    //   return data > 0;
+    // },
     suffix: (
       <span
         style={{

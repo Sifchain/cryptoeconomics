@@ -16,7 +16,7 @@ const say = (template, ...substitutions) => {
     item = isStyled ? item.data : item;
     const formattedData =
       typeof item === 'number'
-        ? numFormatter.format(+item.toFixed(2))
+        ? numFormatter.format(+Math.max(0, item).toFixed(2))
         : item || '';
     const style =
       isStyled || typeof item === 'number'

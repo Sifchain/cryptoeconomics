@@ -31,7 +31,6 @@ exports.getProcessedLMData = snapshotLM => {
       { snapshot_data: dispensationsSnapshotData = {} } = {}
     ] = []
   } = snapshotLM.data;
-  console.log('LM Claims: ' + Object.keys(claimsSnapshotData).join(', '));
   const snapshotTimeseriesFinalIndex = getLMTimeseriesFinalIndex(
     minerSnapshotData
   );
@@ -67,8 +66,6 @@ exports.getProcessedVSData = snapshotVS => {
       { snapshot_data: dispensationsSnapshotData = {} } = {}
     ] = []
   } = snapshotVS.data;
-
-  console.log('LM Claims: ' + Object.keys(claimsSnapshotData).join(', '));
 
   const snapshotTimeseriesFinalIndex = getVSTimeseriesFinalIndex(
     validatorSnapshotData
@@ -116,7 +113,7 @@ function processUserEventsByTimestamp (
   dispensationEventsByUserByTimestamp = {}
 ) {
   console.time('processvs');
-  let cacheEnabled = true;
+  const cacheEnabled = false;
   const VSGlobalStates = [GlobalTimestampState.getInitial()];
   for (let i = 1; i <= NUMBER_OF_INTERVALS_TO_RUN; i++) {
     let nextGlobalState;
@@ -125,7 +122,7 @@ function processUserEventsByTimestamp (
     const isPendingInterval = i === snapshotTimeseriesFinalIndex - 1;
     const rewardProgramCache = history[rewardProgramType];
     const cachedTimestampState = rewardProgramCache[timestamp];
-    if (cachedTimestampState && !isSimulatedFutureInterval && cacheEnabled) {
+    if (cacheEnabled && cachedTimestampState && !isSimulatedFutureInterval) {
       nextGlobalState = cachedTimestampState;
     } else {
       const lastGlobalState = VSGlobalStates[VSGlobalStates.length - 1];

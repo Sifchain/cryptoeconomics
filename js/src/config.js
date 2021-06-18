@@ -4,8 +4,7 @@ const config = {
     MAINNET: 'mainnet',
     DEVNET: 'devnet',
     TESTNET: 'testnet'
-  },
-  NETWORK_STORAGE_KEY: '____cryptoecon-data-snapshot-network'
+  }
 };
 
 module.exports = config;

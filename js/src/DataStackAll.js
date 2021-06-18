@@ -9,8 +9,8 @@ registerChartDateAdapter(_adapters);
 // const totalInitialRowan = rewardBucketsTimeSeries[0].totalInitialRowan
 
 class DataStackAll extends React.Component {
-  constructor ({ onLoadingStateChange = isLoading => {}, ...props }) {
-    super({ onLoadingStateChange, ...props });
+  constructor ({ onLoadingStateChange = isLoading => {}, network, ...props }) {
+    super({ onLoadingStateChange, network, ...props });
     this.myRef = React.createRef();
     this.state = {};
     console.log('working');
@@ -115,7 +115,7 @@ class DataStackAll extends React.Component {
 
   componentDidMount () {
     this.props.onLoadingStateChange(true);
-    fetchStack(this.props.type)
+    fetchStack(this.props.type, this.props.network)
       .then(rewardData => {
         this.setState({ rewardData }, this.renderD3);
         this.props.onLoadingStateChange(false);
