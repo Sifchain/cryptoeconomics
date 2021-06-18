@@ -6,8 +6,6 @@ const slonik = require('slonik');
   QUERIES ARE CACHED USING THE LENGTH OF THE TEXT CONTENT OF THE RESPONSE OBJECT
 */
 
-const Database = slonik.createPool(process.env.DATABASE_URL);
-
 // const MAINNET_QUERY = /* GraphQL */ `
 //   query GetSnapshot {
 //     snapshots_new(limit: 1, order_by: { id: desc }) {
