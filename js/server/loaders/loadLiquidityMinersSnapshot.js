@@ -104,17 +104,17 @@ module.exports.loadLiquidityMinersSnapshot = async function (network) {
     throw new Error('process.env.SNAPSHOT_URL not defined!');
   }
   return getSQLQueryByNetwork(network);
-  return fetch(process.env.SNAPSHOT_URL, {
-    method: 'POST',
-    headers: Object.entries({
-      'x-hasura-admin-secret': process.env.HEADER_SECRET,
-      'Content-Type': 'application/json',
-    }),
-    body: JSON.stringify({
-      query: getQueryByNetwork(network),
-    }),
-  }).catch((err) => {
-    console.error(err);
-    throw err;
-  });
+  // return fetch(process.env.SNAPSHOT_URL, {
+  //   method: 'POST',
+  //   headers: Object.entries({
+  //     'x-hasura-admin-secret': process.env.HEADER_SECRET,
+  //     'Content-Type': 'application/json',
+  //   }),
+  //   body: JSON.stringify({
+  //     query: getQueryByNetwork(network),
+  //   }),
+  // }).catch((err) => {
+  //   console.error(err);
+  //   throw err;
+  // });
 };
