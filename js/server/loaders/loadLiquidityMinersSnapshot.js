@@ -45,13 +45,13 @@ const slonik = require('slonik');
 //   }
 // };
 
-const getSQLQueryByNetwork = (network) => {
+const getSQLQueryByNetwork = network => {
   const Database = slonik.createPool(process.env.DATABASE_URL);
   network = network ? network.toLowerCase() : network;
   switch (network) {
     case TESTNET: {
-      return Database.connect((cxn) => {
-        return cxn.transaction(async (tx) => {
+      return Database.connect(cxn => {
+        return cxn.transaction(async tx => {
           const snapshots_new = await tx.many(
             slonik.sql`select snapshot_data from snapshots_new_dev ORDER BY created_at DESC LIMIT 1`
           );
@@ -65,15 +65,15 @@ const getSQLQueryByNetwork = (network) => {
             data: {
               snapshots_new,
               snapshots_lm_claims,
-              snapshots_lm_dispensation,
-            },
+              snapshots_lm_dispensation
+            }
           };
         });
       });
     }
     default: {
-      return Database.connect((cxn) => {
-        return cxn.transaction(async (tx) => {
+      return Database.connect(cxn => {
+        return cxn.transaction(async tx => {
           const snapshots_new = await tx.many(
             slonik.sql`select snapshot_data from snapshots_new ORDER BY created_at DESC LIMIT 1`
           );
@@ -87,8 +87,8 @@ const getSQLQueryByNetwork = (network) => {
             data: {
               snapshots_new,
               snapshots_lm_claims,
-              snapshots_lm_dispensation,
-            },
+              snapshots_lm_dispensation
+            }
           };
         });
       });

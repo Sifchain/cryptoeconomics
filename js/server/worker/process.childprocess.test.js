@@ -63,6 +63,7 @@ const runTests = (type, parsedData, network) => {
         return (
           prev +
           curr.totalAccruedCommissionsAndClaimableRewards +
+          curr.claimedCommissionsAndRewardsAwaitingDispensation +
           curr.forfeitedCommissions +
           curr.forfeited +
           curr.dispensed

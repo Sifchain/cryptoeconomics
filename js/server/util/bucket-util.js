@@ -2,7 +2,7 @@ function processRewardBuckets (lastBuckets, bucketEvent) {
   let globalRewardAccrued = 0;
   let rewardBuckets = lastBuckets
     .map(bucket => {
-      let accrueAmount = bucket.initialRowan / (bucket.duration - 1);
+      let accrueAmount = bucket.initialRowan / bucket.duration;
       globalRewardAccrued += accrueAmount;
       return {
         rowan: bucket.rowan - accrueAmount,
