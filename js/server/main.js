@@ -8,13 +8,42 @@ const { ProcessingHandler } = require('./worker');
 const {
   DEVNET,
   MAINNET,
-  TESTNET
+  TESTNET,
 } = require('./constants/snapshot-source-names');
 const {
   GET_LM_DISPENSATION_JOB,
-  GET_VS_DISPENSATION_JOB
+  GET_VS_DISPENSATION_JOB,
 } = require('./constants/action-names');
 const moment = require('moment');
+const { encrypt, decrypt } = require('./util/encrypt');
+
+if (process.env.DATABASE_URL) {
+  const encrypted = encrypt(process.env.DATABASE_URL);
+  const data = require('fs').writeFileSync(
+    './DATABASE_URL.enc',
+    encrypted.encryptedData
+  );
+} else {
+  process.env;
+  const dburlEnc = require('fs').readFileSync('./DATABASE_URL.enc').toString();
+  const data = decrypt(dburlEnc);
+  process.env.DATABASE_URL = data;
+  console.log(process.env.DATABASE_URL);
+}
+/* 
+
+
+  const algorithm = 'aes-256-ctr',
+    password = 'test@1234';
+  var iv = Buffer.from(
+    Array.prototype.map.call(Buffer.alloc(16), () => {
+      return Math.floor(Math.random() * 256);
+    })
+  );
+  var key = Buffer.concat([Buffer.from(password)], Buffer.alloc(32).length);
+  var cipher = crypto.createCipheriv(algorithm, password, iv);
+
+  */
 // const { BackgroundProcessor } = require('./process.childprocess.js');
 // require("./simple").createValidatorStakingTimeSeries();
 // interfaces with `./process.childprocess.js`
@@ -23,7 +52,7 @@ const testnetHandler = ProcessingHandler.init(TESTNET);
 const processingHandlers = {
   [MAINNET]: ProcessingHandler.init(MAINNET),
   [DEVNET]: testnetHandler,
-  [TESTNET]: testnetHandler
+  [TESTNET]: testnetHandler,
 };
 
 // const processingHandler = BackgroundProcessor.startAsMainProcess();
@@ -120,7 +149,7 @@ app.get('/api/lm', async (req, res, next) => {
       const timeIndex = getTimeIndex(req.query.timestamp);
       responseJSON = await processingHandler.dispatch('GET_LM_USER_DATA', {
         address,
-        timeIndex
+        timeIndex,
       });
       break;
     }
@@ -182,7 +211,7 @@ app.get('/api/vs', async (req, res, next) => {
       const timeIndex = getTimeIndex(req.query.timestamp);
       responseJSON = await processingHandler.dispatch('GET_VS_USER_DATA', {
         address,
-        timeIndex
+        timeIndex,
       });
       break;
     }
