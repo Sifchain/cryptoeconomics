@@ -68,7 +68,7 @@ class BackgroundProcessor {
     try {
       const text = isInLocalSnapshotDevMode
         ? lmSnapshotRes
-        : await lmSnapshotRes.text();
+        : JSON.stringify(lmSnapshotRes);
 
       const snapshotIdentifier = crypto
         .createHash('md5')
@@ -84,7 +84,7 @@ class BackgroundProcessor {
         Remove reference to previous results so they can be garbage collected.
         Otherwise, we run out of memory on `--max-old-space-size=4096`
         */
-        const json = JSON.parse(text);
+        const json = lmSnapshotRes;
         this.lmDataParsed = undefined;
         console.time('getProcessedLMData');
         this.lmDataParsed = getProcessedLMData(json);
@@ -102,7 +102,7 @@ class BackgroundProcessor {
     try {
       const text = isInLocalSnapshotDevMode
         ? vsSnapshotRes
-        : await vsSnapshotRes.text();
+        : JSON.stringify(vsSnapshotRes);
       // const snapshotIdentifier = Object.values(json.data)
       //   .map((queryRes) => queryRes[0].id)
       //   .join('---');
@@ -117,7 +117,7 @@ class BackgroundProcessor {
           Remove reference to previous results so they can be garbage collected.
           Otherwise, we run out of memory on `--max-old-space-size=4096`
         */
-        const json = JSON.parse(text);
+        const json = vsSnapshotRes;
         this.vsDataParsed = undefined;
         console.time('getProcessedVSData');
         this.vsDataParsed = getProcessedVSData(json);
