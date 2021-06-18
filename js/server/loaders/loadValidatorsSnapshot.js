@@ -63,7 +63,7 @@ const getSQLQueryByNetwork = network => {
     default: {
       return Database.transaction(async tx => {
         const snapshots_new = await tx.many(
-          slonik.sql`select snapshot_data from snapshots_new ORDER BY created_at DESC LIMIT 1`
+          slonik.sql`select snapshot_data from snapshots_validators ORDER BY created_at DESC LIMIT 1`
         );
         const snapshots_vs_claims = await tx.many(
           slonik.sql`select snapshot_data from snapshots_vs_claims ORDER BY created_at DESC LIMIT 1`
