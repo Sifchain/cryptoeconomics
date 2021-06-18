@@ -1,4 +1,4 @@
-const { fetch } = require('cross-fetch');
+// const { fetch } = require('cross-fetch');
 const { TESTNET } = require('../constants/snapshot-source-names');
 const slonik = require('slonik');
 /* 
@@ -35,17 +35,17 @@ const TESTNET_QUERY = /* GraphQL */ `
   }
 `;
 
-const getQueryByNetwork = (network) => {
-  network = network ? network.toLowerCase() : network;
-  switch (network) {
-    case TESTNET: {
-      return TESTNET_QUERY;
-    }
-    default: {
-      return MAINNET_QUERY;
-    }
-  }
-};
+// const getQueryByNetwork = (network) => {
+//   network = network ? network.toLowerCase() : network;
+//   switch (network) {
+//     case TESTNET: {
+//       return TESTNET_QUERY;
+//     }
+//     default: {
+//       return MAINNET_QUERY;
+//     }
+//   }
+// };
 
 const getSQLQueryByNetwork = (network) => {
   network = network ? network.toLowerCase() : network;
