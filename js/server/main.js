@@ -19,7 +19,7 @@ const moment = require('moment');
 // require("./simple").createValidatorStakingTimeSeries();
 // interfaces with `./process.childprocess.js`
 
-const testnetHandler = undefined; // ProcessingHandler.init(TESTNET);
+const testnetHandler = ProcessingHandler.init(TESTNET);
 const processingHandlers = {
   [MAINNET]: ProcessingHandler.init(MAINNET),
   [DEVNET]: testnetHandler,

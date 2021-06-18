@@ -8,32 +8,32 @@ const slonik = require('slonik');
 
 const Database = slonik.createPool(process.env.DATABASE_URL);
 
-const MAINNET_QUERY = /* GraphQL */ `
-  query GetSnapshot {
-    snapshots_new(limit: 1, order_by: { id: desc }) {
-      snapshot_data
-    }
-    snapshots_lm_claims(limit: 1, order_by: { id: desc }) {
-      snapshot_data
-    }
-    snapshots_lm_dispensation(limit: 1, order_by: { id: desc }) {
-      snapshot_data
-    }
-  }
-`;
-const TESTNET_QUERY = /* GraphQL */ `
-  query GetDevSnapshot {
-    snapshots_new: snapshots_new_dev(limit: 1, order_by: { id: desc }) {
-      snapshot_data
-    }
-    snapshots_lm_claims(limit: 1, order_by: { id: desc }) {
-      snapshot_data
-    }
-    snapshots_lm_dispensation(limit: 1, order_by: { id: desc }) {
-      snapshot_data
-    }
-  }
-`;
+// const MAINNET_QUERY = /* GraphQL */ `
+//   query GetSnapshot {
+//     snapshots_new(limit: 1, order_by: { id: desc }) {
+//       snapshot_data
+//     }
+//     snapshots_lm_claims(limit: 1, order_by: { id: desc }) {
+//       snapshot_data
+//     }
+//     snapshots_lm_dispensation(limit: 1, order_by: { id: desc }) {
+//       snapshot_data
+//     }
+//   }
+// `;
+// const TESTNET_QUERY = /* GraphQL */ `
+//   query GetDevSnapshot {
+//     snapshots_new: snapshots_new_dev(limit: 1, order_by: { id: desc }) {
+//       snapshot_data
+//     }
+//     snapshots_lm_claims(limit: 1, order_by: { id: desc }) {
+//       snapshot_data
+//     }
+//     snapshots_lm_dispensation(limit: 1, order_by: { id: desc }) {
+//       snapshot_data
+//     }
+//   }
+// `;
 
 // const getQueryByNetwork = (network) => {
 //   network = network ? network.toLowerCase() : network;
