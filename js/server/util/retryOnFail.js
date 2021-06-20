@@ -1,7 +1,7 @@
-module.exports.retryOnFail = async function retryOnFail({
+module.exports.retryOnFail = async function retryOnFail ({
   fn,
   iterations,
-  waitFor = 3000,
+  waitFor = 3000
 }) {
   if (!iterations) throw new Error('iterations param required for tryRun');
   let count = 0;
@@ -19,7 +19,7 @@ module.exports.retryOnFail = async function retryOnFail({
       if (!shouldRun()) {
         return Promise.reject(e);
       }
-      await new Promise((resolve) => setTimeout(resolve, waitFor));
+      await new Promise(resolve => setTimeout(resolve, waitFor));
     }
   }
   return rtn;
