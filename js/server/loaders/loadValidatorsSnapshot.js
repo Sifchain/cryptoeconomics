@@ -1,5 +1,6 @@
 const { TESTNET } = require('../constants/snapshot-source-names');
 const slonik = require('slonik');
+const { getDatabase } = require('./getDatabase');
 /* 
   WARNING: DO NOT ADD MORE QUERIES OR FIELDS TO THE GRAPHQL QUERY.
   QUERIES ARE CACHED USING A HASH OF THE TEXT CONTENT OF THE RESPONSE OBJECT
@@ -34,12 +35,6 @@ const slonik = require('slonik');
 //     }
 //   }
 // `;
-
-let getDatabase = () => {
-  let db = slonik.createPool(process.env.DATABASE_URL);
-  getDatabase = () => db;
-  return db;
-};
 
 const getSQLQueryByNetwork = network => {
   network = network ? network.toLowerCase() : network;
