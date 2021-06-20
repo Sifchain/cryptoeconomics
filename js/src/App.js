@@ -1,4 +1,8 @@
-import { START_DATETIME, networks } from './config';
+import {
+  START_DATETIME,
+  networks,
+  RECENT_ADDRESS_LIST_STORAGE_KEY
+} from './config';
 import './App.css';
 import React, { useEffect, useMemo, useState } from 'react';
 import { fetchUsers, fetchUserData, fetchUserTimeSeriesData } from './api';
@@ -225,12 +229,51 @@ class App extends React.Component {
     this.updateAddress(address);
   }
 
+  getRecentAddresses () {
+    try {
+      let rtn = JSON.parse(
+        window.localStorage.getItem(RECENT_ADDRESS_LIST_STORAGE_KEY)
+      );
+      if (Array.isArray(rtn)) {
+        return rtn;
+      }
+      return [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  getRecentAddressesForCurrentType () {
+    let recents = this.getRecentAddresses();
+    let users = this.getUsersByType(this.state.type);
+    let currentTypeRecents = recents.filter(r => users.includes(r));
+    return currentTypeRecents;
+  }
+
+  addRecentAddress (recentAddress) {
+    if (!recentAddress || !recentAddress.startsWith('sif')) return;
+    try {
+      let addresses = [
+        ...new Set([recentAddress, ...this.getRecentAddresses()])
+      ]
+        .filter(addr => typeof addr === 'string')
+        .map(addr => addr.trim());
+      return window.localStorage.setItem(
+        RECENT_ADDRESS_LIST_STORAGE_KEY,
+        JSON.stringify(addresses)
+      );
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   updateAddress (address) {
     address = address ? address.trim() : address;
     this.state.router.push(address, {
       'snapshot-source': this.state.network,
       type: this.state.type
     });
+    this.addRecentAddress(address);
     if (address !== 'leaderboard' && address !== undefined) {
       fetchUserTimeSeriesData(
         address,
@@ -244,9 +287,10 @@ class App extends React.Component {
             undefined,
             this.state.network
           ).then(bulkUserData => {
+            const userData = bulkUserData[this.state.timeIndex];
             this.setState({
               bulkUserData,
-              userData: bulkUserData[this.state.timeIndex]
+              userData
             });
           });
         })
@@ -456,6 +500,13 @@ class App extends React.Component {
                   spellCheck={false}
                 />
                 <datalist id='address-search'>
+                  <optgroup label='Recents'>
+                    {this.getRecentAddressesForCurrentType().map(user => (
+                      <option key={user + '-recent'} value={user}>
+                        {user}
+                      </option>
+                    ))}
+                  </optgroup>
                   {users.map(user => (
                     <option key={user} value={user}>
                       {user}

@@ -55,6 +55,13 @@ function actions (processor) {
       };
     },
     [RELOAD_AND_REPROCESS_SNAPSHOTS]: async ({ network }) => {
+      // For testing fault-tolerance
+      // if (Math.random() > 0.25) {
+      //   process.exit();
+      // }
+      // if (Math.random() > 0.5) {
+      //   throw new Error('SAMPLE ERROR!JSLFJSFJ');
+      // }
       return processor.reloadAndReprocessSnapshots({ network });
     },
     /* Internal Actions */

@@ -4,7 +4,8 @@ const config = {
     MAINNET: 'mainnet',
     DEVNET: 'devnet',
     TESTNET: 'testnet'
-  }
+  },
+  RECENT_ADDRESS_LIST_STORAGE_KEY: '__recent-address-list'
 };
 
 module.exports = config;
