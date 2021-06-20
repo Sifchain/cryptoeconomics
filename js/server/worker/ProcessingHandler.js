@@ -101,13 +101,13 @@ class ProcessingHandler {
         // free up the memory in what was previously `this.freshProcess`
         // this.staleProcess.sleep();
         this.log(`Waiting for snapshot data to expire...`);
-        const onErrorOrExit = this.freshProcess.waitForErrorOrExit();
+        // const onErrorOrExit = this.freshProcess.waitForErrorOrExit();
         await Promise.race([
-          onErrorOrExit.promise,
+          // onErrorOrExit.promise,
           new Promise(resolve =>
             setTimeout(() => {
               resolve();
-              onErrorOrExit.cancel();
+              // onErrorOrExit.cancel();
             }, RELOAD_INTERVAL)
           )
         ]);
