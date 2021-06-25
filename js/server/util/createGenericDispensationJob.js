@@ -30,6 +30,9 @@ exports.createGenericDispensationJob = async jobType => {
     const formattedAmount = BigInt(
       Math.floor(claimed * EROWAN_PRECISION)
     ).toString();
+    if (formattedAmount === '0') {
+      continue;
+    }
     output.push({
       address: address,
       coins: [
