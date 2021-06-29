@@ -28,7 +28,7 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "FAST_REFRESH=false react-scripts start",
+    "client": "PORT=3001 FAST_REFRESH=false react-scripts start",
     "server": "node -r dotenv/config --trace-warnings --max-old-space-size=16384 server/main.js 2>&1 | tee /tmp/cryptoecon.log",
     "dev": "node -r dotenv/config --max-old-space-size=16384 server/main.js",
     "test-process": "node -r dotenv/config --trace-warnings --max-old-space-size=16384 ./server/worker/process.childprocess.test.js",

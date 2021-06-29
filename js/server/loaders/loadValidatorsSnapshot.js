@@ -61,20 +61,20 @@ const getSQLQueryByNetwork = network => {
     }
     default: {
       return getDatabase().transaction(async tx => {
-        const snapshots_validators = await tx.many(
+        const snapshots_validators = tx.many(
           slonik.sql`select snapshot_data from snapshots_validators ORDER BY created_at DESC LIMIT 1`
         );
-        const snapshots_vs_claims = await tx.many(
+        const snapshots_vs_claims = tx.many(
           slonik.sql`select snapshot_data from snapshots_vs_claims ORDER BY created_at DESC LIMIT 1`
         );
-        const snapshots_vs_dispensation = await tx.many(
+        const snapshots_vs_dispensation = tx.many(
           slonik.sql`select snapshot_data from snapshots_vs_dispensation ORDER BY created_at DESC LIMIT 1`
         );
         return {
           data: {
-            snapshots_validators,
-            snapshots_vs_claims,
-            snapshots_vs_dispensation
+            snapshots_validators: await snapshots_validators,
+            snapshots_vs_claims: await snapshots_vs_claims,
+            snapshots_vs_dispensation: await snapshots_vs_dispensation
           }
         };
       });

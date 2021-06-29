@@ -2,7 +2,7 @@ const config = require('../config');
 const { User } = require('./User');
 const { validateSifAddress } = require('../util/validateSifAddress');
 class GlobalTimestampState {
-  constructor() {
+  constructor () {
     this.totalDepositedAmount = 0;
     this.users = {};
     this.timestamp = -1;
@@ -13,7 +13,7 @@ class GlobalTimestampState {
   }
 
   // as designated here: https://github.com/Sifchain/sifnode/blob/develop/x/dispensation/Flow-Distribute.md
-  createDispensationJob() {
+  createDispensationJob () {
     const EROWAN_PRECISION = 1e18;
     const users = this.users;
     const output = [];
@@ -28,47 +28,46 @@ class GlobalTimestampState {
       const user = users[address];
       const claimed = user.claimedCommissionsAndRewardsAwaitingDispensation;
       if (!claimed) continue;
-      const formattedAmount = BigInt(
-        Math.floor(claimed * EROWAN_PRECISION)
-      ).toString();
-      if (formattedAmount === '0') {
+      const bigIntAmount = BigInt(Math.floor(claimed * EROWAN_PRECISION));
+      if (bigIntAmount === BigInt('0') || !bigIntAmount) {
         continue;
       }
+      const formattedAmount = bigIntAmount.toString();
       output.push({
         address: address,
         coins: [
           {
             denom: 'rowan',
-            amount: formattedAmount,
-          },
-        ],
+            amount: formattedAmount
+          }
+        ]
       });
     }
     return {
       internalEpochTimestamp: this.timestamp,
       job: {
-        Output: output,
-      },
+        Output: output
+      }
     };
   }
 
-  markAsSimulated() {
+  markAsSimulated () {
     this.isSimulated = true;
   }
 
-  markAsPending() {
+  markAsPending () {
     this.isPending = true;
   }
 
-  setTotalDepositedAmount(totalDepositedAmount) {
+  setTotalDepositedAmount (totalDepositedAmount) {
     this.totalDepositedAmount = totalDepositedAmount;
   }
 
-  updateTotalDepositedAmount() {
+  updateTotalDepositedAmount () {
     const users = this.users;
     let timestampTicketsAmountSum = 0;
     for (let addr in users) {
-      users[addr].tickets.forEach((t) => {
+      users[addr].tickets.forEach(t => {
         timestampTicketsAmountSum += t.amount;
       });
     }
@@ -76,7 +75,7 @@ class GlobalTimestampState {
     return timestampTicketsAmountSum;
   }
 
-  static fromJSON(props) {
+  static fromJSON (props) {
     let next = Object.assign(new this(), props);
     next.users = Object.fromEntries(
       Object.entries(next.users).map(([k, v]) => {
@@ -86,17 +85,17 @@ class GlobalTimestampState {
     return next;
   }
 
-  static getInitial() {
+  static getInitial () {
     let instance = new this();
     instance.bucketEvent = {
       rowan: 45000000,
       initialRowan: 45000000,
-      duration: config.REWARD_ACCRUAL_DURATION_INTERVAL_COUNT,
+      duration: config.REWARD_ACCRUAL_DURATION_INTERVAL_COUNT
     };
     return instance;
   }
 }
 
 module.exports = {
-  GlobalTimestampState,
+  GlobalTimestampState
 };
