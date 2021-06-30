@@ -80,9 +80,17 @@ const getSQLQueryByNetwork = network => {
         const snapshots_lm_dispensation = tx.many(
           slonik.sql`select snapshot_data from snapshots_lm_dispensation ORDER BY created_at DESC LIMIT 1`
         );
+        const [...snapshotsNewLoaded] = await snapshots_new;
+        const firstItemSnapshotData = snapshotsNewLoaded[0].snapshot_data;
+        while (snapshotsNewLoaded.length > 1) {
+          Object.assign(
+            firstItemSnapshotData,
+            snapshotsNewLoaded.pop().snapshot_data
+          );
+        }
         return {
           data: {
-            snapshots_new: await snapshots_new,
+            snapshots_new: snapshotsNewLoaded,
             snapshots_lm_claims: await snapshots_lm_claims,
             snapshots_lm_dispensation: await snapshots_lm_dispensation
           }
