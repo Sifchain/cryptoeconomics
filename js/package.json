@@ -29,7 +29,7 @@
   },
   "scripts": {
     "client": "PORT=3001 FAST_REFRESH=false react-scripts start",
-    "server": "node -r dotenv/config --trace-warnings --max-old-space-size=16384 server/main.js 2>&1 | tee /tmp/cryptoecon.log",
+    "server": "node -r dotenv/config --trace-warnings --max-old-space-size=32768 server/main.js 2>&1 | tee /tmp/cryptoecon.log",
     "dev": "node -r dotenv/config --max-old-space-size=16384 server/main.js",
     "test-process": "node -r dotenv/config --trace-warnings --max-old-space-size=16384 ./server/worker/process.childprocess.test.js",
     "refresh-lm-snapshot": "source .env && curl -H 'Content-Type: application/json' -H \"$HEADER_SECRET\" -X POST -d '{\"query\": \"query GetSnapshot { snapshots_new(limit: 1 order_by: {id: desc}) { snapshot_data } }\"}' $SNAPSHOT_URL -o ./snapshots/snapshot_lm_latest.trash.json",
