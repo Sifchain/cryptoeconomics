@@ -32,7 +32,9 @@ if (process.env.DATABASE_URL) {
 }
 
 const os = require('os');
+const { execSync } = require('child_process');
 
+console.log(execSync(`df -h`).toString());
 console.log(os.cpus());
 console.log(os.totalmem());
 console.log(os.freemem());
