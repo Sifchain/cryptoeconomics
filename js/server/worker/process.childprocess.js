@@ -80,9 +80,9 @@ class BackgroundProcessor {
       // .join('---');
       if (this.previousLMSnapshotIdentifier !== snapshotIdentifier) {
         /*
-        V8 performance hack.
-        Remove reference to previous results so they can be garbage collected.
-        Otherwise, we run out of memory on `--max-old-space-size=4096`
+          V8 performance hack.
+          Remove reference to previous results so they can be garbage collected.
+          Otherwise, we run out of memory on `--max-old-space-size=4096`
         */
         const json = lmSnapshotRes;
         this.lmDataParsed = undefined;

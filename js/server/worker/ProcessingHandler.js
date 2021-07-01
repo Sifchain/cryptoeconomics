@@ -1,5 +1,7 @@
 const { fork } = require('child_process');
+const moment = require('moment');
 const path = require('path');
+const { DEPOSIT_CUTOFF_DATETIME } = require('../config');
 const {
   CHECK_IF_PARSED_DATA_READY,
   RELOAD_AND_REPROCESS_SNAPSHOTS
@@ -42,7 +44,19 @@ class ProcessingHandler {
   }
 
   async start () {
-    this.beginProcessRotation();
+    const hasSnapshotsStillUpdating = moment()
+      .utc()
+      .isBefore(moment.utc(DEPOSIT_CUTOFF_DATETIME));
+    if (hasSnapshotsStillUpdating) {
+      this.beginProcessRotation();
+      return;
+    }
+    this.freshProcess.onStart(() => {
+      this.freshProcess.dispatch(RELOAD_AND_REPROCESS_SNAPSHOTS, {
+        network: this.network
+      });
+    });
+    this.freshProcess.wake();
   }
 
   async waitForReadyState () {
@@ -131,11 +145,21 @@ class SubscriberProcess {
     this.childProcess = null;
     this.isRestarting = false;
     this.isSleeping = true;
+    this.onStartCallbacks = [];
+  }
+
+  onStart (cb) {
+    if (typeof cb === 'function') {
+      this.onStartCallbacks.push(cb);
+    }
   }
 
   wake () {
     this.isSleeping = false;
     this.childProcess = this.fork();
+    setTimeout(() => {
+      this.onStartCallbacks.forEach(cb => cb(this.childProcess));
+    }, 250);
   }
 
   sleep () {
@@ -208,7 +232,7 @@ class SubscriberProcess {
         });
       }
       await Promise.all([exited]);
-      this.childProcess = this.fork();
+      this.wake();
     } catch (e) {
       console.error(e);
     }

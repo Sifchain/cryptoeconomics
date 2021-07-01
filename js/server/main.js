@@ -56,11 +56,19 @@ console.log(os.freemem());
 // require("./simple").createValidatorStakingTimeSeries();
 // interfaces with `./process.childprocess.js`
 
-const testnetHandler = ProcessingHandler.init(TESTNET);
+let createTestnetHandler = () => {
+  const testnetHandler = ProcessingHandler.init(TESTNET);
+  createTestnetHandler = () => testnetHandler;
+  return testnetHandler;
+};
 const processingHandlers = {
   [MAINNET]: ProcessingHandler.init(MAINNET),
-  [DEVNET]: testnetHandler,
-  [TESTNET]: testnetHandler
+  get [DEVNET] () {
+    return createTestnetHandler();
+  },
+  get [TESTNET] () {
+    return createTestnetHandler();
+  }
 };
 
 // const processingHandler = BackgroundProcessor.startAsMainProcess();
