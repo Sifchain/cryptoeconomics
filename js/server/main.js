@@ -30,6 +30,12 @@ if (process.env.DATABASE_URL) {
   const data = decrypt(dburlEnc);
   process.env.DATABASE_URL = data;
 }
+
+const os = require('os');
+
+console.log(os.cpus());
+console.log(os.totalmem());
+console.log(os.freemem());
 /* 
 
 
