@@ -99,6 +99,7 @@ exports.getProcessedVSData = snapshotVS => {
   );
 };
 
+const cacheEnabled = true;
 const history = {
   [VALIDATOR_STAKING]: {},
   [LIQUIDITY_MINING]: {}
@@ -113,7 +114,6 @@ function processUserEventsByTimestamp (
   dispensationEventsByUserByTimestamp = {}
 ) {
   console.time('processvs');
-  const cacheEnabled = false;
   const VSGlobalStates = [GlobalTimestampState.getInitial()];
   for (let i = 1; i <= NUMBER_OF_INTERVALS_TO_RUN; i++) {
     let nextGlobalState;

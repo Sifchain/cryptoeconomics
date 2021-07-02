@@ -51,10 +51,21 @@ class ProcessingHandler {
       this.beginProcessRotation();
       return;
     }
-    this.freshProcess.onStart(() => {
-      this.freshProcess.dispatch(RELOAD_AND_REPROCESS_SNAPSHOTS, {
-        network: this.network
-      });
+    let timeout = setTimeout(() => {}, 0);
+    this.freshProcess.onStart(async () => {
+      clearTimeout(timeout);
+      const reloadAndReparse = () =>
+        this.freshProcess.dispatch(RELOAD_AND_REPROCESS_SNAPSHOTS, {
+          network: this.network
+        });
+      while (true) {
+        try {
+          await reloadAndReparse();
+        } catch (e) {
+          console.error(e);
+        }
+        await new Promise(resolve => setTimeout(resolve, 0));
+      }
     });
     this.freshProcess.wake();
   }
