@@ -27,7 +27,9 @@ class GlobalTimestampState {
       }
       const user = users[address];
       const claimed = user.claimedCommissionsAndRewardsAwaitingDispensation;
-      if (!claimed) continue;
+      if (!claimed) {
+        continue;
+      }
       const bigIntAmount = BigInt(Math.floor(claimed * EROWAN_PRECISION));
       if (bigIntAmount === BigInt('0') || !bigIntAmount) {
         continue;
