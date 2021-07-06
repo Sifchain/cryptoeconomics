@@ -3,7 +3,8 @@ const config = {
   networks: {
     MAINNET: 'mainnet',
     DEVNET: 'devnet',
-    TESTNET: 'testnet'
+    TESTNET: 'testnet',
+    MAINNET_SNAPSHOTS_V2_BETA: 'mainnet_snapshots_v2_beta'
   },
   RECENT_ADDRESS_LIST_STORAGE_KEY: '__recent-address-list'
 };
