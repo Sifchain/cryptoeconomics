@@ -43,14 +43,7 @@ class ProcessingHandler {
     });
   }
 
-  async start () {
-    const hasSnapshotsStillUpdating = moment()
-      .utc()
-      .isBefore(moment.utc(DEPOSIT_CUTOFF_DATETIME));
-    if (hasSnapshotsStillUpdating) {
-      this.beginProcessRotation();
-      return;
-    }
+  async startLight () {
     let timeout = setTimeout(() => {}, 0);
     this.freshProcess.onStart(async () => {
       clearTimeout(timeout);
@@ -68,6 +61,16 @@ class ProcessingHandler {
       }
     });
     this.freshProcess.wake();
+  }
+
+  get hasSnapshotsStillUpdating () {
+    return moment()
+      .utc()
+      .isBefore(moment.utc(DEPOSIT_CUTOFF_DATETIME));
+  }
+
+  async start () {
+    this.beginProcessRotation();
   }
 
   async waitForReadyState () {
