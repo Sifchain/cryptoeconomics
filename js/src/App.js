@@ -1,7 +1,7 @@
 import {
   START_DATETIME,
   networks,
-  RECENT_ADDRESS_LIST_STORAGE_KEY,
+  RECENT_ADDRESS_LIST_STORAGE_KEY
 } from './config';
 import './App.css';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -15,8 +15,8 @@ import { StatBlocks } from './StatBlocks';
 import { UserDataSummary } from './UserDataSummary';
 
 // show all fields locally
-const SHOULD_HIDE_NON_USER_FRIENDLY_FIELDS =
-  !!process.env.REACT_APP_DEPLOYMENT_TAG;
+const SHOULD_HIDE_NON_USER_FRIENDLY_FIELDS = !!process.env
+  .REACT_APP_DEPLOYMENT_TAG;
 
 const userFieldsToHide = [
   'reservedReward',
@@ -26,7 +26,7 @@ const userFieldsToHide = [
   'nextReward',
   'nextRewardProjectedFutureReward',
   'yearsToMaturity',
-  'currentAPYOnTickets',
+  'currentAPYOnTickets'
 ];
 
 const debounce = (fn, ms) => {
@@ -40,7 +40,7 @@ const debounce = (fn, ms) => {
 };
 
 class Router {
-  constructor(onChange = (router) => {}) {
+  constructor (onChange = router => {}) {
     this.query = {};
     this.hashData = undefined;
     this.evaluateHashQueryAndData();
@@ -48,12 +48,12 @@ class Router {
     this.onChange = onChange;
   }
 
-  evaluateHashQueryAndData() {
+  evaluateHashQueryAndData () {
     this.query = this.queryStringToObject(window.location.hash);
     this.hashData = this.extractHashData();
   }
 
-  push(hash, queryObject) {
+  push (hash, queryObject) {
     const queryStr = this.objectToQueryString(queryObject);
     console.log(queryStr, queryObject);
     window.history.pushState(undefined, '', `#${hash || ''}&${queryStr}`);
@@ -61,25 +61,28 @@ class Router {
     // this.onChange(this);
   }
 
-  extractHashData() {
+  extractHashData () {
     return (
-      (window.location.hash || '').substr(1).split('&').shift() || undefined
+      (window.location.hash || '')
+        .substr(1)
+        .split('&')
+        .shift() || undefined
     );
   }
 
-  queryStringToObject(str) {
+  queryStringToObject (str) {
     const query = Object.fromEntries(
       str
         .split('&')
-        .filter((str) => str.includes('='))
-        .map((str) => str.split('='))
+        .filter(str => str.includes('='))
+        .map(str => str.split('='))
     );
     return query;
   }
 
-  objectToQueryString(query) {
+  objectToQueryString (query) {
     const str = Object.entries(query)
-      .map((arr) => arr.join('='))
+      .map(arr => arr.join('='))
       .join('&');
     return str;
   }
@@ -113,7 +116,7 @@ const CountDown = ({ until = moment() }) => {
         style={{
           // fontVariant: 'none',
           fontSize: '1.6rem',
-          verticalAlign: 'center',
+          verticalAlign: 'center'
           // fontWeight: 400,
         }}
       >
@@ -124,16 +127,18 @@ const CountDown = ({ until = moment() }) => {
 };
 
 class App extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
 
-    const router = new Router((router) => {});
+    const router = new Router(router => {});
 
-    let { type = 'lm', 'snapshot-source': network = networks.MAINNET } =
-      router.query;
+    let {
+      type = 'lm',
+      'snapshot-source': network = networks.MAINNET
+    } = router.query;
 
     network =
-      Object.values(networks).find((n) => n === network) || networks.MAINNET;
+      Object.values(networks).find(n => n === network) || networks.MAINNET;
 
     const address = router.hashData;
 
@@ -151,7 +156,7 @@ class App extends React.Component {
       usersVS: [],
       isLoadingLeaderboard: false,
       originalTitle: window.document.title,
-      router: router,
+      router: router
     };
     if (this.state.network !== networks.MAINNET) {
       window.document.title = (window.document.title || '').replace(
@@ -166,14 +171,14 @@ class App extends React.Component {
     this.updateAddress(this.state.address);
   }
 
-  updateWebsiteTitle() {
+  updateWebsiteTitle () {
     // window.document.title = `${this.state.type.toLowerCase()}/${this.state.address.slice(
     //   0,
     //   3
     // )}..${this.state.address.slice(-12, -1)}`;
   }
 
-  getTimeIndex(time) {
+  getTimeIndex (time) {
     time = moment.utc(time);
     return (
       Math.floor(
@@ -182,13 +187,13 @@ class App extends React.Component {
     );
   }
 
-  initDateTime() {
+  initDateTime () {
     const now = moment.utc(Date.now());
     const currentTimeIndex = this.getTimeIndex(now);
     console.log({ currentTimeIndex });
     this.setState(
       {
-        nowTimeIndex: currentTimeIndex,
+        nowTimeIndex: currentTimeIndex
       },
       () => {
         this.updateTimestamp(currentTimeIndex);
@@ -196,35 +201,35 @@ class App extends React.Component {
     );
   }
 
-  componentDidMount() {
-    fetchUsers('lm', this.state.network).then((usersLM) =>
+  componentDidMount () {
+    fetchUsers('lm', this.state.network).then(usersLM =>
       this.setState({ usersLM })
     );
-    fetchUsers('vs', this.state.network).then((usersVS) =>
+    fetchUsers('vs', this.state.network).then(usersVS =>
       this.setState({ usersVS })
     );
     this.initDateTime();
   }
 
-  updateNetwork(network) {
+  updateNetwork (network) {
     const router = this.state.router;
     router.push(router.hashData, {
       ...router.query,
       type: this.state.type,
-      'snapshot-source': network,
+      'snapshot-source': network
     });
     window.location.reload();
     this.setState({
-      network,
+      network
     });
   }
 
-  updateAddressEvent(event) {
+  updateAddressEvent (event) {
     const address = event.target.value;
     this.updateAddress(address);
   }
 
-  getRecentAddresses() {
+  getRecentAddresses () {
     try {
       let rtn = JSON.parse(
         window.localStorage.getItem(RECENT_ADDRESS_LIST_STORAGE_KEY)
@@ -238,21 +243,21 @@ class App extends React.Component {
     }
   }
 
-  getRecentAddressesForCurrentType() {
+  getRecentAddressesForCurrentType () {
     let recents = this.getRecentAddresses();
     let users = this.getUsersByType(this.state.type);
-    let currentTypeRecents = recents.filter((r) => users.includes(r));
+    let currentTypeRecents = recents.filter(r => users.includes(r));
     return currentTypeRecents;
   }
 
-  addRecentAddress(recentAddress) {
+  addRecentAddress (recentAddress) {
     if (!recentAddress || !recentAddress.startsWith('sif')) return;
     try {
       let addresses = [
-        ...new Set([recentAddress, ...this.getRecentAddresses()]),
+        ...new Set([recentAddress, ...this.getRecentAddresses()])
       ]
-        .filter((addr) => typeof addr === 'string')
-        .map((addr) => addr.trim());
+        .filter(addr => typeof addr === 'string')
+        .map(addr => addr.trim());
       return window.localStorage.setItem(
         RECENT_ADDRESS_LIST_STORAGE_KEY,
         JSON.stringify(addresses)
@@ -262,11 +267,11 @@ class App extends React.Component {
     }
   }
 
-  updateAddress(address) {
+  updateAddress (address) {
     address = address ? address.trim() : address;
     this.state.router.push(address, {
       'snapshot-source': this.state.network,
-      type: this.state.type,
+      type: this.state.type
     });
     this.addRecentAddress(address);
     if (address !== 'leaderboard' && address !== undefined) {
@@ -274,18 +279,18 @@ class App extends React.Component {
         address,
         this.state.type,
         this.state.network
-      ).then((userTimeSeriesData) =>
+      ).then(userTimeSeriesData =>
         this.setState({ userTimeSeriesData }, () => {
           fetchUserData(
             address,
             this.state.type,
             undefined,
             this.state.network
-          ).then((bulkUserData) => {
+          ).then(bulkUserData => {
             const userData = bulkUserData[this.state.timeIndex];
             this.setState({
               bulkUserData,
-              userData,
+              userData
             });
           });
         })
@@ -294,40 +299,43 @@ class App extends React.Component {
     this.setState({
       address,
       userData: undefined,
-      userTimeSeriesData: undefined,
+      userTimeSeriesData: undefined
     });
   }
 
-  updateTimestamp(timeIndex) {
+  updateTimestamp (timeIndex) {
     // because genesis block is included
     const minutes = timeIndex * 200;
-    const dateObj = moment.utc(START_DATETIME).add(minutes, 'm').utc();
+    const dateObj = moment
+      .utc(START_DATETIME)
+      .add(minutes, 'm')
+      .utc();
     const date = dateObj;
     this.setState({
       date,
       timeIndex: +timeIndex,
-      userData: null,
+      userData: null
     });
     console.log({ timeIndex });
     const address = this.state.address;
     if (address && address.startsWith('sif')) {
       if (this.state.bulkUserData) {
         this.setState({
-          userData: this.state.bulkUserData[timeIndex],
+          userData: this.state.bulkUserData[timeIndex]
         });
       }
     }
   }
 
-  updateType(type) {
+  updateType (type) {
     this.state.router.push(this.state.router.hashData, {
       ...this.state.router.query,
-      type: type,
+      type: type
     });
     const users = this.getUsersByType(type);
     this.setState(
       {
-        type,
+        type
       },
       () => {
         this.updateAddress(
@@ -339,17 +347,17 @@ class App extends React.Component {
     );
   }
 
-  getUsersByType(type) {
+  getUsersByType (type) {
     return type === 'lm' ? this.state.usersLM : this.state.usersVS;
   }
 
-  render() {
+  render () {
     if (!this.state.usersLM || !this.state.usersVS) {
       return (
-        <div className="loading-screen">
-          <div className="logo-loader">
-            <img src="Sifchain-logo-gold.svg" />
-            <div className="logo-loader-overlay" />
+        <div className='loading-screen'>
+          <div className='logo-loader'>
+            <img src='Sifchain-logo-gold.svg' />
+            <div className='logo-loader-overlay' />
           </div>
         </div>
       );
@@ -383,7 +391,7 @@ class App extends React.Component {
       addressInputRef.current.value = '';
     };
 
-    const clearInputIfAddressIncompatibile = (nextType) => {
+    const clearInputIfAddressIncompatibile = nextType => {
       if (!this.getUsersByType(nextType).includes(this.state.address)) {
         clearInput();
       }
@@ -398,25 +406,25 @@ class App extends React.Component {
     const isLoading = this.state.isLoadingLeaderboard || isLoadingUserData;
 
     return (
-      <div className="App">
-        <header className="App-header">
-          <div className="logo-container">
+      <div className='App'>
+        <header className='App-header'>
+          <div className='logo-container'>
             <img
               className={`${isLoading ? 'loading' : ''}`}
-              src="sifchain-s.svg"
+              src='sifchain-s.svg'
             />
           </div>
-          <div className="logo-network">
+          <div className='logo-network'>
             {this.state.network !== networks.MAINNET
               ? this.state.network
               : null}
           </div>
           <div
             style={{ width: '100%', display: 'flex', flexDirection: 'row' }}
-            className="tab-group"
+            className='tab-group'
           >
             <div
-              onClick={(e) => {
+              onClick={e => {
                 this.updateType('lm');
                 clearInputIfAddressIncompatibile('lm');
               }}
@@ -427,7 +435,7 @@ class App extends React.Component {
               Liquidity Pool Mining Rewards
             </div>
             <div
-              onClick={(e) => {
+              onClick={e => {
                 this.updateType('vs');
                 clearInputIfAddressIncompatibile('vs');
               }}
@@ -438,11 +446,11 @@ class App extends React.Component {
               Validator Staking & Delegating Rewards
             </div>
           </div>
-          <div className="select-container">
-            <div className="address-container">
-              <div className="dropdown-container">
+          <div className='select-container'>
+            <div className='address-container'>
+              <div className='dropdown-container'>
                 <select
-                  onInput={(e) => {
+                  onInput={e => {
                     this.updateAddressEvent(e);
                     if (
                       addressInputRef.current.value !== e.currentTarget.value
@@ -452,18 +460,18 @@ class App extends React.Component {
                   }}
                   ref={addressSelectRef}
                   style={{ display: 'block' }}
-                  value=""
-                  className="dropdown"
+                  value=''
+                  className='dropdown'
                 >
-                  <option key="none" value="">
+                  <option key='none' value=''>
                     Select
                   </option>
                   {
-                    <option key="leaderboard" value="leaderboard">
+                    <option key='leaderboard' value='leaderboard'>
                       Leaderboard
                     </option>
                   }
-                  {users.sort().map((user) => (
+                  {users.sort().map(user => (
                     <option key={user} value={user}>
                       {user}
                     </option>
@@ -471,44 +479,41 @@ class App extends React.Component {
                 </select>
 
                 <input
-                  autoComplete="off"
+                  autoComplete='off'
                   ref={addressInputRef}
                   defaultValue={this.state.address}
-                  list="address-search"
-                  name="address-search"
-                  placeholder="Search or Select a Sif Address"
-                  className="dropdown"
-                  onChange={debounce((e) => {
+                  list='address-search'
+                  name='address-search'
+                  placeholder='Search or Select a Sif Address'
+                  className='dropdown'
+                  onChange={debounce(e => {
                     if (e.target.value !== this.state.address) {
                       let isValid = users.includes(e.target.value);
                       if (isValid) this.updateAddressEvent(e);
                     }
                   }, 500)}
-                  onBlur={(e) => {
+                  onBlur={e => {
                     if (e.target.value !== this.state.address) {
                       this.updateAddressEvent(e);
                     }
                   }}
                   spellCheck={false}
                 />
-                <datalist id="address-search">
-                  <optgroup label="Recents">
-                    {this.getRecentAddressesForCurrentType().map((user) => (
+                <datalist id='address-search'>
+                  <optgroup label='Recents'>
+                    {this.getRecentAddressesForCurrentType().map(user => (
                       <option key={user + '-recent'} value={user}>
                         {user}
                       </option>
                     ))}
                   </optgroup>
-                  {users.map((user) => (
+                  {users.map(user => (
                     <option key={user} value={user}>
                       {user}
                     </option>
                   ))}
                 </datalist>
-                <button
-                  onClick={(e) => clearInput()}
-                  className="clear-input-btn"
-                >
+                <button onClick={e => clearInput()} className='clear-input-btn'>
                   clear
                 </button>
               </div>
@@ -516,14 +521,14 @@ class App extends React.Component {
           </div>
         </header>
 
-        <div className="content">
+        <div className='content'>
           {this.state.address === 'leaderboard' && (
             <DataStackAll
               network={this.state.network}
-              onLoadingStateChange={(state) => {
+              onLoadingStateChange={state => {
                 if (state !== this.state.isLoadingLeaderboard) {
                   this.setState({
-                    isLoadingLeaderboard: state,
+                    isLoadingLeaderboard: state
                   });
                 }
               }}
@@ -537,7 +542,7 @@ class App extends React.Component {
                 style={{
                   color: 'turquoise',
                   width: '100%',
-                  textAlign: 'center',
+                  textAlign: 'center'
                 }}
               >
                 Loading Rewards...
@@ -550,19 +555,19 @@ class App extends React.Component {
           {this.state.address !== 'leaderboard' &&
             this.state.address !== undefined &&
             timeSeriesData && (
-              <div className="timestamp-slider">
+              <div className='timestamp-slider'>
                 <input
-                  onDoubleClick={(e) =>
+                  onDoubleClick={e =>
                     this.updateTimestamp(this.state.nowTimeIndex)
                   }
                   style={{ width: '100%' }}
-                  id="timestamp"
-                  type="range"
-                  min="0"
+                  id='timestamp'
+                  type='range'
+                  min='0'
                   max={timeSeriesData.length - 1}
                   value={this.state.timeIndex}
-                  onChange={(e) => this.updateTimestamp(e.target.value)}
-                  step="1"
+                  onChange={e => this.updateTimestamp(e.target.value)}
+                  step='1'
                 />
               </div>
             )}
@@ -570,9 +575,9 @@ class App extends React.Component {
             this.state.address !== undefined && (
               <div
                 title={new Date(this.state.date.valueOf()).toString()}
-                className="stat-card timestamp-slider-description"
+                className='stat-card timestamp-slider-description'
               >
-                <div className="timestamp-slider-description__title">
+                <div className='timestamp-slider-description__title'>
                   {this.state.timeIndex === this.state.nowTimeIndex ? (
                     <CountDown until={this.state.date} />
                   ) : this.state.timeIndex === this.state.nowTimeIndex - 1 ? (
@@ -587,7 +592,7 @@ class App extends React.Component {
                     'Current Rewards'
                   )}
                 </div>
-                <div className="timestamp-slider-description__datetime">
+                <div className='timestamp-slider-description__datetime'>
                   {this.state.date.format(
                     `ddd MMMM Do YYYY[,] [${this.state.date
                       .clone()
@@ -597,9 +602,9 @@ class App extends React.Component {
                 </div>
                 <div
                   style={{
-                    display: 'none',
+                    display: 'none'
                   }}
-                  className="timestamp-slider-description__datetime"
+                  className='timestamp-slider-description__datetime'
                 >
                   {this.state.date
                     .clone()
@@ -613,10 +618,13 @@ class App extends React.Component {
                     ) + ' LOCAL'}
                   <hr />
                   Now:{' '}
-                  {moment().utc().format(`ddd MMMM Do YYYY hh:mm A`) + ' UTC  '}
+                  {moment()
+                    .utc()
+                    .format(`ddd MMMM Do YYYY hh:mm A`) + ' UTC  '}
                   <br />
-                  {moment().local().format(`ddd MMMM Do YYYY hh:mm A`) +
-                    ' LOCAL'}
+                  {moment()
+                    .local()
+                    .format(`ddd MMMM Do YYYY hh:mm A`) + ' LOCAL'}
                 </div>
               </div>
             )}
@@ -627,21 +635,21 @@ class App extends React.Component {
               <div
                 style={{
                   width: '100%',
-                  textAlign: 'center',
+                  textAlign: 'center'
                 }}
               >
                 <input
                   style={{
                     color: 'white',
-                    background: 'black',
+                    background: 'black'
                   }}
-                  type="number"
-                  min="0"
+                  type='number'
+                  min='0'
                   max={timeSeriesData.length - 1}
                   value={this.state.timeIndex}
-                  onChange={(e) => this.updateTimestamp(e.target.value)}
-                  onInput={(e) => this.updateTimestamp(e.currentTarget.value)}
-                  step="1"
+                  onChange={e => this.updateTimestamp(e.target.value)}
+                  onInput={e => this.updateTimestamp(e.currentTarget.value)}
+                  step='1'
                 />
               </div>
             )}
@@ -661,7 +669,7 @@ class App extends React.Component {
               flexDirection: 'row',
               alignItems: 'stretch',
               justifyContent: 'center',
-              flexWrap: 'wrap',
+              flexWrap: 'wrap'
             }}
           >
             {' '}
@@ -678,23 +686,23 @@ class App extends React.Component {
                       return false;
                     return { block, statNumVal };
                   })
-                  .filter((b) => !!b)
+                  .filter(b => !!b)
                   .map(({ block, statNumVal }) => {
                     return (
                       <div
                         key={block.title + this.state.timeIndex}
-                        className="stat-card"
+                        className='stat-card'
                         style={{ order: block.order }}
                       >
                         <div
-                          className="stat-subtitle"
+                          className='stat-subtitle'
                           dangerouslySetInnerHTML={{ __html: block.subtitle }}
                         />
                         <div
-                          className="stat-title"
+                          className='stat-title'
                           dangerouslySetInnerHTML={{ __html: block.title }}
                         />
-                        <div className="stat-data">
+                        <div className='stat-data'>
                           {block.prefix}
                           {block.data(statNumVal)}
                           {block.suffix}
@@ -707,11 +715,11 @@ class App extends React.Component {
 
           {this.state.address !== 'leaderboard' &&
           this.state.address !== undefined ? (
-            <details className="metadata-container">
+            <details className='metadata-container'>
               <summary>JSON Metadata</summary>
               <JSONPretty
-                className="json-metadata"
-                id="json-pretty"
+                className='json-metadata'
+                id='json-pretty'
                 data={userTimestampJSON}
               />
             </details>
@@ -721,30 +729,30 @@ class App extends React.Component {
             this.state.address !== undefined && (
               <div
                 style={{ display: 'none' }}
-                className="timestamp-slider-description"
+                className='timestamp-slider-description'
               >
                 {new Date(this.state.date.toISOString()).toString()}
               </div>
             )}
           {this.state.type === 'vs' ? (
-            <div className="info-text">
+            <div className='info-text'>
               Learn more about Sifchain Validator Staking & Delegation{' '}
               <a
-                target="_blank"
-                rel="noopener noreferrer"
-                href="https://docs.sifchain.finance/roles/validators"
+                target='_blank'
+                rel='noopener noreferrer'
+                href='https://docs.sifchain.finance/roles/validators'
               >
                 here
               </a>
               .
             </div>
           ) : (
-            <div className="info-text">
+            <div className='info-text'>
               Learn more about Sifchain Liquidity Pooling{' '}
               <a
-                target="_blank"
-                rel="noopener noreferrer"
-                href="https://docs.sifchain.finance/roles/liquidity-providers"
+                target='_blank'
+                rel='noopener noreferrer'
+                href='https://docs.sifchain.finance/roles/liquidity-providers'
               >
                 here
               </a>
@@ -752,9 +760,9 @@ class App extends React.Component {
             </div>
           )}
           <select
-            className="dropdown--select-network"
+            className='dropdown--select-network'
             value={this.state.network}
-            onChange={(e) => this.updateNetwork(e.target.value)}
+            onChange={e => this.updateNetwork(e.target.value)}
             defaultValue={networks.MAINNET}
           >
             <option value={networks.MAINNET}>MAINNET</option>

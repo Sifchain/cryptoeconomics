@@ -39,7 +39,7 @@ const config = {
   DEPOSITS_ALLOWED_DURATION_MS,
   MULTIPLIER_MATURITY: 864, // 4 months in in 200minute intervals,
   NUMBER_OF_INTERVALS_TO_RUN: REWARD_ACCRUAL_DURATION_INTERVAL_COUNT + 864, // duration of bucket drain + duration to latest possible multiplier maturity
-  REWARD_ACCRUAL_DURATION_INTERVAL_COUNT,
+  REWARD_ACCRUAL_DURATION_INTERVAL_COUNT
 };
 
 module.exports = config;
