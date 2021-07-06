@@ -4,7 +4,7 @@ const config = {
     MAINNET: 'mainnet',
     DEVNET: 'devnet',
     TESTNET: 'testnet',
-    MAINNET_SNAPSHOTS_V2_BETA: 'mainnet_snapshots_v2_beta'
+    MAINNET_SNAPSHOTS_V2_BETA: 'snapshots_v2_mainnet'
   },
   RECENT_ADDRESS_LIST_STORAGE_KEY: '__recent-address-list'
 };
