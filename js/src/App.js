@@ -767,6 +767,7 @@ class App extends React.Component {
           >
             <option value={networks.MAINNET}>MAINNET</option>
             <option value={networks.TESTNET}>TESTNET</option>
+            <option value={networks.MAINNET_SNAPSHOTS_V2_BETA}>V2_BETA</option>
           </select>
         </div>
       </div>

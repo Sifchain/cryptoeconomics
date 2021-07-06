@@ -1,7 +1,6 @@
 import { networks } from './config';
 const serverURL = (() => {
   let environment = process.env.REACT_APP_DEPLOYMENT_TAG;
-  // environment = 'devnet';
   switch (environment) {
     case 'production':
       return 'https://api-cryptoeconomics.sifchain.finance/api';
@@ -23,9 +22,16 @@ function handleFailedRequest () {
     window.location.reload();
   }, 3000);
 }
+const getUrl = network => {
+  let url = serverURL;
+  if (networks.MAINNET_SNAPSHOTS_V2_BETA === network) {
+    url = 'http://ec2-3-138-153-106.us-east-2.compute.amazonaws.com/api';
+  }
+  return url;
+};
 export const fetchUsers = (type, network) => {
   return window
-    .fetch(`${serverURL}/${type}?key=users`, {
+    .fetch(`${getUrl(network)}/${type}?key=users`, {
       headers: getSnapshotNetworkHeaders(network)
     })
     .then(response => response.json())
@@ -35,7 +41,7 @@ export const fetchUsers = (type, network) => {
 export const fetchUserData = (address, type, timestamp, network) => {
   return window
     .fetch(
-      `${serverURL}/${type}?key=userData&address=${address}${
+      `${getUrl(network)}/${type}?key=userData&address=${address}${
         timestamp ? `&timestamp=${new Date(timestamp).toISOString()}` : ``
       }`,
       {
@@ -48,16 +54,19 @@ export const fetchUserData = (address, type, timestamp, network) => {
 
 export const fetchUserTimeSeriesData = (address, type, network) => {
   return window
-    .fetch(`${serverURL}/${type}?key=userTimeSeriesData&address=${address}`, {
-      headers: getSnapshotNetworkHeaders(network)
-    })
+    .fetch(
+      `${getUrl(network)}/${type}?key=userTimeSeriesData&address=${address}`,
+      {
+        headers: getSnapshotNetworkHeaders(network)
+      }
+    )
     .then(response => response.json())
     .catch(handleFailedRequest);
 };
 
 export const fetchStack = (type, network) => {
   return window
-    .fetch(`${serverURL}/${type}?key=stack`, {
+    .fetch(`${getUrl(network)}/${type}?key=stack`, {
       headers: getSnapshotNetworkHeaders(network)
     })
     .then(response => response.json())
