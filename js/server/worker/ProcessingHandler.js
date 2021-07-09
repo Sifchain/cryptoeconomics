@@ -41,6 +41,15 @@ class ProcessingHandler {
     });
   }
 
+  restart () {
+    try {
+      this.freshProcess.restart();
+    } catch (e) {}
+    try {
+      this.staleProcess.restart();
+    } catch (e) {}
+  }
+
   async start () {
     this.beginProcessRotation();
   }
