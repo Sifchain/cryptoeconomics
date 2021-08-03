@@ -8,23 +8,25 @@ const { ProcessingHandler } = require('./worker');
 const {
   DEVNET,
   MAINNET,
-  TESTNET,
+  TESTNET
 } = require('./constants/snapshot-source-names');
 const {
   GET_LM_DISPENSATION_JOB,
-  GET_VS_DISPENSATION_JOB,
+  GET_VS_DISPENSATION_JOB
 } = require('./constants/action-names');
 const moment = require('moment');
 const { encrypt, decrypt } = require('./util/encrypt');
 const {
-  createGenericDispensationJob,
+  createGenericDispensationJob
 } = require('./util/createGenericDispensationJob');
 
 if (process.env.DATABASE_URL) {
   const encrypted = encrypt(process.env.DATABASE_URL);
   require('fs').writeFileSync('./DATABASE_URL.enc', encrypted.encryptedData);
 } else {
-  const dburlEnc = require('fs').readFileSync('./DATABASE_URL.enc').toString();
+  const dburlEnc = require('fs')
+    .readFileSync('./DATABASE_URL.enc')
+    .toString();
   const data = decrypt(dburlEnc);
   process.env.DATABASE_URL = data;
 }
@@ -61,12 +63,12 @@ let createTestnetHandler = () => {
 };
 const processingHandlers = {
   [MAINNET]: ProcessingHandler.init(MAINNET),
-  get [DEVNET]() {
+  get [DEVNET] () {
     return createTestnetHandler();
   },
-  get [TESTNET]() {
+  get [TESTNET] () {
     return createTestnetHandler();
-  },
+  }
 };
 
 // const processingHandler = BackgroundProcessor.startAsMainProcess();
@@ -164,7 +166,7 @@ app.get('/api/lm', async (req, res, next) => {
       const timeIndex = getTimeIndex(req.query.timestamp);
       responseJSON = await processingHandler.dispatch('GET_LM_USER_DATA', {
         address,
-        timeIndex,
+        timeIndex
       });
       break;
     }
@@ -226,7 +228,7 @@ app.get('/api/vs', async (req, res, next) => {
       const timeIndex = getTimeIndex(req.query.timestamp);
       responseJSON = await processingHandler.dispatch('GET_VS_USER_DATA', {
         address,
-        timeIndex,
+        timeIndex
       });
       break;
     }
