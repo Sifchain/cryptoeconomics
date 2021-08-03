@@ -1,0 +1,2038 @@
+{
+  "data": {
+    "snapshots_new": [
+      {
+        "created_at": null,
+        "snapshot_time": 1628038602941,
+        "snapshot_data": {
+          "sif1jz7zjtdz4ex9c99cukk3rq47vvjfzw0ufssugr": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1152, 20]]
+          },
+          "sif1ahsdnwrnk7fheg5ga20d7j4fezrd5kmpau02z6": {
+            "creef": [],
+            "cusdc": [[1153, 165.16087726511364]],
+            "caave": [],
+            "rowan": [[1153, 165]]
+          },
+          "sif1mxanggzjzm009v8tzfzgr2k2js0rhhlcfl8vuk": {
+            "creef": [],
+            "cusdc": [[1154, 0.9791524421743066]],
+            "caave": [],
+            "rowan": [[1154, 1]]
+          },
+          "sif1l9k9mup55m95wdg2uc9hl5pykhst37eenc7es3": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1152, 20]]
+          },
+          "sif1hn5lw538tvdvmn3afs3s2k4ws22jc0ftgvrw6e": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1152, 330]]
+          },
+          "sif1yd78nc0r9etas8j3wlp0p6jx8ua635z2jhcjmc": {
+            "creef": [],
+            "cusdc": [[1153, 165.10999924611954]],
+            "caave": [],
+            "rowan": [[1153, 165]]
+          },
+          "sif1vxzjmlyc3egc6apycjdm9lv0t4d30mx6w9np5d": {
+            "creef": [],
+            "cusdc": [[1153, 165.15301231857723]],
+            "caave": [],
+            "rowan": [[1153, 165]]
+          },
+          "sif145qg7dq3y3pvshgkkfsrnza59v6aehlqkhw67h": {
+            "creef": [],
+            "cusdc": [[1152, 10.003116282347927]],
+            "caave": [],
+            "rowan": [[1152, 9.99984]]
+          },
+          "sif1k3dz2ed85w6s6ul7lk2vtzazke9wtt6c9q3stp": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [
+              [1152, 7],
+              [1190, 3]
+            ]
+          },
+          "sif136n00myqtw35qst5jj6g8vu9gk44kddycdmkpj": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1152, 20]]
+          },
+          "sif1fkfal3we0twere3vpa7rmrclfz92r77uq5x040": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1165, 278]]
+          },
+          "sif1lckrdn9nwz5yxn6xsv4ettgzyd4d58f0gdcj9n": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1179, -464.44502946004246]]
+          },
+          "sif12fvnzrnjgemmg96knu05glelsrf58vsdehsku6": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1152, 20]]
+          },
+          "sif128z6kpssfjeefv87037vwm2ksddz7tmu5jufje": {
+            "creef": [],
+            "cusdc": [[1152, -4838.854647963085]],
+            "caave": [],
+            "rowan": [[1152, -4751.547496666479]]
+          },
+          "sif1la86704hhs6j3rwe8fyqttcnscfszsnflzdm36": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1152, 19]]
+          },
+          "sif1uwnra7tae2u6f0e0wr0drhp4dmx3jdvm5jta8y": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1152, 20]]
+          },
+          "sif1xpmp3c7a0aqnwfqjypux79xq8tgz5ghy7pdnqa": {
+            "creef": [],
+            "cusdc": [[1162, 360.3051461207904]],
+            "caave": [],
+            "rowan": [[1162, 362]]
+          },
+          "sif16y67cke8xkrwky3scnu6zpdqazpmtvgzv39r6d": {
+            "creef": [],
+            "cusdc": [[1155, 162.89983693111537]],
+            "caave": [],
+            "rowan": [[1155, 164.49790081343502]]
+          },
+          "sif1ph57rgxg8wpr2lfmcngrr6l590az6en304cxmn": {
+            "creef": [],
+            "cusdc": [[1153, 165.1310177783166]],
+            "caave": [],
+            "rowan": [[1153, 165]]
+          },
+          "sif1nqrplxle9hf0fwfdv659y04vgzt0xetsyvwcxe": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1152, 20]]
+          },
+          "sif19tnmw3phwg3h7jsk7gk800ssx5nmqdf2cr5zsv": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1152, 8]]
+          },
+          "sif1829lp7m6ztt0zgwz3g7a59lhv6tlsq4phaucps": {
+            "creef": [],
+            "cusdc": [[1152, 7.003232190319702]],
+            "caave": [],
+            "rowan": [[1152, 7]]
+          },
+          "sif1enj7v72r372qj6auc0uqfp2m4r0pax0vpq6y4v": {
+            "creef": [],
+            "cusdc": [[1159, 13.028725751112068]],
+            "caave": [],
+            "rowan": [[1159, 13]]
+          },
+          "sif1wzwm4csuv2qazchcc8d6f402jn0n9ryqdwmske": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [
+              [1152, 13],
+              [1190, 12]
+            ]
+          },
+          "sif1q4arz4shx6nh4dl6lrm5uy64ltdh5gekhml50x": {
+            "creef": [],
+            "cusdc": [[1159, 13.028170648004496]],
+            "caave": [],
+            "rowan": [[1159, 13]]
+          },
+          "sif15jk5j48jrl9m92hu2k90e4rhsrtkah8u9zh9v5": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1152, 14]]
+          },
+          "sif1qn27gfa7a6hf5teenhl2aqm60kp605ns3v8gtr": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1152, 20]]
+          },
+          "sif15wmh85zdnqwzq6yk68ay7zxmx60p2e7pc6gkmk": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1152, 8]]
+          },
+          "sif12a6gqrq8e8w5nadelkc9q797zppz73jeddf3vv": {
+            "creef": [],
+            "cusdc": [[1154, -915.5852675462086]],
+            "caave": [],
+            "rowan": []
+          },
+          "sif14nv79q54rprcrj5qwjlu0qrvdlgsmktxlucdcc": {
+            "creef": [],
+            "cusdc": [[1159, 13.028445943041586]],
+            "caave": [],
+            "rowan": [[1159, 13]]
+          },
+          "sif18c724358ugx03zyhh3udeggpvmax88k50ymnxt": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1152, 20]]
+          },
+          "sif1624xqz79rvm4x0xs5tph425akdm26nf7uyjv7p": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1152, 18]]
+          },
+          "sif1949t7579p5qkmp5tdcuh9jfxgl3vckjcu9jqcp": {
+            "creef": [],
+            "cusdc": [[1152, 10.002484224505647]],
+            "caave": [],
+            "rowan": [[1152, 10]]
+          },
+          "sif197h938dvw52kzf2l7gke2u5tcz3grvleqhx97g": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1155, -1607.1065859985383]]
+          },
+          "sif1458adfz63hp3sstu8cj3wg8fc94jeujreyce3a": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1152, 15]]
+          },
+          "sif1x7j7qf279rsn77xz5grvuxuyvejnqgad9znykh": {
+            "creef": [],
+            "cusdc": [[1159, 12.08115120738471]],
+            "caave": [],
+            "rowan": [[1159, 12]]
+          },
+          "sif1sr3urr7pfl2xrgsjtn2534y0nvgsnqzjju55kh": {
+            "creef": [],
+            "cusdc": [[1159, 163.0053953958081]],
+            "caave": [],
+            "rowan": [[1159, 162.95636]]
+          },
+          "sif1a9sjv96hrl5y3uznt2zsewyxq6mpxjx9z6s756": {
+            "creef": [],
+            "cusdc": [[1159, 48.01442338697081]],
+            "caave": [],
+            "rowan": [[1159, 48]]
+          },
+          "sif13l0yhaewuwg6lgw2u434xf3m22c06jyttjdwu8": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1190, 12]]
+          },
+          "sif1h6t0fdz22xusnm4x94msn4dhv5fwzw44l6m95y": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1152, 20]]
+          },
+          "sif1gk9njg38xvt57eftta78fuppqjtwcgux27f8nn": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1160, -11.710524239108095]]
+          },
+          "sif1z8743pzlclp9e5c4jlq9rq72vqadrcgs74nh59": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1152, 20]]
+          },
+          "sif1qqkd29ar94puntz4344gnlqqgdg4ffvnw5mf0h": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1151, 278.518956289028]]
+          },
+          "sif1nr6kxfkndysk3mx97rcxauvm96m37c52jzh44r": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [
+              [1152, 4],
+              [1155, 17]
+            ]
+          },
+          "sif1jxa4p2sxq7cvj2efr98g2nv0qrnff6lstu8n2u": {
+            "creef": [],
+            "cusdc": [[1154, -940.0405235255428]],
+            "caave": [],
+            "rowan": []
+          },
+          "sif1x02xampuaflz2s238kgpk8jw8uwfnt906gexua": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1152, 9]]
+          },
+          "sif14y8u95zsk6k5ep6j83ugp28alypydmq4f9afzk": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [
+              [1152, 3],
+              [1155, 15]
+            ]
+          },
+          "sif1jhk2l2lqqznx7fm74hfvct7frvfpx886y3wvpq": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1152, 20]]
+          },
+          "sif1ctaq63xfx38fyjhedcmfvzex59gl3nl4ghumps": {
+            "creef": [],
+            "cusdc": [[1151, 169.429983600487]],
+            "caave": [],
+            "rowan": [[1151, 169.39749225374004]]
+          },
+          "sif1735cwjquxe0hwt6vc0f4w66n2qs3gxysyhrrsy": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1152, 20]]
+          },
+          "sif1xxnj4uexg2550ypzkp0yep6wxy7kz07r9f8yyf": {
+            "creef": [],
+            "cusdc": [[1155, 0.04580123619350448]],
+            "caave": [],
+            "rowan": [[1155, 15]]
+          },
+          "sif15uflmrfqgp4pmnc3gwyplvy63nustw72y5g765": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1152, 20]]
+          },
+          "sif1vdg6ymw9mqtzhn22hlswvxmknv5w843s7e4857": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1152, 12]]
+          },
+          "sif1h205rcuj6wppfx2ejxq89sx5vkna7s2eal5dzp": {
+            "creef": [],
+            "cusdc": [[1154, 165.65565222019012]],
+            "caave": [],
+            "rowan": [[1154, 164]]
+          },
+          "sif1gw84vjyvxlqqa0jnf5h3gmg09x0w537htppry2": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1152, 20]]
+          },
+          "sif14gndet3zmzrdk4u4rxh2ea2c09huvlyjts2s2c": {
+            "creef": [],
+            "cusdc": [[1176, 23.75883748399234]],
+            "caave": [],
+            "rowan": [[1176, 23.74672]]
+          },
+          "sif1rhfmnzwd4hsmxy843gzzhzrvahwx5hlq8ytz3w": {
+            "creef": [],
+            "cusdc": [[1153, 165.06703444871513]],
+            "caave": [],
+            "rowan": [[1153, 165]]
+          },
+          "sif19xcvrt82a5t56ugsfpaz8sjtqluav5cgc44kvl": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1152, 20]]
+          },
+          "sif1l57dskuzza04adlxtwr2q3j8s664wx93qkv9t7": {
+            "creef": [],
+            "cusdc": [[1152, -318.7693403489325]],
+            "caave": [],
+            "rowan": [[1152, -323.3147602396259]]
+          },
+          "sif1fn5xm3e87hsdzw33kjycn46g3kjyesmjzg632q": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1188, -643.1690540934071]]
+          },
+          "sif1kcdjk97nfaem98g553p0al70r8976v4aa233x4": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1155, 20]]
+          },
+          "sif157lhf9e3dqm2n2f5epxrsxze0e25ne9qt44hst": {
+            "creef": [],
+            "cusdc": [[1160, 44.99337784660299]],
+            "caave": [],
+            "rowan": [
+              [1156, 10.64197116193683],
+              [1160, 45]
+            ]
+          },
+          "sif1f8hxklhcsu5r5wcu42l7ttmavknwfv3s7dldmj": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1190, 12.484596445139989]]
+          },
+          "sif1t7mr3t837v9jr97h63y5cfk0maduzzhgksju2f": {
+            "creef": [],
+            "cusdc": [[1159, 13.087354567945251]],
+            "caave": [],
+            "rowan": [[1159, 13]]
+          },
+          "sif1qg7zaszkqkd9yn9ewnxlmuqjwuehurf54np0sg": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1152, 20]]
+          },
+          "sif13jxptk2w6ykr23vsrxks5gxaqfrf3v49azmulp": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [
+              [1152, 11],
+              [1190, 12]
+            ]
+          },
+          "sif1xxfctv087vm5mkv3m77fn02ye3ludyyqzfkffl": {
+            "creef": [],
+            "cusdc": [[1181, 7.000153629353175]],
+            "caave": [],
+            "rowan": [[1181, 7]]
+          },
+          "sif1a0pz86aqpn2chkyrcd7qsxkqsugva958pjtutd": {
+            "creef": [],
+            "cusdc": [[1155, 201.69930794415578]],
+            "caave": [],
+            "rowan": [[1155, 199.52176]]
+          },
+          "sif1djdvh237t5telq3u5mj8m2p3erkh454fpg3rzl": {
+            "creef": [[1150, 14524.644814089037]],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1150, -12071.031756997612]]
+          },
+          "sif1w98etq5dvur7945phdzf49eu7vythxkmnne2wh": {
+            "creef": [[1187, -6217.911961795023]],
+            "cusdc": [],
+            "caave": [],
+            "rowan": []
+          },
+          "sif1s5mdxly34q5fazywhs5g9rdgjrx32ztmj8v64n": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1174, -4337.608463382033]]
+          },
+          "sif1pks7snq3hmh856f249p63mf4fh4edtqmkmd7sp": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1152, 8]]
+          },
+          "sif13tz5ml90tq2xruslyhcsz9d7lwwn6l66ammsux": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1190, 12]]
+          },
+          "sif138ycptpwle2v6e3hvfhtjtl486en36zyqpgrcg": {
+            "creef": [],
+            "cusdc": [[1181, 5.685303857080337]],
+            "caave": [],
+            "rowan": [[1181, 5.68511]]
+          },
+          "sif1xjdzrpk70q3aq9c2tml5rzhf3jn24fzt84lrtq": {
+            "creef": [],
+            "cusdc": [[1159, 13.029001046149158]],
+            "caave": [],
+            "rowan": [[1159, 12.99972]]
+          },
+          "sif1m2cx65esm7xmz8snjkewhhrzp67fsvevujum0c": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1152, 20]]
+          },
+          "sif1ky8hvvarm5jc3w8e2ym5yrd7jvu6yq0m8r4jh4": {
+            "creef": [],
+            "cusdc": [[1177, 170.72712537622132]],
+            "caave": [],
+            "rowan": [[1177, 171.30903325374004]]
+          },
+          "sif18pguhayg7grz2dr0lfc5p0efc06ptl9m8fdkm7": {
+            "creef": [],
+            "cusdc": [[1153, 165.19602539103494]],
+            "caave": [],
+            "rowan": [[1153, 165]]
+          },
+          "sif1yk84q2ajt8xnvv9d7yk6av4jvrfn4hp0r9n2tz": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1152, 20]]
+          },
+          "sif1edstvnlp46qpndnfn5vl9w2djgd90efrvm3arf": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1152, 20]]
+          },
+          "sif1vqqf869drfefqnyzn7ctnl7ku5xks24d4ua38q": {
+            "creef": [],
+            "cusdc": [[1152, -708.750909906893]],
+            "caave": [],
+            "rowan": [[1152, -710.5265688012621]]
+          },
+          "sif18sjpc793m4555n6ukmfsudhrdu9qw8k4q22tzd": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1152, 20]]
+          },
+          "sif1jlu5u2sj0afddmcj7lxfy0ng466s8l2qtue0yq": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1155, -1572.8973695258426]]
+          },
+          "sif146xcwu5j3epsxqqcq0g6spnrg2kzem224w4jzh": {
+            "creef": [],
+            "cusdc": [[1156, 3.989484578803381]],
+            "caave": [],
+            "rowan": [[1156, 4]]
+          },
+          "sif1c6zn8aumlhuwka3tup0xx0l482sn0zx6mcdrc2": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1190, 12]]
+          },
+          "sif1ydn3zf0kr4v045hhpsgxwdsf702dxp7lne7z4n": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1152, 20]]
+          },
+          "sif1p05jltzkecqe60m9znfs2kvnzppkqvtp5echd6": {
+            "creef": [],
+            "cusdc": [[1159, 13.087634376015735]],
+            "caave": [],
+            "rowan": [[1159, 13]]
+          },
+          "sif1t6m7uvfxw0emhd3ng9nk66cycygw93qkh4t5hh": {
+            "creef": [],
+            "cusdc": [],
+            "caave": [],
+            "rowan": [[1152, 20]]
+          },
+          "sif12n6sdxafcgt8rduufmntzrpfdhneug654nj5fs": {
+            "creef": [],
+            "cusdc": [[1153, 165.23903846349262]],
+            "caave": [],
+            "rowan": [[1153, 165]]
+          }
+        },
+        "id": null
+      }
+    ],
+    "snapshots_lm_claims": [
+      {
+        "created_at": 1627432579854,
+        "snapshot_data": {
+          "sif1w8dz2v52qa73dccrph7qrlgh065flln3yyasgy": [[965, 1]],
+          "sif177slaqqagkk7xxres9uq6hlap6jpffaw8nkulh": [[1132, 1]],
+          "sif15sl54uqtq5qygqu47nhc7w9g39qv3cezxujtgc": [[940, 1]],
+          "sif14fyd28wucuhe6csyy26xecpmvquwak9ld5rr85": [
+            [880, 1],
+            [1060, 1]
+          ],
+          "sif10gm4wmafzpskyr2rh2qzwurgy7rlaqfgx37ken": [[1018, 1]],
+          "sif1cpj9vd5e3dyvyj0nds3hanz30zafakdc7gve2g": [
+            [844, 1],
+            [931, 1],
+            [968, 1],
+            [1061, 1],
+            [1122, 1]
+          ],
+          "sif15uxvmpzgsyfh92dj7943lx4nhllsztsaf5j0lh": [
+            [844, 1],
+            [871, 1]
+          ],
+          "sif17pj6mgu9nlqqevm4qjpjfxgdz7k43nmfjagxw0": [[1075, 1]],
+          "sif1dlx20fd4skz4u4p0krvh0fhc8cnttfvyr44mec": [[1029, 1]],
+          "sif1wgp25k7h8thshu3j6t33hp8a4egzw6gtdxyhks": [[878, 1]],
+          "sif1s7hz5ayyr7gj0fnt360wcccdtg0acqlu88frkp": [
+            [884, 1],
+            [1103, 1]
+          ],
+          "sif1gkxujvwuzry6c3wwkhc44aefg7q60mna73w8p8": [
+            [848, 1],
+            [888, 1],
+            [1108, 1]
+          ],
+          "sif146rd8qg4q0yjkk89ce0qrt3ufvud7646ssmv3e": [[1130, 1]],
+          "sif1anxq4ydjjh857f5nc2vq9lljr2shyj9mctm55l": [[953, 1]],
+          "sif1vrwt2ttstp62n2rjtdres9slq4gykfg2qv2xye": [
+            [997, 1],
+            [1119, 1]
+          ],
+          "sif1vuafmlx20tmrz9ecutkwfq47a3lhc60u4cu5gc": [[931, 1]],
+          "sif1m6wf3vlrq75cgj5nyn72rn2efh44yt5xsgpdxp": [[931, 1]],
+          "sif170pfyjxgggvudkx4t7yv8sy58nw2lgmhvzwcfs": [[856, 1]],
+          "sif1xpxczuwr0x7tsnt6q2l7ke4vvlz7medpqq64n5": [[861, 1]],
+          "sif1ye9kl2vscpg0ld6svwxncznszttmeu0mvnl5tm": [[1140, 1]],
+          "sif1q3s9uqje7e9w48y5d96j7kfrdyz2x5yn0j030w": [[989, 1]],
+          "sif1g2sjn9xuzqel8xfp0aul25rjy74tcu7a72slnf": [[965, 1]],
+          "sif19tnmw3phwg3h7jsk7gk800ssx5nmqdf2cr5zsv": [[841, 1]],
+          "sif184d479nrj95rscydysgezslhegt0jgskps448h": [
+            [971, 1],
+            [1079, 1]
+          ],
+          "sif1p2da7jac0se3lwf4rf6uxf059ta4lk0x5as58u": [[1040, 1]],
+          "sif1d386hyn9zy2tfy4petaz6k7djef3uu0ds0t3qx": [
+            [839, 1],
+            [872, 1]
+          ],
+          "sif14fuqtwtyaptzcu6uu4ykd9htx7pqpcupm5zjak": [
+            [925, 1],
+            [1079, 1]
+          ],
+          "sif1f5g7el3rqccrs5rpj9awz23wjuv3kp8w44chmv": [
+            [878, 1],
+            [915, 1],
+            [976, 1]
+          ],
+          "sif10ea95wtmz5uzwrlw0kt2p0j8lsm9rwpwwhuh9f": [
+            [932, 1],
+            [971, 1],
+            [1024, 1]
+          ],
+          "sif1hjkgsq0wcmwdh8pr3snhswx5xyy4zpgs833akh": [[1089, 1]],
+          "sif1fu58ktrgy638tyrp867nd4f4uuz6n7e37x5j0d": [[1124, 1]],
+          "sif1yuv46zxw9w8meuyhpe6y6dcxfjk85nrphcat9g": [[1066, 1]],
+          "sif1tcr8yhu6hyp88v2tkyle9uglzw98x9pglrd96p": [
+            [915, 1],
+            [989, 1]
+          ],
+          "sif10nl66sup69egln5ps5cr0fzszk6eed77rnfst3": [[1001, 1]],
+          "sif12ruclf3fr6ypqsz4l8lc0hspask92u568en2dr": [[1082, 1]],
+          "sif1dmxr9vrxmkm3sz4ex8z5s0gzp7p72x64q4fdt7": [[972, 1]],
+          "sif1f8xlw9qev80ysfc669em5xvqul58ueacm7s2p0": [[1007, 1]],
+          "sif1efz655a3eaq00x0kndlh9rgy9stydpz2f4drud": [[1044, 1]],
+          "sif15gg6t4uz8pnh7vhw08c924fnxysy8s7d3ds0r2": [
+            [1001, 1],
+            [1036, 1]
+          ],
+          "sif1032qhvrkxkqrypx7qmd345dugcuspeyysxela4": [[1016, 1]],
+          "sif1y6a7ds57wkxtvpxgrhgp8hgwzfcu3mm9elm5lx": [[1122, 1]],
+          "sif1a75402f2z7gdtgqqk4ep083z3s707p5c9h2y89": [[1136, 1]],
+          "sif1c9eec6qgh0qxgp85nwg60kw9ke9p0u0f4p359c": [[973, 1]],
+          "sif1mrwtnxp8hfr30xdrj4tnjk8l6np027sg85rjla": [[1139, 1]],
+          "sif1ehecqf6pr5cnlv2ec0dxvt5s8yedpqq8v0dlnc": [[879, 1]],
+          "sif1mphr664xm6leum49rge6973mkrtsaar6265zgg": [[1086, 1]],
+          "sif1dq0ewtvgzm93st059ndpptnfz30whxplv6w3j9": [[842, 1]],
+          "sif1x7f5n5ed3hz28rwuvhw5tf5udrkshpp2us0ljg": [
+            [1016, 1],
+            [1123, 1]
+          ],
+          "sif18ajc7euypp0f79eak6q3yutw33ge5y8s7yg7z8": [
+            [841, 1],
+            [890, 1]
+          ],
+          "sif1m7qv8gdswhpkq6jv57a3fdcxfv5qwk3jttv43z": [[1019, 1]],
+          "sif14zqw9777rnht80c92egf0q5f89ksqvs40xqqt2": [[859, 1]],
+          "sif1zm0utzejl7r2kqv5mrkvw4hdnzfedm6d3quzhs": [[893, 1]],
+          "sif1qej9xfpx9mdaudz2augataz9dmpm2nl3ht6xxg": [
+            [908, 1],
+            [962, 1]
+          ],
+          "sif142eux408w9c3ne0xfmltm3a30u3ljader9gzxu": [[930, 1]],
+          "sif1qhnapgl3x2axjn8dqzqnree50f8xk68esk5zck": [
+            [842, 1],
+            [871, 1],
+            [923, 1],
+            [986, 1],
+            [1015, 1]
+          ],
+          "sif1t8mlc7p7rm5uq34ytwq4rs0jk6s22t9r7sxgvj": [[929, 1]],
+          "sif1hnr4cdp8fehl2a75ewd2g42pprekt7zf59a7m7": [[1140, 1]],
+          "sif1n3kr40wrtzpuwe8u8rxqkk6zrwdt5368mfxfst": [[994, 1]],
+          "sif1z5wypn5dxgth8c99v6pfnd3e727kqhczv4s2v3": [[1134, 1]],
+          "sif1p7y92sj0u2c9ysl2nz7ukrjlacr7wnszv3vcgr": [[1011, 1]],
+          "sif1q7nz9f4cvt2zwxn3zge242n3getxyvg4u8dqzx": [[1109, 1]],
+          "sif1dkxzppw5kr0m0tjkck0n6lsa3n59dvj9lxrt5h": [[843, 1]],
+          "sif1qv245heg3r5v9s4gg3z5uph5uy7dngpf73vu8h": [[1045, 1]],
+          "sif1r3p7y3xff4rd22ft25jd86jga85e9zgqrjcl3r": [[1011, 1]],
+          "sif1hc7prva69p5fsaw0xyj9lrc9gywcrukxe6a7d2": [[1009, 1]],
+          "sif1lvw37r3zeec6wp72l2vmqla6jewelvn7dam9vc": [[854, 1]],
+          "sif1fy87a8ytqfmlav47c8kgcgrxkppaftwyfujece": [[1015, 1]],
+          "sif1ad5y8ygmkputrv2ltpfsuz6x4qkcd87rhql6hh": [[957, 1]],
+          "sif1s5vnmduf8xnqr5tp2jyn3l2tgsjy365gusy9pk": [[923, 1]],
+          "sif1jhd5q4d6v5z3ml5qeprpu4dgk2p9f6090r4fap": [[855, 1]],
+          "sif13td7rk9t8jcydvt5e2hspqu6l22uk983fd0erm": [[845, 1]],
+          "sif1y27g66lqn57x27q0gtxpr22f57w4sx057l9eu9": [[876, 1]],
+          "sif1snfk76yqeg9gcsjnk6gxqzhf29xz7pzqu3hxg4": [[862, 1]],
+          "sif12x095u6husgvgxz68u24hjp5fctwns8zhthp5h": [[1052, 1]],
+          "sif18f3vqr8hd89cw4rpma8jm6upx6q6kc2ml7z59d": [[1140, 1]],
+          "sif1s7554re4yr23a9k54rlem8zcg2qq6cmyqdtkum": [[1025, 1]],
+          "sif1qrhg5vjnr8f0ceucvxxd0x2dqkksr9c5dnxcgn": [[858, 1]],
+          "sif1ey2y6tlg7lfgr37zt246vph89gwcz5agfl6ctj": [
+            [845, 1],
+            [1003, 1]
+          ],
+          "sif1nda53jgxdk2ywh87rukjw6u8lmqksxemfgp2jc": [
+            [878, 1],
+            [1096, 1]
+          ],
+          "sif1ha3d3qqyfvn8j2dydlzj5jvnv4cy43y30l47ad": [
+            [857, 1],
+            [870, 1]
+          ],
+          "sif1q3jnv9sk5k2597lzm0zml0t62khawecjndnmd3": [[839, 1]],
+          "sif1375rqfmmnfvn4ncrudksclyxwz4rq0c6pjlsrg": [[884, 1]],
+          "sif1gd6p96yg4vh94ksw6xp8tez8pmegcgrksmyw0h": [
+            [965, 1],
+            [1067, 1],
+            [1124, 1]
+          ],
+          "sif1xeukzhw4z6h8r45g3al67vzymmm33f5zqp8szh": [[881, 1]],
+          "sif1mx5hhxz4q4n6q9hd87u62wc3gc98hekcrv5mxm": [[866, 1]],
+          "sif1la86704hhs6j3rwe8fyqttcnscfszsnflzdm36": [[841, 1]],
+          "sif1ut6svyeyqcpzadjh89qz2w6kwdxkdmnq3lfsep": [[1067, 1]],
+          "sif1rulv57wuzaj3zthsue4ratnpltmup9w42tyvmf": [[1101, 1]],
+          "sif12sr8xu5m7sf0qxvwnzj60r2qpwm0fqwx2devdr": [[1099, 1]],
+          "sif1glfm7ma0ndx8umd6425fh7dl7wj2u0u8sthv20": [[872, 1]],
+          "sif1ksar7wwrk5rsjlkncg5dx2u9z9cv7v94h70ef7": [[1104, 1]],
+          "sif1emaf9zwyc8skvqft93caa5h2x6e7y02ug2cfjx": [[895, 1]],
+          "sif1jrj0glxvkce3q7c3mv5psj40cxnt0zrv0u54qu": [[862, 1]],
+          "sif1hl8f4uj0qslcflz8hwwq54ajv7qnj3uc5d0uzk": [[923, 1]],
+          "sif1vvf0n2kvq0qxvl209xe4rhnk3ykg5mjcdya9yq": [[848, 1]],
+          "sif1w9n25rxch4g7wzrf3w8t84fshkecmzttf2kxzy": [[841, 1]],
+          "sif1wa9nx95qpv5scx7yfmkpzyr0l6qncz8uvvhtl8": [[840, 1]],
+          "sif1pferjspc8g2cga4aavfpxqyq7t4ah5peyx07uk": [[1126, 1]],
+          "sif1l88f4f5gqxl9a7p8cgt68s4le5uvh2er3zjeax": [[1140, 1]],
+          "sif10prgaf6ap3hkn8qtnzkys8vxm8ut0rr7jwzrqx": [[847, 1]],
+          "sif1zwcnzclw2yfewv8mp5dd90vu5tdq5h2ppu6y4q": [[1042, 1]],
+          "sif142vt9k27qmg9dfgt4gj02x879tnt330ce2y7pe": [[1008, 1]],
+          "sif1js8ulghdzw3vly4gh43nyluxaw4tt0phxsl826": [
+            [915, 1],
+            [1087, 1]
+          ],
+          "sif10kmkcxpl5qjkmlavfr605ywm7gn5cfw5ys3f2d": [
+            [842, 1],
+            [906, 1],
+            [1007, 1],
+            [1015, 1]
+          ],
+          "sif160k3s4fa8svgqpj4np07x0pfyt4c96p5uylr6v": [[1133, 1]],
+          "sif1rsgc528tt2epqtfwtutrjf65fry4gfmd5l9al9": [[904, 1]],
+          "sif1g798zmzqhrz2qqahhez005uqe9cm32gftqfn6x": [[1059, 1]],
+          "sif19er6pwycm8wjq88san4403gkrdzns4uc6tdn2l": [[1015, 1]],
+          "sif1d4w5dupdzj70j03h2lgwnmhk62plt24hchaxhz": [[898, 1]],
+          "sif1vy4q0fwel690u6z5xvevg5lmy74y2wnfmfplch": [[894, 1]],
+          "sif1c0qje6rlmg70utxkwz64zrj0dy7j860snpdgqj": [[1040, 1]],
+          "sif14x68a9y3zl9xd7td5njtadw2v0vncy9yzk0pp4": [[881, 1]],
+          "sif1l37pv9ud5aq4cr4fgmwtamxd3mrpqumelqfq9q": [[899, 1]],
+          "sif1jqjm409rumq68t3edx5p5kjuyvz6fl3rsnlv0h": [[896, 1]],
+          "sif1cza7smj2pd58ncn8dn5g9jmm0pwq0t80x0rzeg": [[1036, 1]],
+          "sif1naateuyjvgxtrjsx00utvf4zcm65q40mygvrr7": [[1084, 1]],
+          "sif1u7wefl4gvj830ttvg2g8m3y7ws6xs0ppp3lx7l": [[870, 1]],
+          "sif1ddk7l76fqygekrz49uq7xsl9qslxtlg8tm36h9": [[914, 1]],
+          "sif1t3k4v3a50wdq0gtjrjlg6j3x2mr3rfmjvsr05j": [[1040, 1]],
+          "sif1mv9ndldzeqspngwnr338ktnt2xp54m47g6kpz3": [[1114, 1]],
+          "sif1ue3ycq7cugrhwyqrgxcyql7px9j00eaeah0pr5": [[840, 1]],
+          "sif1gtv72stenutusud0fyeu2wyz4fq58le064xlem": [
+            [907, 1],
+            [1025, 1]
+          ],
+          "sif1ry5ae7y3e8dwnyfx5s94uswrul45jeqsanjdhm": [[1040, 1]],
+          "sif1aeh7plmpqy8hd9qurxekd8rrextnuj7450eyjt": [[1080, 1]],
+          "sif128z6kpssfjeefv87037vwm2ksddz7tmu5jufje": [[1068, 1]],
+          "sif17vqwfxw7h6732w7csf7m8w8jll2ss6r8kjd8hk": [[879, 1]],
+          "sif1v9y39uyhmv3gls55n22jj7dt2x6vayrqu6qf8f": [[930, 1]],
+          "sif1a8yqtxw2ep55phhkvhhe6j8lguku4qcaqtc7xh": [[964, 1]],
+          "sif125dava4ywnjz8uej47p0qhcutt9735t8q0rujw": [[931, 1]],
+          "sif1e3d5pzt9x6yjyqtc8j8t3my2cmyrkvh9wdpdh7": [[1007, 1]],
+          "sif1kq7npma3q56druf55qcuv69lhgxeyzj0cvyrtu": [[877, 1]],
+          "sif15dyg0uu24zkswsds3sp27v2xzywsv49h24djm6": [[859, 1]],
+          "sif18r72flynzn768us36dygfn6c6dn7gtmfqqdfjp": [[955, 1]],
+          "sif1qpvem7qvpygc87e0aqtjqz6lx7r3z35c9ku2j3": [[871, 1]],
+          "sif10ne6zeqa0fswakdruh7rhadwesvj29xvdz6ynp": [[924, 1]],
+          "sif1xw9up9qesn4s7jf3ar8jlhexv4h8qgddfvdlfd": [[845, 1]],
+          "sif15ntr24dgrxd553pemuplveurn9qmgzg93ca3wr": [[925, 1]],
+          "sif1hl9s2r4r04zx9mm0d2ju65qmhvw4yc2v6f6yns": [[990, 1]],
+          "sif133n9920r7t48dpcvsls5ww4kcwtnuqevc7m2ka": [[858, 1]],
+          "sif1nmlgh7ynw8qekmdxqfdg93w3yhr6yy6v6h3n06": [[871, 1]],
+          "sif14qqd87sxkvqvyntumaecqtsdc55p5j86nnydn0": [[923, 1]],
+          "sif12ct8sle7mupefh0ymdy4nvmgzzvk23ppjejcus": [
+            [871, 1],
+            [976, 1],
+            [1027, 1],
+            [1128, 1]
+          ],
+          "sif15mlzpdgwmms4xqa0ju203w0f2822atstwwgu50": [
+            [903, 1],
+            [1054, 1]
+          ],
+          "sif17s950a3vc9d6udnz3t009sqfcjav7r607ltxlu": [[847, 1]],
+          "sif1hhfzmmtrq642ahumejtjf4kp30dr93z45vu0pq": [[967, 1]],
+          "sif13hjd7kjd3t4lzvszrrtvyqevd9qrv9t0vf26ed": [[855, 1]],
+          "sif1sxvaylyhc5ke9ydytynwg2365lwaltnc6wywj6": [[908, 1]],
+          "sif1g9t95arlf4cmsxt6mq7haec9thkx3ar74gyu6u": [[1140, 1]],
+          "sif1th89uf0zpf7y8tantw6sl92dry4l0v8a20ssg3": [[1036, 1]],
+          "sif14ketjnmprp4nhstgs4mqxstg3qjp8zr05p8nfa": [
+            [906, 1],
+            [950, 1],
+            [989, 1]
+          ],
+          "sif1pgudjmr6wvqpcx20w2pzzqkule0z3tcdccj3wz": [
+            [944, 1],
+            [1042, 1]
+          ],
+          "sif1mlc8szk07zn59arc6q47aatsn7fntnh97chtt8": [[848, 1]],
+          "sif1qj8tk5u0qg9r0rpx5yp57upws6yjflltsuuyln": [[1078, 1]],
+          "sif1dcjzf2sp2evs32r9qsx3x4kaqr7tt6vc0xw4zg": [[1019, 1]],
+          "sif18r8xfvwe43hhms93e477x8cxrvgyvs7fw2ml9p": [
+            [999, 1],
+            [1066, 1]
+          ],
+          "sif15f32m6anpgvprk8akjz4c7qq77cn68j2unl44q": [[902, 1]],
+          "sif1g77yfs0t5wswx55wwu6y3u8d8u2xxwfja9wggf": [[907, 1]],
+          "sif1pwxy3vz54rrzjqrgyxpfu9uw5ddvul3h8kngev": [[956, 1]],
+          "sif19xt3juhfzv9tdlsu025lf36a093wc3mz4rtuvj": [[976, 1]],
+          "sif19dvp6lm4tu9sh3svq3psw7mlmdlhjrc0kns9lq": [[1045, 1]],
+          "sif18t688mk59r5rgkjq3er0ag5q549grz3k286vy2": [[1100, 1]],
+          "sif1uytvxkpflljpmvry4gmadxx4dfzy4f3dlac3l6": [[843, 1]],
+          "sif1zx2ey6guyq5gxeavgvxfwmwtawpetmjuvqccg4": [[927, 1]],
+          "sif1vsnar8zw328wnhx6yysdkl6t0ycn0zt9v45fe5": [[1018, 1]],
+          "sif1stgv7782q4gl9fxnntzvg9zks54wkpw4dc4fy9": [[962, 1]],
+          "sif1cet6en6yg55axmhvg43zcgahy336ksmju5czzg": [
+            [907, 1],
+            [1016, 1]
+          ],
+          "sif1l6klv5q78990z3txgsz0nj2quz06u35f0wr99a": [[964, 1]],
+          "sif1qjukuhlpxch05rh2lpka9pkpe0csk2zrarurkz": [[1109, 1]],
+          "sif1p64jy2u97ax92wkcyyzer99vtlxqmkp77mu8pe": [
+            [922, 1],
+            [1123, 1]
+          ],
+          "sif1zfqz77fxcctd7z8fa8qjqgn9ckh9tss5yd8xw6": [[976, 1]],
+          "sif1jheaj788vufwwjyzdf8tv9ktyzzfmv7f2klu8x": [[888, 1]],
+          "sif1ke8s2mcm3e5ddak825jez28useamw4ndhf4pjp": [[1140, 1]],
+          "sif18pngk8cmn3jztzcf50zzpe7ls8wh33ndaelujh": [[1052, 1]],
+          "sif1k4jvtqffyfgk9q84enyk30eh94yqzhmdc58p8y": [[852, 1]],
+          "sif1a5y675zgp6u7lr3slzm9xr64hg0vlvj2hg7hr4": [[894, 1]],
+          "sif12uk22nzee0hgahzttujcdce78ax627asznh7yf": [
+            [897, 1],
+            [913, 1],
+            [966, 1],
+            [1015, 1],
+            [1122, 1]
+          ],
+          "sif1p7sptdvkqptmys9z3c9yavplgpq7hgwv7rpugd": [[1063, 1]],
+          "sif1c6zn8aumlhuwka3tup0xx0l482sn0zx6mcdrc2": [[841, 1]],
+          "sif1fhpj09pxs9q9suju54f3n8k92yganhsxae9xj7": [[841, 1]],
+          "sif1j9wzqqv70c2zasmf7t0vl6ddqrrfvttj0vj87r": [[859, 1]],
+          "sif1hahen2v8e3k9zamrrr4re43jaahwv0za5gddzu": [[852, 1]],
+          "sif19tpa269yy7h768lv5mkn36a972rnvwukxy7y8p": [[863, 1]],
+          "sif1gm6rdjj5uyrwlk5akur3c4mf6ggxcgnv229cu8": [
+            [863, 1],
+            [931, 1],
+            [1047, 1],
+            [1124, 1]
+          ],
+          "sif186x6qse5z495fggp7wh0pe5anvkda0warj6x6h": [[930, 1]],
+          "sif1hnk4fdx8zlyqfw32nm3cl0xdq8tz0jep608tae": [[840, 1]],
+          "sif100snz8vss9gqhchg90mcgzkjaju2k76y7h9n6d": [[937, 1]],
+          "sif1v4j2u4pkv245fssk7vtykgvuetzd7nwljaay9s": [
+            [989, 1],
+            [1016, 1]
+          ],
+          "sif18teduvqq7sqtnswwpezva4qxukm5fecq5ggc6e": [
+            [1046, 1],
+            [1139, 1]
+          ],
+          "sif1pxu2q2xh42ftc3pan6n96k6kq07zzmyxrkcf5t": [[882, 1]],
+          "sif1lu5rmhk6mtlyt884fpq2uv5vn36gmkzm6xgttq": [
+            [1022, 1],
+            [1130, 1]
+          ],
+          "sif1nzlyzwxyvgzgqze89223pcmt6lnj7nfdnh4ur3": [[871, 1]],
+          "sif1lvuhnljegxgwcjcjce9vd4sqv8ryg3k293g8lp": [
+            [964, 1],
+            [1140, 1]
+          ],
+          "sif1kzhxmgp8z05zrj90nd8h5qx9pm949an5zx2p3u": [[839, 1]],
+          "sif1w3t2vdmtmcllggur6qyhxjurlcq0ltly3jm8c8": [[1045, 1]],
+          "sif1yqdh9mxpc9m7xutxx8ntq4ncxcz050jwwetxt6": [[1023, 1]],
+          "sif12v3gs4w7mgfz9alf52ghn8yaux0kjkq70k6zps": [[840, 1]],
+          "sif1dwvvh66wj8252clr6r8fk7e9jgpkzarna2943v": [[846, 1]],
+          "sif1aq6fpgldcwy49d0kmtr7zrhewml4ul5nsrllla": [[1015, 1]],
+          "sif1ynkf678ymk38tugtw4zr88ztlefmv77jfkl8dh": [[899, 1]],
+          "sif1prz305fzcexzwa3mlkce0uzzsngzla7n37n5gu": [
+            [1030, 1],
+            [1127, 1]
+          ],
+          "sif1xjdqejmfufa524meajtyvw5n695r35ezejxleq": [[1059, 1]],
+          "sif1elhsympxd67ge2ntw6r0kvlyhgyufxlyygzskz": [[1023, 1]],
+          "sif1jetpnq0x0pwv6p5js6zzlcjzprprjwhxcwjtkr": [[880, 1]],
+          "sif1lq7xkjwfacmm4zgc75h9lpvcdu2an80l3n0nuh": [
+            [1016, 1],
+            [1123, 1]
+          ],
+          "sif1hkxr0xhejnk6zy7e4cljw0kk30pd4h2mnfdm0l": [[1016, 1]],
+          "sif1k8md4e80hgn2jv96lwga5h9kmcdy7mpj39fvf3": [[915, 1]],
+          "sif1yd9kxp8st22cjn43ja9sjmwelnd495tw3j0kdc": [[1001, 1]],
+          "sif1jqy79uv9xn9pzs5mcgxfjha4xvvtzgpy7sc02x": [[842, 1]],
+          "sif152eakl57v00alrwxp2xl4kjcch557cm50fd02m": [[1054, 1]],
+          "sif1ykar2f0g8m24tlu9c449x48qsd8qrzu25km99z": [
+            [894, 1],
+            [1072, 1]
+          ],
+          "sif1fcckmu7mv24mktjll6tknduslhkvm6hvftl6x2": [[1139, 1]],
+          "sif12dvnxp7z8kku8zfvc8f8j8hcasea0es83es22f": [[921, 1]],
+          "sif1v8zq2vha387uxps9wh5apk7dcc9ezlgmsakezx": [[894, 1]],
+          "sif1qmfw2frczzedddr8agrn7pjvnqsqps05m579ae": [[872, 1]],
+          "sif15kzvxnr6sr7r20fjsnj9l7mfpra3mv2nwvpph0": [
+            [913, 1],
+            [1116, 1]
+          ],
+          "sif1pafrvw6t4cljdmpc9lhntmnmgsvt8ycz6v4l0f": [[841, 1]],
+          "sif1dgj38f65wl9eg0elxsr0k6gzslle3wv7egs5s9": [[1007, 1]],
+          "sif1j2x2yn9xfgs26h6y3wj7ljzmalldlj73g43hq7": [[901, 1]],
+          "sif16s5ln924jhkyvf0wsxcj2hx8jv3vsu7cykyumu": [[879, 1]],
+          "sif1qxlrm0tdse7c9l7ke6ek7gfczm92650j09rdft": [[954, 1]],
+          "sif1usw2l72qh4s7mxq7lvksf7nyp0rxkucacjw4d9": [[844, 1]],
+          "sif1p7f7sqmtm3xvlfu4pla67yv22wf0ym5pmkrnmw": [[1009, 1]],
+          "sif1mevkv0kwye7fy49a20gel8w2vs3s0x8ph3zg5c": [[873, 1]],
+          "sif17pqpn7pmz7w7rxf28xtrrwflk8xyusc7qx8g38": [[910, 1]],
+          "sif1an5spz5068czjughnn4l35xkkffgpkhlp5khmq": [[1130, 1]],
+          "sif1nr6kxfkndysk3mx97rcxauvm96m37c52jzh44r": [[841, 1]],
+          "sif1a0pz86aqpn2chkyrcd7qsxkqsugva958pjtutd": [[850, 1]],
+          "sif1yd7lkaufyfdcrxmspk99pezvau707nrauww446": [[867, 1]],
+          "sif1dw79yp32t7d0reeq0wcxgfgpnrn2n0dg3p0ydd": [[1045, 1]],
+          "sif1fpj6ll6fdn4xkvkeyltx39yky2ks3xaq5lkuyl": [[1045, 1]],
+          "sif1dludep5xfzgf698hh5txlltg22x0vjld6x3nfe": [[1123, 1]],
+          "sif1wu98d6kvd8t3zc7v5nyrepy6rhlrpm63n8rz82": [[989, 1]],
+          "sif1lwmaq5c8y0vlwtahna020ppec8vsd0dnywl56a": [[885, 1]],
+          "sif17jmapr6v3sftq2nyl9wglssgdq3p0ervpfmeju": [[841, 1]],
+          "sif1z3735juy8l8kgs0vc0vk7u62c808s37pwwqlu5": [[1124, 1]],
+          "sif13jxptk2w6ykr23vsrxks5gxaqfrf3v49azmulp": [[841, 1]],
+          "sif1y82mdygayv5c32r3g5uwtvq502p57gcg9a7vh6": [[1015, 1]],
+          "sif13tz5ml90tq2xruslyhcsz9d7lwwn6l66ammsux": [[841, 1]],
+          "sif1hzf4cqaycqztc72c6jmzffvfjge7qg2e6tah6h": [[1140, 1]],
+          "sif10sjena7yg9fgx3h5jeyvqxavvd2gxm42lgw7q6": [[854, 1]],
+          "sif1gdm04gxmsw3jzcyq7sa9cc4r0s4gjk28pgjga7": [
+            [843, 1],
+            [1125, 1]
+          ],
+          "sif1y6jvpxge0a8y8qf0229vgx0qlggkv73gz9tfas": [[1083, 1]],
+          "sif14vp9nghuzdgn7gp3km4emzt48cjckzyx6zhrv6": [[844, 1]],
+          "sif1wwmvw3uzszswuycldltjl8zj9m4f5z20e0whec": [[846, 1]],
+          "sif1ae93jtu82478f2e4a59d9x7w7vxhrzzct58mde": [[945, 1]],
+          "sif1vswxpd7stuulgyu5q8hzqn8cmn54kfzdwg5xc3": [[842, 1]],
+          "sif18u9r87wn0rlu954hq8w0vguq3jvdc3wxts83k2": [[1017, 1]],
+          "sif17g8z0fu9qwl8hu5zhtfgalsh0zvl2wvqk4yygy": [[1015, 1]],
+          "sif1rdk8qx34q55pt3r8m9lsx268zufes8ewke7ufa": [
+            [883, 1],
+            [964, 1],
+            [1017, 1],
+            [1125, 1]
+          ],
+          "sif1s8v33q97t3x3ssau9teqx45eja675f7t49uhx4": [[841, 1]],
+          "sif1240nvma7fjspn6kjjd9l4m3dk9x55vuh4tx95n": [[1018, 1]],
+          "sif1hmll8lejjsvq4ldwt6k5jdmrzmj38yjvn26xfa": [
+            [956, 1],
+            [1004, 1],
+            [1110, 1]
+          ],
+          "sif1wdwss6h9xy6dr0nzu7j83n7glkvqndlj47v7ky": [[906, 1]],
+          "sif1ndlk9hnzv8kjxwwd279fcgruqvunuxamgxav3y": [[875, 1]],
+          "sif1rr8nz0qqnmd9xks9mz3ugp4kdk36q8q6jv2myg": [[929, 1]],
+          "sif16npsmp3gm50cg354dyx85jun5mktmdv3m5a5pl": [
+            [1008, 1],
+            [1066, 1]
+          ],
+          "sif184ntw44n45nquvhj7ewn8994zqvf7ksnvg7uw6": [[841, 1]],
+          "sif1zjdq4nzwtugf25nvamxw4qa2h9qresglm89a5g": [[1132, 1]],
+          "sif15ykl3pzx45wcqrsd4n3t6pqp25wlp2ykckythe": [[870, 1]],
+          "sif1laza9v48wa793l6j6g7s760qvkwzy9zudahl7h": [[1068, 1]],
+          "sif1jf2n377hfagmfavkfe3cqrp7nlk3utuz867nyd": [[1061, 1]],
+          "sif1ncdr0qq2dt42fkez4qumkhyhhuvf4cfhv4757x": [[901, 1]],
+          "sif1ezmkrv32n4d0mq5y3tsk9096a4g3vqnjj3t6md": [[1059, 1]],
+          "sif1ppgjl7eutnutfssr7335cfxc5cmy87u8kqmrvh": [[1066, 1]],
+          "sif1zdh3jjrfp3jjs5ufccdsk0uml22dgl7gghu98g": [[1036, 1]],
+          "sif19lu6lz406guc9nfunz69huxxc4ezqak0wn6hqg": [[833, 1]],
+          "sif1klkxmf0dm7qkq3wrhag36yg5dtne3kwszk5a9j": [[1036, 1]],
+          "sif1cazd8eugkyd5hsd9xf9gpxx20t4767cjhp4vwu": [[935, 1]],
+          "sif194z5vxzm0pn5rgudtqq6phg2tcq0puvnezqtjr": [[1135, 1]],
+          "sif1u06fm45m29kw4hd09tc35xjdqrrnus2cptlzn0": [[843, 1]],
+          "sif1vz3g5rzgw4xhl4vsg8njv8xjnkqeztcwvm9l32": [[1084, 1]],
+          "sif10u9j54gmk75j3y27x9hrw372f6fsdgf3d055ku": [[846, 1]],
+          "sif15668t8887dd9lw2e4hm7xer359len6qfpqfemx": [[858, 1]],
+          "sif1jgjfexv68q05zmxh6rprxr3as5f3da2axct6pa": [[1134, 1]],
+          "sif1hx5rwsztyarwwqn5plr247nve4k6jsexf5htqy": [[1123, 1]],
+          "sif1ks5pl2w5vaqjfnlplaz65gr04pcx4hcr9qq3wk": [[1140, 1]],
+          "sif1duh4r5397e0uk59duchwamdyheeaeac306lu25": [[976, 1]],
+          "sif1qak2j0ezah7j6qylgk8dv30tmyks2msajhdtuf": [
+            [888, 1],
+            [913, 1],
+            [1024, 1],
+            [1124, 1]
+          ],
+          "sif1jwc64rr4nj2hvfjqej8ewm5nnatsy7z2nxu6xg": [[895, 1]],
+          "sif1s585fcykfzvru63cwtqvm2mjzh8dvh9rqq9dcj": [[931, 1]],
+          "sif1gf0wx7pkuwvhha94nk5afsf09yz04yjjuue46f": [[1132, 1]],
+          "sif1fl3lz3w0zs3tqgf0vuux8suuv440w5grnppzjs": [[850, 1]],
+          "sif1mmwrycpvamwfvul7ryaw84vy5w9574y2rl87hg": [[872, 1]],
+          "sif19fqk020qhmcfhejkrc4svpvzga3ygcs7ppms3v": [
+            [878, 1],
+            [931, 1]
+          ],
+          "sif1jxa4p2sxq7cvj2efr98g2nv0qrnff6lstu8n2u": [[918, 1]],
+          "sif1rmmh4dled22tjh6ecj30d3neahh4h5hxg3nqsl": [[1018, 1]],
+          "sif14y8u95zsk6k5ep6j83ugp28alypydmq4f9afzk": [[841, 1]],
+          "sif1fp7lar7valvpajdxealzhaf5julcpvrlq5l2w4": [
+            [839, 1],
+            [996, 1]
+          ],
+          "sif179e2s3u0w3et9k9vy4esq3wc78mhvfyh50whym": [[914, 1]],
+          "sif17rg8p77vjjyepedzdm5g457h534pyqhy8w7rpu": [[922, 1]],
+          "sif1048c2lagwe84sz0sk4ncy2myrzxykjes40hn62": [[859, 1]],
+          "sif1sywzh2f2uf3j8g6ffxuurlgg765psc88m0cvsf": [[1022, 1]],
+          "sif139uxveu486g48ga6c75mnajazyyvna4tex7vq9": [[929, 1]],
+          "sif19ryupy228mqtyfynacu6rftr2vh3w2x255hjen": [[1133, 1]],
+          "sif14gndet3zmzrdk4u4rxh2ea2c09huvlyjts2s2c": [
+            [860, 1],
+            [873, 1]
+          ],
+          "sif1jgmxhenaw4f2s9f5pqeyk9ela6nkcpqyt6t4du": [[866, 1]],
+          "sif17cpg4f7w90ec0eh4mjkdqcszxmls2acdrnzwdm": [[907, 1]],
+          "sif1t6t9l57chhjqy3pvad957gxrwyc8an4kjhakxu": [
+            [912, 1],
+            [985, 1]
+          ],
+          "sif1vm755fsux9frvumfaxvfuh6yx2k3accznutyc6": [[934, 1]],
+          "sif1x83wjhsgt0gek8j3u6p2smjxtgt25gcqvczade": [[1120, 1]],
+          "sif1624xqz79rvm4x0xs5tph425akdm26nf7uyjv7p": [[841, 1]],
+          "sif1gmaunljjvv0f5gpcrs66grgpd9kugdmyma9hc8": [[893, 1]],
+          "sif18tmhs9m7j65h7252xkyfn5fg5fwrlw2yqrclg3": [[937, 1]],
+          "sif12502mvjgjt504wl5m42pxr4mc3k8lp5dg3w4a4": [[1140, 1]],
+          "sif10m4m2zhq4wvav3cvtrc3wgw8wmyu9lkx3g5euu": [[880, 1]],
+          "sif1am0xzm5eg7fhl59zft5rk0h8utwegev6mjgae0": [[964, 1]],
+          "sif1qq2j2hfwy0nepnlvttvnzywff95u5v7h86kja8": [[882, 1]],
+          "sif13vtg6907g7gta86unrpc3v2s378rt4pg0s2uqd": [[867, 1]],
+          "sif1e5vwy6d7pllz6yuxlxc2cn0jqqy3t2q5skm9hz": [[860, 1]],
+          "sif16jlaytc8t8kuuf9waw4wrj2d9dlyx2e9qyc9ux": [[1027, 1]],
+          "sif12pd6h5xd5gputhctkdxy9zatlpwuej0lnmnm32": [
+            [881, 1],
+            [932, 1]
+          ],
+          "sif1c9qv49mrj9sr4d4jkcxmj93gnyp20jum42wc52": [[1140, 1]],
+          "sif1n9f9cnduferdsuq5r0q3n8qfj8z2kv8x7r40p7": [
+            [872, 1],
+            [928, 1],
+            [1037, 1]
+          ],
+          "sif1gqkuswt36a275ma9pps7v2nn5a30qfe7dhzual": [[877, 1]],
+          "sif199mh95u6f768kjdst0vzf5p3ywvznjdpqy528u": [[1040, 1]],
+          "sif1m6s9j3hs0qvy92jwjsj6k3wekpw4dwkxjd94qp": [[841, 1]],
+          "sif1dm7890ykgd0sk9fgytl6j7suy2sex6ffwddakg": [[845, 1]],
+          "sif13v265k7j6w033tnzw65yth2cf8s3030rdq0asw": [[1018, 1]],
+          "sif16cgazvzj2x5xtpy35jw7dly869ud87yy2hpfla": [[1129, 1]],
+          "sif1hj895sr8w64ye5jy6xkma6pv5ktrws249yv6vk": [
+            [906, 1],
+            [966, 1]
+          ],
+          "sif14xtq7y0qa4qje2sjfxdgtpuc996wmm5472645e": [[913, 1]],
+          "sif1htmlvsep4ldeu77xudxk02mvftsn6lnhpwp6tj": [[1018, 1]],
+          "sif1tnnhrqpm8rxj7xja5jcu2vmlv2yxz5na00p69z": [[847, 1]],
+          "sif1qzp0p8tyz00eq8h6qwfnt3e3zzzmnemceq9uc0": [[853, 1]]
+        },
+        "id": 1863
+      }
+    ],
+    "snapshots_lm_dispensation": [
+      {
+        "created_at": 1627432582356,
+        "snapshot_data": {
+          "sif1q3jnv9sk5k2597lzm0zml0t62khawecjndnmd3": [
+            [870, 209.2887331782885],
+            [913, 2.8421e-14]
+          ],
+          "sif19dvp6lm4tu9sh3svq3psw7mlmdlhjrc0kns9lq": [
+            [1121, 397.519803776429]
+          ],
+          "sif1w8dz2v52qa73dccrph7qrlgh065flln3yyasgy": [
+            [1014, 388.45012785068616]
+          ],
+          "sif1uytvxkpflljpmvry4gmadxx4dfzy4f3dlac3l6": [
+            [870, 402.5060227120915]
+          ],
+          "sif13jxptk2w6ykr23vsrxks5gxaqfrf3v49azmulp": [
+            [870, 13.978798917528334]
+          ],
+          "sif1y82mdygayv5c32r3g5uwtvq502p57gcg9a7vh6": [
+            [1121, 47.8477206606396]
+          ],
+          "sif13tz5ml90tq2xruslyhcsz9d7lwwn6l66ammsux": [
+            [870, 11.472135330572511],
+            [1014, 1.776e-15]
+          ],
+          "sif15sl54uqtq5qygqu47nhc7w9g39qv3cezxujtgc": [
+            [963, 74569.77834058156],
+            [1014, 1.4551915e-11]
+          ],
+          "sif1zx2ey6guyq5gxeavgvxfwmwtawpetmjuvqccg4": [
+            [963, 3171.2951693390296]
+          ],
+          "sif10sjena7yg9fgx3h5jeyvqxavvd2gxm42lgw7q6": [
+            [870, 121.48199407611159]
+          ],
+          "sif1gdm04gxmsw3jzcyq7sa9cc4r0s4gjk28pgjga7": [
+            [870, 666.0604994267451]
+          ],
+          "sif1375rqfmmnfvn4ncrudksclyxwz4rq0c6pjlsrg": [
+            [913, 1344.9488053294294]
+          ],
+          "sif14fyd28wucuhe6csyy26xecpmvquwak9ld5rr85": [
+            [913, 709.455640370615],
+            [1121, 109.70138697721424]
+          ],
+          "sif10gm4wmafzpskyr2rh2qzwurgy7rlaqfgx37ken": [
+            [1121, 68.0815293194674]
+          ],
+          "sif14vp9nghuzdgn7gp3km4emzt48cjckzyx6zhrv6": [
+            [870, 66484.03098548974],
+            [913, 1.4551915e-11]
+          ],
+          "sif1vsnar8zw328wnhx6yysdkl6t0ycn0zt9v45fe5": [
+            [1121, 38.774084993983095]
+          ],
+          "sif1cpj9vd5e3dyvyj0nds3hanz30zafakdc7gve2g": [
+            [870, 497749.64460924646],
+            [963, 19571.213035929086],
+            [1014, 7962.030836171803],
+            [1121, 25346.961503868497]
+          ],
+          "sif1y6jvpxge0a8y8qf0229vgx0qlggkv73gz9tfas": [
+            [1121, 177.043895214901]
+          ],
+          "sif1stgv7782q4gl9fxnntzvg9zks54wkpw4dc4fy9": [
+            [1014, 12654.689725382132]
+          ],
+          "sif15uxvmpzgsyfh92dj7943lx4nhllsztsaf5j0lh": [
+            [870, 104.81016384198396],
+            [913, 1.421e-14]
+          ],
+          "sif1gd6p96yg4vh94ksw6xp8tez8pmegcgrksmyw0h": [
+            [1014, 34.04616456259332],
+            [1121, 80.28004721966141]
+          ],
+          "sif1wwmvw3uzszswuycldltjl8zj9m4f5z20e0whec": [
+            [870, 12805.953441722198]
+          ],
+          "sif1xeukzhw4z6h8r45g3al67vzymmm33f5zqp8szh": [
+            [913, 9648.363749601129]
+          ],
+          "sif1vswxpd7stuulgyu5q8hzqn8cmn54kfzdwg5xc3": [
+            [870, 3630.8874341052524]
+          ],
+          "sif1ae93jtu82478f2e4a59d9x7w7vxhrzzct58mde": [
+            [963, 291.51369606853507],
+            [1014, 5.6843e-14]
+          ],
+          "sif17pj6mgu9nlqqevm4qjpjfxgdz7k43nmfjagxw0": [
+            [1121, 69.58765198579324]
+          ],
+          "sif1cet6en6yg55axmhvg43zcgahy336ksmju5czzg": [
+            [913, 2727.8211259727423]
+          ],
+          "sif18u9r87wn0rlu954hq8w0vguq3jvdc3wxts83k2": [
+            [1121, 51673.908593646214]
+          ],
+          "sif1mx5hhxz4q4n6q9hd87u62wc3gc98hekcrv5mxm": [
+            [913, 26480.925953725393]
+          ],
+          "sif1wgp25k7h8thshu3j6t33hp8a4egzw6gtdxyhks": [
+            [913, 300.2318478705471]
+          ],
+          "sif1s7hz5ayyr7gj0fnt360wcccdtg0acqlu88frkp": [
+            [913, 455.1742321186587]
+          ],
+          "sif17g8z0fu9qwl8hu5zhtfgalsh0zvl2wvqk4yygy": [
+            [1121, 1866.285818238703]
+          ],
+          "sif1gkxujvwuzry6c3wwkhc44aefg7q60mna73w8p8": [
+            [870, 23448.340023436518],
+            [913, 7.275957e-12]
+          ],
+          "sif1dlx20fd4skz4u4p0krvh0fhc8cnttfvyr44mec": [
+            [1121, 6902.725741198257]
+          ],
+          "sif1rdk8qx34q55pt3r8m9lsx268zufes8ewke7ufa": [
+            [913, 92.91247124529417],
+            [1014, 58.5173159820865],
+            [1121, 41.70939238283674]
+          ],
+          "sif1la86704hhs6j3rwe8fyqttcnscfszsnflzdm36": [
+            [870, 10.331425885021153]
+          ],
+          "sif1anxq4ydjjh857f5nc2vq9lljr2shyj9mctm55l": [
+            [963, 62.83001446818301],
+            [1014, 1.421e-14]
+          ],
+          "sif1s8v33q97t3x3ssau9teqx45eja675f7t49uhx4": [
+            [870, 49.3644600469216],
+            [913, 7.105e-15]
+          ],
+          "sif1vrwt2ttstp62n2rjtdres9slq4gykfg2qv2xye": [
+            [1014, 7495.0755076644655]
+          ],
+          "sif1240nvma7fjspn6kjjd9l4m3dk9x55vuh4tx95n": [
+            [1121, 75.08507028221219]
+          ],
+          "sif1ut6svyeyqcpzadjh89qz2w6kwdxkdmnq3lfsep": [
+            [1121, 68.50846445166066]
+          ],
+          "sif1l6klv5q78990z3txgsz0nj2quz06u35f0wr99a": [
+            [1014, 6531.9956581316255]
+          ],
+          "sif1glfm7ma0ndx8umd6425fh7dl7wj2u0u8sthv20": [
+            [913, 54.464413095404744]
+          ],
+          "sif1vuafmlx20tmrz9ecutkwfq47a3lhc60u4cu5gc": [
+            [963, 7.187672061592803]
+          ],
+          "sif1emaf9zwyc8skvqft93caa5h2x6e7y02ug2cfjx": [
+            [913, 436.4802302696284]
+          ],
+          "sif1jrj0glxvkce3q7c3mv5psj40cxnt0zrv0u54qu": [
+            [913, 15249.3034848847]
+          ],
+          "sif1wdwss6h9xy6dr0nzu7j83n7glkvqndlj47v7ky": [
+            [913, 2500.766522323143]
+          ],
+          "sif1hmll8lejjsvq4ldwt6k5jdmrzmj38yjvn26xfa": [
+            [963, 516.9505798343617],
+            [1014, 488.96827647339995]
+          ],
+          "sif1m6wf3vlrq75cgj5nyn72rn2efh44yt5xsgpdxp": [
+            [963, 5698792.84278581],
+            [1014, 1.862645149e-9]
+          ],
+          "sif1hl8f4uj0qslcflz8hwwq54ajv7qnj3uc5d0uzk": [
+            [963, 5.616994662546833]
+          ],
+          "sif170pfyjxgggvudkx4t7yv8sy58nw2lgmhvzwcfs": [
+            [870, 1854.5792488213108]
+          ],
+          "sif1ndlk9hnzv8kjxwwd279fcgruqvunuxamgxav3y": [
+            [913, 21.235293606685005]
+          ],
+          "sif1p64jy2u97ax92wkcyyzer99vtlxqmkp77mu8pe": [
+            [963, 12.13889410895463]
+          ],
+          "sif1rr8nz0qqnmd9xks9mz3ugp4kdk36q8q6jv2myg": [
+            [963, 16.22643802541335],
+            [1014, 3.552e-15]
+          ],
+          "sif1vvf0n2kvq0qxvl209xe4rhnk3ykg5mjcdya9yq": [
+            [870, 25024.318607486817],
+            [913, 3.637978e-12]
+          ],
+          "sif1xpxczuwr0x7tsnt6q2l7ke4vvlz7medpqq64n5": [
+            [870, 9130.757540557022]
+          ],
+          "sif16npsmp3gm50cg354dyx85jun5mktmdv3m5a5pl": [
+            [1014, 63.37049377774861],
+            [1121, 28.286322877120433]
+          ],
+          "sif184ntw44n45nquvhj7ewn8994zqvf7ksnvg7uw6": [
+            [870, 3410.039554453844],
+            [913, 4.54747e-13]
+          ],
+          "sif1w9n25rxch4g7wzrf3w8t84fshkecmzttf2kxzy": [
+            [870, 20.36183502242404],
+            [913, 7.105e-15]
+          ],
+          "sif1wa9nx95qpv5scx7yfmkpzyr0l6qncz8uvvhtl8": [
+            [870, 39.2839109188114]
+          ],
+          "sif15ykl3pzx45wcqrsd4n3t6pqp25wlp2ykckythe": [
+            [913, 121.99015475283394]
+          ],
+          "sif1jheaj788vufwwjyzdf8tv9ktyzzfmv7f2klu8x": [
+            [913, 1.214060994132154]
+          ],
+          "sif1zfqz77fxcctd7z8fa8qjqgn9ckh9tss5yd8xw6": [
+            [1014, 41.44886216029909]
+          ],
+          "sif1q3s9uqje7e9w48y5d96j7kfrdyz2x5yn0j030w": [
+            [1014, 176.06872841799742]
+          ],
+          "sif1g2sjn9xuzqel8xfp0aul25rjy74tcu7a72slnf": [
+            [1014, 34.22704881324103]
+          ],
+          "sif1laza9v48wa793l6j6g7s760qvkwzy9zudahl7h": [
+            [1121, 56.213190499700964]
+          ],
+          "sif19tnmw3phwg3h7jsk7gk800ssx5nmqdf2cr5zsv": [
+            [870, 22.20965800392297]
+          ],
+          "sif18pngk8cmn3jztzcf50zzpe7ls8wh33ndaelujh": [
+            [1121, 105.40939642939229]
+          ],
+          "sif1k4jvtqffyfgk9q84enyk30eh94yqzhmdc58p8y": [
+            [870, 110.49867434395628]
+          ],
+          "sif184d479nrj95rscydysgezslhegt0jgskps448h": [
+            [1014, 109.11773420060943],
+            [1121, 1.421e-14]
+          ],
+          "sif1jf2n377hfagmfavkfe3cqrp7nlk3utuz867nyd": [
+            [1121, 37.44860335790372]
+          ],
+          "sif1a5y675zgp6u7lr3slzm9xr64hg0vlvj2hg7hr4": [
+            [913, 161.21491511448653]
+          ],
+          "sif1p2da7jac0se3lwf4rf6uxf059ta4lk0x5as58u": [
+            [1121, 38.571586941362455]
+          ],
+          "sif1d386hyn9zy2tfy4petaz6k7djef3uu0ds0t3qx": [
+            [870, 64432.58377026282],
+            [913, 697.9873720254561]
+          ],
+          "sif12uk22nzee0hgahzttujcdce78ax627asznh7yf": [
+            [913, 0.8729676078416385],
+            [963, 0.6199120996274351],
+            [1014, 8.072619487706183],
+            [1121, 7.696622151186276]
+          ],
+          "sif10prgaf6ap3hkn8qtnzkys8vxm8ut0rr7jwzrqx": [
+            [870, 3197.5485068895846]
+          ],
+          "sif1p7sptdvkqptmys9z3c9yavplgpq7hgwv7rpugd": [
+            [1121, 7578.358636936449]
+          ],
+          "sif1ncdr0qq2dt42fkez4qumkhyhhuvf4cfhv4757x": [
+            [913, 8510.268391564357]
+          ],
+          "sif1c6zn8aumlhuwka3tup0xx0l482sn0zx6mcdrc2": [
+            [870, 13.653652739981768]
+          ],
+          "sif1ezmkrv32n4d0mq5y3tsk9096a4g3vqnjj3t6md": [
+            [1121, 1238.9730177593149]
+          ],
+          "sif1zwcnzclw2yfewv8mp5dd90vu5tdq5h2ppu6y4q": [
+            [1121, 10.041356528833349]
+          ],
+          "sif1fhpj09pxs9q9suju54f3n8k92yganhsxae9xj7": [
+            [870, 98.26808857430885]
+          ],
+          "sif1ppgjl7eutnutfssr7335cfxc5cmy87u8kqmrvh": [
+            [1121, 105.65221732499339]
+          ],
+          "sif142vt9k27qmg9dfgt4gj02x879tnt330ce2y7pe": [
+            [1014, 14.127214055690809]
+          ],
+          "sif1js8ulghdzw3vly4gh43nyluxaw4tt0phxsl826": [
+            [963, 7.875903803304954]
+          ],
+          "sif1j9wzqqv70c2zasmf7t0vl6ddqrrfvttj0vj87r": [
+            [870, 84.1152772495412]
+          ],
+          "sif10kmkcxpl5qjkmlavfr605ywm7gn5cfw5ys3f2d": [
+            [870, 100947.04250053382],
+            [913, 2392.225219479566],
+            [1014, 5054.8756330077995],
+            [1121, 316.7785968219402]
+          ],
+          "sif14fuqtwtyaptzcu6uu4ykd9htx7pqpcupm5zjak": [
+            [963, 4.4117091810255955],
+            [1014, 8.88e-16],
+            [1121, 59.81313151814348]
+          ],
+          "sif1f5g7el3rqccrs5rpj9awz23wjuv3kp8w44chmv": [
+            [913, 1586.9474083460184],
+            [963, 35.58589222217056],
+            [1014, 64.6665989067137]
+          ],
+          "sif1hahen2v8e3k9zamrrr4re43jaahwv0za5gddzu": [
+            [870, 1008.1521072834031],
+            [913, 1.13686e-13]
+          ],
+          "sif10ea95wtmz5uzwrlw0kt2p0j8lsm9rwpwwhuh9f": [
+            [963, 2.474240347066743],
+            [1014, 4.261306847134551],
+            [1121, 6.39117838301603]
+          ],
+          "sif1hjkgsq0wcmwdh8pr3snhswx5xyy4zpgs833akh": [
+            [1121, 22231.100124987894]
+          ],
+          "sif1zdh3jjrfp3jjs5ufccdsk0uml22dgl7gghu98g": [
+            [1121, 8224782.988809561]
+          ],
+          "sif19lu6lz406guc9nfunz69huxxc4ezqak0wn6hqg": [
+            [833, 0.002445789626834276],
+            [870, 0.001252120763001064]
+          ],
+          "sif1yuv46zxw9w8meuyhpe6y6dcxfjk85nrphcat9g": [
+            [1121, 38.60840245381134]
+          ],
+          "sif19tpa269yy7h768lv5mkn36a972rnvwukxy7y8p": [
+            [913, 3759.679480150518]
+          ],
+          "sif1tcr8yhu6hyp88v2tkyle9uglzw98x9pglrd96p": [
+            [963, 10.595621305503435],
+            [1014, 41.955707182272235]
+          ],
+          "sif10nl66sup69egln5ps5cr0fzszk6eed77rnfst3": [
+            [1014, 26.970912083977666]
+          ],
+          "sif12ruclf3fr6ypqsz4l8lc0hspask92u568en2dr": [
+            [1121, 44.0930142835279]
+          ],
+          "sif1klkxmf0dm7qkq3wrhag36yg5dtne3kwszk5a9j": [
+            [1121, 362006.4635968769]
+          ],
+          "sif1rsgc528tt2epqtfwtutrjf65fry4gfmd5l9al9": [
+            [913, 3.9641695764193137]
+          ],
+          "sif1g798zmzqhrz2qqahhez005uqe9cm32gftqfn6x": [
+            [1121, 64.5323928145272]
+          ],
+          "sif1dmxr9vrxmkm3sz4ex8z5s0gzp7p72x64q4fdt7": [
+            [1014, 84.63130519723447]
+          ],
+          "sif1f8xlw9qev80ysfc669em5xvqul58ueacm7s2p0": [
+            [1014, 122.23192103775301]
+          ],
+          "sif19er6pwycm8wjq88san4403gkrdzns4uc6tdn2l": [
+            [1121, 47.8477206606396]
+          ],
+          "sif1d4w5dupdzj70j03h2lgwnmhk62plt24hchaxhz": [
+            [913, 103.61145861642002]
+          ],
+          "sif1cazd8eugkyd5hsd9xf9gpxx20t4767cjhp4vwu": [
+            [963, 93.63676693799133]
+          ],
+          "sif1vy4q0fwel690u6z5xvevg5lmy74y2wnfmfplch": [
+            [913, 24236.689943448182]
+          ],
+          "sif1c0qje6rlmg70utxkwz64zrj0dy7j860snpdgqj": [
+            [1121, 51.2924528227278]
+          ],
+          "sif1efz655a3eaq00x0kndlh9rgy9stydpz2f4drud": [
+            [1121, 54.39820330983548]
+          ],
+          "sif1u06fm45m29kw4hd09tc35xjdqrrnus2cptlzn0": [
+            [870, 3053.943212957193],
+            [913, 4.54747e-13]
+          ],
+          "sif1gm6rdjj5uyrwlk5akur3c4mf6ggxcgnv229cu8": [
+            [913, 343.4764202216984],
+            [963, 14.198627518288319],
+            [1121, 30.464813956286786]
+          ],
+          "sif15gg6t4uz8pnh7vhw08c924fnxysy8s7d3ds0r2": [
+            [1014, 364500.5091825699],
+            [1121, 4725.643569103663]
+          ],
+          "sif1032qhvrkxkqrypx7qmd345dugcuspeyysxela4": [
+            [1121, 70.98925915170496]
+          ],
+          "sif14x68a9y3zl9xd7td5njtadw2v0vncy9yzk0pp4": [
+            [913, 33569.18961776677]
+          ],
+          "sif1l37pv9ud5aq4cr4fgmwtamxd3mrpqumelqfq9q": [
+            [913, 1272.209102874396],
+            [1014, 4.54747e-13]
+          ],
+          "sif1lwmaq5c8y0vlwtahna020ppec8vsd0dnywl56a": [
+            [913, 3645.046480182353]
+          ],
+          "sif186x6qse5z495fggp7wh0pe5anvkda0warj6x6h": [
+            [963, 8.309258147686306],
+            [1014, 1.776e-15]
+          ],
+          "sif1hnk4fdx8zlyqfw32nm3cl0xdq8tz0jep608tae": [
+            [870, 218.83819003026298]
+          ],
+          "sif100snz8vss9gqhchg90mcgzkjaju2k76y7h9n6d": [
+            [963, 469.5192810997883]
+          ],
+          "sif1v4j2u4pkv245fssk7vtykgvuetzd7nwljaay9s": [
+            [1014, 59.355618833021296],
+            [1121, 24.03917633214668]
+          ],
+          "sif18teduvqq7sqtnswwpezva4qxukm5fecq5ggc6e": [
+            [1121, 51.034305199650646]
+          ],
+          "sif1vz3g5rzgw4xhl4vsg8njv8xjnkqeztcwvm9l32": [
+            [1121, 86.2645301196335]
+          ],
+          "sif1jqjm409rumq68t3edx5p5kjuyvz6fl3rsnlv0h": [
+            [913, 21.95702129713739]
+          ],
+          "sif10u9j54gmk75j3y27x9hrw372f6fsdgf3d055ku": [
+            [870, 3717.929907279402]
+          ],
+          "sif15668t8887dd9lw2e4hm7xer359len6qfpqfemx": [
+            [870, 2453.7398057050664]
+          ],
+          "sif1cza7smj2pd58ncn8dn5g9jmm0pwq0t80x0rzeg": [
+            [1121, 1615175.6040389233]
+          ],
+          "sif1naateuyjvgxtrjsx00utvf4zcm65q40mygvrr7": [
+            [1121, 54186.7835217499]
+          ],
+          "sif1duh4r5397e0uk59duchwamdyheeaeac306lu25": [
+            [1014, 47.54269738404806]
+          ],
+          "sif1c9eec6qgh0qxgp85nwg60kw9ke9p0u0f4p359c": [
+            [1014, 8734.881615731465]
+          ],
+          "sif1qak2j0ezah7j6qylgk8dv30tmyks2msajhdtuf": [
+            [913, 3.7211570194331918],
+            [963, 45.896276792716094],
+            [1121, 285.5434810587034]
+          ],
+          "sif1pxu2q2xh42ftc3pan6n96k6kq07zzmyxrkcf5t": [
+            [913, 38.73004556306112]
+          ],
+          "sif1jwc64rr4nj2hvfjqej8ewm5nnatsy7z2nxu6xg": [
+            [913, 1.1149418742429977]
+          ],
+          "sif1u7wefl4gvj830ttvg2g8m3y7ws6xs0ppp3lx7l": [
+            [913, 2.2174682928826486]
+          ],
+          "sif1xjdqejmfufa524meajtyvw5n695r35ezejxleq": [
+            [1121, 25.428677263555812]
+          ],
+          "sif1ddk7l76fqygekrz49uq7xsl9qslxtlg8tm36h9": [
+            [963, 6.057423627526593]
+          ],
+          "sif1t3k4v3a50wdq0gtjrjlg6j3x2mr3rfmjvsr05j": [
+            [1121, 51.31356623788649]
+          ],
+          "sif1lu5rmhk6mtlyt884fpq2uv5vn36gmkzm6xgttq": [
+            [1121, 23.283186748179826]
+          ],
+          "sif1ehecqf6pr5cnlv2ec0dxvt5s8yedpqq8v0dlnc": [
+            [913, 33.30424675037711]
+          ],
+          "sif1nzlyzwxyvgzgqze89223pcmt6lnj7nfdnh4ur3": [
+            [913, 80.30590598106461]
+          ],
+          "sif1s585fcykfzvru63cwtqvm2mjzh8dvh9rqq9dcj": [
+            [963, 5.293279641776262]
+          ],
+          "sif1ue3ycq7cugrhwyqrgxcyql7px9j00eaeah0pr5": [
+            [870, 906.5049789971583],
+            [913, 1.13686e-13]
+          ],
+          "sif1lvuhnljegxgwcjcjce9vd4sqv8ryg3k293g8lp": [
+            [1014, 16.61508460036846]
+          ],
+          "sif1gtv72stenutusud0fyeu2wyz4fq58le064xlem": [
+            [913, 12791.820713976984],
+            [1121, 1336.5136767737267]
+          ],
+          "sif1fl3lz3w0zs3tqgf0vuux8suuv440w5grnppzjs": [
+            [870, 18.00143474643978],
+            [913, 3.552e-15]
+          ],
+          "sif1kzhxmgp8z05zrj90nd8h5qx9pm949an5zx2p3u": [
+            [870, 19.620599612074344]
+          ],
+          "sif128z6kpssfjeefv87037vwm2ksddz7tmu5jufje": [
+            [1121, 845.242502836038]
+          ],
+          "sif1aeh7plmpqy8hd9qurxekd8rrextnuj7450eyjt": [
+            [1121, 78703.6668811287]
+          ],
+          "sif1mphr664xm6leum49rge6973mkrtsaar6265zgg": [
+            [1121, 224.90487790061462]
+          ],
+          "sif1ry5ae7y3e8dwnyfx5s94uswrul45jeqsanjdhm": [
+            [1121, 245.13199088320204]
+          ],
+          "sif1w3t2vdmtmcllggur6qyhxjurlcq0ltly3jm8c8": [
+            [1121, 397.06115119919434]
+          ],
+          "sif1mmwrycpvamwfvul7ryaw84vy5w9574y2rl87hg": [
+            [913, 310.05924679455876]
+          ],
+          "sif1yqdh9mxpc9m7xutxx8ntq4ncxcz050jwwetxt6": [
+            [1121, 7231.848724689808]
+          ],
+          "sif1dq0ewtvgzm93st059ndpptnfz30whxplv6w3j9": [
+            [870, 402.2019178511082],
+            [1014, 5.6843e-14]
+          ],
+          "sif17vqwfxw7h6732w7csf7m8w8jll2ss6r8kjd8hk": [
+            [913, 100.137918218312]
+          ],
+          "sif19fqk020qhmcfhejkrc4svpvzga3ygcs7ppms3v": [
+            [913, 7852.148391188582]
+          ],
+          "sif1v9y39uyhmv3gls55n22jj7dt2x6vayrqu6qf8f": [
+            [963, 7.964221526197686]
+          ],
+          "sif12v3gs4w7mgfz9alf52ghn8yaux0kjkq70k6zps": [
+            [870, 223.6396548944191]
+          ],
+          "sif125dava4ywnjz8uej47p0qhcutt9735t8q0rujw": [
+            [963, 13.875237937024634]
+          ],
+          "sif1a8yqtxw2ep55phhkvhhe6j8lguku4qcaqtc7xh": [
+            [1014, 20.903028879588366]
+          ],
+          "sif18ajc7euypp0f79eak6q3yutw33ge5y8s7yg7z8": [
+            [870, 750.2570455345268],
+            [913, 14.785285022326756]
+          ],
+          "sif1x7f5n5ed3hz28rwuvhw5tf5udrkshpp2us0ljg": [
+            [1121, 44.910571454336576]
+          ],
+          "sif1e3d5pzt9x6yjyqtc8j8t3my2cmyrkvh9wdpdh7": [
+            [1014, 65.49453797267088]
+          ],
+          "sif1m7qv8gdswhpkq6jv57a3fdcxfv5qwk3jttv43z": [
+            [1121, 40.8883344312811]
+          ],
+          "sif1dwvvh66wj8252clr6r8fk7e9jgpkzarna2943v": [
+            [870, 148.4525616864751]
+          ],
+          "sif1jxa4p2sxq7cvj2efr98g2nv0qrnff6lstu8n2u": [
+            [963, 5.133737913053926]
+          ],
+          "sif1aq6fpgldcwy49d0kmtr7zrhewml4ul5nsrllla": [
+            [1121, 48.008135503887594]
+          ],
+          "sif1ynkf678ymk38tugtw4zr88ztlefmv77jfkl8dh": [
+            [913, 1212.1867362588705]
+          ],
+          "sif1prz305fzcexzwa3mlkce0uzzsngzla7n37n5gu": [
+            [1121, 44.52127809742224]
+          ],
+          "sif1rmmh4dled22tjh6ecj30d3neahh4h5hxg3nqsl": [
+            [1121, 301.09876880913396]
+          ],
+          "sif14y8u95zsk6k5ep6j83ugp28alypydmq4f9afzk": [
+            [870, 20.37065044395775]
+          ],
+          "sif1fp7lar7valvpajdxealzhaf5julcpvrlq5l2w4": [
+            [870, 22.96453123830981],
+            [1014, 9.166887697789194]
+          ],
+          "sif179e2s3u0w3et9k9vy4esq3wc78mhvfyh50whym": [
+            [963, 178.50211709263937]
+          ],
+          "sif17rg8p77vjjyepedzdm5g457h534pyqhy8w7rpu": [
+            [963, 7066.561037389173],
+            [1014, 1.818989e-12]
+          ],
+          "sif14zqw9777rnht80c92egf0q5f89ksqvs40xqqt2": [
+            [870, 59879.89577186915]
+          ],
+          "sif1kq7npma3q56druf55qcuv69lhgxeyzj0cvyrtu": [
+            [913, 733.7139328616428]
+          ],
+          "sif1zm0utzejl7r2kqv5mrkvw4hdnzfedm6d3quzhs": [
+            [913, 1830.108735580041]
+          ],
+          "sif1048c2lagwe84sz0sk4ncy2myrzxykjes40hn62": [
+            [870, 87873.2020996572]
+          ],
+          "sif1jetpnq0x0pwv6p5js6zzlcjzprprjwhxcwjtkr": [
+            [913, 1615283.7304578086]
+          ],
+          "sif1elhsympxd67ge2ntw6r0kvlyhgyufxlyygzskz": [
+            [1121, 23.901986441524418]
+          ],
+          "sif15dyg0uu24zkswsds3sp27v2xzywsv49h24djm6": [
+            [870, 251.44962519628615]
+          ],
+          "sif1sywzh2f2uf3j8g6ffxuurlgg765psc88m0cvsf": [
+            [1121, 45.559083647112026]
+          ],
+          "sif139uxveu486g48ga6c75mnajazyyvna4tex7vq9": [
+            [963, 14792.032657759184]
+          ],
+          "sif1lq7xkjwfacmm4zgc75h9lpvcdu2an80l3n0nuh": [
+            [1121, 44.06959054580481]
+          ],
+          "sif1qej9xfpx9mdaudz2augataz9dmpm2nl3ht6xxg": [
+            [913, 27092.32402459909],
+            [1014, 1276.4994259285334]
+          ],
+          "sif14gndet3zmzrdk4u4rxh2ea2c09huvlyjts2s2c": [
+            [870, 0.16310819493144363]
+          ],
+          "sif142eux408w9c3ne0xfmltm3a30u3ljader9gzxu": [
+            [963, 8.755806260750056]
+          ],
+          "sif1hkxr0xhejnk6zy7e4cljw0kk30pd4h2mnfdm0l": [
+            [1121, 1048.908151690964]
+          ],
+          "sif1jgmxhenaw4f2s9f5pqeyk9ela6nkcpqyt6t4du": [
+            [913, 7263.9657669917],
+            [1014, 9.09494e-13]
+          ],
+          "sif1qhnapgl3x2axjn8dqzqnree50f8xk68esk5zck": [
+            [870, 183201.03235064732],
+            [913, 1876.191678997202],
+            [963, 4486.191852330273],
+            [1014, 5902.844515482556],
+            [1121, 2601.4840947563193]
+          ],
+          "sif1t8mlc7p7rm5uq34ytwq4rs0jk6s22t9r7sxgvj": [
+            [963, 16.21761303173804]
+          ],
+          "sif17cpg4f7w90ec0eh4mjkdqcszxmls2acdrnzwdm": [
+            [913, 23.07428686860885]
+          ],
+          "sif18r72flynzn768us36dygfn6c6dn7gtmfqqdfjp": [
+            [963, 15992.023096094214]
+          ],
+          "sif1t6t9l57chhjqy3pvad957gxrwyc8an4kjhakxu": [
+            [963, 6.565289371065706],
+            [1014, 16.929321936698237]
+          ],
+          "sif1k8md4e80hgn2jv96lwga5h9kmcdy7mpj39fvf3": [
+            [963, 217.23960423249528],
+            [1121, 2.8421e-14]
+          ],
+          "sif1n3kr40wrtzpuwe8u8rxqkk6zrwdt5368mfxfst": [
+            [1014, 11.764416200597402]
+          ],
+          "sif1yd9kxp8st22cjn43ja9sjmwelnd495tw3j0kdc": [
+            [1014, 27.045416802897694]
+          ],
+          "sif1vm755fsux9frvumfaxvfuh6yx2k3accznutyc6": [
+            [963, 19.082562940541727]
+          ],
+          "sif1624xqz79rvm4x0xs5tph425akdm26nf7uyjv7p": [
+            [870, 6.350451770521577]
+          ],
+          "sif1gmaunljjvv0f5gpcrs66grgpd9kugdmyma9hc8": [
+            [913, 365.10501072989126]
+          ],
+          "sif1qpvem7qvpygc87e0aqtjqz6lx7r3z35c9ku2j3": [
+            [913, 87.42573437544206]
+          ],
+          "sif1jqy79uv9xn9pzs5mcgxfjha4xvvtzgpy7sc02x": [
+            [870, 4621.999930113606]
+          ],
+          "sif18tmhs9m7j65h7252xkyfn5fg5fwrlw2yqrclg3": [
+            [963, 21.672453786084205]
+          ],
+          "sif1p7y92sj0u2c9ysl2nz7ukrjlacr7wnszv3vcgr": [
+            [1121, 23.317236716157918]
+          ],
+          "sif10ne6zeqa0fswakdruh7rhadwesvj29xvdz6ynp": [
+            [963, 6.2230667013422],
+            [1014, 8.88e-16]
+          ],
+          "sif10m4m2zhq4wvav3cvtrc3wgw8wmyu9lkx3g5euu": [
+            [913, 403.6425435609264]
+          ],
+          "sif1dkxzppw5kr0m0tjkck0n6lsa3n59dvj9lxrt5h": [
+            [870, 14.628397347599936]
+          ],
+          "sif1xw9up9qesn4s7jf3ar8jlhexv4h8qgddfvdlfd": [
+            [870, 13408.21149597327]
+          ],
+          "sif15ntr24dgrxd553pemuplveurn9qmgzg93ca3wr": [
+            [963, 3.627615791893695]
+          ],
+          "sif1ha3d3qqyfvn8j2dydlzj5jvnv4cy43y30l47ad": [
+            [870, 50903.40607665622],
+            [913, 335.17294283957017]
+          ],
+          "sif1am0xzm5eg7fhl59zft5rk0h8utwegev6mjgae0": [
+            [1014, 34.50746598223289]
+          ],
+          "sif1qq2j2hfwy0nepnlvttvnzywff95u5v7h86kja8": [
+            [913, 822.6439488286303]
+          ],
+          "sif1hl9s2r4r04zx9mm0d2ju65qmhvw4yc2v6f6yns": [
+            [1014, 27.842577051500044]
+          ],
+          "sif152eakl57v00alrwxp2xl4kjcch557cm50fd02m": [
+            [1121, 30.6059871345899]
+          ],
+          "sif133n9920r7t48dpcvsls5ww4kcwtnuqevc7m2ka": [
+            [870, 10968.62472183999]
+          ],
+          "sif1nmlgh7ynw8qekmdxqfdg93w3yhr6yy6v6h3n06": [
+            [913, 349.0052165734424]
+          ],
+          "sif1ykar2f0g8m24tlu9c449x48qsd8qrzu25km99z": [
+            [913, 142.7363947018559],
+            [1121, 118.62870105562584]
+          ],
+          "sif1qv245heg3r5v9s4gg3z5uph5uy7dngpf73vu8h": [
+            [1121, 397.65919004327947]
+          ],
+          "sif14qqd87sxkvqvyntumaecqtsdc55p5j86nnydn0": [
+            [963, 5.9513621083581185],
+            [1014, 8.88e-16]
+          ],
+          "sif1hc7prva69p5fsaw0xyj9lrc9gywcrukxe6a7d2": [
+            [1014, 17.25473102712933]
+          ],
+          "sif1lvw37r3zeec6wp72l2vmqla6jewelvn7dam9vc": [
+            [870, 82.08240570076677]
+          ],
+          "sif1r3p7y3xff4rd22ft25jd86jga85e9zgqrjcl3r": [
+            [1121, 22.916642385207023]
+          ],
+          "sif12ct8sle7mupefh0ymdy4nvmgzzvk23ppjejcus": [
+            [913, 111.42679195910132],
+            [1014, 78.86409208362578],
+            [1121, 41.43792529584831]
+          ],
+          "sif13vtg6907g7gta86unrpc3v2s378rt4pg0s2uqd": [
+            [913, 17.465403849242495]
+          ],
+          "sif12dvnxp7z8kku8zfvc8f8j8hcasea0es83es22f": [
+            [963, 790.1502208963852],
+            [1014, 1.13686e-13]
+          ],
+          "sif1e5vwy6d7pllz6yuxlxc2cn0jqqy3t2q5skm9hz": [
+            [870, 102.51069094105529],
+            [913, 2.8421e-14]
+          ],
+          "sif15mlzpdgwmms4xqa0ju203w0f2822atstwwgu50": [
+            [913, 4.427574993013594],
+            [1121, 3.6453762859486765]
+          ],
+          "sif1v8zq2vha387uxps9wh5apk7dcc9ezlgmsakezx": [
+            [913, 30.30918975309771]
+          ],
+          "sif1ad5y8ygmkputrv2ltpfsuz6x4qkcd87rhql6hh": [
+            [963, 525.2385336015619],
+            [1014, 1.13686e-13]
+          ],
+          "sif1qmfw2frczzedddr8agrn7pjvnqsqps05m579ae": [
+            [913, 2789.4006070644846]
+          ],
+          "sif1s5vnmduf8xnqr5tp2jyn3l2tgsjy365gusy9pk": [
+            [963, 5.996153258460909]
+          ],
+          "sif15kzvxnr6sr7r20fjsnj9l7mfpra3mv2nwvpph0": [
+            [963, 12.67336354244699],
+            [1014, 1.776e-15]
+          ],
+          "sif1fy87a8ytqfmlav47c8kgcgrxkppaftwyfujece": [
+            [1121, 16861.369506373096]
+          ],
+          "sif17s950a3vc9d6udnz3t009sqfcjav7r607ltxlu": [
+            [870, 3.368699824203445]
+          ],
+          "sif1pafrvw6t4cljdmpc9lhntmnmgsvt8ycz6v4l0f": [
+            [870, 5.183779061923506]
+          ],
+          "sif1dgj38f65wl9eg0elxsr0k6gzslle3wv7egs5s9": [
+            [1014, 1309.6849174335177]
+          ],
+          "sif13hjd7kjd3t4lzvszrrtvyqevd9qrv9t0vf26ed": [
+            [870, 42.67627984776114],
+            [1121, 7.105e-15]
+          ],
+          "sif1jhd5q4d6v5z3ml5qeprpu4dgk2p9f6090r4fap": [
+            [870, 49.71497663678028],
+            [913, 7.105e-15]
+          ],
+          "sif1j2x2yn9xfgs26h6y3wj7ljzmalldlj73g43hq7": [
+            [913, 3.7523615714569525]
+          ],
+          "sif1hhfzmmtrq642ahumejtjf4kp30dr93z45vu0pq": [
+            [1014, 15.953607070631907]
+          ],
+          "sif16s5ln924jhkyvf0wsxcj2hx8jv3vsu7cykyumu": [
+            [913, 846.8931731687269]
+          ],
+          "sif1sxvaylyhc5ke9ydytynwg2365lwaltnc6wywj6": [
+            [913, 1073.6920460682602]
+          ],
+          "sif13td7rk9t8jcydvt5e2hspqu6l22uk983fd0erm": [
+            [870, 3163.4074272691637],
+            [913, 9.09494e-13]
+          ],
+          "sif1qxlrm0tdse7c9l7ke6ek7gfczm92650j09rdft": [
+            [963, 11661.2344954775],
+            [1014, 1.818989e-12]
+          ],
+          "sif16jlaytc8t8kuuf9waw4wrj2d9dlyx2e9qyc9ux": [
+            [1121, 9.79086616358354]
+          ],
+          "sif1usw2l72qh4s7mxq7lvksf7nyp0rxkucacjw4d9": [
+            [870, 3830.240750235373],
+            [913, 9.09494e-13]
+          ],
+          "sif1p7f7sqmtm3xvlfu4pla67yv22wf0ym5pmkrnmw": [
+            [1014, 287.0194466585071]
+          ],
+          "sif1mevkv0kwye7fy49a20gel8w2vs3s0x8ph3zg5c": [
+            [913, 293.999497067095]
+          ],
+          "sif12pd6h5xd5gputhctkdxy9zatlpwuej0lnmnm32": [
+            [913, 97.05445995830833],
+            [963, 17.135266696335474]
+          ],
+          "sif17pqpn7pmz7w7rxf28xtrrwflk8xyusc7qx8g38": [
+            [913, 5.453011603948983]
+          ],
+          "sif1y27g66lqn57x27q0gtxpr22f57w4sx057l9eu9": [
+            [913, 28047.06824862481]
+          ],
+          "sif1th89uf0zpf7y8tantw6sl92dry4l0v8a20ssg3": [
+            [1121, 326693.549600505]
+          ],
+          "sif1snfk76yqeg9gcsjnk6gxqzhf29xz7pzqu3hxg4": [
+            [913, 184.01722648762976]
+          ],
+          "sif1gqkuswt36a275ma9pps7v2nn5a30qfe7dhzual": [
+            [913, 5.43138663101654]
+          ],
+          "sif1n9f9cnduferdsuq5r0q3n8qfj8z2kv8x7r40p7": [
+            [913, 159.02345251197232],
+            [963, 37.6732539803816],
+            [1121, 118.60873249600793]
+          ],
+          "sif14ketjnmprp4nhstgs4mqxstg3qjp8zr05p8nfa": [
+            [913, 3.1964733590084173],
+            [963, 5.850431512654163],
+            [1014, 5.06834625588291]
+          ],
+          "sif12x095u6husgvgxz68u24hjp5fctwns8zhthp5h": [
+            [1121, 58.61931314585491]
+          ],
+          "sif199mh95u6f768kjdst0vzf5p3ywvznjdpqy528u": [
+            [1121, 51.19866695126849]
+          ],
+          "sif1m6s9j3hs0qvy92jwjsj6k3wekpw4dwkxjd94qp": [
+            [870, 14.278831736764245]
+          ],
+          "sif1pgudjmr6wvqpcx20w2pzzqkule0z3tcdccj3wz": [
+            [963, 9.941556131792247]
+          ],
+          "sif1mlc8szk07zn59arc6q47aatsn7fntnh97chtt8": [
+            [870, 29.102374063295034]
+          ],
+          "sif1qj8tk5u0qg9r0rpx5yp57upws6yjflltsuuyln": [
+            [1121, 22.89684790502931]
+          ],
+          "sif1s7554re4yr23a9k54rlem8zcg2qq6cmyqdtkum": [
+            [1121, 60.37743297737532]
+          ],
+          "sif1qrhg5vjnr8f0ceucvxxd0x2dqkksr9c5dnxcgn": [
+            [870, 412.52444857228534]
+          ],
+          "sif1nr6kxfkndysk3mx97rcxauvm96m37c52jzh44r": [
+            [870, 21.620926511871875],
+            [913, 3.552e-15]
+          ],
+          "sif1a0pz86aqpn2chkyrcd7qsxkqsugva958pjtutd": [
+            [870, 75.5376703841744]
+          ],
+          "sif1dm7890ykgd0sk9fgytl6j7suy2sex6ffwddakg": [
+            [870, 1556.815320336601]
+          ],
+          "sif1yd7lkaufyfdcrxmspk99pezvau707nrauww446": [
+            [913, 11150.75770757428]
+          ],
+          "sif1ey2y6tlg7lfgr37zt246vph89gwcz5agfl6ctj": [
+            [870, 2823.2741234018563],
+            [1014, 767.9412227772099]
+          ],
+          "sif13v265k7j6w033tnzw65yth2cf8s3030rdq0asw": [
+            [1121, 67.99185798244835]
+          ],
+          "sif18r8xfvwe43hhms93e477x8cxrvgyvs7fw2ml9p": [
+            [1014, 57.899966666108746],
+            [1121, 29.61124218487668]
+          ],
+          "sif1dcjzf2sp2evs32r9qsx3x4kaqr7tt6vc0xw4zg": [
+            [1121, 29.257468564997367]
+          ],
+          "sif15f32m6anpgvprk8akjz4c7qq77cn68j2unl44q": [
+            [913, 75282.75715844063]
+          ],
+          "sif1dw79yp32t7d0reeq0wcxgfgpnrn2n0dg3p0ydd": [
+            [1121, 143.95744463680785]
+          ],
+          "sif1fpj6ll6fdn4xkvkeyltx39yky2ks3xaq5lkuyl": [
+            [1121, 396.8063217635044]
+          ],
+          "sif1hj895sr8w64ye5jy6xkma6pv5ktrws249yv6vk": [
+            [913, 289.1141682289574],
+            [1014, 29.726100019931224]
+          ],
+          "sif14xtq7y0qa4qje2sjfxdgtpuc996wmm5472645e": [
+            [963, 11.725259326880062]
+          ],
+          "sif1g77yfs0t5wswx55wwu6y3u8d8u2xxwfja9wggf": [
+            [913, 3.2762467968087643]
+          ],
+          "sif1htmlvsep4ldeu77xudxk02mvftsn6lnhpwp6tj": [
+            [1121, 68.00012479319506]
+          ],
+          "sif1pwxy3vz54rrzjqrgyxpfu9uw5ddvul3h8kngev": [
+            [963, 121.12449274673838]
+          ],
+          "sif1tnnhrqpm8rxj7xja5jcu2vmlv2yxz5na00p69z": [
+            [870, 32.15946842877603]
+          ],
+          "sif19xt3juhfzv9tdlsu025lf36a093wc3mz4rtuvj": [
+            [1014, 16.470077402854354]
+          ],
+          "sif1nda53jgxdk2ywh87rukjw6u8lmqksxemfgp2jc": [
+            [913, 7812.897112102541]
+          ],
+          "sif1wu98d6kvd8t3zc7v5nyrepy6rhlrpm63n8rz82": [
+            [1014, 7.105151934307508]
+          ],
+          "sif1qzp0p8tyz00eq8h6qwfnt3e3zzzmnemceq9uc0": [
+            [870, 35850.46334865708],
+            [913, 1.4551915e-11]
+          ],
+          "sif17jmapr6v3sftq2nyl9wglssgdq3p0ervpfmeju": [
+            [870, 10.923778806414278]
+          ]
+        },
+        "id": 1864
+      }
+    ]
+  }
+}

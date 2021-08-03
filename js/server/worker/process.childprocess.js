@@ -64,7 +64,14 @@ class BackgroundProcessor {
             waitFor: 1000
           })
         ]);
-
+    require('fs').writeFileSync(
+      require('path').join(__dirname, '../output-v1-stable.json'),
+      JSON.stringify({
+        data: {
+          snapshots_new: lmSnapshotRes.data.snapshots_new
+        }
+      })
+    );
     try {
       const text = isInLocalSnapshotDevMode
         ? lmSnapshotRes
