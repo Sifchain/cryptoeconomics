@@ -1,14 +1,14 @@
 if (process.env.NODE_ENV !== 'production') require('dotenv').config();
 const {
   CHECK_IF_PARSED_DATA_READY,
-  RELOAD_AND_REPROCESS_SNAPSHOTS
+  RELOAD_AND_REPROCESS_SNAPSHOTS,
 } = require('../constants/action-names');
 const { createBoundActions } = require('./actions');
 const { getProcessedLMData, getProcessedVSData } = require('../process');
 const { retryOnFail } = require('../util/retryOnFail');
 const {
   loadValidatorsSnapshot,
-  loadLiquidityMinersSnapshot
+  loadLiquidityMinersSnapshot,
 } = require('../loaders');
 process.setMaxListeners(100000);
 const crypto = require('crypto');
@@ -20,7 +20,7 @@ const crypto = require('crypto');
     * Remote invokation of getter actions on processor outputs
 */
 class BackgroundProcessor {
-  constructor () {
+  constructor() {
     // Set in this#reloadAndReprocessOnLoop
     this.lmDataParsed = null;
     this.vsDataParsed = null;
@@ -29,11 +29,11 @@ class BackgroundProcessor {
     this.actions = createBoundActions(this);
   }
 
-  dispatch (action, payload) {
+  dispatch(action, payload) {
     return this.actions[action](payload);
   }
 
-  async reloadAndReprocessSnapshots ({ network }) {
+  async reloadAndReprocessSnapshots({ network }) {
     if (process.env.LOCAL_SNAPSHOT_DEV_MODE === 'enabled') {
       console.log(
         'LOCAL_SNAPSHOT_DEV_MODE enabled - Will not refresh or reprocess snapshots.'
@@ -50,21 +50,24 @@ class BackgroundProcessor {
     const [lmSnapshotRes, vsSnapshotRes] = isInLocalSnapshotDevMode
       ? [
           require('../../snapshots/snapshot_lm_latest.json'),
-          require('../../snapshots/snapshot_vs_latest.json')
+          require('../../snapshots/snapshot_vs_latest.json'),
         ]
       : await Promise.all([
           retryOnFail({
             fn: () => loadLiquidityMinersSnapshot(network),
             iterations: 5,
-            waitFor: 1000
+            waitFor: 1000,
           }),
           retryOnFail({
             fn: () => loadValidatorsSnapshot(network),
             iterations: 5,
-            waitFor: 1000
-          })
+            waitFor: 1000,
+          }),
         ]);
-
+    require('fs').writeFileSync(
+      require('path').join(__dirname, '../output.json'),
+      JSON.stringify(lmSnapshotRes)
+    );
     try {
       const text = isInLocalSnapshotDevMode
         ? lmSnapshotRes
@@ -139,7 +142,7 @@ class BackgroundProcessor {
     }
   }
 
-  async waitForReadyState (processToWaitFor = undefined) {
+  async waitForReadyState(processToWaitFor = undefined) {
     return new Promise((resolve, reject) => {
       // expires after 5 minutes
       const killAfter = 1000 * 60 * 5;
@@ -153,15 +156,15 @@ class BackgroundProcessor {
             // this.restart();
             expiresAt = Date.now() + killAfter;
           }
-          await new Promise(resolve => setTimeout(resolve, 1000));
+          await new Promise((resolve) => setTimeout(resolve, 1000));
         }
       })();
     });
   }
 
   // listens for actions dispatched to child process (this one)
-  async listenForParentThreadInvokations () {
-    process.on('message', async msg => {
+  async listenForParentThreadInvokations() {
+    process.on('message', async (msg) => {
       if (
         typeof msg !== 'object' ||
         msg.action !== 'invoke' ||
@@ -177,8 +180,8 @@ class BackgroundProcessor {
           payload: {
             id: msg.payload.id,
             out,
-            error: undefined
-          }
+            error: undefined,
+          },
         });
       } catch (e) {
         console.error(e);
@@ -187,23 +190,23 @@ class BackgroundProcessor {
           payload: {
             id: msg.payload.id,
             out: undefined,
-            error: e
-          }
+            error: e,
+          },
         });
       }
     });
   }
 
-  static keepAlive () {
+  static keepAlive() {
     setInterval(() => {}, 1 << 30);
   }
 
-  static startAsChildProcess () {
+  static startAsChildProcess() {
     const instance = new this();
     instance.listenForParentThreadInvokations();
   }
 
-  static startAsMainProcess (network) {
+  static startAsMainProcess(network) {
     const instance = new this();
     (async () => {
       while (true) {
@@ -211,12 +214,12 @@ class BackgroundProcessor {
           await retryOnFail({
             fn: () =>
               instance.dispatch(RELOAD_AND_REPROCESS_SNAPSHOTS, {
-                network: network
+                network: network,
               }),
             waitFor: 6000,
-            iterations: 5
+            iterations: 5,
           });
-          await new Promise(resolve => setTimeout(resolve, 1000 * 60 * 6));
+          await new Promise((resolve) => setTimeout(resolve, 1000 * 60 * 6));
         } catch (e) {
           console.error(e);
         }
@@ -231,5 +234,5 @@ if (require.main === module) {
 }
 
 module.exports = {
-  BackgroundProcessor
+  BackgroundProcessor,
 };
