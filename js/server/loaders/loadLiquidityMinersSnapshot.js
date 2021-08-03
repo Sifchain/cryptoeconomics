@@ -46,11 +46,11 @@ const { getDatabase } = require('./getDatabase');
 //   }
 // };
 
-const getSQLQueryByNetwork = network => {
+const getSQLQueryByNetwork = (network) => {
   network = network ? network.toLowerCase() : network;
   switch (network) {
     case TESTNET: {
-      return getDatabase().transaction(async tx => {
+      return getDatabase().transaction(async (tx) => {
         const snapshots_new = await tx.many(
           slonik.sql`select snapshot_data from snapshots_new_dev ORDER BY created_at DESC LIMIT 1`
         );
@@ -64,14 +64,14 @@ const getSQLQueryByNetwork = network => {
           data: {
             snapshots_new,
             snapshots_lm_claims,
-            snapshots_lm_dispensation
-          }
+            snapshots_lm_dispensation,
+          },
         };
       });
     }
 
     default: {
-      return getDatabase().transaction(async tx => {
+      return getDatabase().transaction(async (tx) => {
         const snapshots_new = tx.many(
           slonik.sql`select * from snapshots_lm_rf rf where rf.snapshot_time = (select max(snapshot_time) from snapshots_lm_rf)`
         );
@@ -92,9 +92,11 @@ const getSQLQueryByNetwork = network => {
         return {
           data: {
             snapshots_new: snapshotsNewLoaded,
-            snapshots_lm_claims: await snapshots_lm_claims,
-            snapshots_lm_dispensation: await snapshots_lm_dispensation
-          }
+            // snapshots_lm_claims: await snapshots_lm_claims,
+            // snapshots_lm_dispensation: await snapshots_lm_dispensation,
+            snapshots_lm_claims: [],
+            snapshots_lm_dispensation: [],
+          },
         };
       });
     }
