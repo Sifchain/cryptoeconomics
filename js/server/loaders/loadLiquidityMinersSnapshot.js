@@ -74,12 +74,12 @@ const getSQLQueryByNetwork = network => {
         const snapshots_new = tx.many(
           slonik.sql`select snapshot_data from latest_snapshot_lm`
         );
-        const snapshots_lm_claims = tx.many(
-          slonik.sql`select snapshot_data from snapshots_lm_claims ORDER BY created_at DESC LIMIT 1`
-        );
-        const snapshots_lm_dispensation = tx.many(
-          slonik.sql`select snapshot_data from snapshots_lm_dispensation ORDER BY created_at DESC LIMIT 1`
-        );
+        // const snapshots_lm_claims = tx.many(
+        //   slonik.sql`select snapshot_data from snapshots_lm_claims ORDER BY created_at DESC LIMIT 1`
+        // );
+        // const snapshots_lm_dispensation = tx.many(
+        //   slonik.sql`select snapshot_data from snapshots_lm_dispensation ORDER BY created_at DESC LIMIT 1`
+        // );
         const [...snapshotsNewLoaded] = await snapshots_new;
         const firstItemSnapshotData = snapshotsNewLoaded[0].snapshot_data;
         while (snapshotsNewLoaded.length > 1) {
@@ -91,8 +91,8 @@ const getSQLQueryByNetwork = network => {
         return {
           data: {
             snapshots_new: snapshotsNewLoaded,
-            snapshots_lm_claims: await snapshots_lm_claims,
-            snapshots_lm_dispensation: await snapshots_lm_dispensation
+            snapshots_lm_claims: [], // await snapshots_lm_claims,
+            snapshots_lm_dispensation: [] // await snapshots_lm_dispensation
           }
         };
       });
