@@ -14,6 +14,12 @@ const dispensationName = createDispensationFileName(
   true
 );
 
+const getOutputPath = (...paths) =>
+  path.join(
+    __dirname,
+    `./output/divide-dispensations/${dispensationName}`,
+    ...paths
+  );
 async function divideDispensations() {
   try {
     fs.rmdirSync(path.join(__dirname, `./output/divide-dispensations`), {
@@ -28,12 +34,7 @@ async function divideDispensations() {
   fs.mkdirSync(
     path.join(__dirname, `./output/divide-dispensations/${dispensationName}`)
   );
-  const getOutputPath = (...paths) =>
-    path.join(
-      __dirname,
-      `./output/divide-dispensations/${dispensationName}`,
-      ...paths
-    );
+
   for (let type of ['vs', 'lm', 'airdrop']) {
     const rawDist = await fetch(
       `https://data.sifchain.finance/beta/network/dispensation/${type}`
@@ -124,17 +125,16 @@ function createDispensationRunKit() {
   for (let key in templateValues) {
     runkit = runkit.split(`<${key}>`).join(templateValues[key]);
   }
-  fs.writeFileSync(
-    './Run-Kit-' + templateValues.CURRENT_DATE.split('/').join('-') + '.sh',
-    runkit
-  );
+  const runkitFilename =
+    './Run-Kit-' + templateValues.CURRENT_DATE.split('/').join('-') + '.sh';
+  fs.writeFileSync(path.join(getOutputPath(), runkitFilename), runkit);
 }
 
-createDispensationRunKit();
-// divideDispensations()
-//   .then(() => {
-//     return createTarball();
-//   })
-//   .then(() => {
-//     return createDispensationRunKit();
-//   });
+// createDispensationRunKit();
+divideDispensations()
+  .then(() => {
+    return createTarball();
+  })
+  .then(() => {
+    return createDispensationRunKit();
+  });
