@@ -91,5 +91,5 @@ bp.reloadAndReprocessSnapshots({ network: MAINNET })
   // .then(async () => bp.reloadAndReprocessSnapshots({ network: MAINNET }))
   .then(async () => {
     await runTests('lm', bp.lmDataParsed, MAINNET);
-    await runTests('vs', bp.vsDataParsed, MAINNET);
+    // await runTests('vs', bp.vsDataParsed, MAINNET);
   });

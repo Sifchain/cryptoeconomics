@@ -58,11 +58,11 @@ class BackgroundProcessor {
             iterations: 5,
             waitFor: 1000,
           }),
-          retryOnFail({
-            fn: () => loadValidatorsSnapshot(network),
-            iterations: 5,
-            waitFor: 1000,
-          }),
+          // retryOnFail({
+          //   fn: () => loadValidatorsSnapshot(network),
+          //   iterations: 5,
+          //   waitFor: 1000,
+          // }),
         ]);
     require('fs').writeFileSync(
       require('path').join(__dirname, '../output.json'),
@@ -101,7 +101,7 @@ class BackgroundProcessor {
       console.error(error);
       throw error;
     }
-
+    return;
     try {
       const text = isInLocalSnapshotDevMode
         ? vsSnapshotRes

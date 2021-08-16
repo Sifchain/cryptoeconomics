@@ -75,12 +75,12 @@ const getSQLQueryByNetwork = (network) => {
         const snapshots_new = tx.many(
           slonik.sql`select * from snapshots_lm_rf rf where rf.snapshot_time = (select max(snapshot_time) from snapshots_lm_rf)`
         );
-        const snapshots_lm_claims = tx.many(
-          slonik.sql`select * from snapshots_lm_claims_rf rf where rf.created_at = (select max(created_at) from snapshots_lm_claims_rf);`
-        );
-        const snapshots_lm_dispensation = tx.many(
-          slonik.sql`select * from snapshots_lm_dispensation_rf rf where rf.created_at = (select max(created_at) from snapshots_lm_dispensation_rf);`
-        );
+        // const snapshots_lm_claims = tx.many(
+        //   slonik.sql`select * from snapshots_lm_claims_rf rf where rf.created_at = (select max(created_at) from snapshots_lm_claims_rf);`
+        // );
+        // const snapshots_lm_dispensation = tx.many(
+        //   slonik.sql`select * from snapshots_lm_dispensation_rf rf where rf.created_at = (select max(created_at) from snapshots_lm_dispensation_rf);`
+        // );
         const [...snapshotsNewLoaded] = await snapshots_new;
         const firstItemSnapshotData = snapshotsNewLoaded[0].snapshot_data;
         while (snapshotsNewLoaded.length > 1) {
