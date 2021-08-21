@@ -1,6 +1,6 @@
-const { TESTNET } = require('../constants/snapshot-source-names');
+const { TESTNET } = require('../../constants/snapshot-source-names');
 const slonik = require('slonik');
-const { getDatabase } = require('./getDatabase');
+const { getDatabase } = require('./utils/getDatabase');
 /* 
   WARNING: DO NOT ADD MORE QUERIES OR FIELDS TO THE GRAPHQL QUERY.
   QUERIES ARE CACHED USING A HASH OF THE TEXT CONTENT OF THE RESPONSE OBJECT
