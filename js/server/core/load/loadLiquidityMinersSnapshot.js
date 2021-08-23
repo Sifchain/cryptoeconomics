@@ -1,7 +1,7 @@
 // const { fetch } = require('cross-fetch');
-const { TESTNET } = require('../constants/snapshot-source-names');
+const { TESTNET } = require('../../constants/snapshot-source-names');
 const slonik = require('slonik');
-const { getDatabase } = require('./getDatabase');
+const { getDatabase } = require('./utils/getDatabase');
 /* 
   WARNING: DO NOT ADD MORE QUERIES OR FIELDS TO THE GRAPHQL QUERY.
   QUERIES ARE CACHED USING THE LENGTH OF THE TEXT CONTENT OF THE RESPONSE OBJECT
@@ -69,17 +69,18 @@ const getSQLQueryByNetwork = (network) => {
         };
       });
     }
+
     default: {
       return getDatabase().transaction(async (tx) => {
         const snapshots_new = tx.many(
-          slonik.sql`select * from snapshots_lm_rf rf where rf.snapshot_time = (select max(snapshot_time) from snapshots_lm_rf)`
+          slonik.sql`select * from snapshots_lm rf where rf.snapshot_time = (select max(snapshot_time) from snapshots_lm)`
         );
-        const snapshots_lm_claims = tx.many(
-          slonik.sql`select * from snapshots_lm_claims_rf rf where rf.created_at = (select max(created_at) from snapshots_lm_claims_rf);`
-        );
-        const snapshots_lm_dispensation = tx.many(
-          slonik.sql`select * from snapshots_lm_dispensation_rf rf where rf.created_at = (select max(created_at) from snapshots_lm_dispensation_rf);`
-        );
+        // const snapshots_lm_claims = tx.many(
+        //   slonik.sql`select * from snapshots_lm_claims_rf rf where rf.created_at = (select max(created_at) from snapshots_lm_claims_rf);`
+        // );
+        // const snapshots_lm_dispensation = tx.many(
+        //   slonik.sql`select * from snapshots_lm_dispensation_rf rf where rf.created_at = (select max(created_at) from snapshots_lm_dispensation_rf);`
+        // );
         const [...snapshotsNewLoaded] = await snapshots_new;
         const firstItemSnapshotData = snapshotsNewLoaded[0].snapshot_data;
         while (snapshotsNewLoaded.length > 1) {
@@ -91,8 +92,10 @@ const getSQLQueryByNetwork = (network) => {
         return {
           data: {
             snapshots_new: snapshotsNewLoaded,
-            snapshots_lm_claims: await snapshots_lm_claims,
-            snapshots_lm_dispensation: await snapshots_lm_dispensation,
+            // snapshots_lm_claims: await snapshots_lm_claims,
+            // snapshots_lm_dispensation: await snapshots_lm_dispensation,
+            snapshots_lm_claims: [],
+            snapshots_lm_dispensation: [],
           },
         };
       });

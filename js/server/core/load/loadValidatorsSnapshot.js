@@ -1,6 +1,6 @@
-const { TESTNET } = require('../constants/snapshot-source-names');
+const { TESTNET } = require('../../constants/snapshot-source-names');
 const slonik = require('slonik');
-const { getDatabase } = require('./getDatabase');
+const { getDatabase } = require('./utils/getDatabase');
 /* 
   WARNING: DO NOT ADD MORE QUERIES OR FIELDS TO THE GRAPHQL QUERY.
   QUERIES ARE CACHED USING A HASH OF THE TEXT CONTENT OF THE RESPONSE OBJECT
@@ -36,11 +36,11 @@ const { getDatabase } = require('./getDatabase');
 //   }
 // `;
 
-const getSQLQueryByNetwork = network => {
+const getSQLQueryByNetwork = (network) => {
   network = network ? network.toLowerCase() : network;
   switch (network) {
     case TESTNET: {
-      return getDatabase().transaction(async tx => {
+      return getDatabase().transaction(async (tx) => {
         const snapshots_validators = await tx.many(
           slonik.sql`select snapshot_data from snapshots_validators_dev ORDER BY created_at DESC LIMIT 1`
         );
@@ -54,13 +54,13 @@ const getSQLQueryByNetwork = network => {
           data: {
             snapshots_validators,
             snapshots_vs_claims,
-            snapshots_vs_dispensation
-          }
+            snapshots_vs_dispensation,
+          },
         };
       });
     }
     default: {
-      return getDatabase().transaction(async tx => {
+      return getDatabase().transaction(async (tx) => {
         const snapshots_validators = tx.many(
           slonik.sql`select * from snapshots_validators_rf rf where rf.created_at = (select max(created_at) from snapshots_validators_rf);`
         );
@@ -74,8 +74,8 @@ const getSQLQueryByNetwork = network => {
           data: {
             snapshots_validators: await snapshots_validators,
             snapshots_vs_claims: await snapshots_vs_claims,
-            snapshots_vs_dispensation: await snapshots_vs_dispensation
-          }
+            snapshots_vs_dispensation: await snapshots_vs_dispensation,
+          },
         };
       });
     }

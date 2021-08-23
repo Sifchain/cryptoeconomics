@@ -4,24 +4,26 @@ const {
   getLMTimeseriesFinalIndex,
   createClaimEvents,
   createDispensationEvents,
-} = require('./util/lm-util');
+} = require('../transform/lm-util');
 const {
   remapVSAddresses,
   getVSTimeseriesFinalIndex,
-} = require('./util/vs-util');
+} = require('../transform/vs-util');
 const { processVSGlobalState } = require('./process-vs');
 
 const {
   EVENT_INTERVAL_MINUTES,
   NUMBER_OF_INTERVALS_TO_RUN,
-} = require('./config');
-const { GlobalTimestampState } = require('./types');
+  START_DATETIME,
+} = require('../../config');
+const { GlobalTimestampState } = require('../types');
 
 const {
   VALIDATOR_STAKING,
   LIQUIDITY_MINING,
-} = require('./constants/reward-program-types');
-const { mockMinerClaims, mockMinerDispensations } = require('./mock');
+} = require('../../constants/reward-program-types');
+const { mockMinerClaims, mockMinerDispensations } = require('../../mock');
+const { getTimeIndex } = require('../../util/getTimeIndex');
 
 exports.getProcessedLMData = (snapshotLM) => {
   let {
@@ -31,6 +33,7 @@ exports.getProcessedLMData = (snapshotLM) => {
       { snapshot_data: dispensationsSnapshotData = {} } = {},
     ] = [],
   } = snapshotLM.data;
+  console.log(minerSnapshotData);
   const snapshotTimeseriesFinalIndex =
     getLMTimeseriesFinalIndex(minerSnapshotData);
 
@@ -114,7 +117,12 @@ function processUserEventsByTimestamp(
 ) {
   console.time('processvs');
   const VSGlobalStates = [GlobalTimestampState.getInitial()];
-  for (let i = 1; i <= NUMBER_OF_INTERVALS_TO_RUN; i++) {
+
+  for (
+    let i = getTimeIndex(new Date(START_DATETIME)) + 1;
+    i <= NUMBER_OF_INTERVALS_TO_RUN;
+    i++
+  ) {
     let nextGlobalState;
     const timestamp = i * EVENT_INTERVAL_MINUTES;
     const isSimulatedFutureInterval = i > snapshotTimeseriesFinalIndex - 1;

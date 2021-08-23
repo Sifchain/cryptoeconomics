@@ -8,11 +8,15 @@ const moment = require('moment');
 */
 
 // Rewards begin accruing
-const START_DATETIME = '2021-02-19T06:48:43+00:00';
+// const START_DATETIME = '2021-08-16T06:00:00.000Z';
+const START_DATETIME = '2021-08-06T20:06:15.000Z';
 // Deposits are cut off earlier on
-const DEPOSIT_CUTOFF_DATETIME = '2021-06-30T23:59:59';
+const DEPOSIT_CUTOFF_DATETIME = moment
+  .utc(START_DATETIME)
+  .add(moment.duration(6, 'weeks'))
+  .toISOString();
 // But they can continue to accrue rewards until the final end date
-const END_OF_REWARD_ACCRUAL_DATETIME = '2021-08-04T23:59:59';
+const END_OF_REWARD_ACCRUAL_DATETIME = DEPOSIT_CUTOFF_DATETIME;
 // Snapshot of all Validator events is split into 200 minute intervals (https://github.com/Sifchain/Vanir/issues/13)
 const EVENT_INTERVAL_MINUTES = 200;
 
@@ -31,14 +35,17 @@ const REWARD_ACCRUAL_DURATION_INTERVAL_COUNT = Math.floor(
   REWARD_ACCRUAL_DURATION_MS / 1000 / 60 / EVENT_INTERVAL_MINUTES
 );
 
+console.log({ REWARD_ACCRUAL_DURATION_INTERVAL_COUNT });
+
 const config = {
   START_DATETIME,
   DEPOSIT_CUTOFF_DATETIME,
   END_OF_REWARD_ACCRUAL_DATETIME,
   EVENT_INTERVAL_MINUTES,
   DEPOSITS_ALLOWED_DURATION_MS,
-  MULTIPLIER_MATURITY: 864, // 4 months in in 200minute intervals,
-  NUMBER_OF_INTERVALS_TO_RUN: REWARD_ACCRUAL_DURATION_INTERVAL_COUNT + 864, // duration of bucket drain + duration to latest possible multiplier maturity
+  MULTIPLIER_MATURITY:
+    REWARD_ACCRUAL_DURATION_MS / 1000 / 60 / EVENT_INTERVAL_MINUTES, // 6 weeks in in 200minute intervals,
+  NUMBER_OF_INTERVALS_TO_RUN: REWARD_ACCRUAL_DURATION_INTERVAL_COUNT * 2, // duration of bucket drain + duration to latest possible multiplier maturity
   REWARD_ACCRUAL_DURATION_INTERVAL_COUNT,
 };
 

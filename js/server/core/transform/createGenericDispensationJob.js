@@ -1,16 +1,16 @@
-const { loadLatestAirdrop } = require('../loaders/loadLatestAirdrop');
-const { loadLatestWinners } = require('../loaders/loadLatestWinners');
-const { validateSifAddress } = require('./validateSifAddress');
+const { loadLatestAirdrop } = require('../load/loadLatestAirdrop');
+const { loadLatestWinners } = require('../load/loadLatestWinners');
+const { validateSifAddress } = require('../../util/validateSifAddress');
 
 const GENERIC_DISPENSATION_JOB_TYPES = {
   AIRDROP: 'airdrop',
-  TRADING_COMPETITION: 'trading-competition'
+  TRADING_COMPETITION: 'trading-competition',
 };
 exports.GENERIC_DISPENSATION_JOB_TYPES = GENERIC_DISPENSATION_JOB_TYPES;
-exports.createGenericDispensationJob = async jobType => {
+exports.createGenericDispensationJob = async (jobType) => {
   const EROWAN_PRECISION = 1e18;
   const {
-    data: { users }
+    data: { users },
   } =
     jobType === GENERIC_DISPENSATION_JOB_TYPES.AIRDROP
       ? await loadLatestAirdrop()
@@ -37,14 +37,14 @@ exports.createGenericDispensationJob = async jobType => {
       coins: [
         {
           denom: 'rowan',
-          amount: formattedAmount
-        }
-      ]
+          amount: formattedAmount,
+        },
+      ],
     });
   }
   return {
     job: {
-      Output: output
-    }
+      Output: output,
+    },
   };
 };

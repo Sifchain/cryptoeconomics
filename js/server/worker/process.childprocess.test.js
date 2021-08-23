@@ -13,25 +13,25 @@ const describe = async (description, describer) => {
         const expects = [];
         try {
           await fn({
-            expect (condition) {
+            expect(condition) {
               if (condition) {
                 expects.push(`\n  ✅ ${msg}`);
               } else {
                 expects.push(`\n  🚨 ${msg}`);
               }
             },
-            log (msg) {
+            log(msg) {
               logs.push(`    >_ ` + msg);
-            }
+            },
           });
         } catch (e) {
           expects.push(`\n  🚨 ${msg}`);
           logs.push(e);
         }
-        expects.forEach(l => console.info(l));
-      }
+        expects.forEach((l) => console.info(l));
+      },
     });
-    logs.forEach(l => console.log(l));
+    logs.forEach((l) => console.log(l));
   } catch (e) {
     console.error(e);
   }
@@ -44,7 +44,9 @@ const runTests = (type, parsedData, network) => {
   );
 
   const totalPoolDominanceRatio = _.sum(
-    _.flattenDeep(_.map(users, u => u.tickets.map(t => t.poolDominanceRatio)))
+    _.flattenDeep(
+      _.map(users, (u) => u.tickets.map((t) => t.poolDominanceRatio))
+    )
   );
 
   describe('Verify Rewards', ({ test }) => {
@@ -56,7 +58,7 @@ const runTests = (type, parsedData, network) => {
         */
     test(`totalRewards (${type.toUpperCase()}, ${network.toUpperCase()})`, ({
       expect,
-      log
+      log,
     }) => {
       // need to include forfeited validator commissions ?
       const totalRewards = users.reduce((prev, curr) => {
@@ -69,7 +71,7 @@ const runTests = (type, parsedData, network) => {
           curr.dispensed
         );
       }, 0);
-      log('totalRewards: ' + totalRewards);
+      log('totalRewards: ' + new Intl.NumberFormat().format(totalRewards));
       expect(Math.round(totalRewards) === 45000000);
     });
     test('totalPoolDominanceRatio', ({ expect, log }) => {
@@ -89,5 +91,5 @@ bp.reloadAndReprocessSnapshots({ network: MAINNET })
   // .then(async () => bp.reloadAndReprocessSnapshots({ network: MAINNET }))
   .then(async () => {
     await runTests('lm', bp.lmDataParsed, MAINNET);
-    await runTests('vs', bp.vsDataParsed, MAINNET);
+    // await runTests('vs', bp.vsDataParsed, MAINNET);
   });
