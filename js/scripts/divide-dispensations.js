@@ -25,9 +25,7 @@ async function divideDispensations() {
     fs.rmdirSync(path.join(__dirname, `./output/divide-dispensations`), {
       recursive: true,
     });
-  } catch (e) {
-    console.error(e);
-  }
+  } catch (e) {}
 
   fs.mkdirSync(path.join(__dirname, `./output/divide-dispensations`), {});
 
@@ -44,7 +42,7 @@ async function divideDispensations() {
       JSON.stringify(rawDist, null, 2)
     );
     const output = rawDist.Output;
-    const splitAmount = 200;
+    const splitAmount = 1000000000000;
     let iteration = 0;
     while (output.length) {
       const splitOutput = output.splice(0, splitAmount);
@@ -117,7 +115,7 @@ function createDispensationRunKit() {
               : p.startsWith('vs')
               ? 'ValidatorSubsidy'
               : 'Airdrop'
-          } ${p} ${RUNNER_ADDRESS} --from ${DISTRIBUTOR_ADDRESS} --node ${RPC_ENDPOINT} --chain-id ${CHAIN_ID}  --gas 100000000 --gas-prices=0.5rowan --keyring-backend test --yes --broadcast-mode async;`
+          } ${p} ${RUNNER_ADDRESS} --from ${DISTRIBUTOR_ADDRESS} --node ${RPC_ENDPOINT} --chain-id ${CHAIN_ID}  --gas 100000000 --gas-prices=0.5rowan --keyring-backend test --yes --broadcast-mode block;`
       )
       .join('\n\n\n\n'),
   };
