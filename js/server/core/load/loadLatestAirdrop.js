@@ -1,5 +1,5 @@
-const { graphqlRequest } = require('./graphqlRequest');
-exports.loadLatestAirdrop = function loadLatestWinners () {
+const { graphqlRequest } = require('./utils/graphqlRequest');
+exports.loadLatestAirdrop = function loadLatestWinners() {
   return graphqlRequest(/* GraphQL */ `
     query LatestAirdropMainnet {
       users: latestairdrop {

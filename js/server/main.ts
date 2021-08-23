@@ -19,7 +19,7 @@ const moment = require('moment');
 const { encrypt, decrypt } = require('./util/encrypt');
 const {
   createGenericDispensationJob,
-} = require('./util/createGenericDispensationJob');
+} = require('./core/transform/createGenericDispensationJob.js');
 
 if (process.env.DATABASE_URL) {
   const encrypted = encrypt(process.env.DATABASE_URL);

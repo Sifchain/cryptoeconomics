@@ -66,7 +66,7 @@ function actions(processor) {
     },
     /* Internal Actions */
     [CHECK_IF_PARSED_DATA_READY]: () => {
-      return !!processor.lmDataParsed && !!processor.vsDataParsed;
+      return !!processor.lmDataParsed; //&& !!processor.vsDataParsed;
     },
     [CLEAR_PARSED_DATA]: () => {
       processor.lmDataParsed = undefined;
