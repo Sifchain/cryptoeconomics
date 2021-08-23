@@ -8,11 +8,15 @@ const moment = require('moment');
 */
 
 // Rewards begin accruing
-const START_DATETIME = '2021-08-16T06:00:00.000Z';
+// const START_DATETIME = '2021-08-16T06:00:00.000Z';
+const START_DATETIME = '2021-08-06T20:06:15.000Z';
 // Deposits are cut off earlier on
-const DEPOSIT_CUTOFF_DATETIME = '2021-09-27T06:00:00.000Z';
+const DEPOSIT_CUTOFF_DATETIME = moment
+  .utc(START_DATETIME)
+  .add(moment.duration(6, 'weeks'))
+  .toISOString();
 // But they can continue to accrue rewards until the final end date
-const END_OF_REWARD_ACCRUAL_DATETIME = '2021-09-27T06:00:00.000Z';
+const END_OF_REWARD_ACCRUAL_DATETIME = DEPOSIT_CUTOFF_DATETIME;
 // Snapshot of all Validator events is split into 200 minute intervals (https://github.com/Sifchain/Vanir/issues/13)
 const EVENT_INTERVAL_MINUTES = 200;
 

@@ -1,7 +1,7 @@
 const { getUserData, getUserTimeSeriesData } = require('../user');
-const { augmentUserVSData } = require('../augmentVSData');
+const { augmentUserVSData } = require('../core/process/augmentVSData');
 const {
-  getDateFromSnapshotIndex
+  getDateFromSnapshotIndex,
 } = require('../util/getDateFromSnapshotIndex');
 const {
   CHECK_IF_PARSED_DATA_READY,
@@ -17,7 +17,7 @@ const {
   RELOAD_AND_REPROCESS_SNAPSHOTS,
   GET_SNAPSHOT_UPDATE_TIME_STATS,
   GET_LM_DISPENSATION_JOB,
-  GET_VS_DISPENSATION_JOB
+  GET_VS_DISPENSATION_JOB,
 } = require('../constants/action-names');
 const { EVENT_INTERVAL_MINUTES } = require('../config');
 const { getTimeIndex } = require('../util/getTimeIndex');
@@ -27,21 +27,21 @@ const { getTimeIndex } = require('../util/getTimeIndex');
   Actions can only take one argument. Consolidate multiple args into an object.
 */
 // Use `KEY: () => {}` syntax to ensure `processor` is bound correctly.
-function actions (processor) {
+function actions(processor) {
   return {
-    [GET_LM_DISPENSATION_JOB] () {
+    [GET_LM_DISPENSATION_JOB]() {
       const timeIndex = getTimeIndex('now');
       const currentTimestampState =
         processor.lmDataParsed.processedData[timeIndex];
       return currentTimestampState.createDispensationJob();
     },
-    [GET_VS_DISPENSATION_JOB] () {
+    [GET_VS_DISPENSATION_JOB]() {
       const timeIndex = getTimeIndex('now');
       const currentTimestampState =
         processor.vsDataParsed.processedData[timeIndex];
       return currentTimestampState.createDispensationJob();
     },
-    [GET_SNAPSHOT_UPDATE_TIME_STATS] () {
+    [GET_SNAPSHOT_UPDATE_TIME_STATS]() {
       const lastUpdatedAt = getDateFromSnapshotIndex(
         processor.lmDataParsed.snapshotTimeseriesFinalIndex - 1
       ).valueOf();
@@ -51,7 +51,7 @@ function actions (processor) {
         lastUpdatedAt + (EVENT_INTERVAL_MINUTES + 6 + 2) * 60 * 1000;
       return {
         lastUpdatedAt,
-        nextExpectedUpdateAt
+        nextExpectedUpdateAt,
       };
     },
     [RELOAD_AND_REPROCESS_SNAPSHOTS]: async ({ network }) => {
@@ -73,17 +73,17 @@ function actions (processor) {
       processor.vsDataParsed = undefined;
     },
     /* LM Actions */
-    [GET_LM_KEY_VALUE]: key => {
+    [GET_LM_KEY_VALUE]: (key) => {
       return processor.lmDataParsed[key];
     },
-    [GET_LM_USER_TIME_SERIES_DATA]: address => {
+    [GET_LM_USER_TIME_SERIES_DATA]: (address) => {
       augmentUserVSData(address, processor.lmDataParsed.processedData);
       return getUserTimeSeriesData(
         processor.lmDataParsed.processedData,
         address
       );
     },
-    [GET_LM_USER_DATA]: payload => {
+    [GET_LM_USER_DATA]: (payload) => {
       augmentUserVSData(payload.address, processor.lmDataParsed.processedData);
       return getUserData(processor.lmDataParsed.processedData, payload);
     },
@@ -95,10 +95,10 @@ function actions (processor) {
     // GET_VS_UNCLAIMED_DELEGATED_REWARDS: (key) => {
     //   processor.lmDataParsed;
     // },
-    [GET_VS_KEY_VALUE]: key => {
+    [GET_VS_KEY_VALUE]: (key) => {
       return processor.vsDataParsed[key];
     },
-    [GET_VS_USER_TIME_SERIES_DATA]: address => {
+    [GET_VS_USER_TIME_SERIES_DATA]: (address) => {
       augmentUserVSData(address, processor.vsDataParsed.processedData);
       return getUserTimeSeriesData(
         processor.vsDataParsed.processedData,
@@ -111,17 +111,17 @@ function actions (processor) {
         processor.vsDataParsed.processedData,
         {
           address,
-          timeIndex
+          timeIndex,
         }
       );
       return userDataOut;
     },
     [GET_VS_STACK_DATA]: () => {
       return processor.vsDataParsed.stackClaimableRewardData;
-    }
+    },
   };
 }
 
-module.exports.createBoundActions = binding => {
+module.exports.createBoundActions = (binding) => {
   return actions(binding);
 };

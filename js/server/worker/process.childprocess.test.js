@@ -71,7 +71,7 @@ const runTests = (type, parsedData, network) => {
           curr.dispensed
         );
       }, 0);
-      log('totalRewards: ' + totalRewards);
+      log('totalRewards: ' + new Intl.NumberFormat().format(totalRewards));
       expect(Math.round(totalRewards) === 45000000);
     });
     test('totalPoolDominanceRatio', ({ expect, log }) => {

@@ -4,12 +4,15 @@ const {
   RELOAD_AND_REPROCESS_SNAPSHOTS,
 } = require('../constants/action-names');
 const { createBoundActions } = require('./actions');
-const { getProcessedLMData, getProcessedVSData } = require('../process');
+const {
+  getProcessedLMData,
+  getProcessedVSData,
+} = require('../core/process/process');
 const { retryOnFail } = require('../util/retryOnFail');
 const {
   loadValidatorsSnapshot,
   loadLiquidityMinersSnapshot,
-} = require('../loaders');
+} = require('../core/load');
 process.setMaxListeners(100000);
 const crypto = require('crypto');
 
