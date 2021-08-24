@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "esnext"
+    ],
+    "target": "es2015",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "strict": true,
+    "experimentalDecorators": true,
+    "declaration": true,
+    "outDir": "./lib",
+    "types": [
+      "node",
+      "jest"
+    ],
+    "baseUrl": "./server",
+    "jsx": "react-jsx",
+    "removeComments": false,
+    "allowJs": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "isolatedModules": true,
+    "noEmit": true
+  },
+  "include": [
+    "./server/**/*.ts",
+    "./server/**/*.js"
+  ],
+  "exclude": [
+    "node_modules",
+    "src"
+  ]
+}

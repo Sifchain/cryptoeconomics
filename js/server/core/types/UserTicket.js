@@ -1,7 +1,7 @@
-const config = require('../config');
+const config = require('../../config');
 const moment = require('moment');
 class UserTicket {
-  constructor () {
+  constructor() {
     this.commission = 0;
     this.amount = 0;
     this.mul = 0;
@@ -14,7 +14,7 @@ class UserTicket {
     this.commissionRewardsByValidator = {};
   }
 
-  calculateTotalValidatorCommissions () {
+  calculateTotalValidatorCommissions() {
     let sum = 0;
     const rewards = this.commissionRewardsByValidator;
     for (let prop in rewards) {
@@ -23,17 +23,17 @@ class UserTicket {
     return sum;
   }
 
-  static fromJSON (props) {
+  static fromJSON(props) {
     return Object.assign(new this(), props);
   }
 
-  resetAfterClaim () {
+  resetAfterClaim() {
     this.mul = 0.25;
     this.reward = 0;
     this.rewardDelta = 0;
   }
 
-  burn (amountToBurn) {
+  burn(amountToBurn) {
     if (amountToBurn < 0) {
       throw new Error('amountToBurn must be a non-negative number');
     }
@@ -54,7 +54,7 @@ class UserTicket {
         Object.entries(this.commissionRewardsByValidator).map(([k, v]) => {
           return [k, v * ratioToBurn];
         })
-      )
+      ),
     });
     let remainderTicket = null;
     if (hasRemainder) {
@@ -67,17 +67,17 @@ class UserTicket {
           Object.entries(this.commissionRewardsByValidator).map(([k, v]) => {
             return [k, v * ratioToKeep];
           })
-        )
+        ),
       });
     }
     return {
       burnedTicket,
       remainderTicket,
-      hasRemainder
+      hasRemainder,
     };
   }
 
-  cloneWith (props) {
+  cloneWith(props) {
     let next = new UserTicket();
     next = Object.assign(Object.assign(next, this), props);
     next.commissionRewardsByValidator = Object.assign(
@@ -87,38 +87,38 @@ class UserTicket {
     return next;
   }
 
-  cloneAndRedelegateFromEvent (event) {
+  cloneAndRedelegateFromEvent(event) {
     return this.cloneWith({
       commission: event.commission,
       validatorRewardAddress: event.validatorRewardAddress,
-      validatorStakeAddress: event.validatorStakeAddress
+      validatorStakeAddress: event.validatorStakeAddress,
     });
   }
 
-  addCommissionRewardByValidator (commissionReward, validatorRewardAddress) {
+  addCommissionRewardByValidator(commissionReward, validatorRewardAddress) {
     let currentClaims =
       this.commissionRewardsByValidator[validatorRewardAddress] || 0;
     this.commissionRewardsByValidator[validatorRewardAddress] =
       currentClaims + commissionReward;
   }
 
-  getClaimableCommissionRewardByValidator (validatorRewardAddress) {
+  getClaimableCommissionRewardByValidator(validatorRewardAddress) {
     let currentClaims =
       this.commissionRewardsByValidator[validatorRewardAddress] || 0;
     return currentClaims * this.mul;
   }
 
-  getForfeitedCommissionRewardByValidator (validatorRewardAddress) {
+  getForfeitedCommissionRewardByValidator(validatorRewardAddress) {
     let currentClaims =
       this.commissionRewardsByValidator[validatorRewardAddress] || 0;
     return currentClaims * (1 - this.mul);
   }
 
-  resetCommissionRewardsByValidator (validatorRewardAddress) {
+  resetCommissionRewardsByValidator(validatorRewardAddress) {
     this.commissionRewardsByValidator[validatorRewardAddress] = 0;
   }
 
-  static fromEvent (event) {
+  static fromEvent(event) {
     let instance = new this();
     Object.assign(instance, {
       commission: event.commission,
@@ -130,12 +130,12 @@ class UserTicket {
       timestamp: moment
         .utc(config.START_DATETIME)
         .add(event.timestamp, 'm')
-        .format('MMMM Do YYYY, h:mm:ss a')
+        .format('MMMM Do YYYY, h:mm:ss a'),
     });
     return instance;
   }
 }
 
 module.exports = {
-  UserTicket
+  UserTicket,
 };

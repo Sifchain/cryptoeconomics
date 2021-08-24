@@ -1,7 +1,7 @@
 import { networks } from './config';
 const serverURL = (() => {
   let environment = process.env.REACT_APP_DEPLOYMENT_TAG;
-  // environment = 'devnet';
+  environment = 'localnet';
   switch (environment) {
     case 'production':
       return 'https://api-cryptoeconomics.sifchain.finance/api';
@@ -14,11 +14,11 @@ const serverURL = (() => {
   }
 })();
 
-const getSnapshotNetworkHeaders = network => ({
-  'snapshot-source': network || networks.MAINNET
+const getSnapshotNetworkHeaders = (network) => ({
+  'snapshot-source': network || networks.MAINNET,
 });
 
-function handleFailedRequest () {
+function handleFailedRequest() {
   setTimeout(() => {
     window.location.reload();
   }, 3000);
@@ -26,9 +26,9 @@ function handleFailedRequest () {
 export const fetchUsers = (type, network) => {
   return window
     .fetch(`${serverURL}/${type}?key=users`, {
-      headers: getSnapshotNetworkHeaders(network)
+      headers: getSnapshotNetworkHeaders(network),
     })
-    .then(response => response.json())
+    .then((response) => response.json())
     .catch(handleFailedRequest);
 };
 
@@ -39,27 +39,27 @@ export const fetchUserData = (address, type, timestamp, network) => {
         timestamp ? `&timestamp=${new Date(timestamp).toISOString()}` : ``
       }`,
       {
-        headers: getSnapshotNetworkHeaders(network)
+        headers: getSnapshotNetworkHeaders(network),
       }
     )
-    .then(response => response.json())
+    .then((response) => response.json())
     .catch(handleFailedRequest);
 };
 
 export const fetchUserTimeSeriesData = (address, type, network) => {
   return window
     .fetch(`${serverURL}/${type}?key=userTimeSeriesData&address=${address}`, {
-      headers: getSnapshotNetworkHeaders(network)
+      headers: getSnapshotNetworkHeaders(network),
     })
-    .then(response => response.json())
+    .then((response) => response.json())
     .catch(handleFailedRequest);
 };
 
 export const fetchStack = (type, network) => {
   return window
     .fetch(`${serverURL}/${type}?key=stack`, {
-      headers: getSnapshotNetworkHeaders(network)
+      headers: getSnapshotNetworkHeaders(network),
     })
-    .then(response => response.json())
+    .then((response) => response.json())
     .catch(handleFailedRequest);
 };

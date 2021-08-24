@@ -4,12 +4,15 @@ const {
   RELOAD_AND_REPROCESS_SNAPSHOTS,
 } = require('../constants/action-names');
 const { createBoundActions } = require('./actions');
-const { getProcessedLMData, getProcessedVSData } = require('../process');
+const {
+  getProcessedLMData,
+  getProcessedVSData,
+} = require('../core/process/process');
 const { retryOnFail } = require('../util/retryOnFail');
 const {
   loadValidatorsSnapshot,
   loadLiquidityMinersSnapshot,
-} = require('../loaders');
+} = require('../core/load');
 process.setMaxListeners(100000);
 const crypto = require('crypto');
 
@@ -58,11 +61,11 @@ class BackgroundProcessor {
             iterations: 5,
             waitFor: 1000,
           }),
-          retryOnFail({
-            fn: () => loadValidatorsSnapshot(network),
-            iterations: 5,
-            waitFor: 1000,
-          }),
+          // retryOnFail({
+          //   fn: () => loadValidatorsSnapshot(network),
+          //   iterations: 5,
+          //   waitFor: 1000,
+          // }),
         ]);
     require('fs').writeFileSync(
       require('path').join(__dirname, '../output.json'),
@@ -101,7 +104,7 @@ class BackgroundProcessor {
       console.error(error);
       throw error;
     }
-
+    return;
     try {
       const text = isInLocalSnapshotDevMode
         ? vsSnapshotRes

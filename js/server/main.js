@@ -1,43 +1,34 @@
 const express = require('express');
+const fs = require('fs');
 const cors = require('cors');
 const { getTimeIndex } = require('./util/getTimeIndex');
 const compression = require('compression');
-const fs = require('fs');
 // implements process.js in separate thread
 const { ProcessingHandler } = require('./worker');
 const {
   DEVNET,
   MAINNET,
-  TESTNET
+  TESTNET,
 } = require('./constants/snapshot-source-names');
 const {
   GET_LM_DISPENSATION_JOB,
-  GET_VS_DISPENSATION_JOB
+  GET_VS_DISPENSATION_JOB,
 } = require('./constants/action-names');
 const moment = require('moment');
 const { encrypt, decrypt } = require('./util/encrypt');
 const {
-  createGenericDispensationJob
-} = require('./util/createGenericDispensationJob');
+  createGenericDispensationJob,
+} = require('./core/transform/createGenericDispensationJob.js');
 
 if (process.env.DATABASE_URL) {
   const encrypted = encrypt(process.env.DATABASE_URL);
-  require('fs').writeFileSync('./DATABASE_URL.enc', encrypted.encryptedData);
+  fs.writeFileSync('./DATABASE_URL.enc', encrypted.encryptedData);
 } else {
-  const dburlEnc = require('fs')
-    .readFileSync('./DATABASE_URL.enc')
-    .toString();
+  const dburlEnc = fs.readFileSync('./DATABASE_URL.enc').toString();
   const data = decrypt(dburlEnc);
   process.env.DATABASE_URL = data;
 }
 
-const os = require('os');
-const { execSync } = require('child_process');
-
-console.log(execSync(`df -h`).toString());
-console.log(os.cpus());
-console.log(os.totalmem());
-console.log(os.freemem());
 /* 
 
 
@@ -63,12 +54,12 @@ let createTestnetHandler = () => {
 };
 const processingHandlers = {
   [MAINNET]: ProcessingHandler.init(MAINNET),
-  get [DEVNET] () {
+  get [DEVNET]() {
     return createTestnetHandler();
   },
-  get [TESTNET] () {
+  get [TESTNET]() {
     return createTestnetHandler();
-  }
+  },
 };
 
 // const processingHandler = BackgroundProcessor.startAsMainProcess();
@@ -81,9 +72,65 @@ app.use(cors());
 
 // compress responses
 app.use(compression());
+// const server = new ApolloServer({
+//   typeDefs: gql`
+//     type Participant {
+//       claimableRewardsOnWithdrawnAssets: Int
+//       dispensed: Int
+//       forfeited: Int
+//       totalAccruedCommissionsAndClaimableRewards: Int
+//       totalClaimableCommissionsAndClaimableRewards: Int
+//       reservedReward: Int
+//       totalDepositedAmount: Int
+//       totalClaimableRewardsOnDepositedAssets: Int
+//       currentTotalCommissionsOnClaimableDelegatorRewards: Int
+//       totalAccruedCommissionsAtMaturity: Int
+//       totalCommissionsAndRewardsAtMaturity: Int
+//       claimableCommissions: Int
+//       forfeitedCommissions: Int
+//       claimedCommissionsAndRewardsAwaitingDispensation: Int
+//       totalRewardsOnDepositedAssetsAtMaturity: Int
+//       ticketAmountAtMaturity: Int
+//       yieldAtMaturity: Int
+//       nextRewardShare: Int
+//       currentYieldOnTickets: Int
+//       maturityDate: Int
+//       maturityDateISO: Int
+//       yearsToMaturity: Int
+//       currentAPYOnTickets: Int
+//       maturityDateMs: Int
+//       futureReward: Int
+//       nextReward: Int
+//       nextRewardProjectedFutureReward: Int
+//       nextRewardProjectedAPYOnTickets: Int
+//       delegatorAddresses: [String]
+//       tickets: [String]
+//     }
+//     enum Network {
+//       mainnet
+//     }
+//     enum RewardProgramVariant {
+//       vs
+//       lm
+//     }
+//     type Query {
+//       reward(
+//         program: RewardProgramVariant!
+//         network: Network
+//         address: String
+//       ): Participant
+//     }
+//   `,
+//   resolvers: {
+//     Query: {},
+//   },
+// });
+// server.start();
+// server.applyMiddleware({ app });
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
+  // console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`);
 });
 
 const logFilePath = '/tmp/cryptoecon.log';
@@ -108,6 +155,9 @@ const createDispensationFileName = (type, network, internalEpochTimestamp) => {
   const fileNameDate = moment.utc().format(`YYYY[]MM[]DD[T]HH[]mm[]ss`);
   return `${fileNameDate}-${type.toLowerCase()}-${network.toLowerCase()}-${internalEpochTimestamp}-dispensation.json`;
 };
+console.log(createDispensationFileName('vs', 'mainnet', 'sunset'));
+console.log(createDispensationFileName('lm', 'mainnet', 'sunset'));
+console.log(createDispensationFileName('airdrop', 'mainnet', 'sunset'));
 // 20210616T221025-vs-mainnet-169600.json
 
 app.get('/api/disp/:type', async (req, res, next) => {
@@ -166,7 +216,7 @@ app.get('/api/lm', async (req, res, next) => {
       const timeIndex = getTimeIndex(req.query.timestamp);
       responseJSON = await processingHandler.dispatch('GET_LM_USER_DATA', {
         address,
-        timeIndex
+        timeIndex,
       });
       break;
     }
@@ -228,7 +278,7 @@ app.get('/api/vs', async (req, res, next) => {
       const timeIndex = getTimeIndex(req.query.timestamp);
       responseJSON = await processingHandler.dispatch('GET_VS_USER_DATA', {
         address,
-        timeIndex
+        timeIndex,
       });
       break;
     }

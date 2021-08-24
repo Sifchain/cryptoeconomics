@@ -1,12 +1,12 @@
 const _ = require('lodash');
 const moment = require('moment');
 const { UserTicket } = require('./UserTicket');
-const config = require('../config');
+const config = require('../../config');
 
 // currently just a single source of truth for the User data structure.
 // May be useful for migrating the user mutation methods to in the future.
 class User {
-  constructor () {
+  constructor() {
     this.tickets = [];
     this.claimableRewardsOnWithdrawnAssets = 0;
     this.dispensed = 0;
@@ -45,7 +45,7 @@ class User {
     this.nextRewardProjectedAPYOnTickets = undefined;
   }
 
-  updateMaturityTimeProps (userAtFinalTimestamp, currentTimestampInMs) {
+  updateMaturityTimeProps(userAtFinalTimestamp, currentTimestampInMs) {
     this.maturityDate = userAtFinalTimestamp.maturityDate;
     this.maturityDateISO = userAtFinalTimestamp.maturityDateISO;
     const msToMaturity =
@@ -55,38 +55,38 @@ class User {
       this.currentYieldOnTickets / this.yearsToMaturity;
   }
 
-  redelegateTicketWithEvent (event, ticket) {
-    this.tickets = this.tickets.map(t => {
+  redelegateTicketWithEvent(event, ticket) {
+    this.tickets = this.tickets.map((t) => {
       if (t === ticket) {
         return t.cloneWith({
           commission: event.commission,
           validatorRewardAddress: event.validatorRewardAddress,
-          validatorStakeAddress: event.validatorStakeAddress
+          validatorStakeAddress: event.validatorStakeAddress,
         });
       }
       return t;
     });
   }
 
-  static fromJSON (props) {
+  static fromJSON(props) {
     let next = new this();
     Object.assign(next, props);
-    next.tickets = next.tickets.map(t => UserTicket.fromJSON(t));
+    next.tickets = next.tickets.map((t) => UserTicket.fromJSON(t));
     return next;
   }
 
-  cloneWith (props) {
+  cloneWith(props) {
     let next = new User();
     Object.assign(next, this);
     if (!props.tickets) {
-      next.tickets = this.tickets.map(t => t.cloneWith({}));
+      next.tickets = this.tickets.map((t) => t.cloneWith({}));
     }
     Object.assign(next, props);
     next.delegatorAddresses = [...next.delegatorAddresses];
     return next;
   }
 
-  updateRewards (timestampTicketsAmountSum) {
+  updateRewards(timestampTicketsAmountSum) {
     let totalAmount = 0;
     let totalReward = 0;
     let totalClaimableReward = 0;
@@ -124,7 +124,7 @@ class User {
     this.nextRewardShare = totalAmount / timestampTicketsAmountSum;
   }
 
-  updateUserMaturityDates (
+  updateUserMaturityDates(
     userAtPrevTimestamp,
     isAfterRewardPeriod,
     currentTimestampInMinutes,
@@ -167,7 +167,7 @@ class User {
         : this.nextRewardProjectedFutureReward / this.totalDepositedAmount;
   }
 
-  updateUserMaturityRewards (userAtMaturity) {
+  updateUserMaturityRewards(userAtMaturity) {
     this.totalRewardsOnDepositedAssetsAtMaturity =
       userAtMaturity.totalClaimableRewardsOnDepositedAssets;
     this.totalAccruedCommissionsAtMaturity =
@@ -187,30 +187,30 @@ class User {
     }
   }
 
-  addTicket (ticket) {
+  addTicket(ticket) {
     this.tickets = this.tickets.concat(ticket);
   }
 
-  removeTicket (ticket) {
-    this.tickets = this.tickets.filter(t => t !== ticket);
+  removeTicket(ticket) {
+    this.tickets = this.tickets.filter((t) => t !== ticket);
   }
 
-  addClaimableCommission (claimableCommission) {
+  addClaimableCommission(claimableCommission) {
     this.claimableCommissions += claimableCommission;
   }
 
-  addForfeitedCommission (forfeitedCommission) {
+  addForfeitedCommission(forfeitedCommission) {
     this.forfeitedCommissions += forfeitedCommission;
   }
 
-  recalculateCurrentTotalCommissionsOnClaimableDelegatorRewards (
-    getUserByAddress = addr => new User(),
+  recalculateCurrentTotalCommissionsOnClaimableDelegatorRewards(
+    getUserByAddress = (addr) => new User(),
     userAddress
   ) {
     let total = 0;
-    this.delegatorAddresses.forEach(address => {
+    this.delegatorAddresses.forEach((address) => {
       const delegator = getUserByAddress(address);
-      delegator.tickets.forEach(ticket => {
+      delegator.tickets.forEach((ticket) => {
         total += ticket.getClaimableCommissionRewardByValidator(userAddress);
       });
     });
@@ -221,8 +221,8 @@ class User {
   }
   // Locked, Claimable, Claimed, Dispensed
 
-  calculateClaimableCommissionsAndAssignToValidator (
-    getUserByAddress = addr => new User(),
+  calculateClaimableCommissionsAndAssignToValidator(
+    getUserByAddress = (addr) => new User(),
     burnedTickets
   ) {
     let totalClaimableCommissions = 0;
@@ -230,12 +230,14 @@ class User {
     for (let ticket of burnedTickets)
       for (let validatorRewardAddress in ticket.commissionRewardsByValidator) {
         const validator = getUserByAddress(validatorRewardAddress);
-        const claimableCommission = ticket.getClaimableCommissionRewardByValidator(
-          validatorRewardAddress
-        );
-        const forfeitedCommission = ticket.getForfeitedCommissionRewardByValidator(
-          validatorRewardAddress
-        );
+        const claimableCommission =
+          ticket.getClaimableCommissionRewardByValidator(
+            validatorRewardAddress
+          );
+        const forfeitedCommission =
+          ticket.getForfeitedCommissionRewardByValidator(
+            validatorRewardAddress
+          );
         validator.addClaimableCommission(claimableCommission);
         validator.addForfeitedCommission(forfeitedCommission);
         ticket.resetCommissionRewardsByValidator(validatorRewardAddress);
@@ -245,9 +247,9 @@ class User {
     return { totalClaimableCommissions, totalForfeitedCommissions };
   }
 
-  distributeClaimedRewards (amountToDistribute) {
-    const awaitingDispensation = this
-      .claimedCommissionsAndRewardsAwaitingDispensation;
+  distributeClaimedRewards(amountToDistribute) {
+    const awaitingDispensation =
+      this.claimedCommissionsAndRewardsAwaitingDispensation;
 
     if (amountToDistribute > awaitingDispensation) {
       // console.warn(
@@ -259,14 +261,14 @@ class User {
     this.dispensed += amountToDistribute;
   }
 
-  claimAllCurrentCommissionsAndRewards (getUserByAddress) {
+  claimAllCurrentCommissionsAndRewards(getUserByAddress) {
     const { claimable, forfeited } = this.calculateClaimableReward(
       this.tickets
     );
 
     const {
       totalClaimableCommissions: totalCommissionsClaimedByValidators,
-      totalForfeitedCommissions: totalCommissionsForfeitedByValidators
+      totalForfeitedCommissions: totalCommissionsForfeitedByValidators,
     } = this.calculateClaimableCommissionsAndAssignToValidator(
       getUserByAddress,
       this.tickets
@@ -279,24 +281,22 @@ class User {
       totalCommissionsClaimedByValidators;
     this.claimableCommissions = 0;
     this.claimableRewardsOnWithdrawnAssets = 0;
-    this.tickets.forEach(t => t.resetAfterClaim());
+    this.tickets.forEach((t) => t.resetAfterClaim());
     this.forfeited += forfeited - totalCommissionsForfeitedByValidators;
   }
 
-  withdrawStakeAsDelegator (delegateEvent, getUserByAddress, burnedTickets) {
+  withdrawStakeAsDelegator(delegateEvent, getUserByAddress, burnedTickets) {
     if (!burnedTickets) {
-      let { burnedTickets: newBurnedTickets } = this.removeBurnedTickets(
-        delegateEvent
-      );
+      let { burnedTickets: newBurnedTickets } =
+        this.removeBurnedTickets(delegateEvent);
       burnedTickets = newBurnedTickets;
     }
-    const { claimable, forfeited } = this.calculateClaimableReward(
-      burnedTickets
-    );
+    const { claimable, forfeited } =
+      this.calculateClaimableReward(burnedTickets);
 
     const {
       totalClaimableCommissions: totalCommissionsClaimedByValidators,
-      totalForfeitedCommissions: totalCommissionsForfeitedByValidators
+      totalForfeitedCommissions: totalCommissionsForfeitedByValidators,
     } = this.calculateClaimableCommissionsAndAssignToValidator(
       getUserByAddress,
       burnedTickets
@@ -306,13 +306,13 @@ class User {
     this.forfeited += forfeited - totalCommissionsForfeitedByValidators;
   }
 
-  calculateClaimableReward (tickets) {
+  calculateClaimableReward(tickets) {
     return tickets.reduce(
       (accum, ticket) => {
         const reward = ticket.reward || 0;
         const result = {
           claimable: accum.claimable + reward * ticket.mul,
-          forfeited: accum.forfeited + reward * (1 - ticket.mul)
+          forfeited: accum.forfeited + reward * (1 - ticket.mul),
         };
         return result;
       },
@@ -320,14 +320,14 @@ class User {
     );
   }
 
-  addDelegatorAddress (delegatorSifAddress) {
+  addDelegatorAddress(delegatorSifAddress) {
     if (!this.delegatorAddresses.includes(delegatorSifAddress)) {
       this.delegatorAddresses.push(delegatorSifAddress);
     }
   }
 
-  collectValidatorsCommissionsOnLatestUnclaimedRewards (
-    getUserByAddress = addr => new User(),
+  collectValidatorsCommissionsOnLatestUnclaimedRewards(
+    getUserByAddress = (addr) => new User(),
     delegatorSifAddress
   ) {
     /*
@@ -358,11 +358,11 @@ class User {
     }
   }
 
-  removeBurnedTickets (delegateEvent) {
+  removeBurnedTickets(delegateEvent) {
     let tickets = [];
     const otherValidatorTickets = [];
     if (delegateEvent.validatorRewardAddress) {
-      this.tickets.forEach(ticket => {
+      this.tickets.forEach((ticket) => {
         if (
           ticket.validatorRewardAddress === delegateEvent.validatorRewardAddress
         ) {
@@ -380,7 +380,7 @@ class User {
     let remainingWithdrawalAmount = Math.abs(delegateEvent.amount);
     const burnedTickets = [];
     const remainingTickets = [];
-    sortedTickets.forEach(ticket => {
+    sortedTickets.forEach((ticket) => {
       // if done withdrawing, keep the ticket
       if (remainingWithdrawalAmount === 0) {
         remainingTickets.push(ticket);
@@ -388,9 +388,8 @@ class User {
       }
       const amountToRemove = Math.min(remainingWithdrawalAmount, ticket.amount);
 
-      const { burnedTicket, remainderTicket, hasRemainder } = ticket.burn(
-        amountToRemove
-      );
+      const { burnedTicket, remainderTicket, hasRemainder } =
+        ticket.burn(amountToRemove);
 
       burnedTickets.push(burnedTicket);
       remainingWithdrawalAmount -= amountToRemove;

@@ -71,7 +71,7 @@ const runTests = (type, parsedData, network) => {
           curr.dispensed
         );
       }, 0);
-      log('totalRewards: ' + totalRewards);
+      log('totalRewards: ' + new Intl.NumberFormat().format(totalRewards));
       expect(Math.round(totalRewards) === 45000000);
     });
     test('totalPoolDominanceRatio', ({ expect, log }) => {
@@ -91,5 +91,5 @@ bp.reloadAndReprocessSnapshots({ network: MAINNET })
   // .then(async () => bp.reloadAndReprocessSnapshots({ network: MAINNET }))
   .then(async () => {
     await runTests('lm', bp.lmDataParsed, MAINNET);
-    await runTests('vs', bp.vsDataParsed, MAINNET);
+    // await runTests('vs', bp.vsDataParsed, MAINNET);
   });

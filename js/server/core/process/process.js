@@ -3,42 +3,44 @@ const {
   remapLMAddresses,
   getLMTimeseriesFinalIndex,
   createClaimEvents,
-  createDispensationEvents
-} = require('./util/lm-util');
+  createDispensationEvents,
+} = require('../transform/lm-util');
 const {
   remapVSAddresses,
-  getVSTimeseriesFinalIndex
-} = require('./util/vs-util');
+  getVSTimeseriesFinalIndex,
+} = require('../transform/vs-util');
 const { processVSGlobalState } = require('./process-vs');
 
 const {
   EVENT_INTERVAL_MINUTES,
-  NUMBER_OF_INTERVALS_TO_RUN
-} = require('./config');
-const { GlobalTimestampState } = require('./types');
+  NUMBER_OF_INTERVALS_TO_RUN,
+  START_DATETIME,
+} = require('../../config');
+const { GlobalTimestampState } = require('../types');
 
 const {
   VALIDATOR_STAKING,
-  LIQUIDITY_MINING
-} = require('./constants/reward-program-types');
-const { mockMinerClaims, mockMinerDispensations } = require('./mock');
+  LIQUIDITY_MINING,
+} = require('../../constants/reward-program-types');
+const { mockMinerClaims, mockMinerDispensations } = require('../../mock');
+const { getTimeIndex } = require('../../util/getTimeIndex');
 
-exports.getProcessedLMData = snapshotLM => {
+exports.getProcessedLMData = (snapshotLM) => {
   let {
     snapshots_new: [{ snapshot_data: minerSnapshotData }],
     snapshots_lm_claims: [{ snapshot_data: claimsSnapshotData = {} } = {}],
     snapshots_lm_dispensation: [
-      { snapshot_data: dispensationsSnapshotData = {} } = {}
-    ] = []
+      { snapshot_data: dispensationsSnapshotData = {} } = {},
+    ] = [],
   } = snapshotLM.data;
-  const snapshotTimeseriesFinalIndex = getLMTimeseriesFinalIndex(
-    minerSnapshotData
-  );
+  console.log(minerSnapshotData);
+  const snapshotTimeseriesFinalIndex =
+    getLMTimeseriesFinalIndex(minerSnapshotData);
 
   if (process.env.MOCK_DATA_ENABLED === 'true') {
     claimsSnapshotData = mockMinerClaims(snapshotLM).claimsSnapshotData;
-    dispensationsSnapshotData = mockMinerDispensations(claimsSnapshotData)
-      .dispensationsSnapshotData;
+    dispensationsSnapshotData =
+      mockMinerDispensations(claimsSnapshotData).dispensationsSnapshotData;
   }
 
   const claimEventsByUserByTimestamp = createClaimEvents(claimsSnapshotData);
@@ -58,13 +60,13 @@ exports.getProcessedLMData = snapshotLM => {
   );
 };
 
-exports.getProcessedVSData = snapshotVS => {
+exports.getProcessedVSData = (snapshotVS) => {
   let {
     snapshots_validators: [{ snapshot_data: validatorSnapshotData }],
     snapshots_vs_claims: [{ snapshot_data: claimsSnapshotData = {} } = {}],
     snapshots_vs_dispensation: [
-      { snapshot_data: dispensationsSnapshotData = {} } = {}
-    ] = []
+      { snapshot_data: dispensationsSnapshotData = {} } = {},
+    ] = [],
   } = snapshotVS.data;
 
   const snapshotTimeseriesFinalIndex = getVSTimeseriesFinalIndex(
@@ -79,7 +81,7 @@ exports.getProcessedVSData = snapshotVS => {
   console.time('remapVS');
   const { userEventsByTimestamp } = remapVSAddresses(validatorSnapshotData);
   console.timeEnd('remapVS');
-  function getCurrentCommissionRate (validatorStakeAddress, stateIndex) {
+  function getCurrentCommissionRate(validatorStakeAddress, stateIndex) {
     const validatorCommissionData =
       validatorSnapshotData[validatorStakeAddress].commission;
     const commissionIndex =
@@ -102,10 +104,10 @@ exports.getProcessedVSData = snapshotVS => {
 const cacheEnabled = false;
 const history = {
   [VALIDATOR_STAKING]: {},
-  [LIQUIDITY_MINING]: {}
+  [LIQUIDITY_MINING]: {},
 };
 
-function processUserEventsByTimestamp (
+function processUserEventsByTimestamp(
   userEventsByTimestamp,
   getCurrentCommissionRate = (address, stateIndex) => 0,
   rewardProgramType,
@@ -115,7 +117,12 @@ function processUserEventsByTimestamp (
 ) {
   console.time('processvs');
   const VSGlobalStates = [GlobalTimestampState.getInitial()];
-  for (let i = 1; i <= NUMBER_OF_INTERVALS_TO_RUN; i++) {
+
+  for (
+    let i = getTimeIndex(new Date(START_DATETIME)) + 1;
+    i <= NUMBER_OF_INTERVALS_TO_RUN;
+    i++
+  ) {
     let nextGlobalState;
     const timestamp = i * EVENT_INTERVAL_MINUTES;
     const isSimulatedFutureInterval = i > snapshotTimeseriesFinalIndex - 1;
@@ -135,7 +142,7 @@ function processUserEventsByTimestamp (
         lastGlobalState,
         timestamp,
         userEvents,
-        address => getCurrentCommissionRate(address, i),
+        (address) => getCurrentCommissionRate(address, i),
         rewardProgramType,
         isSimulatedFutureInterval,
         claimEventsByUser,
