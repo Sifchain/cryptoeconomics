@@ -236,6 +236,7 @@ app.get('/api/lm', async (req, res, next) => {
 });
 
 app.get('/api/vs', async (req, res, next) => {
+  return res.send('deprecated');
   const snapshotSource =
     req.query[SNAPSHOT_SOURCE_KEY] ||
     req.headers[SNAPSHOT_SOURCE_KEY] ||
