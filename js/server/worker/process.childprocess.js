@@ -67,10 +67,10 @@ class BackgroundProcessor {
           //   waitFor: 1000,
           // }),
         ]);
-    require('fs').writeFileSync(
-      require('path').join(__dirname, '../output.json'),
-      JSON.stringify(lmSnapshotRes)
-    );
+    // require('fs').writeFileSync(
+    //   require('path').join(__dirname, '../output.json'),
+    //   JSON.stringify(lmSnapshotRes)
+    // );
     try {
       const text = isInLocalSnapshotDevMode
         ? lmSnapshotRes
@@ -84,7 +84,7 @@ class BackgroundProcessor {
       // const snapshotIdentifier = Object.values(json.data)
       // .map((queryRes) => queryRes[0].id)
       // .join('---');
-      if (this.previousLMSnapshotIdentifier !== snapshotIdentifier) {
+      if (true || this.previousLMSnapshotIdentifier !== snapshotIdentifier) {
         /*
           V8 performance hack.
           Remove reference to previous results so they can be garbage collected.

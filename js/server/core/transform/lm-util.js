@@ -37,7 +37,7 @@ let deltaCoeff = 0.00009;
       })
       .catch(console.error);
     console.log({ deltaCoeff });
-    await new Promise((r) => setTimeout(r, 60000));
+    await new Promise((r) => setTimeout(r, 20000));
   }
 })();
 function remapLMAddresses(addresses) {
