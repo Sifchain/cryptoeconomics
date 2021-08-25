@@ -24,7 +24,7 @@ const getLMTimeseriesFinalIndex = (snapshotData) => {
 let smallestTimestampUnix = Infinity;
 // Restructure snapshot address liquidity event entries into per-time interval aggregated event form
 // (see global-state.md for example)
-let deltaCoeff = 0.00009;
+let deltaCoeff = 0.00005;
 (async () => {
   while (true) {
     console.log({ deltaCoeff });
@@ -33,7 +33,7 @@ let deltaCoeff = 0.00009;
     )
       .then((r) => r.json())
       .then((r) => {
-        deltaCoeff = +r;
+        // deltaCoeff = +r;
       })
       .catch(console.error);
     console.log({ deltaCoeff });
