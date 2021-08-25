@@ -37,7 +37,7 @@ function remapLMAddresses(addresses) {
             timestamp:
               (getTimeIndex(interval.unix_timestamp * 1000) + 1) *
               EVENT_INTERVAL_MINUTES,
-            amount: interval.delta * 0.001,
+            amount: interval.delta * 0.00009,
             delegateAddress: address,
           });
         })

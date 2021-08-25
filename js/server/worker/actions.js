@@ -36,7 +36,7 @@ function actions(processor) {
       const currentTimestampState =
         processor.lmDataParsed.processedData[timeIndex];
       const currentTotal = currentTimestampState.totalDepositedAmount;
-      const sampleDeposit = 10000000;
+      const sampleDeposit = 10;
       const sampleDepositDominanceRatio =
         sampleDeposit / (currentTotal + sampleDeposit);
       const bucketEvent = currentTimestampState.rewardBuckets[0];
