@@ -13,6 +13,7 @@ const {
 const {
   GET_LM_DISPENSATION_JOB,
   GET_VS_DISPENSATION_JOB,
+  GET_LM_CURRENT_APY_SUMMARY,
 } = require('./constants/action-names');
 const moment = require('moment');
 const { encrypt, decrypt } = require('./util/encrypt');
@@ -187,6 +188,14 @@ app.get('/api/lm', async (req, res, next) => {
   let responseJSON;
   await processingHandler.waitForReadyState();
   switch (key) {
+    case 'apy-summary': {
+      const summaryAPY = await processingHandler.dispatch(
+        GET_LM_CURRENT_APY_SUMMARY
+      );
+      console.log({ summaryAPY });
+      responseJSON = { summaryAPY };
+      break;
+    }
     case 'userDispensationJob': {
       const { job, internalEpochTimestamp } = await processingHandler.dispatch(
         GET_LM_DISPENSATION_JOB

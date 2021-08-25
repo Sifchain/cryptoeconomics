@@ -18,6 +18,7 @@ const {
   GET_SNAPSHOT_UPDATE_TIME_STATS,
   GET_LM_DISPENSATION_JOB,
   GET_VS_DISPENSATION_JOB,
+  GET_LM_CURRENT_APY_SUMMARY,
 } = require('../constants/action-names');
 const { EVENT_INTERVAL_MINUTES } = require('../config');
 const { getTimeIndex } = require('../util/getTimeIndex');
@@ -29,6 +30,38 @@ const { getTimeIndex } = require('../util/getTimeIndex');
 // Use `KEY: () => {}` syntax to ensure `processor` is bound correctly.
 function actions(processor) {
   return {
+    [GET_LM_CURRENT_APY_SUMMARY]() {
+      // could easily make this a FOMO calculator endpoint
+      const timeIndex = getTimeIndex('now');
+      const currentTimestampState =
+        processor.lmDataParsed.processedData[timeIndex];
+      const currentTotal = currentTimestampState.totalDepositedAmount;
+      const sampleDeposit = 1;
+      const sampleDepositDominanceRatio =
+        sampleDeposit / (currentTotal + sampleDeposit);
+      const bucketEvent = currentTimestampState.rewardBuckets[0];
+      // console.log(
+      //   bucketEvent,
+      //   timeIndex,
+      //   sampleDepositDominanceRatio,
+      //   currentTotal
+      // );
+      if (!bucketEvent) return 0;
+      const rewardPerInterval = bucketEvent.initialRowan / bucketEvent.duration;
+      const sampleRewardsPerInterval =
+        sampleDepositDominanceRatio * rewardPerInterval;
+      const intervalsPerYear = (60 * 24 * 365) / EVENT_INTERVAL_MINUTES;
+      // console.log({
+      //   intervalsPerYear,
+      //   sampleRewardsPerInterval,
+      //   rewardPerInterval,
+      //   sampleDepositDominanceRatio,
+      // });
+      const sampleRewardProjectedOneYear =
+        sampleRewardsPerInterval * intervalsPerYear;
+      // convert to percentage
+      return (sampleRewardProjectedOneYear / sampleDeposit) * 100;
+    },
     [GET_LM_DISPENSATION_JOB]() {
       const timeIndex = getTimeIndex('now');
       const currentTimestampState =
@@ -90,7 +123,6 @@ function actions(processor) {
     [GET_LM_STACK_DATA]: () => {
       return processor.lmDataParsed.stackClaimableRewardData;
     },
-
     /* VS Actions */
     // GET_VS_UNCLAIMED_DELEGATED_REWARDS: (key) => {
     //   processor.lmDataParsed;
