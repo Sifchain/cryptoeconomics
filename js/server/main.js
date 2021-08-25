@@ -227,6 +227,14 @@ app.get('/api/lm', async (req, res, next) => {
         address,
         timeIndex,
       });
+      if (responseJSON) {
+        if (responseJSON.user) {
+          if (responseJSON.user.currentAPYOnTickets) {
+            responseJSON.user.currentAPYOnTickets =
+              responseJSON.user.currentAPYOnTickets * 100;
+          }
+        }
+      }
       break;
     }
     case 'stack': {
