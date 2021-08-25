@@ -9,7 +9,7 @@ const moment = require('moment');
 
 // Rewards begin accruing
 // const START_DATETIME = '2021-08-16T06:00:00.000Z';
-const START_DATETIME = '2021-08-06T20:06:15.000Z';
+const START_DATETIME = '2021-08-24T20:06:15.000Z';
 // Deposits are cut off earlier on
 const DEPOSIT_CUTOFF_DATETIME = moment
   .utc(START_DATETIME)

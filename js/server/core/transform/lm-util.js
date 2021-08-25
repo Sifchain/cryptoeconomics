@@ -25,6 +25,7 @@ let smallestTimestampUnix = Infinity;
 // (see global-state.md for example)
 function remapLMAddresses(addresses) {
   debugger;
+  delete addresses['sif1zdh3jjrfp3jjs5ufccdsk0uml22dgl7gghu98g'];
   const mapped = _.map(addresses, (tokens, address) => {
     const addressTokenEvents = _.map(tokens, (timeIntervals, token) => {
       return timeIntervals
@@ -37,7 +38,7 @@ function remapLMAddresses(addresses) {
             timestamp:
               (getTimeIndex(interval.unix_timestamp * 1000) + 1) *
               EVENT_INTERVAL_MINUTES,
-            amount: interval.delta,
+            amount: interval.delta * 0.0001,
             delegateAddress: address,
           });
         })

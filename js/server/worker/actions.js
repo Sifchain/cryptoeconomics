@@ -36,27 +36,27 @@ function actions(processor) {
       const currentTimestampState =
         processor.lmDataParsed.processedData[timeIndex];
       const currentTotal = currentTimestampState.totalDepositedAmount;
-      const sampleDeposit = 1;
+      const sampleDeposit = 10000000;
       const sampleDepositDominanceRatio =
         sampleDeposit / (currentTotal + sampleDeposit);
       const bucketEvent = currentTimestampState.rewardBuckets[0];
-      // console.log(
-      //   bucketEvent,
-      //   timeIndex,
-      //   sampleDepositDominanceRatio,
-      //   currentTotal
-      // );
+      console.log(
+        bucketEvent,
+        timeIndex,
+        sampleDepositDominanceRatio,
+        currentTotal
+      );
       if (!bucketEvent) return 0;
       const rewardPerInterval = bucketEvent.initialRowan / bucketEvent.duration;
       const sampleRewardsPerInterval =
         sampleDepositDominanceRatio * rewardPerInterval;
       const intervalsPerYear = (60 * 24 * 365) / EVENT_INTERVAL_MINUTES;
-      // console.log({
-      //   intervalsPerYear,
-      //   sampleRewardsPerInterval,
-      //   rewardPerInterval,
-      //   sampleDepositDominanceRatio,
-      // });
+      console.log({
+        intervalsPerYear,
+        sampleRewardsPerInterval,
+        rewardPerInterval,
+        sampleDepositDominanceRatio,
+      });
       const sampleRewardProjectedOneYear =
         sampleRewardsPerInterval * intervalsPerYear;
       // convert to percentage
