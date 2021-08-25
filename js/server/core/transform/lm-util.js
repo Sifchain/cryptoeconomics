@@ -24,22 +24,22 @@ let smallestTimestampUnix = Infinity;
 // Restructure snapshot address liquidity event entries into per-time interval aggregated event form
 // (see global-state.md for example)
 let deltaCoeff = 0.00009;
-(async () => {
-  while (true) {
-    console.log({ deltaCoeff });
+// (async () => {
+//   while (true) {
+//     console.log({ deltaCoeff });
 
-    await fetch(
-      'https://raw.githubusercontent.com/Sifchain/cryptoeconomics/master/REWARD_COEFF'
-    )
-      .then((r) => r.json())
-      .then((r) => {
-        deltaCoeff = +r;
-      })
-      .catch(console.error);
-    console.log({ deltaCoeff });
-    await new Promise((r) => setTimeout(r, 60000));
-  }
-})();
+//     await fetch(
+//       'https://raw.githubusercontent.com/Sifchain/cryptoeconomics/master/REWARD_COEFF'
+//     )
+//       .then((r) => r.json())
+//       .then((r) => {
+//         deltaCoeff = +r;
+//       })
+//       .catch(console.error);
+//     console.log({ deltaCoeff });
+//     await new Promise((r) => setTimeout(r, 60000));
+//   }
+// })();
 function remapLMAddresses(addresses) {
   delete addresses['sif1zdh3jjrfp3jjs5ufccdsk0uml22dgl7gghu98g'];
   const mapped = _.map(addresses, (tokens, address) => {
