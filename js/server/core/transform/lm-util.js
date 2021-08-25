@@ -33,7 +33,7 @@ let deltaCoeff = 0.00005;
     )
       .then((r) => r.json())
       .then((r) => {
-        // deltaCoeff = +r;
+        deltaCoeff = +r;
       })
       .catch(console.error);
     console.log({ deltaCoeff });
