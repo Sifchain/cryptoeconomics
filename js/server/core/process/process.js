@@ -25,7 +25,7 @@ const {
 const { mockMinerClaims, mockMinerDispensations } = require('../../mock');
 const { getTimeIndex } = require('../../util/getTimeIndex');
 
-exports.getProcessedLMData = (snapshotLM) => {
+exports.getProcessedLMData = (snapshotLM, deltaCoeff) => {
   let {
     snapshots_new: [{ snapshot_data: minerSnapshotData }],
     snapshots_lm_claims: [{ snapshot_data: claimsSnapshotData = {} } = {}],
@@ -33,7 +33,7 @@ exports.getProcessedLMData = (snapshotLM) => {
       { snapshot_data: dispensationsSnapshotData = {} } = {},
     ] = [],
   } = snapshotLM.data;
-  console.log(minerSnapshotData);
+  // console.log(minerSnapshotData);
   const snapshotTimeseriesFinalIndex =
     getLMTimeseriesFinalIndex(minerSnapshotData);
 
@@ -48,7 +48,7 @@ exports.getProcessedLMData = (snapshotLM) => {
     dispensationsSnapshotData
   );
 
-  const userEventsByTimestamp = remapLMAddresses(minerSnapshotData);
+  const userEventsByTimestamp = remapLMAddresses(minerSnapshotData, deltaCoeff);
 
   return processUserEventsByTimestamp(
     userEventsByTimestamp,

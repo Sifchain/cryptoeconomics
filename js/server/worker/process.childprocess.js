@@ -15,7 +15,7 @@ const {
 } = require('../core/load');
 process.setMaxListeners(100000);
 const crypto = require('crypto');
-
+const fetch = require('cross-fetch').fetch;
 /*
   Handles:
     * Snapshot reloading
@@ -93,7 +93,15 @@ class BackgroundProcessor {
         const json = lmSnapshotRes;
         this.lmDataParsed = undefined;
         console.time('getProcessedLMData');
-        this.lmDataParsed = getProcessedLMData(json);
+        const deltaCoeff = await fetch(
+          'https://raw.githubusercontent.com/Sifchain/cryptoeconomics/master/REWARD_COEFF'
+        )
+          .then((r) => r.text())
+          .then((r) => {
+            return +r;
+          })
+          .catch(console.error);
+        this.lmDataParsed = getProcessedLMData(json, deltaCoeff);
         console.timeEnd('getProcessedLMData');
         this.previousLMSnapshotIdentifier = snapshotIdentifier;
       } else {
