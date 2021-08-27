@@ -93,14 +93,15 @@ class BackgroundProcessor {
         const json = lmSnapshotRes;
         this.lmDataParsed = undefined;
         console.time('getProcessedLMData');
-        const deltaCoeff = await fetch(
-          'https://raw.githubusercontent.com/Sifchain/cryptoeconomics/master/REWARD_COEFF'
-        )
-          .then((r) => r.text())
-          .then((r) => {
-            return +r;
-          })
-          .catch(console.error);
+        const deltaCoeff = 1;
+        // await fetch(
+        //   'https://raw.githubusercontent.com/Sifchain/cryptoeconomics/master/REWARD_COEFF'
+        // )
+        //   .then((r) => r.text())
+        //   .then((r) => {
+        //     return +r;
+        //   })
+        //   .catch(console.error);
         this.lmDataParsed = getProcessedLMData(json, deltaCoeff);
         console.timeEnd('getProcessedLMData');
         this.previousLMSnapshotIdentifier = snapshotIdentifier;
