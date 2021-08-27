@@ -1,0 +1,1638 @@
+{
+  "sif1xsa5u96smc2nynu5dgqawky09luwgknxwt58nv": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [
+      { "unix_timestamp": 1629944399.0, "delta": 73.47037934148834 }
+    ],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [{ "unix_timestamp": 1629944399.0, "delta": 74.30455 }]
+  },
+  "sif13e6svcf0dy58ee6z7s8d5jjmt92jz67kx3et79": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629937586.0, "delta": 2792.402339359755 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629937586.0, "delta": 2702.1053500000003 }]
+  },
+  "sif1ur3nlec4l0a8rs32vmzpgd0yumk7wgtcezf4v2": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [
+      { "unix_timestamp": 1629923161.0, "delta": 79.01558152565433 }
+    ],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629923245.0, "delta": 92.40376698010634 },
+      { "unix_timestamp": 1629923052.0, "delta": 198.39093117043484 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629943670.0, "delta": 219.51550908110806 },
+      { "unix_timestamp": 1629922753.0, "delta": 788.5445585170501 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629943670.0, "delta": 219.65543 },
+      { "unix_timestamp": 1629923245.0, "delta": 99.99955000000001 },
+      { "unix_timestamp": 1629923161.0, "delta": 70.50177 },
+      { "unix_timestamp": 1629923052.0, "delta": 208.62953 },
+      { "unix_timestamp": 1629922753.0, "delta": 763.44889 }
+    ]
+  },
+  "sif1m5dfxd37j9t704cd3vj3fm5dx0udlwtqmp8hmx": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629924496.0, "delta": 7894.305802823553 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629923624.0, "delta": 9147.11687879778 },
+      { "unix_timestamp": 1629922517.0, "delta": 7622.59739899815 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629924496.0, "delta": 8550.80484 },
+      { "unix_timestamp": 1629923624.0, "delta": 9159.24886 },
+      { "unix_timestamp": 1629922517.0, "delta": 7380.005939999999 }
+    ]
+  },
+  "sif106cpydtflfufkepf75e7tchzvlwf3xp4knkspr": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629927398.0, "delta": 157.71472561630864 }
+    ],
+    "rowan": []
+  },
+  "sif1de7hqxvhztz8udt9yutxm5ypzyymhdftmejfty": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629925903.0, "delta": 790.1981948985415 },
+      { "unix_timestamp": 1629925643.0, "delta": 6329.7564962646375 },
+      { "unix_timestamp": 1629925123.0, "delta": 709.690102665345 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629925903.0, "delta": 862.7359200000001 },
+      { "unix_timestamp": 1629925643.0, "delta": 6505.64056 },
+      { "unix_timestamp": 1629925123.0, "delta": 751.4740700000001 }
+    ]
+  },
+  "sif16dnk4wkxqax8mqnaf6sdj2nv3fd2sd9jjxmr6c": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629938957.0, "delta": 10086.37669893475 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629938957.0, "delta": 9985.429520000002 }]
+  },
+  "sif1fzjar8cs6n3c5cs7j9cdqnnjkpl2mfcneuy2gs": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629925321.0, "delta": 1256.5863460462417 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629925502.0, "delta": 2.0 },
+      { "unix_timestamp": 1629925321.0, "delta": 1314.99753 }
+    ]
+  },
+  "sif1gjgjsh74w5trmfaaauq4qt2mwvh8p7gs0vuuz4": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629924251.0, "delta": 45.153775934390964 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [{ "unix_timestamp": 1629924251.0, "delta": 49.99996 }]
+  },
+  "sif16eycmw0sr6cmuz06qwglsv7at94ey20rxlthe9": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629941482.0, "delta": 5310.107744825709 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629941482.0, "delta": 4999.930740000001 }]
+  },
+  "sif1kcpdvvk4eqhrs695thpc6kvc0jqntmur2k56mg": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [
+      { "unix_timestamp": 1629938021.0, "delta": 287.791765675754 }
+    ],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629938748.0, "delta": 1244.5857456040533 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629938714.0, "delta": 1369.873931404428 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629938748.0, "delta": 1150.0 },
+      { "unix_timestamp": 1629938021.0, "delta": 274.06442 }
+    ]
+  },
+  "sif1r8he2t2eurm60d2ad45x5xncfv7tt2rlatzfuy": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [
+      { "unix_timestamp": 1629923624.0, "delta": 0.27462457287813563 }
+    ],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629923523.0, "delta": 9.240057619263002 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [
+      { "unix_timestamp": 1629923624.0, "delta": 0.24937 },
+      { "unix_timestamp": 1629923523.0, "delta": 10.0 }
+    ]
+  },
+  "sif1ycef47rcpdas6agsdx098s4a0twtek2pkcz5uc": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629924558.0, "delta": 818.3625910780437 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629924671.0, "delta": 189.31377760877336 },
+      { "unix_timestamp": 1629924615.0, "delta": 34.87154316311333 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629924671.0, "delta": 190.0 },
+      { "unix_timestamp": 1629924615.0, "delta": 350.0 },
+      { "unix_timestamp": 1629924558.0, "delta": 862.32361 }
+    ]
+  },
+  "sif1j0ccvet5nkrft49f9muk85cfngdwj2expsh8m9": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629928774.0, "delta": 15.059127717597201 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629928774.0, "delta": 14.9 }]
+  },
+  "sif10gf9t8gvmwsgu3rv86nuh5a9s5z3c9nzcf9gg7": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [
+      { "unix_timestamp": 1629930052.0, "delta": 82.9827742476412 }
+    ],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629932328.0, "delta": 427.61690346902 },
+      { "unix_timestamp": 1629929917.0, "delta": 1046.2962837365135 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629931655.0, "delta": 966.4251624032527 },
+      { "unix_timestamp": 1629931475.0, "delta": 387.9013996691861 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629932328.0, "delta": 450.0 },
+      { "unix_timestamp": 1629931655.0, "delta": 1000.0 },
+      { "unix_timestamp": 1629931475.0, "delta": 4000.0 },
+      { "unix_timestamp": 1629930052.0, "delta": 82.00162 },
+      { "unix_timestamp": 1629929917.0, "delta": 1005.0319900000001 }
+    ]
+  },
+  "sif1h25pc432t23htkemmpw3ucm09nepxtqha7fh5m": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629924473.0, "delta": 671337.1552528411 },
+      { "unix_timestamp": 1629922832.0, "delta": 30017.57659647739 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629924473.0, "delta": 674500.0 },
+      { "unix_timestamp": 1629922832.0, "delta": 29062.25818 }
+    ]
+  },
+  "sif10759cxaj8grn5l3452npjqaqt8s4t76x4s9me8": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629935574.0, "delta": 172.1927311863517 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629935574.0, "delta": 170.00001999999998 }]
+  },
+  "sif1zh3atlxnu9q0nvsz6yldjl3n76j7wha7vg7qwx": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629925106.0, "delta": 33.06515519507247 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629924518.0, "delta": 1314.24093086175 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629925106.0, "delta": 34.62458 },
+      { "unix_timestamp": 1629924518.0, "delta": 1319.24469 }
+    ]
+  },
+  "sif1vgj2lmp5sj9ra3xkz6pjj6ym37uj9hzzkjtkks": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629938917.0, "delta": 263.4372945008515 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629938917.0, "delta": 260.80073999999996 }]
+  },
+  "sif1qd463kzgk73cpk9ywl3jhvn4v4uwlwd3v2hgeh": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629925123.0, "delta": 13142.4093086175 }
+    ],
+    "rowan": []
+  },
+  "sif1zzq5fulfm6k88x42g4fqncxurqk36qlcevrcgz": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629933005.0, "delta": 2252.184763817828 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629933005.0, "delta": 2265.00041 }]
+  },
+  "sif19mrfdeq4gl6fx5srsu2w8a8f9vcxha8e0cwz6h": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [
+      { "unix_timestamp": 1629924569.0, "delta": 421.92118009778835 }
+    ],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629924456.0, "delta": 318.2521187525725 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629924512.0, "delta": 1761.0828473547451 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629924569.0, "delta": 404.55562 },
+      { "unix_timestamp": 1629924512.0, "delta": 1767.7878899999998 },
+      { "unix_timestamp": 1629924456.0, "delta": 344.71831 }
+    ]
+  },
+  "sif15gmtxlpp9ajfwctp8cza9fmdkmvffct2x07ywh": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629931282.0, "delta": 4874.748836219638 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629931282.0, "delta": 4992.89625 }]
+  },
+  "sif1a0r2xe6fzh76h9ur84pdmca9adw9607zceekcj": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629944353.0, "delta": 1125.7205593902977 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629944382.0, "delta": 3849.1554706924608 },
+      { "unix_timestamp": 1629944353.0, "delta": 1148.89453 }
+    ]
+  },
+  "sif1jvggrd5vaurrm6dk0ppc55k7q47hf203gjxuvy": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [
+      { "unix_timestamp": 1629942311.0, "delta": 397.29943294784414 }
+    ],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [{ "unix_timestamp": 1629942311.0, "delta": 401.81033 }]
+  },
+  "sif1qxajmcju7za2amvfc96ee85r5dp6neluvf5td7": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629934786.0, "delta": 361.6842074014386 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [{ "unix_timestamp": 1629934786.0, "delta": 361.99633 }]
+  },
+  "sif1e8gddqsrku6j9px3qwsp7kd0lruastrhpaxwl2": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [
+      { "unix_timestamp": 1629937851.0, "delta": 21.008455374495835 },
+      { "unix_timestamp": 1629937738.0, "delta": 120.70201301116852 },
+      { "unix_timestamp": 1629925389.0, "delta": 123.84117856487563 }
+    ],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629935051.0, "delta": 98.1265089531792 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629935085.0, "delta": 89.57553037911816 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629937851.0, "delta": 20.00638 },
+      { "unix_timestamp": 1629937738.0, "delta": 115.0 },
+      { "unix_timestamp": 1629935085.0, "delta": 90.60624999999999 },
+      { "unix_timestamp": 1629935051.0, "delta": 99.56764999999999 },
+      { "unix_timestamp": 1629925389.0, "delta": 121.64786 }
+    ]
+  },
+  "sif1tee9lxg8rcm7tl49dvefnnen9prkezvjulsysf": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [
+      { "unix_timestamp": 1629924541.0, "delta": 7950.28901643317 }
+    ],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629926841.0, "delta": 16914.6353351151 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629923732.0, "delta": 8148.29377134285 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629926841.0, "delta": 2887.069420628292 },
+      { "unix_timestamp": 1629924541.0, "delta": 7623.068609999999 },
+      { "unix_timestamp": 1629923732.0, "delta": 8135.3985999999995 }
+    ]
+  },
+  "sif1m9dwd037y7ma059xsnzwey92xk3v8jmye369pr": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629924942.0, "delta": 660.51383551436 },
+      { "unix_timestamp": 1629924846.0, "delta": 1899.6847987089143 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629924942.0, "delta": 707.0146254287529 },
+      { "unix_timestamp": 1629924846.0, "delta": 2030.0 }
+    ]
+  },
+  "sif19eu367s72z7hnsqpzw06cq7xl5y54tq3qeucxn": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629923845.0, "delta": 4002.6289958225257 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629923845.0, "delta": 3815.1878269325653 }]
+  },
+  "sif1jpm5amugqhyrl5y036f3h8cev3vrldunsx9cuf": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629925288.0, "delta": 754.0287379462051 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [{ "unix_timestamp": 1629925288.0, "delta": 699.90925 }]
+  },
+  "sif1q9qrlpl4alua4l3lqn4gt2gyut4avsxrhhwf3m": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [
+      { "unix_timestamp": 1629933547.0, "delta": 772.8209354929841 }
+    ],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629933513.0, "delta": 787.7181737642726 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629942056.0, "delta": 788.0043915732085 },
+      { "unix_timestamp": 1629940666.0, "delta": 675.4323356341787 },
+      { "unix_timestamp": 1629932688.0, "delta": 1376.071070468006 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629942056.0, "delta": 741.1586599999999 },
+      { "unix_timestamp": 1629940666.0, "delta": 629.88557 },
+      { "unix_timestamp": 1629933547.0, "delta": 784.90985 },
+      { "unix_timestamp": 1629933513.0, "delta": 803.7263 },
+      { "unix_timestamp": 1629932688.0, "delta": 1400.0 }
+    ]
+  },
+  "sif1h8gkxamsxkff6hlfwx4cc0v3l2tr4shx772l6u": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629938635.0, "delta": 441.54250365486627 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [{ "unix_timestamp": 1629938635.0, "delta": 409.42891000000003 }]
+  },
+  "sif16cczxrnug9t8e8nxc7ahyeyp423kfagzjlg2qh": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629940169.0, "delta": 3743.965395808096 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629940169.0, "delta": 3499.97592 }]
+  },
+  "sif1wdafc5cmg8yltqway03m5zfgdgme747c27pxg8": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629926185.0, "delta": 1314.2893801359053 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629926185.0, "delta": 1316.05439 }]
+  },
+  "sif160c4hf65fcxewuf7efhum8p78e2y9wz3zhamax": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629943118.0, "delta": 2814.3013984757445 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629943118.0, "delta": 2640.95229 }]
+  },
+  "sif166ke824echg7a62pvwhqk05tr6f6hh0mhunanc": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629944382.0, "delta": 169.9248482311842 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629941482.0, "delta": 56.28602796951489 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629944382.0, "delta": 175.43921999999998 },
+      { "unix_timestamp": 1629941482.0, "delta": 52.99822 }
+    ]
+  },
+  "sif1s5mdxly34q5fazywhs5g9rdgjrx32ztmj8v64n": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [
+      { "unix_timestamp": 1629926875.0, "delta": 435.7754041398625 }
+    ],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629926784.0, "delta": 476.20031911923144 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629926937.0, "delta": 788.5736280815431 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629926937.0, "delta": 772.87339 },
+      { "unix_timestamp": 1629926875.0, "delta": 417.21913 },
+      { "unix_timestamp": 1629926784.0, "delta": 428.94019999999995 }
+    ]
+  },
+  "sif1m5s04l920wel3fjua76slm95a6zyupeevq4q6x": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629925067.0, "delta": 2050.2158521443303 }
+    ],
+    "rowan": []
+  },
+  "sif1pz5qh3nyfa8k0cqpq0rpee7mjx6mpkymq0ztwa": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [
+      { "unix_timestamp": 1629930318.0, "delta": 1164.0129333471837 }
+    ],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [{ "unix_timestamp": 1629930318.0, "delta": 1199.46236 }]
+  },
+  "sif12afnsfh6pcrmxpjqqz95yudthv5t30jx0n3aq8": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629924784.0, "delta": 347.18412954826096 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [{ "unix_timestamp": 1629924784.0, "delta": 365.83426 }]
+  },
+  "sif186vcaenck67ulrezmp4q49eljs6ygykmtz39yq": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629925858.0, "delta": 28177.37459763899 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629925858.0, "delta": 30763.969689999998 }]
+  },
+  "sif1czdf2ds33f57thmu4v5negsqz4jmlu2u9j974r": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629924365.0, "delta": 615.6594233796953 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629924365.0, "delta": 653.87386 }]
+  },
+  "sif1hucfq986ef9p48nhnwgll2zm4gzfxkjna3pruj": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629936138.0, "delta": 317.027517624194 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629943817.0, "delta": 4980.068428363382 },
+      { "unix_timestamp": 1629936183.0, "delta": 302.95288867597924 },
+      { "unix_timestamp": 1629935506.0, "delta": 5118.601735949609 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629943817.0, "delta": 5040.0 },
+      { "unix_timestamp": 1629936183.0, "delta": 292.27262 },
+      { "unix_timestamp": 1629936138.0, "delta": 295.65270000000004 },
+      { "unix_timestamp": 1629935506.0, "delta": 5047.66342 }
+    ]
+  },
+  "sif1yxw7a7f5qxnhchzyfu0gx2j5nrhhachmjuu9w8": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629924354.0, "delta": 525.6963723447 },
+      { "unix_timestamp": 1629923517.0, "delta": 260.03676197305055 }
+    ],
+    "rowan": []
+  },
+  "sif17du53vjwt0tvmuhz3m3myfrwgmxzw6d5rv3ull": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629943530.0, "delta": 44924.65500565532 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629943530.0, "delta": 44965.37719000001 }]
+  },
+  "sif10x53ljf7kpvdksr3xeg45c4s7925dyjj2hgaag": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [
+      { "unix_timestamp": 1629924738.0, "delta": 46.80951596285024 }
+    ],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [{ "unix_timestamp": 1629924738.0, "delta": 46.61295 }]
+  },
+  "sif106x8q2nv7xsg7qrec2zgdf3vvq0t3gn4gysmwy": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [
+      { "unix_timestamp": 1629941308.0, "delta": 1780.268354444979 }
+    ],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [{ "unix_timestamp": 1629941308.0, "delta": 1800.4813175602671 }]
+  },
+  "sif1068jfs4mhwwtscyxzcgcgugs2qqfm453y9lcaf": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629943891.0, "delta": 2527.2426558312186 },
+      { "unix_timestamp": 1629942198.0, "delta": 585.632987465307 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629943891.0, "delta": 2544.92538 },
+      { "unix_timestamp": 1629942198.0, "delta": 549.9998899999999 }
+    ]
+  },
+  "sif1sx5r2u4kp7tavdpxzkeg6qhl3vu3rv8h2aqhdk": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629925909.0, "delta": 4766.765194383507 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629923132.0, "delta": 10513.927446894 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629925909.0, "delta": 4189.17477 },
+      { "unix_timestamp": 1629923132.0, "delta": 10705.3422 }
+    ]
+  },
+  "sif1zk8lresywxxurv62af9tft4tggue86mcpyfuus": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629939312.0, "delta": 8478.371048789386 },
+      { "unix_timestamp": 1629936329.0, "delta": 2.6343729450085154 },
+      { "unix_timestamp": 1629936132.0, "delta": 52.687458900170306 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629939312.0, "delta": 8416.83322 },
+      { "unix_timestamp": 1629936329.0, "delta": 5000.0 },
+      { "unix_timestamp": 1629936132.0, "delta": 50.83002 }
+    ]
+  },
+  "sif1zsk543xe4q2dtc9mtegtfw4hpwhcg624k02vyl": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629930329.0, "delta": 13.766930674476471 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629930329.0, "delta": 15.0 }]
+  },
+  "sif1sfc34ujkys84eeqmegm7lle955y3edyt9f37zt": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [
+      { "unix_timestamp": 1629937383.0, "delta": 430.25347027936647 },
+      { "unix_timestamp": 1629935371.0, "delta": 326.02975678914277 },
+      { "unix_timestamp": 1629923450.0, "delta": 378.5589707239536 }
+    ],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629937406.0, "delta": 450.3733537279636 },
+      { "unix_timestamp": 1629924354.0, "delta": 653.0368151026813 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629924857.0, "delta": 399.529242981972 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629937406.0, "delta": 418.43484 },
+      { "unix_timestamp": 1629937383.0, "delta": 409.92812000000004 },
+      { "unix_timestamp": 1629935371.0, "delta": 325.33977999999996 },
+      { "unix_timestamp": 1629924857.0, "delta": 426.93622999999997 },
+      { "unix_timestamp": 1629924354.0, "delta": 723.12473 },
+      { "unix_timestamp": 1629923450.0, "delta": 343.74615 }
+    ]
+  },
+  "sif14njwl8cdyt90jjhm696ykz3gj3ct4ywguq5unu": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629932118.0, "delta": 2733.8709349244386 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629932469.0, "delta": 2661.672902693797 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629932469.0, "delta": 1600.0 },
+      { "unix_timestamp": 1629932118.0, "delta": 3430.21148 }
+    ]
+  },
+  "sif1cclnhtrf8xh2agjwu2hsfqvc2a4ac5eapw9xpm": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629944765.0, "delta": 376.95778286418545 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [{ "unix_timestamp": 1629944765.0, "delta": 273.60503 }]
+  },
+  "sif12uk22nzee0hgahzttujcdce78ax627asznh7yf": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629939549.0, "delta": 18.37143556656948 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [{ "unix_timestamp": 1629939549.0, "delta": 18.0 }]
+  },
+  "sif1570zgpm0dx8965pk9rrmjv2tllfxmnrdcjaqna": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [
+      { "unix_timestamp": 1629923754.0, "delta": 658.6926090596793 }
+    ],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629923675.0, "delta": 471.17846152978274 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629923709.0, "delta": 1287.956112244515 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629923754.0, "delta": 598.1183 },
+      { "unix_timestamp": 1629923709.0, "delta": 1285.9178399999998 },
+      { "unix_timestamp": 1629923675.0, "delta": 509.93005 }
+    ]
+  },
+  "sif1kx02jwsul38ydx0luc2xkjelyvez49tyq4ruck": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629924852.0, "delta": 1466.6928788417129 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629924852.0, "delta": 1567.3053599999998 }]
+  },
+  "sif1fn9utpcqxmt3rg3gxgp795xadljwng9l2fxfqd": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629930425.0, "delta": 52454.37761826404 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629930425.0, "delta": 57414.562340000004 }]
+  },
+  "sif1zzd6lqxjdnp4q6nckvnsesk3r96zwvts30qttt": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [
+      { "unix_timestamp": 1629924778.0, "delta": 1003.8143129769048 }
+    ],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629941442.0, "delta": 1069.9561903280044 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629941442.0, "delta": 999.99945 },
+      { "unix_timestamp": 1629924778.0, "delta": 999.59892 }
+    ]
+  },
+  "sif1dmy3hzq0jwmhwa309ha3zwveuzv32mztzftfkk": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629924020.0, "delta": 826.6288798768118 },
+      { "unix_timestamp": 1629923256.0, "delta": 826.6288798768118 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [
+      { "unix_timestamp": 1629927336.0, "delta": 451.418016 },
+      { "unix_timestamp": 1629924020.0, "delta": 906.71263 },
+      { "unix_timestamp": 1629923256.0, "delta": 894.5794699999999 }
+    ]
+  },
+  "sif1x7r9tmd765awhgdqss98dqj3mgh5vugc8l0y2d": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [
+      { "unix_timestamp": 1629928001.0, "delta": 2709.7830157965345 }
+    ],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [{ "unix_timestamp": 1629928001.0, "delta": 2876.8342100000004 }]
+  },
+  "sif1hr4r2tflx5aahspfkqd32qmtt2nejxxll93u0j": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [
+      { "unix_timestamp": 1629924959.0, "delta": 4.129734226079494 }
+    ],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629924908.0, "delta": 2.1492350876797106 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629924930.0, "delta": 31.541782340681998 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629924959.0, "delta": 4.11239 },
+      { "unix_timestamp": 1629924930.0, "delta": 33.76236 },
+      { "unix_timestamp": 1629924908.0, "delta": 2.25571 }
+    ]
+  },
+  "sif13ynqna8v9cr0ftx2x9y0j3k4f0yeg00kxfpalv": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629882790.0, "delta": 7600.308526057954 },
+      { "unix_timestamp": 1629878785.0, "delta": 3443.0009232953116 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629882790.0, "delta": 7600.308514631814 },
+      { "unix_timestamp": 1629878785.0, "delta": 3443.0009899741003 }
+    ]
+  },
+  "sif1nchc75uswex4v5sa7fvprqpvr7jelnd3pu9q2s": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629942909.0, "delta": 281.4301398475744 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629942909.0, "delta": 263.55204 }]
+  },
+  "sif1wkjfgveqeq9ts57km0jqy99gpz3nqv3jnqgznk": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629925796.0, "delta": 428.5802872073083 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [{ "unix_timestamp": 1629925796.0, "delta": 376.64908 }]
+  },
+  "sif1rg47nzw0gtawkgcfvxnqd8tya976uqu2jm7gr7": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629936222.0, "delta": 32824.2868948061 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629936222.0, "delta": 31469.313759999997 }]
+  },
+  "sif1y650ndnpusm2tmn5ejc0ahynxpl6nn3wkrc5rw": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629927072.0, "delta": 47.03632460875955 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [
+      { "unix_timestamp": 1629927241.0, "delta": 7000.0 },
+      { "unix_timestamp": 1629927106.0, "delta": 20.0 },
+      { "unix_timestamp": 1629927072.0, "delta": 36.81246 }
+    ]
+  },
+  "sif1znaa7msrj9nfc8rm04glkfwcc57358rmn36ukw": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629937383.0, "delta": 44.154250365486625 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629938737.0, "delta": 52.22907800773882 },
+      { "unix_timestamp": 1629937902.0, "delta": 13.023286090944097 },
+      { "unix_timestamp": 1629937208.0, "delta": 52.687458900170306 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629938737.0, "delta": 50.94293707126015 },
+      { "unix_timestamp": 1629937902.0, "delta": 12.601979324260009 },
+      { "unix_timestamp": 1629937383.0, "delta": 41.02302 },
+      { "unix_timestamp": 1629937208.0, "delta": 50.72975 }
+    ]
+  },
+  "sif1jtwxm58ntrc9qvtm4n57zxdzlu59exxlfa4hkz": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [
+      { "unix_timestamp": 1629944782.0, "delta": 7451.361022540794 }
+    ],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629944630.0, "delta": 56579.56822547168 },
+      { "unix_timestamp": 1629942006.0, "delta": 3605.961431905011 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [
+      { "unix_timestamp": 1629944782.0, "delta": 6364.551990778934 },
+      { "unix_timestamp": 1629942006.0, "delta": 4016.4427800000003 }
+    ]
+  },
+  "sif1d7v7e506wjkxnlc9dx8v2eqpeum7lrh6cetuew": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [
+      { "unix_timestamp": 1629896417.0, "delta": 3.97991677322067 },
+      { "unix_timestamp": 1629873354.0, "delta": 0.1550617182924225 },
+      { "unix_timestamp": 1629873304.0, "delta": -0.1550617182924225 }
+    ],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629872325.0, "delta": 22.959773727215588 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629935721.0, "delta": 2548.729419809548 },
+      { "unix_timestamp": 1629895720.0, "delta": 24772.625899327584 },
+      { "unix_timestamp": 1629874451.0, "delta": 488.32300214821095 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629935721.0, "delta": 2526.70855 },
+      { "unix_timestamp": 1629896417.0, "delta": 3.97992 },
+      { "unix_timestamp": 1629895720.0, "delta": 24772.6259 },
+      { "unix_timestamp": 1629874451.0, "delta": 450.0 },
+      { "unix_timestamp": 1629873354.0, "delta": 8.57144 },
+      { "unix_timestamp": 1629873304.0, "delta": -8.571428571428571 }
+    ]
+  },
+  "sif109u86dvw52ntm8pl4a97xjj7ffs3wspkkrd3z0": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [
+      { "unix_timestamp": 1629931965.0, "delta": 1024.9626556918165 }
+    ],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629931503.0, "delta": 843.7873255939625 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [
+      { "unix_timestamp": 1629931965.0, "delta": 1094.68859 },
+      { "unix_timestamp": 1629931503.0, "delta": 1087.4323 }
+    ]
+  },
+  "sif1vswxpd7stuulgyu5q8hzqn8cmn54kfzdwg5xc3": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629923069.0, "delta": 597.2641067133712 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [{ "unix_timestamp": 1629923069.0, "delta": 0.08782 }]
+  },
+  "sif19vprdtfha0xsls0qlwqj2sas32nqqtf4f0ks3m": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629918939.0, "delta": 1318.5780506698586 },
+      { "unix_timestamp": 1629918820.0, "delta": 1316.2257621863866 },
+      { "unix_timestamp": 1629918404.0, "delta": 2650.001201201925 },
+      { "unix_timestamp": 1629918262.0, "delta": 877.4838414575911 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [
+      { "unix_timestamp": 1629918939.0, "delta": 1296.12417 },
+      { "unix_timestamp": 1629918820.0, "delta": 1218.65414 },
+      { "unix_timestamp": 1629918404.0, "delta": 2311.2838899999997 },
+      { "unix_timestamp": 1629918262.0, "delta": 765.32579 }
+    ]
+  },
+  "sif1v2ym30zwpwwst65amwkw6z6sgjl9ruwxpf4cq5": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629930730.0, "delta": 0.09992129509683703 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [{ "unix_timestamp": 1629930730.0, "delta": 35565.233762348944 }]
+  },
+  "sif1fg66wllrhkk8t9gr3guj0rylljmkd3w3frxcjn": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [
+      { "unix_timestamp": 1629939278.0, "delta": 722.4843590611774 }
+    ],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629933806.0, "delta": 1011.5959705183291 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629939459.0, "delta": 1833.3792060885403 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629939459.0, "delta": 1820.07215 },
+      { "unix_timestamp": 1629939278.0, "delta": 698.1663900000001 },
+      { "unix_timestamp": 1629933806.0, "delta": 1032.15378 }
+    ]
+  },
+  "sif1rkj0a7m8yk2d9ylrcznlxehhh4pqp888terwmr": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629941274.0, "delta": 4.248121205779605 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629942328.0, "delta": 1.0667328020782463 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629942451.0, "delta": 5000.0 },
+      { "unix_timestamp": 1629942328.0, "delta": 1.0009 },
+      { "unix_timestamp": 1629941403.0, "delta": 5000.0 },
+      { "unix_timestamp": 1629941274.0, "delta": 4.29061 }
+    ]
+  },
+  "sif14cegm25ptndyvydlgqafhgq3wkmeg9fvwpguxm": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629901425.0, "delta": 19051.019653697866 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629901425.0, "delta": 19051.019650000002 }]
+  },
+  "sif1xzp6uh4f8kyuxq703fmnzkacnkmkq4cwehu4h6": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [
+      { "unix_timestamp": 1629928870.0, "delta": 239.04502869690882 }
+    ],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629928655.0, "delta": 752.3965042083856 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [
+      { "unix_timestamp": 1629928870.0, "delta": 236.21865999999997 },
+      { "unix_timestamp": 1629928655.0, "delta": 653.5813300000001 }
+    ]
+  },
+  "sif1dfr0fuqlx5uppvhx6fl20fd2d95am2ezyax8qn": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [
+      { "unix_timestamp": 1629918200.0, "delta": 6282.68889084093 },
+      { "unix_timestamp": 1629913183.0, "delta": 2.1105619250767504 }
+    ],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629941679.0, "delta": 1635.5785379876734 },
+      { "unix_timestamp": 1629916299.0, "delta": 2503.608954981253 },
+      { "unix_timestamp": 1629915329.0, "delta": 205.6930066887228 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629941679.0, "delta": 1540.04018 },
+      { "unix_timestamp": 1629918200.0, "delta": 603.01769 },
+      { "unix_timestamp": 1629916299.0, "delta": 248.95212999999998 },
+      { "unix_timestamp": 1629915329.0, "delta": 2000.599570732452 },
+      { "unix_timestamp": 1629913183.0, "delta": 2.11056 }
+    ]
+  },
+  "sif1653rh57cmyy8vuup09vu9fue2wqulf0cy9gawr": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629942497.0, "delta": 59.38873445679888 },
+      { "unix_timestamp": 1629927747.0, "delta": 173.6008359002625 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [
+      { "unix_timestamp": 1629942497.0, "delta": 65.85566 },
+      { "unix_timestamp": 1629927747.0, "delta": 150.90882 }
+    ]
+  },
+  "sif1fp7lar7valvpajdxealzhaf5julcpvrlq5l2w4": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629923868.0, "delta": 51.61181844405796 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629923868.0, "delta": 54.0 }]
+  },
+  "sif1ddv6vr86l3h74lsndkqwsyhklfarqz03627m5u": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629935371.0, "delta": 15264.550264240144 },
+      { "unix_timestamp": 1629932050.0, "delta": 2059.421232937677 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629935371.0, "delta": 15053.0 },
+      { "unix_timestamp": 1629932050.0, "delta": 2075.0 }
+    ]
+  },
+  "sif1pfsmlav60zxplnn4wm5ujxh26yuwd55qg4m6je": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629939634.0, "delta": 255.15768126536668 },
+      { "unix_timestamp": 1629927956.0, "delta": 857.6107551482992 },
+      { "unix_timestamp": 1629926903.0, "delta": 164.76531041525408 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [
+      { "unix_timestamp": 1629939634.0, "delta": 249.99899000000002 },
+      { "unix_timestamp": 1629927956.0, "delta": 754.51773 },
+      { "unix_timestamp": 1629926903.0, "delta": 125.49335 }
+    ]
+  },
+  "sif1sz8t9sm3pwgeqdfkzm4jgwlkuqjaud0f8z8v02": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629943118.0, "delta": 50.363049246282834 },
+      { "unix_timestamp": 1629942497.0, "delta": 11.011235651676198 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629943118.0, "delta": 47.26079459767916 },
+      { "unix_timestamp": 1629942497.0, "delta": 10.369565971442409 }
+    ]
+  },
+  "sif1ln6728s5h4687w40rw9kyq4pwlpc05y9qscrec": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629942039.0, "delta": 16885.80839085447 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629942039.0, "delta": 15881.971300000001 }]
+  },
+  "sif12muxshhvy0vmkwv79camkymkqyldhhn0u2ugan": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629938596.0, "delta": 5268.74589001703 },
+      { "unix_timestamp": 1629941983.0, "delta": -5545.852204351268 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629938596.0, "delta": 5144.70149 },
+      { "unix_timestamp": 1629941983.0, "delta": -5221.90477392058 }
+    ]
+  },
+  "sif1q5gkcgd53ssjw0lgzg67fn5k8kd3s6xyyrctgq": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629928661.0, "delta": 80.88089530938676 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629928661.0, "delta": 400.0 }]
+  },
+  "sif16uym5up6ec3tyjep90dpwjtw4ck94gp8qktaem": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629930634.0, "delta": 5.142671152213849 },
+      { "unix_timestamp": 1629929777.0, "delta": 495.40585450352535 },
+      { "unix_timestamp": 1629928791.0, "delta": 520.4964460679664 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629930634.0, "delta": 105.0 },
+      { "unix_timestamp": 1629929777.0, "delta": 500.0 },
+      { "unix_timestamp": 1629928791.0, "delta": 515.0 }
+    ]
+  },
+  "sif1unaq4gl0fl3zzdj9ms0wgyzcvm6y8c7gsa27u6": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629943755.0, "delta": 0.9993584265987369 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629943806.0, "delta": 6553.22652898633 },
+      { "unix_timestamp": 1629943755.0, "delta": 1.0 }
+    ]
+  },
+  "sif19mje44d8wvpwwpjqnanq34vf53eqcuhjdeprxc": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629930386.0, "delta": 22.627753069740933 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629930386.0, "delta": 24.92637 }]
+  },
+  "sif17s6ucafgwc9khrvgphemalcuxz2lv2ucqkzd30": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629922489.0, "delta": 1162.705955064068 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629922489.0, "delta": 1125.7024900000001 }]
+  },
+  "sif1k6dlhsux86jjdakk7g8tq4dfgchytysq7pfh6e": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [
+      { "unix_timestamp": 1629872865.0, "delta": 0.06030176928564719 }
+    ],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": []
+  },
+  "sif1dlwzczuey4wfue5xqk7mt4ygrzk9krks030e3x": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629925422.0, "delta": 3480.2382785998775 },
+      { "unix_timestamp": 1629923177.0, "delta": 1161.7889828817872 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629925422.0, "delta": 3559.7277200000003 },
+      { "unix_timestamp": 1629923177.0, "delta": 1187.35982 }
+    ]
+  },
+  "sif1pz9r9j7m2u72ale0yulrjmps9tpnkpnvsulu3l": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629926835.0, "delta": 998.9938108302501 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629926536.0, "delta": 909.0211526083463 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629926835.0, "delta": 885.95045 },
+      { "unix_timestamp": 1629926536.0, "delta": 889.98573 }
+    ]
+  },
+  "sif15zv0g0y4652z8vhj0kvx325rea7r2n67s4u3fe": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629925530.0, "delta": 26.285787602718106 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629925530.0, "delta": 26.62056 }]
+  },
+  "sif1apmyeqmre5djkplp8qx4s0rf6ha3sw4fcuwcgg": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629942734.0, "delta": 5684.21339258537 },
+      { "unix_timestamp": 1629942231.0, "delta": 2635.1415080120514 }
+    ],
+    "rowan": []
+  },
+  "sif1u9szkhxh6ezhd7vp0prcfjx7vsyn3jupqjlyzw": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [
+      { "unix_timestamp": 1629935771.0, "delta": 8662.545431936165 }
+    ],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [{ "unix_timestamp": 1629935771.0, "delta": 8644.2128 }]
+  },
+  "sif1xq767fh48hwqqfll8743jegrjxfj00t7zc7r9x": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629924914.0, "delta": 93.56086443768523 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629924914.0, "delta": 100.0 }]
+  },
+  "sif15qsmmaqvwxq2cxp9k3g6ecqprlkmp9med9vrtx": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629923563.0, "delta": 5204.39408621253 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629923563.0, "delta": 5206.43761 }]
+  },
+  "sif1uufle6nnca57cs56kg7w7fcgmx0ktxyl79yh8z": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629932474.0, "delta": 1607.240945088177 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629932474.0, "delta": 1630.13985 }]
+  },
+  "sif17ry7yg9d55sjrtdh04xe7p723p9ckl2y2uqv74": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629923161.0, "delta": 293.4610630230989 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629923161.0, "delta": 299.91906 }]
+  },
+  "sif1qttmfljc3qcerypthjtxw4a8675xcf9h6w9w03": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629923879.0, "delta": 278.8513825696301 },
+      { "unix_timestamp": 1629923041.0, "delta": 414.4376766838443 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629923879.0, "delta": 290.99939 },
+      { "unix_timestamp": 1629923041.0, "delta": 415.99621 }
+    ]
+  },
+  "sif1kjyk39gqxqeh7xam6ejc7l3ng6edgsgnv5fln9": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629942740.0, "delta": 8.49624241155921 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [{ "unix_timestamp": 1629942740.0, "delta": 9.16617 }]
+  },
+  "sif1zf848us36ya5qd4tag2egnlmd8wlmgs5c5enj2": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629923336.0, "delta": 208.97009066711405 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629923336.0, "delta": 215.0 }]
+  },
+  "sif14aw43q28gs6h0668s97lm27trqw7zllg0a7294": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629944449.0, "delta": 394.00219578660426 }
+    ],
+    "rowan": []
+  },
+  "sif13q6d2mcyx9ah0vmdg2xtvawcpvwzr864wym5vw": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629934944.0, "delta": 357.15616287730427 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [{ "unix_timestamp": 1629934944.0, "delta": 361.99642 }]
+  },
+  "sif1xsk5e959zss3ev5l3q552sxc4hx2pwt65fmy5q": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629927787.0, "delta": 102.52019680914759 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629928463.0, "delta": 5990.04487411979 },
+      { "unix_timestamp": 1629928418.0, "delta": 9000.0 },
+      { "unix_timestamp": 1629928362.0, "delta": 9000.0 },
+      { "unix_timestamp": 1629928255.0, "delta": 9000.0 },
+      { "unix_timestamp": 1629928215.0, "delta": 9000.0 },
+      { "unix_timestamp": 1629928069.0, "delta": 9000.0 },
+      { "unix_timestamp": 1629927956.0, "delta": 9000.0 },
+      { "unix_timestamp": 1629927832.0, "delta": 8329.0 },
+      { "unix_timestamp": 1629927787.0, "delta": 99.99996999999999 }
+    ]
+  },
+  "sif1anxq4ydjjh857f5nc2vq9lljr2shyj9mctm55l": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629943039.0, "delta": 101.3148503451268 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629943039.0, "delta": 95.06778 }]
+  },
+  "sif1kazy6mnuggvqtge0tpvx4wu5yx3zfuslmyhvte": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629939120.0, "delta": 1791.3736026057904 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629939120.0, "delta": 1778.37143 }]
+  },
+  "sif1zdh3jjrfp3jjs5ufccdsk0uml22dgl7gghu98g": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [
+      { "unix_timestamp": 1629878077.0, "delta": 16643.288322838624 },
+      { "unix_timestamp": 1629878048.0, "delta": 6030.176928564719 },
+      { "unix_timestamp": 1629878026.0, "delta": 6030.176928564719 },
+      { "unix_timestamp": 1629877992.0, "delta": 3015.088461870289 },
+      { "unix_timestamp": 1629877964.0, "delta": 3015.0884642823594 }
+    ],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629879398.0, "delta": 14204.446679237377 },
+      { "unix_timestamp": 1629879370.0, "delta": 7653.257909071862 },
+      { "unix_timestamp": 1629879341.0, "delta": 7285.901529436413 },
+      { "unix_timestamp": 1629879302.0, "delta": 3642.9507647182063 },
+      { "unix_timestamp": 1629879280.0, "delta": 3642.9507647182063 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629876805.0, "delta": 5132.274752577697 },
+      { "unix_timestamp": 1629876776.0, "delta": 9766.46004296422 },
+      { "unix_timestamp": 1629876748.0, "delta": 9766.46004296422 },
+      { "unix_timestamp": 1629876714.0, "delta": 3906.5840171856876 },
+      { "unix_timestamp": 1629876692.0, "delta": 3906.5840171856876 },
+      { "unix_timestamp": 1629876444.0, "delta": 3608.7069858752793 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629879398.0, "delta": 14239.0 },
+      { "unix_timestamp": 1629879370.0, "delta": 7672.0 },
+      { "unix_timestamp": 1629879341.0, "delta": 7304.0 },
+      { "unix_timestamp": 1629879302.0, "delta": 3652.0 },
+      { "unix_timestamp": 1629879280.0, "delta": 3652.0 },
+      { "unix_timestamp": 1629878077.0, "delta": 16640.0 },
+      { "unix_timestamp": 1629878048.0, "delta": 6029.0 },
+      { "unix_timestamp": 1629878026.0, "delta": 6027.0 },
+      { "unix_timestamp": 1629877992.0, "delta": 3014.0 },
+      { "unix_timestamp": 1629877964.0, "delta": 3014.0 },
+      { "unix_timestamp": 1629876805.0, "delta": 5150.000000000001 },
+      { "unix_timestamp": 1629876776.0, "delta": 9801.0 },
+      { "unix_timestamp": 1629876748.0, "delta": 9801.0 },
+      { "unix_timestamp": 1629876714.0, "delta": 3920.0 },
+      { "unix_timestamp": 1629876692.0, "delta": 3920.0 },
+      { "unix_timestamp": 1629876444.0, "delta": 3620.0 }
+    ]
+  },
+  "sif160sudzdvmvq7hcadj5zch38clje8reat7vvtvm": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629934860.0, "delta": 359.4059274404263 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [{ "unix_timestamp": 1629934860.0, "delta": 361.99638000000004 }]
+  },
+  "sif1j3z2lah8c4ppfez9029224a7aptmt626zfjrus": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629927257.0, "delta": 4508.012573866155 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629927257.0, "delta": 4373.69255 }]
+  },
+  "sif1rxjpqczs24vww6f6xqshun7z23q9gg73eqvnjn": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629932265.0, "delta": 7847.600982444523 },
+      { "unix_timestamp": 1629932152.0, "delta": 118880.32678421668 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629932265.0, "delta": 7921.5 },
+      { "unix_timestamp": 1629932152.0, "delta": 119999.79214297087 }
+    ]
+  },
+  "sif1shywxv2g8gvjcqknvkxu4p6lkqhfclwwj2qk6h": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629914484.0, "delta": 8.398188550257734 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [
+      { "unix_timestamp": 1629925909.0, "delta": 10.0 },
+      { "unix_timestamp": 1629914484.0, "delta": 7.65326 }
+    ]
+  },
+  "sif1dwvvh66wj8252clr6r8fk7e9jgpkzarna2943v": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629939849.0, "delta": 160.0692070337755 },
+      { "unix_timestamp": 1629925169.0, "delta": 92.16912010626451 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": []
+  },
+  "sif1wqga4v4nc77zah2n6nc9y0cdsu9hqcv46n4t70": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629926547.0, "delta": 518.8651500893417 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629927979.0, "delta": 6.3 },
+      { "unix_timestamp": 1629926547.0, "delta": 508.0 }
+    ]
+  },
+  "sif1v693fhd3jyu0j0ppa4pqpswx4tcwsfax99skud": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629942135.0, "delta": 3730.445942178043 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629942135.0, "delta": 3500.6443999999997 }]
+  },
+  "sif12snhwr34fkger3tlcp3ndsjxwmeewxekxjnwc8": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [
+      { "unix_timestamp": 1629932242.0, "delta": 224.77722032897367 }
+    ],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [{ "unix_timestamp": 1629932242.0, "delta": 258.07302000000004 }]
+  },
+  "sif1fmsl3khdrppya8rnnn9ljjtrt2m75geksvfq4f": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629930098.0, "delta": 1214.49655389485 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [{ "unix_timestamp": 1629930098.0, "delta": 1199.76098 }]
+  },
+  "sif1x7744zhq30ar4gsttje932g57mzvmuu49n4md3": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [
+      { "unix_timestamp": 1629923732.0, "delta": 206.48671130397472 }
+    ],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [{ "unix_timestamp": 1629923732.0, "delta": 187.49790000000002 }]
+  },
+  "sif16um4rgfg3aqassjg6cmkuw90hgvshrwm0lscwt": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629931712.0, "delta": 434.8912716547521 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629931712.0, "delta": 448.06451 }]
+  },
+  "sif1smy7dry3kpug82c5l8244crhm66uatr3cgdxtr": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629924936.0, "delta": 262.84818617235 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629924936.0, "delta": 280.8791 }]
+  },
+  "sif1jrlf6r7dz4a7z57uvjpwacfj2dkuf8znjn2s8s": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629924439.0, "delta": 5256.963723447 },
+      { "unix_timestamp": 1629923991.0, "delta": 525.6963723447 },
+      { "unix_timestamp": 1629923703.0, "delta": 262.84818617235 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629924439.0, "delta": 5281.7306499999995 },
+      { "unix_timestamp": 1629923991.0, "delta": 561.4403 },
+      { "unix_timestamp": 1629923703.0, "delta": 262.43221 },
+      { "unix_timestamp": 1629923868.0, "delta": -536.0267507939783 }
+    ]
+  },
+  "sif1tvy2mfg4rtjy3p7ell8n0ddy2qmu8wzctugqmj": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [
+      { "unix_timestamp": 1629922742.0, "delta": 429.8365040311074 }
+    ],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629923030.0, "delta": 10724.20599583188 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629923030.0, "delta": 10764.53531 },
+      { "unix_timestamp": 1629922742.0, "delta": 362.48573 }
+    ]
+  },
+  "sif1t2rgk5azrrpy2xdzuj6t0w8d37lnfnxxm0j8s5": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629942395.0, "delta": 54.22759854523071 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [{ "unix_timestamp": 1629942395.0, "delta": 59.99999 }]
+  },
+  "sif1a9e0a5lrskp3ukm7lh2vf0lgvgs69wfu0dyu4j": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629924835.0, "delta": 32703.06513052686 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629924835.0, "delta": 34946.436330000004 }]
+  },
+  "sif17ug78e45tnpzwe4dln5a0q0eda7al00rdwve9r": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629935141.0, "delta": 354.5407561214614 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [{ "unix_timestamp": 1629935141.0, "delta": 361.99648 }]
+  },
+  "sif1p52fqvqe0pl59pwzndw4r7gkk486ay55fhkcc5": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629925038.0, "delta": 3942.72279258525 },
+      { "unix_timestamp": 1629924314.0, "delta": 1209.1016563928101 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629925038.0, "delta": 4220.292829999999 },
+      { "unix_timestamp": 1629924314.0, "delta": 1284.1515 }
+    ]
+  },
+  "sif1c9tp079qlwv3m42pgarmxdfj4rqd3v54mdlg3t": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629938043.0, "delta": 722.6054429432196 },
+      { "unix_timestamp": 1629937626.0, "delta": 519.7437102517773 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629938043.0, "delta": 699.99979 },
+      { "unix_timestamp": 1629937626.0, "delta": 502.93693 }
+    ]
+  },
+  "sif1n403zg6xsxk0wafamusx5cuycsx430qwh8gqe8": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [
+      { "unix_timestamp": 1629932610.0, "delta": 4041.9642493054866 }
+    ],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629931887.0, "delta": 3774.137067224975 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629931163.0, "delta": 19416.42384545793 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629932610.0, "delta": 5329.75015 },
+      { "unix_timestamp": 1629931887.0, "delta": 4895.4994400000005 },
+      { "unix_timestamp": 1629931163.0, "delta": 19990.08845 }
+    ]
+  },
+  "sif1lgtew9spzxfg2qxu4cdkczkkxdnuudc6c7gdm2": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [
+      { "unix_timestamp": 1629944060.0, "delta": 1250.0 },
+      { "unix_timestamp": 1629943665.0, "delta": 1250.0 }
+    ]
+  },
+  "sif18hhw82dsrv4xy0r9xh3ld2z4hkn3lnakpel37u": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629924149.0, "delta": 2418.2033127856203 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629924149.0, "delta": 2568.30299 }]
+  },
+  "sif13gu6uzke76x2jwvna9fglyhl5jacprygssuty4": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629922804.0, "delta": 916.8324335662163 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629922934.0, "delta": 1017.6605432740693 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629922934.0, "delta": 999.9449800000001 },
+      { "unix_timestamp": 1629922804.0, "delta": 999.50952 }
+    ]
+  },
+  "sif1y2ptynyf78vjl7agjj7e7x9t2k3gwgv5kadnf7": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629923398.0, "delta": 973.7125849321862 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629923330.0, "delta": 788.5445585170501 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629923398.0, "delta": 1053.79457 },
+      { "unix_timestamp": 1629923330.0, "delta": 811.2992 }
+    ]
+  },
+  "sif1q6y0uzzkm3nue956gwyg4ey73smzp00l6ne7ns": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629924121.0, "delta": 518.7021328650477 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [{ "unix_timestamp": 1629924121.0, "delta": 581.42062 }]
+  },
+  "sif1s5dtu5pywamqc9kuxu37u9p0xrj4psmj7jjgp3": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [
+      { "unix_timestamp": 1629939544.0, "delta": 12.019779487169602 }
+    ],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629940626.0, "delta": 974.6836023100806 },
+      { "unix_timestamp": 1629939498.0, "delta": 175.73391645463676 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [
+      { "unix_timestamp": 1629940626.0, "delta": 992.94209 },
+      { "unix_timestamp": 1629939544.0, "delta": 11.61521 },
+      { "unix_timestamp": 1629939498.0, "delta": 171.48922 }
+    ]
+  },
+  "sif1qcnjlne8r0yecd7gt36xh9ztkdwtmw8ktpfd2w": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [
+      { "unix_timestamp": 1629926473.0, "delta": 1347.6368394112897 }
+    ],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629926570.0, "delta": 4276.278865690699 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [
+      { "unix_timestamp": 1629940495.0, "delta": 3480.0 },
+      { "unix_timestamp": 1629940434.0, "delta": 3470.0 },
+      { "unix_timestamp": 1629926570.0, "delta": 3758.69536 },
+      { "unix_timestamp": 1629926473.0, "delta": 1316.75142 }
+    ]
+  },
+  "sif1pmr6r949xq8x7zdtqrmufhhzfm6akmrtzsrdz0": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629942497.0, "delta": 153.3062830365985 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [{ "unix_timestamp": 1629942497.0, "delta": 170.0 }]
+  },
+  "sif1n4rw4wnrxel26qs3t23xjq0fpne47gz95f67gd": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [
+      { "unix_timestamp": 1629927934.0, "delta": 16.124250796680883 }
+    ],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629927849.0, "delta": 19.048012764769258 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [
+      { "unix_timestamp": 1629927934.0, "delta": 1.54376 },
+      { "unix_timestamp": 1629927849.0, "delta": 16.75826 }
+    ]
+  },
+  "sif1643c5dsu8z75a9739her7603um72c5v6au4ycr": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629934527.0, "delta": 218.9260510619097 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [{ "unix_timestamp": 1629934527.0, "delta": 222.79915 }]
+  },
+  "sif1lsw7qjjurzszeqrcqhwwkvn3qvpglph7hus9c4": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629936341.0, "delta": 177.2723822778897 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629936341.0, "delta": 169.99999 }]
+  },
+  "sif1hwe0694h92mduak9gxvrnyj6gcfxf32224qw30": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629943056.0, "delta": 1506.076489125833 },
+      { "unix_timestamp": 1629923517.0, "delta": 1051.3927446894 },
+      { "unix_timestamp": 1629923245.0, "delta": 1058.2833098899082 },
+      { "unix_timestamp": 1629923149.0, "delta": 2103.9628915439403 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629943056.0, "delta": 1413.21182 },
+      { "unix_timestamp": 1629923517.0, "delta": 1053.45418 },
+      { "unix_timestamp": 1629923245.0, "delta": 1088.82166 },
+      { "unix_timestamp": 1629923149.0, "delta": 2150.83506 }
+    ]
+  },
+  "sif1th3ujscq5cghp3n2fzd8kjuk2hz972mds2y4d4": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629944100.0, "delta": 0.9930543914661512 }
+    ],
+    "rowan": [
+      { "unix_timestamp": 1629944291.0, "delta": 10000.0 },
+      { "unix_timestamp": 1629944133.0, "delta": 10000.0 },
+      { "unix_timestamp": 1629944100.0, "delta": 1.0 }
+    ]
+  },
+  "sif1w5h4fh48p3x8tkaqt0vdt49vnk082s9vu303tz": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629923703.0, "delta": 96.71557894558697 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [{ "unix_timestamp": 1629923703.0, "delta": 104.66985 }]
+  },
+  "sif1uxp6zv65r7m4ekd9myu2nfmmawqs3s4fkk0sm2": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [
+      { "unix_timestamp": 1629933242.0, "delta": 1799.684257476068 }
+    ],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [
+      { "unix_timestamp": 1629938748.0, "delta": 291.41805241221175 },
+      { "unix_timestamp": 1629932407.0, "delta": 168.75746511879248 }
+    ],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [],
+    "rowan": [
+      { "unix_timestamp": 1629939018.0, "delta": 1100.0 },
+      { "unix_timestamp": 1629938844.0, "delta": 6987.0 },
+      { "unix_timestamp": 1629938748.0, "delta": 269.27092999999996 },
+      { "unix_timestamp": 1629933242.0, "delta": 1827.8359600000001 },
+      { "unix_timestamp": 1629932407.0, "delta": 175.02188 }
+    ]
+  },
+  "sif1ljhqrq4uhl8clzdquupj7pqu4wp92arrs20nwe": {
+    "ibc/21cb41565fca19ab6613ee06b0d56e588e0dc3e53ff94ba499bb9635794a1a35": [],
+    "ibc/6d717bff5537d129035bab39f593d638ba258a9f8d86fb7ecceab05b6950cc3e": [],
+    "ibc/27394fb092d2eccd56123c74f36e4c1f926001ceada9ca97ea622b25f41e5eb2": [
+      { "unix_timestamp": 1629927285.0, "delta": 2103.9982388124345 }
+    ],
+    "rowan": [{ "unix_timestamp": 1629927285.0, "delta": 2049.95144 }]
+  }
+}
+

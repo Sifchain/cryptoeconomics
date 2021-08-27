@@ -33,7 +33,7 @@ let smallestTimestampUnix = Infinity;
 //   }
 // })();
 function remapLMAddresses(addresses, deltaCoeff) {
-  delete addresses['sif1zdh3jjrfp3jjs5ufccdsk0uml22dgl7gghu98g'];
+  // delete addresses['sif1zdh3jjrfp3jjs5ufccdsk0uml22dgl7gghu98g'];
   const mapped = _.map(addresses, (tokens, address) => {
     const addressTokenEvents = _.map(tokens, (timeIntervals, token) => {
       return timeIntervals
@@ -46,7 +46,7 @@ function remapLMAddresses(addresses, deltaCoeff) {
             timestamp:
               (getTimeIndex(interval.unix_timestamp * 1000) + 1) *
               EVENT_INTERVAL_MINUTES,
-            amount: interval.delta * deltaCoeff,
+            amount: interval.delta, //* deltaCoeff,
             delegateAddress: address,
           });
         })
