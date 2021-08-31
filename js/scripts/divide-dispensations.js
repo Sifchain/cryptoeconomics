@@ -103,7 +103,7 @@ function createDispensationRunKit() {
     RUNNER_ADDRESS,
     DISTRIBUTOR_ADDRESS,
     CURRENT_DATE: new Date().toLocaleDateString(),
-    DOWNLOAD_DIST_LIST_COMMAND: `curl "<TARBALL_FILE_URL>" -o dispensations.tar.gz && mkdir ./dispensations && tar -xzvf dispensations.tar.gz -C dispensations && cd dispensations`,
+    DOWNLOAD_DIST_LIST_COMMAND: `curl "<TARBALL_FILE_URL>" -o ${dispensationName}.tar.gz && mkdir ./${dispensationName} && tar -xzvf ${dispensationName}.tar.gz -C ${dispensationName} && cd ${dispensationName}`,
     CREATE_DISTRIBUTIONS_COMMAND: filePaths
       .filter((p) => p.includes('.split.'))
 
