@@ -14,6 +14,12 @@ const dispensationName = createDispensationFileName(
   true
 );
 
+const rewardPrograms = {
+  '39_SUNSET_LIQUIDITY_MINING': '39_LIQUIDITY_MINING',
+  '39_SUNSET_VALIDATOR_SUBSIDY': '39_VALIDATOR_SUBSIDY',
+  '39_AIRDROP': '39_AIRDROP',
+};
+
 const getOutputPath = (...paths) =>
   path.join(
     __dirname,
@@ -115,7 +121,13 @@ function createDispensationRunKit() {
               : p.startsWith('vs')
               ? 'ValidatorSubsidy'
               : 'Airdrop'
-          } ${p} ${RUNNER_ADDRESS} --from ${DISTRIBUTOR_ADDRESS} --node ${RPC_ENDPOINT} --chain-id ${CHAIN_ID}  --gas 100000000 --gas-prices=0.5rowan --keyring-backend test --yes --broadcast-mode block;`
+          } ${p} ${RUNNER_ADDRESS} --from ${DISTRIBUTOR_ADDRESS} --node ${RPC_ENDPOINT} --chain-id ${CHAIN_ID}  --gas 100000000 --gas-prices=0.5rowan --keyring-backend test --yes --broadcast-mode block --memo "${
+            p.startsWith('lm')
+              ? rewardPrograms['39_SUNSET_LIQUIDITY_MINING']
+              : p.startsWith('vs')
+              ? rewardPrograms['39_SUNSET_VALIDATOR_SUBSIDY']
+              : rewardPrograms['39_AIRDROP']
+          }";`
       )
       .join('\n\n\n\n'),
   };
