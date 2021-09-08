@@ -84,7 +84,7 @@ const getSQLQueryByNetwork = (network) => {
               snapshots_claims
             WHERE
               is_current = true 
-              AND reward_program = 'IBC_REWARDS_V1';
+              AND reward_program = 'COSMOS_IBC_REWARDS_V1';
           `
         );
         // const snapshots_lm_dispensation = tx.many(
