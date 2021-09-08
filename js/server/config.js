@@ -9,7 +9,12 @@ const moment = require('moment');
 
 // Rewards begin accruing
 // const START_DATETIME = '2021-08-16T06:00:00.000Z';
+
+// originally set to:
 const START_DATETIME = '2021-08-24T20:06:15.000Z';
+// timestamp associated w/ block height 2976500: (verify dates before bumping. this will increase APY's)
+// const START_DATETIME = '2021-08-24T22:38:16.367386704Z';
+//  '2021-08-24T22:38:16.367386704Z';
 // Deposits are cut off earlier on
 const DEPOSIT_CUTOFF_DATETIME = moment
   .utc(START_DATETIME)

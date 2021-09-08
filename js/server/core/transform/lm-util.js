@@ -55,12 +55,6 @@ function remapLMAddresses(addresses, deltaCoeff) {
     return addressTokenEvents;
   });
 
-  console.log(
-    'smallest timestamp unix',
-    smallestTimestampUnix,
-    new Date(smallestTimestampUnix * 1000)
-  );
-
   const rawEvents = _.flattenDeep(mapped);
   let allTimeIntervalEvents = _.groupBy(rawEvents, 'timestamp');
   allTimeIntervalEvents = _.mapValues(
@@ -107,10 +101,10 @@ function createClaimEvents(addresses) {
   const claimEventsByUserByTimestamp = {};
   for (const addr in addresses) {
     const claimEventsTimeSeries = addresses[addr];
-    for (let i = 0; i < claimEventsTimeSeries.length; i++) {
-      const [timelineIndex, binaryClaimEvent] = claimEventsTimeSeries[i];
-      const didClaim = !!binaryClaimEvent;
-      const timestamp = (i + timelineIndex) * EVENT_INTERVAL_MINUTES;
+    for (let item of claimEventsTimeSeries) {
+      const timelineIndex = getTimeIndex(item.unix * 1000);
+      const didClaim = true;
+      const timestamp = (1 + timelineIndex) * EVENT_INTERVAL_MINUTES;
       claimEventsByUserByTimestamp[timestamp] =
         claimEventsByUserByTimestamp[timestamp] || {};
       if (didClaim) {

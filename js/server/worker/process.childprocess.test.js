@@ -39,9 +39,9 @@ const describe = async (description, describer) => {
 };
 
 const runTests = (type, parsedData, network) => {
-  const users = Object.values(
-    parsedData.processedData[parsedData.processedData.length - 1].users
-  );
+  const finalGlobalTimestampState =
+    parsedData.processedData[parsedData.processedData.length - 1];
+  const users = Object.values(finalGlobalTimestampState.users);
 
   const totalPoolDominanceRatio = _.sum(
     _.flattenDeep(

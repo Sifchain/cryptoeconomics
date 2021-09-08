@@ -75,9 +75,18 @@ const getSQLQueryByNetwork = (network) => {
         const snapshots_new = tx.many(
           slonik.sql`select * from snapshots_lm rf where rf.snapshot_time = (select max(snapshot_time) from snapshots_lm)`
         );
-        // const snapshots_lm_claims = tx.many(
-        //   slonik.sql`select * from snapshots_lm_claims_rf rf where rf.created_at = (select max(created_at) from snapshots_lm_claims_rf);`
-        // );
+        const snapshots_lm_claims = tx.any(
+          slonik.sql`
+            SELECT
+              snapshots_claims.claim_time unix,
+              address, reward_program, distribution_type
+            FROM
+              snapshots_claims
+            WHERE
+              is_current = true 
+              AND reward_program = 'IBC_REWARDS_V1';
+          `
+        );
         // const snapshots_lm_dispensation = tx.many(
         //   slonik.sql`select * from snapshots_lm_dispensation_rf rf where rf.created_at = (select max(created_at) from snapshots_lm_dispensation_rf);`
         // );
@@ -89,12 +98,21 @@ const getSQLQueryByNetwork = (network) => {
             snapshotsNewLoaded.pop().snapshot_data
           );
         }
+        const [...snapshotsClaimsLoaded] = await snapshots_lm_claims;
+        const firstItemClaimData = {};
+        while (snapshotsClaimsLoaded.length) {
+          const item = snapshotsClaimsLoaded.pop();
+          firstItemClaimData[item.address] = [
+            ...(firstItemClaimData[item.address] || []),
+            item,
+          ];
+        }
         return {
           data: {
             snapshots_new: snapshotsNewLoaded,
-            // snapshots_lm_claims: await snapshots_lm_claims,
+            snapshots_lm_claims: [{ snapshot_data: firstItemClaimData }],
             // snapshots_lm_dispensation: await snapshots_lm_dispensation,
-            snapshots_lm_claims: [],
+            // snapshots_lm_claims: [],
             snapshots_lm_dispensation: [],
           },
         };
