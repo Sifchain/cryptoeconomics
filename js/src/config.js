@@ -1,11 +1,11 @@
 const config = {
-  START_DATETIME: '2021-02-19T06:48:43+00:00',
+  START_DATETIME: '2021-08-24T20:06:15.000Z',
   networks: {
     MAINNET: 'mainnet',
     DEVNET: 'devnet',
-    TESTNET: 'testnet'
+    TESTNET: 'testnet',
   },
-  RECENT_ADDRESS_LIST_STORAGE_KEY: '__recent-address-list'
+  RECENT_ADDRESS_LIST_STORAGE_KEY: '__recent-address-list',
 };
 
 module.exports = config;

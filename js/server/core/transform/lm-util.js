@@ -120,9 +120,9 @@ function createDispensationEvents(addresses) {
   for (const addr in addresses) {
     const dispensationEventsTimeSeries = addresses[addr];
     for (let i = 0; i < dispensationEventsTimeSeries.length; i++) {
-      const [timelineIndex, amountToDistribute] =
-        dispensationEventsTimeSeries[i];
-
+      const item = dispensationEventsTimeSeries[i];
+      const amountToDistribute = item.amount;
+      const timelineIndex = getTimeIndex(item.timestamp);
       const timestamp = (timelineIndex + 1) * EVENT_INTERVAL_MINUTES;
       dispensationEventsByUserByTimestamp[timestamp] =
         dispensationEventsByUserByTimestamp[timestamp] || {};

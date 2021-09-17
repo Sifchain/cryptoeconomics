@@ -87,9 +87,11 @@ const getSQLQueryByNetwork = (network) => {
               AND reward_program = 'COSMOS_IBC_REWARDS_V1';
           `
         );
-        // const snapshots_lm_dispensation = tx.many(
-        //   slonik.sql`select * from snapshots_lm_dispensation_rf rf where rf.created_at = (select max(created_at) from snapshots_lm_dispensation_rf);`
-        // );
+        const snapshots_lm_dispensation = tx.many(
+          slonik.sql`select * from post_distribution pd
+          where pd.is_current = true
+            and reward_program = 'COSMOS_IBC_REWARDS_V1';`
+        );
         const [...snapshotsNewLoaded] = await snapshots_new;
         const firstItemSnapshotData = snapshotsNewLoaded[0].snapshot_data;
         while (snapshotsNewLoaded.length > 1) {
@@ -107,13 +109,27 @@ const getSQLQueryByNetwork = (network) => {
             item,
           ];
         }
+        const [...snapshotsDispensationsLoaded] =
+          await snapshots_lm_dispensation;
+        const firstItemDispensationData = {};
+        while (snapshotsDispensationsLoaded.length) {
+          const item = snapshotsDispensationsLoaded.pop();
+          firstItemDispensationData[item.recipient] = [
+            ...(firstItemDispensationData[item.recipient] || []),
+            item,
+          ];
+        }
+
         return {
           data: {
             snapshots_new: snapshotsNewLoaded,
             snapshots_lm_claims: [{ snapshot_data: firstItemClaimData }],
             // snapshots_lm_dispensation: await snapshots_lm_dispensation,
             // snapshots_lm_claims: [],
-            snapshots_lm_dispensation: [],
+            snapshots_lm_dispensation: [
+              { snapshot_data: firstItemDispensationData },
+            ],
+            // snapshots_lm_dispensation: [],
           },
         };
       });
