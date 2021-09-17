@@ -18,6 +18,7 @@ const rewardPrograms = {
   '39_SUNSET_LIQUIDITY_MINING': '39_LIQUIDITY_MINING',
   '39_SUNSET_VALIDATOR_SUBSIDY': '39_VALIDATOR_SUBSIDY',
   '39_AIRDROP': '39_AIRDROP',
+  COSMOS_IBC_REWARDS_V1: 'COSMOS_IBC_REWARDS_V1',
 };
 
 const getOutputPath = (...paths) =>
@@ -39,7 +40,7 @@ async function divideDispensations() {
     path.join(__dirname, `./output/divide-dispensations/${dispensationName}`)
   );
 
-  for (let type of ['vs', 'lm', 'airdrop']) {
+  for (let type of ['vs', 'lm', 'airdrop', 'lm_ibc']) {
     const rawDist = await fetch(
       `https://data.sifchain.finance/beta/network/dispensation/${type}`
     ).then((r) => r.json());
@@ -105,6 +106,29 @@ function createDispensationRunKit() {
   // CHAIN_ID = 'sifchain-testnet-1';
   // RUNNER_ADDRESS = 'sif1pvnu2kh826vn8r0ttlgt82hsmfknvcnf7qmpvk';
   // DISTRIBUTOR_ADDRESS = 'sif1pvnu2kh826vn8r0ttlgt82hsmfknvcnf7qmpvk';
+  function getRewardProgramNameByType(type) {
+    switch (type) {
+      case 'vs':
+        return rewardPrograms['39_SUNSET_VALIDATOR_SUBSIDY'];
+      case 'lm':
+        return rewardPrograms['39_SUNSET_LIQUIDITY_MINING'];
+      case 'lm_ibc':
+        return rewardPrograms['COSMOS_IBC_REWARDS_V1'];
+      case 'airdrop':
+        return rewardPrograms['39_AIRDROP'];
+    }
+  }
+  function getDistributionTypeByType(type) {
+    switch (type) {
+      case 'vs':
+        return 'ValidatorSubsidy';
+      case 'lm':
+      case 'lm_ibc':
+        return 'LiquidityMining';
+      case 'airdrop':
+        return 'Airdrop';
+    }
+  }
   const templateValues = {
     RUNNER_ADDRESS,
     DISTRIBUTOR_ADDRESS,
@@ -115,19 +139,11 @@ function createDispensationRunKit() {
 
       .map(
         (p) =>
-          `sleep 8;\n\n\n\nsifnoded tx dispensation create ${
-            p.startsWith('lm')
-              ? 'LiquidityMining'
-              : p.startsWith('vs')
-              ? 'ValidatorSubsidy'
-              : 'Airdrop'
-          } ${p} ${RUNNER_ADDRESS} --from ${DISTRIBUTOR_ADDRESS} --node ${RPC_ENDPOINT} --chain-id ${CHAIN_ID}  --gas 100000000 --gas-prices=0.5rowan --keyring-backend test --yes --broadcast-mode block --memo "${
-            p.startsWith('lm')
-              ? rewardPrograms['39_SUNSET_LIQUIDITY_MINING']
-              : p.startsWith('vs')
-              ? rewardPrograms['39_SUNSET_VALIDATOR_SUBSIDY']
-              : rewardPrograms['39_AIRDROP']
-          }";`
+          `sleep 8;\n\n\n\nsifnoded tx dispensation create ${getDistributionTypeByType(
+            p.split('.')[0]
+          )} ${p} ${RUNNER_ADDRESS} --from ${DISTRIBUTOR_ADDRESS} --node ${RPC_ENDPOINT} --chain-id ${CHAIN_ID}  --gas 100000000 --gas-prices=0.5rowan --keyring-backend test --yes --broadcast-mode block --memo "${getRewardProgramNameByType(
+            p.split('.')[0]
+          )}";`
       )
       .join('\n\n\n\n'),
   };
