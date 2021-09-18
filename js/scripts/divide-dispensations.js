@@ -40,7 +40,7 @@ async function divideDispensations() {
     path.join(__dirname, `./output/divide-dispensations/${dispensationName}`)
   );
 
-  for (let type of ['vs', 'lm', 'airdrop', 'lm_ibc']) {
+  for (let type of ['vs', 'lm', 'lm_ibc']) {
     const rawDist = await fetch(
       `https://data.sifchain.finance/beta/network/dispensation/${type}`
     ).then((r) => r.json());
@@ -51,6 +51,7 @@ async function divideDispensations() {
     const output = rawDist.Output;
     const splitAmount = 1000000000000;
     let iteration = 0;
+    console.log({ type });
     while (output.length) {
       const splitOutput = output.splice(0, splitAmount);
       fs.writeFileSync(
@@ -141,7 +142,7 @@ function createDispensationRunKit() {
         (p) =>
           `sleep 8;\n\n\n\nsifnoded tx dispensation create ${getDistributionTypeByType(
             p.split('.')[0]
-          )} ${p} ${RUNNER_ADDRESS} --from ${DISTRIBUTOR_ADDRESS} --node ${RPC_ENDPOINT} --chain-id ${CHAIN_ID}  --gas 100000000 --gas-prices=0.5rowan --keyring-backend test --yes --broadcast-mode block --memo "${getRewardProgramNameByType(
+          )} ${p} ${RUNNER_ADDRESS} --from ${DISTRIBUTOR_ADDRESS} --node ${RPC_ENDPOINT} --chain-id ${CHAIN_ID}  --gas 100000000 --gas-prices=0.5rowan --keyring-backend test --yes --broadcast-mode block --memo "program=${getRewardProgramNameByType(
             p.split('.')[0]
           )}";`
       )
