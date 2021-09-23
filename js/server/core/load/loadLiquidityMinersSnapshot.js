@@ -88,9 +88,18 @@ const getSQLQueryByNetwork = (network) => {
           `
         );
         const snapshots_lm_dispensation = tx.many(
-          slonik.sql`select * from post_distribution pd
-          where pd.is_current = true
-            and reward_program = 'COSMOS_IBC_REWARDS_V1';`
+          slonik.sql`
+            select
+              recipient,
+              MAX("timestamp") "timestamp",
+              reward_program,
+              MAX(amount) "amount",
+              MAX("height") "height"
+            from post_distribution pd
+            where reward_program = 'COSMOS_IBC_REWARDS_V1'
+            GROUP BY pd.height, pd.recipient, pd.reward_program
+            ORDER BY timestamp ASC
+          `
         );
         const [...snapshotsNewLoaded] = await snapshots_new;
         const firstItemSnapshotData = snapshotsNewLoaded[0].snapshot_data;
