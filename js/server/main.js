@@ -182,6 +182,7 @@ app.get('/api/lm', async (req, res, next) => {
     req.query[SNAPSHOT_SOURCE_KEY] ||
     req.headers[SNAPSHOT_SOURCE_KEY] ||
     MAINNET;
+  const rewardProgram = req.query.rewardProgram || 'COSMOS_IBC_REWARDS_V1';
   const processingHandler =
     processingHandlers[snapshotSource] || processingHandlers[MAINNET];
   const key = req.query.key;
@@ -192,7 +193,7 @@ app.get('/api/lm', async (req, res, next) => {
       const summaryAPY = await processingHandler.dispatch(
         GET_LM_CURRENT_APY_SUMMARY,
         {
-          rewardProgram: 'COSMOS_IBC_REWARDS_V1',
+          rewardProgram: rewardProgram,
         }
       );
       console.log({ summaryAPY });
@@ -202,7 +203,7 @@ app.get('/api/lm', async (req, res, next) => {
     case 'userDispensationJob': {
       const { job, internalEpochTimestamp } = await processingHandler.dispatch(
         GET_LM_DISPENSATION_JOB,
-        { programName: 'COSMOS_IBC_REWARDS_V1' }
+        { programName: rewardProgram }
       );
       if (req.query.download === 'true') {
         res.setHeader(
@@ -226,14 +227,11 @@ app.get('/api/lm', async (req, res, next) => {
     }
     case 'userData': {
       const address = req.query.address;
-      const timeIndex = getTimeIndex(
-        req.query.timestamp,
-        'COSMOS_IBC_REWARDS_V1'
-      );
+      const timeIndex = getTimeIndex(req.query.timestamp, rewardProgram);
       responseJSON = await processingHandler.dispatch('GET_LM_USER_DATA', {
         address,
         timeIndex,
-        rewardProgram: 'COSMOS_IBC_REWARDS_V1',
+        rewardProgram: rewardProgram,
       });
       if (responseJSON) {
         if (responseJSON.user) {
