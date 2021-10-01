@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const moment = require('moment');
-const { START_DATETIME } = require('../../config');
+const configs = require('../../config');
 const { GlobalTimestampState, User } = require('../types');
 
 exports.augmentVSData = (
@@ -71,7 +71,13 @@ exports.augmentVSData = (
   };
 };
 
-exports.augmentUserVSData = (userAddress, globalTimestampStates) => {
+exports.augmentUserVSData = (
+  userAddress,
+  globalTimestampStates,
+  rewardProgram
+) => {
+  const { START_DATETIME } = configs[rewardProgram];
+
   const finalTimestampState =
     globalTimestampStates[globalTimestampStates.length - 1] ||
     new GlobalTimestampState();
@@ -104,7 +110,8 @@ exports.augmentUserVSData = (userAddress, globalTimestampStates) => {
       userAtPrevTimestamp,
       isAfterRewardPeriod,
       currentTimestampInMinutes,
-      nextBucketGlobalReward
+      nextBucketGlobalReward,
+      rewardProgram
     );
   });
 

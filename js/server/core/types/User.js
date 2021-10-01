@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const moment = require('moment');
 const { UserTicket } = require('./UserTicket');
-const config = require('../../config');
+const configs = require('../../config');
 
 // currently just a single source of truth for the User data structure.
 // May be useful for migrating the user mutation methods to in the future.
@@ -128,7 +128,8 @@ class User {
     userAtPrevTimestamp,
     isAfterRewardPeriod,
     currentTimestampInMinutes,
-    nextBucketGlobalReward
+    nextBucketGlobalReward,
+    rewardProgram
   ) {
     let maturityDate = userAtPrevTimestamp.maturityDate;
     let maturityDateISO = userAtPrevTimestamp.maturityDateISO;
@@ -140,7 +141,7 @@ class User {
       this.totalClaimableRewardsOnDepositedAssets >= this.reservedReward // rewards have matured
     ) {
       maturityDateMoment = moment
-        .utc(config.START_DATETIME)
+        .utc(configs[rewardProgram].START_DATETIME)
         .add(currentTimestampInMinutes, 'm');
       maturityDate = maturityDateMoment.format('MMMM Do YYYY, h:mm:ss a');
       maturityDateMs = maturityDateMoment.valueOf();

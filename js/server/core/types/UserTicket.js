@@ -1,4 +1,4 @@
-const config = require('../../config');
+const configs = require('../../config');
 const moment = require('moment');
 class UserTicket {
   constructor() {
@@ -118,7 +118,7 @@ class UserTicket {
     this.commissionRewardsByValidator[validatorRewardAddress] = 0;
   }
 
-  static fromEvent(event) {
+  static fromEvent(event, rewardProgram) {
     let instance = new this();
     Object.assign(instance, {
       commission: event.commission,
@@ -128,7 +128,7 @@ class UserTicket {
       mul: 0.25,
       reward: 0,
       timestamp: moment
-        .utc(config.START_DATETIME)
+        .utc(configs[rewardProgram].START_DATETIME)
         .add(event.timestamp, 'm')
         .format('MMMM Do YYYY, h:mm:ss a'),
     });

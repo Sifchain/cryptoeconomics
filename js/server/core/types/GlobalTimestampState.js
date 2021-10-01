@@ -1,4 +1,4 @@
-const config = require('../../config');
+const configs = require('../../config');
 const { User } = require('./User');
 const { validateSifAddress } = require('../../util/validateSifAddress');
 class GlobalTimestampState {
@@ -87,12 +87,13 @@ class GlobalTimestampState {
     return next;
   }
 
-  static getInitial() {
+  static getInitial({ rewardProgram }) {
+    const programConfig = configs[rewardProgram];
     let instance = new this();
     instance.bucketEvent = {
-      rowan: 10_000_000,
-      initialRowan: 10_000_000,
-      duration: config.REWARD_ACCRUAL_DURATION_INTERVAL_COUNT,
+      rowan: programConfig.INITIAL_ROWAN,
+      initialRowan: programConfig.INITIAL_ROWAN,
+      duration: programConfig.REWARD_ACCRUAL_DURATION_INTERVAL_COUNT,
     };
     return instance;
   }

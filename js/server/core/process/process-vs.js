@@ -1,7 +1,6 @@
 const _ = require('lodash');
-const { MULTIPLIER_MATURITY } = require('../../config');
+const configs = require('../../config');
 const { processRewardBuckets } = require('./bucket-util');
-const config = require('../../config');
 const { User, GlobalTimestampState, UserTicket } = require('../types');
 const {
   VALIDATOR_STAKING,
@@ -20,11 +19,14 @@ function processVSGlobalState(
   rewardProgramType = VALIDATOR_STAKING,
   isSimulatedFutureInterval,
   claimEventsByUser,
-  dispensationEventsByUser
+  dispensationEventsByUser,
+  rewardProgram
 ) {
+  const { MULTIPLIER_MATURITY } = configs[rewardProgram];
   const { rewardBuckets, globalRewardAccrued } = processRewardBuckets(
     lastGlobalState.rewardBuckets,
-    lastGlobalState.bucketEvent
+    lastGlobalState.bucketEvent,
+    rewardProgram
   );
 
   // console.time('processUserTickets');
@@ -33,11 +35,17 @@ function processVSGlobalState(
     globalRewardAccrued,
     getCurrentCommissionRateByValidatorStakeAddress,
     rewardProgramType,
-    isSimulatedFutureInterval
+    isSimulatedFutureInterval,
+    rewardProgram
   );
   users = processUserClaims(users, claimEventsByUser);
   users = processUserDispensations(users, dispensationEventsByUser);
-  users = processUserEvents(users, eventsByUser, rewardProgramType);
+  users = processUserEvents(
+    users,
+    eventsByUser,
+    rewardProgramType,
+    rewardProgram
+  );
 
   if (rewardProgramType === VALIDATOR_STAKING) {
     users = calculateUserCommissions(users);
@@ -117,8 +125,10 @@ function processUserTickets(
   globalRewardAccrued,
   getCurrentCommissionRateByValidatorStakeAddress,
   rewardProgramType,
-  isSimulatedFutureInterval
+  isSimulatedFutureInterval,
+  rewardProgram
 ) {
+  const { MULTIPLIER_MATURITY } = configs[rewardProgram];
   const users = lastGlobalState.users;
   const lastStateWasPending = lastGlobalState.isPending;
   const lastStateWasSimulated = lastGlobalState.isSimulated;
@@ -176,7 +186,8 @@ function processUserTickets(
 function processUserEvents(
   users,
   eventsByUser,
-  rewardProgramType = VALIDATOR_STAKING
+  rewardProgramType = VALIDATOR_STAKING,
+  rewardProgram
 ) {
   const getUserByAddress = (address) => {
     let user = users[address];
@@ -190,16 +201,20 @@ function processUserEvents(
     case VALIDATOR_STAKING: {
       _.forEach(eventsByUser, (userEvents, address) => {
         if (userEvents.length > 1) {
-          processRedelegationEvents(userEvents, getUserByAddress);
+          processRedelegationEvents(
+            userEvents,
+            getUserByAddress,
+            rewardProgram
+          );
         } else {
-          processAccountEvents(userEvents, getUserByAddress);
+          processAccountEvents(userEvents, getUserByAddress, rewardProgram);
         }
       });
       break;
     }
     case LIQUIDITY_MINING: {
       _.forEach(eventsByUser, (userEvents) => {
-        processAccountEvents(userEvents, getUserByAddress);
+        processAccountEvents(userEvents, getUserByAddress, rewardProgram);
       });
       break;
     }
@@ -207,7 +222,7 @@ function processUserEvents(
   return users;
 }
 
-function processAccountEvents(userEvents, getUserByAddress) {
+function processAccountEvents(userEvents, getUserByAddress, rewardProgram) {
   const len = userEvents.length;
   for (let i = 0; i < len; i++) {
     const uEvent = userEvents[i];
@@ -215,12 +230,17 @@ function processAccountEvents(userEvents, getUserByAddress) {
     if (uEvent.amount < 0) {
       user.withdrawStakeAsDelegator(uEvent, getUserByAddress);
     } else if (uEvent.amount > 0) {
-      user.addTicket(UserTicket.fromEvent(uEvent));
+      user.addTicket(UserTicket.fromEvent(uEvent, rewardProgram));
     }
   }
 }
 
-function processRedelegationEvents(userEvents, getUserByAddress) {
+function processRedelegationEvents(
+  userEvents,
+  getUserByAddress,
+  rewardProgram
+) {
+  const config = configs[rewardProgram];
   userEvents = _.orderBy(userEvents, ['amount'], ['asc']);
   let withdrawalAmount = 0;
   let depositAmount = 0;
@@ -320,7 +340,8 @@ function processRedelegationEvents(userEvents, getUserByAddress) {
         UserTicket.fromEvent(
           dEvent.cloneWith({
             amount: amountToDeposit,
-          })
+          }),
+          rewardProgram
         )
       );
     }

@@ -46,35 +46,37 @@ const { getDatabase } = require('./utils/getDatabase');
 //   }
 // };
 
-const getSQLQueryByNetwork = (network) => {
+const getSQLQueryByNetwork = (network, rewardProgram) => {
   network = network ? network.toLowerCase() : network;
   switch (network) {
-    case TESTNET: {
-      return getDatabase().transaction(async (tx) => {
-        const snapshots_new = await tx.many(
-          slonik.sql`select snapshot_data from snapshots_new_dev ORDER BY created_at DESC LIMIT 1`
-        );
-        const snapshots_lm_claims = await tx.many(
-          slonik.sql`select snapshot_data from snapshots_lm_claims ORDER BY created_at DESC LIMIT 1`
-        );
-        const snapshots_lm_dispensation = await tx.many(
-          slonik.sql`select snapshot_data from snapshots_lm_dispensation ORDER BY created_at DESC LIMIT 1`
-        );
-        return {
-          data: {
-            snapshots_new,
-            snapshots_lm_claims,
-            snapshots_lm_dispensation,
-          },
-        };
-      });
-    }
+    // case TESTNET: {
+    //   return getDatabase().transaction(async (tx) => {
+    //     const snapshots_new = await tx.many(
+    //       slonik.sql`select snapshot_data from snapshots_new_dev ORDER BY created_at DESC LIMIT 1`
+    //     );
+    //     const snapshots_lm_claims = await tx.many(
+    //       slonik.sql`select snapshot_data from snapshots_lm_claims ORDER BY created_at DESC LIMIT 1`
+    //     );
+    //     const snapshots_lm_dispensation = await tx.many(
+    //       slonik.sql`select snapshot_data from snapshots_lm_dispensation ORDER BY created_at DESC LIMIT 1`
+    //     );
+    //     return {
+    //       data: {
+    //         snapshots_new,
+    //         snapshots_lm_claims,
+    //         snapshots_lm_dispensation,
+    //       },
+    //     };
+    //   });
+    // }
 
     default: {
       return getDatabase().transaction(async (tx) => {
         const snapshots_new = tx.many(
-          slonik.sql`select * from snapshots_lm rf where rf.snapshot_time = (select max(snapshot_time) from snapshots_lm)`
+          slonik.sql`select * from snapshots_reward where is_latest = true and reward_program=${rewardProgram}`
         );
+        // select * from snapshots_lm rf where rf.snapshot_time = (select max(snapshot_time) from snapshots_lm)
+
         const snapshots_lm_claims = tx.any(
           slonik.sql`
             SELECT
@@ -84,10 +86,10 @@ const getSQLQueryByNetwork = (network) => {
               snapshots_claims
             WHERE
               is_current = true 
-              AND reward_program = 'COSMOS_IBC_REWARDS_V1';
+              AND reward_program = ${rewardProgram};
           `
         );
-        const snapshots_lm_dispensation = tx.many(
+        const snapshots_lm_dispensation = tx.any(
           slonik.sql`
             select
               recipient,
@@ -96,7 +98,7 @@ const getSQLQueryByNetwork = (network) => {
               MAX(amount) "amount",
               MAX("height") "height"
             from post_distribution pd
-            where reward_program = 'COSMOS_IBC_REWARDS_V1'
+            where reward_program = ${rewardProgram}
             GROUP BY pd.height, pd.recipient, pd.reward_program
             ORDER BY timestamp ASC
           `
@@ -145,14 +147,17 @@ const getSQLQueryByNetwork = (network) => {
     }
   }
 };
-module.exports.loadLiquidityMinersSnapshot = async function (network) {
+module.exports.loadLiquidityMinersSnapshot = async function (
+  network,
+  rewardProgram
+) {
   if (!process.env.HEADER_SECRET) {
     throw new Error('process.env.HEADER_SECRET not defined!');
   }
   if (!process.env.SNAPSHOT_URL) {
     throw new Error('process.env.SNAPSHOT_URL not defined!');
   }
-  return getSQLQueryByNetwork(network);
+  return getSQLQueryByNetwork(network, rewardProgram);
   // return fetch(process.env.SNAPSHOT_URL, {
   //   method: 'POST',
   //   headers: Object.entries({

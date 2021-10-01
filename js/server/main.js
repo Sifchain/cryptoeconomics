@@ -49,12 +49,12 @@ if (process.env.DATABASE_URL) {
 // interfaces with `./process.childprocess.js`
 
 let createTestnetHandler = () => {
-  const testnetHandler = ProcessingHandler.init(TESTNET);
+  const testnetHandler = ProcessingHandler.init(TESTNET, 'harvest');
   createTestnetHandler = () => testnetHandler;
   return testnetHandler;
 };
 const processingHandlers = {
-  [MAINNET]: ProcessingHandler.init(MAINNET),
+  [MAINNET]: ProcessingHandler.init(MAINNET, 'harvest'),
   get [DEVNET]() {
     return createTestnetHandler();
   },
@@ -190,7 +190,10 @@ app.get('/api/lm', async (req, res, next) => {
   switch (key) {
     case 'apy-summary': {
       const summaryAPY = await processingHandler.dispatch(
-        GET_LM_CURRENT_APY_SUMMARY
+        GET_LM_CURRENT_APY_SUMMARY,
+        {
+          rewardProgram: 'COSMOS_IBC_REWARDS_V1',
+        }
       );
       console.log({ summaryAPY });
       responseJSON = { summaryAPY };
@@ -198,7 +201,8 @@ app.get('/api/lm', async (req, res, next) => {
     }
     case 'userDispensationJob': {
       const { job, internalEpochTimestamp } = await processingHandler.dispatch(
-        GET_LM_DISPENSATION_JOB
+        GET_LM_DISPENSATION_JOB,
+        { programName: 'COSMOS_IBC_REWARDS_V1' }
       );
       if (req.query.download === 'true') {
         res.setHeader(
@@ -222,10 +226,14 @@ app.get('/api/lm', async (req, res, next) => {
     }
     case 'userData': {
       const address = req.query.address;
-      const timeIndex = getTimeIndex(req.query.timestamp);
+      const timeIndex = getTimeIndex(
+        req.query.timestamp,
+        'COSMOS_IBC_REWARDS_V1'
+      );
       responseJSON = await processingHandler.dispatch('GET_LM_USER_DATA', {
         address,
         timeIndex,
+        rewardProgram: 'COSMOS_IBC_REWARDS_V1',
       });
       if (responseJSON) {
         if (responseJSON.user) {

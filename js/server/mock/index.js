@@ -1,9 +1,9 @@
 const moment = require('moment');
 const {
-  getDateFromSnapshotIndex
+  getDateFromSnapshotIndex,
 } = require('../util/getDateFromSnapshotIndex');
 const { getTimeIndex } = require('../util/getTimeIndex');
-exports.mockMinerClaims = function mockMinerClaims (snapshot) {
+exports.mockMinerClaims = function mockMinerClaims(snapshot) {
   const addrLookup = snapshot.data.snapshots_new[0].snapshot_data;
 
   return {
@@ -45,11 +45,11 @@ exports.mockMinerClaims = function mockMinerClaims (snapshot) {
           });
           return [key, claims];
         })
-      )
+      ),
   };
 };
 
-function nextDayOfWeek (
+function nextDayOfWeek(
   momentInstance = moment(),
   dayINeed = 5 /* for Friday */
 ) {
@@ -65,14 +65,11 @@ function nextDayOfWeek (
       .second(1);
   } else {
     // otherwise, give me *next week's* instance of that same day
-    return momentInstance
-      .clone()
-      .add(1, 'weeks')
-      .isoWeekday(dayINeed);
+    return momentInstance.clone().add(1, 'weeks').isoWeekday(dayINeed);
   }
 }
 
-exports.mockMinerDispensations = minerClaimsSnapshotData => {
+exports.mockMinerDispensations = (minerClaimsSnapshotData) => {
   const dispensationsSnapshot = {};
   for (const addr in minerClaimsSnapshotData) {
     const claims = minerClaimsSnapshotData[addr];
