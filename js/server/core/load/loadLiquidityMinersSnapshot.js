@@ -72,10 +72,16 @@ const getSQLQueryByNetwork = (network, rewardProgram) => {
 
     default: {
       return getDatabase().transaction(async (tx) => {
-        const snapshots_new = tx.many(
-          slonik.sql`select * from snapshots_reward where is_latest = true and reward_program=${rewardProgram}`
-        );
-        // select * from snapshots_lm rf where rf.snapshot_time = (select max(snapshot_time) from snapshots_lm)
+        const snapshots_new = (() => {
+          if (rewardProgram === 'harvest') {
+            return tx.many(
+              slonik.sql`select * from snapshots_reward where is_latest = true and reward_program=${rewardProgram}`
+            );
+          }
+          return tx.many(
+            slonik.sql`select * from snapshots_lm rf where rf.snapshot_time = (select max(snapshot_time) from snapshots_lm)`
+          );
+        })();
 
         const snapshots_lm_claims = tx.any(
           slonik.sql`
@@ -98,11 +104,12 @@ const getSQLQueryByNetwork = (network, rewardProgram) => {
               MAX(amount) "amount",
               MAX("height") "height"
             from post_distribution pd
-            where reward_program = ${rewardProgram}
             GROUP BY pd.height, pd.recipient, pd.reward_program
             ORDER BY timestamp ASC
           `
         );
+        // each claim claims all rn.
+        // where reward_program = ${rewardProgram}
         const [...snapshotsNewLoaded] = await snapshots_new;
         const firstItemSnapshotData = snapshotsNewLoaded[0].snapshot_data;
         while (snapshotsNewLoaded.length > 1) {

@@ -88,7 +88,7 @@ const runTests = (type, parsedData, network) => {
 const bp = new BackgroundProcessor();
 bp.reloadAndReprocessSnapshots({
   network: MAINNET,
-  rewardProgram: 'ibc',
+  rewardProgram: 'COSMOS_IBC_REWARDS_V1',
 })
   // test reload caching
   // .then(async () => bp.reloadAndReprocessSnapshots({ network: MAINNET }))
