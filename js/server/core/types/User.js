@@ -262,7 +262,7 @@ class User {
     this.dispensed += amountToDistribute;
   }
 
-  claimAllCurrentCommissionsAndRewards(getUserByAddress) {
+  claimAllCurrentCommissionsAndRewards(getUserByAddress, rewardProgram) {
     const { claimable, forfeited } = this.calculateClaimableReward(
       this.tickets
     );
@@ -282,7 +282,7 @@ class User {
       totalCommissionsClaimedByValidators;
     this.claimableCommissions = 0;
     this.claimableRewardsOnWithdrawnAssets = 0;
-    this.tickets.forEach((t) => t.resetAfterClaim());
+    this.tickets.forEach((t) => t.resetAfterClaim(rewardProgram));
     this.forfeited += forfeited - totalCommissionsForfeitedByValidators;
   }
 

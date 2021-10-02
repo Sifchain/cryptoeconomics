@@ -27,8 +27,9 @@ class UserTicket {
     return Object.assign(new this(), props);
   }
 
-  resetAfterClaim() {
-    this.mul = 0.25;
+  resetAfterClaim(rewardProgram) {
+    const { INITIAL_REWARD_MULTIPLIER } = configs[rewardProgram];
+    this.mul = INITIAL_REWARD_MULTIPLIER;
     this.reward = 0;
     this.rewardDelta = 0;
   }
@@ -119,13 +120,14 @@ class UserTicket {
   }
 
   static fromEvent(event, rewardProgram) {
+    const { INITIAL_REWARD_MULTIPLIER } = configs[rewardProgram];
     let instance = new this();
     Object.assign(instance, {
       commission: event.commission,
       validatorRewardAddress: event.validatorRewardAddress,
       validatorStakeAddress: event.validatorStakeAddress,
       amount: event.amount,
-      mul: 0.25,
+      mul: INITIAL_REWARD_MULTIPLIER,
       reward: 0,
       timestamp: moment
         .utc(configs[rewardProgram].START_DATETIME)
