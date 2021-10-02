@@ -38,7 +38,7 @@ function processVSGlobalState(
     isSimulatedFutureInterval,
     rewardProgram
   );
-  users = processUserClaims(users, claimEventsByUser);
+  users = processUserClaims(users, claimEventsByUser, rewardProgram);
   users = processUserDispensations(users, dispensationEventsByUser);
   users = processUserEvents(
     users,
@@ -65,7 +65,7 @@ function processVSGlobalState(
   return globalState;
 }
 
-function processUserClaims(users, claimEventsByUser) {
+function processUserClaims(users, claimEventsByUser, rewardProgram) {
   const getUserByAddress = (address) => {
     const user = users[address] || new User();
     users[address] = user;
@@ -77,7 +77,7 @@ function processUserClaims(users, claimEventsByUser) {
       continue;
     }
     const user = getUserByAddress(address);
-    user.claimAllCurrentCommissionsAndRewards(getUserByAddress);
+    user.claimAllCurrentCommissionsAndRewards(getUserByAddress, rewardProgram);
   }
   return users;
 }

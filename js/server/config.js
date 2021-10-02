@@ -3,6 +3,7 @@ function createConfig({
   durationInWeeks,
   intervalDurationMinutes,
   initialRowan,
+  initialRewardMultiplier,
 }) {
   const moment = require('moment');
   /*
@@ -59,6 +60,7 @@ function createConfig({
       REWARD_ACCRUAL_DURATION_MS / 1000 / 60 / EVENT_INTERVAL_MINUTES, // 6 weeks in in 200minute intervals,
     NUMBER_OF_INTERVALS_TO_RUN: REWARD_ACCRUAL_DURATION_INTERVAL_COUNT * 2, // duration of bucket drain + duration to latest possible multiplier maturity
     REWARD_ACCRUAL_DURATION_INTERVAL_COUNT,
+    INITIAL_REWARD_MULTIPLIER: initialRewardMultiplier,
   };
   return config;
 }
@@ -69,11 +71,13 @@ module.exports = {
     startsAt: '2021-08-24T20:06:15.000Z',
     durationInWeeks: 6,
     intervalDurationMinutes: 200,
+    initialRewardMultiplier: 0.25,
   }),
   harvest: createConfig({
     initialRowan: 10_000_000,
     startsAt: '2021-09-29T22:12:15.000Z',
     durationInWeeks: 6,
     intervalDurationMinutes: 200,
+    initialRewardMultiplier: 1,
   }),
 };
