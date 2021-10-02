@@ -120,7 +120,11 @@ function actions(processor) {
       );
     },
     [GET_LM_USER_DATA]: (payload) => {
-      augmentUserVSData(payload.address, processor.lmDataParsed.processedData);
+      augmentUserVSData(
+        payload.address,
+        processor.lmDataParsed.processedData,
+        payload.rewardProgram
+      );
       return getUserData(processor.lmDataParsed.processedData, payload);
     },
     [GET_LM_STACK_DATA]: () => {
@@ -134,6 +138,7 @@ function actions(processor) {
       return processor.vsDataParsed[key];
     },
     [GET_VS_USER_TIME_SERIES_DATA]: (address) => {
+      // needs to take in programName
       augmentUserVSData(address, processor.vsDataParsed.processedData);
       return getUserTimeSeriesData(
         processor.vsDataParsed.processedData,
@@ -141,7 +146,11 @@ function actions(processor) {
       );
     },
     [GET_VS_USER_DATA]: async ({ address, timeIndex, rewardProgram }) => {
-      augmentUserVSData(address, processor.vsDataParsed.processedData);
+      augmentUserVSData(
+        address,
+        processor.vsDataParsed.processedData,
+        rewardProgram
+      );
       const userDataOut = await getUserData(
         processor.vsDataParsed.processedData,
         {

@@ -54,7 +54,13 @@ let createTestnetHandler = () => {
   return testnetHandler;
 };
 const processingHandlers = {
-  [MAINNET]: ProcessingHandler.init(MAINNET, 'harvest'),
+  [MAINNET]: {
+    ['harvest']: ProcessingHandler.init(MAINNET, 'harvest'),
+    COSMOS_IBC_REWARDS_V1: ProcessingHandler.init(
+      MAINNET,
+      'COSMOS_IBC_REWARDS_V1'
+    ),
+  },
   get [DEVNET]() {
     return createTestnetHandler();
   },
@@ -182,9 +188,14 @@ app.get('/api/lm', async (req, res, next) => {
     req.query[SNAPSHOT_SOURCE_KEY] ||
     req.headers[SNAPSHOT_SOURCE_KEY] ||
     MAINNET;
-  const rewardProgram = req.query.rewardProgram || 'COSMOS_IBC_REWARDS_V1';
-  const processingHandler =
+  console.log();
+  const rewardProgram = req.query.program || 'COSMOS_IBC_REWARDS_V1';
+  let processingHandler =
     processingHandlers[snapshotSource] || processingHandlers[MAINNET];
+  processingHandler =
+    processingHandler[rewardProgram + ''] || processingHandler;
+
+  console.log({ snapshotSource, rewardProgram, processingHandler });
   const key = req.query.key;
   let responseJSON;
   await processingHandler.waitForReadyState();
@@ -193,7 +204,7 @@ app.get('/api/lm', async (req, res, next) => {
       const summaryAPY = await processingHandler.dispatch(
         GET_LM_CURRENT_APY_SUMMARY,
         {
-          rewardProgram: rewardProgram,
+          programName: rewardProgram,
         }
       );
       console.log({ summaryAPY });
