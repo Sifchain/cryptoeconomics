@@ -137,7 +137,7 @@ const server = new ApolloServer({
       rewardProgramType: RewardProgramType!
       rewardProgramName: RewardProgramName!
       summaryAPY(percentage: Boolean = true): Float!
-      incentivizedTokenDenoms: [String!]!
+      incentivizedPoolSymbols: [String!]!
       isUniversal: Boolean!
       startDateTimeISO: String!
       endDateTimeISO: String!
@@ -190,7 +190,7 @@ const server = new ApolloServer({
             displayName: `Sif's Harvest`,
             rewardProgramType: 'lm',
             rewardProgramName: 'harvest',
-            incentivizedTokenDenoms: ['*'],
+            incentivizedPoolSymbols: ['*'],
             documentationURL:
               'https://docs.sifchain.finance/resources/rewards-programs#sifs-harvest-liquidity-mining-program',
             isUniversal: true,
@@ -200,14 +200,14 @@ const server = new ApolloServer({
             displayName: `.42 Liquidity Mining`,
             rewardProgramType: 'lm',
             rewardProgramName: 'COSMOS_IBC_REWARDS_V1',
-            incentivizedTokenDenoms: [
-              'uakt',
-              'uvpn',
-              'uatom',
-              'uiris',
-              'uxprt',
+            incentivizedPoolSymbols: [
+              'akt',
+              'dvpn',
+              'atom',
+              'iris',
+              'xprt',
               'basecro',
-              'uregen',
+              'regen',
             ],
             documentationURL:
               'https://docs.sifchain.finance/resources/rewards-programs#42-liquidity-mining-program',
