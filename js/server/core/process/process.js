@@ -11,11 +11,7 @@ const {
 } = require('../transform/vs-util');
 const { processVSGlobalState } = require('./process-vs');
 
-const {
-  EVENT_INTERVAL_MINUTES,
-  NUMBER_OF_INTERVALS_TO_RUN,
-  START_DATETIME,
-} = require('../../config');
+const configs = require('../../config');
 const { GlobalTimestampState } = require('../types');
 
 const {
@@ -25,7 +21,7 @@ const {
 const { mockMinerClaims, mockMinerDispensations } = require('../../mock');
 const { getTimeIndex } = require('../../util/getTimeIndex');
 
-exports.getProcessedLMData = (snapshotLM, deltaCoeff) => {
+exports.getProcessedLMData = (snapshotLM, deltaCoeff, rewardProgram) => {
   let {
     snapshots_new: [{ snapshot_data: minerSnapshotData }],
     snapshots_lm_claims: [{ snapshot_data: claimsSnapshotData = {} } = {}],
@@ -33,6 +29,7 @@ exports.getProcessedLMData = (snapshotLM, deltaCoeff) => {
       { snapshot_data: dispensationsSnapshotData = {} } = {},
     ] = [],
   } = snapshotLM.data;
+
   // console.log(minerSnapshotData);
   const snapshotTimeseriesFinalIndex =
     getLMTimeseriesFinalIndex(minerSnapshotData);
@@ -43,12 +40,20 @@ exports.getProcessedLMData = (snapshotLM, deltaCoeff) => {
       mockMinerDispensations(claimsSnapshotData).dispensationsSnapshotData;
   }
 
-  const claimEventsByUserByTimestamp = createClaimEvents(claimsSnapshotData);
+  const claimEventsByUserByTimestamp = createClaimEvents(
+    claimsSnapshotData,
+    rewardProgram
+  );
   const dispensationEventsByUserByTimestamp = createDispensationEvents(
-    dispensationsSnapshotData
+    dispensationsSnapshotData,
+    rewardProgram
   );
 
-  const userEventsByTimestamp = remapLMAddresses(minerSnapshotData, deltaCoeff);
+  const userEventsByTimestamp = remapLMAddresses(
+    minerSnapshotData,
+    deltaCoeff,
+    rewardProgram
+  );
 
   return processUserEventsByTimestamp(
     userEventsByTimestamp,
@@ -56,11 +61,12 @@ exports.getProcessedLMData = (snapshotLM, deltaCoeff) => {
     LIQUIDITY_MINING,
     snapshotTimeseriesFinalIndex,
     claimEventsByUserByTimestamp,
-    dispensationEventsByUserByTimestamp
+    dispensationEventsByUserByTimestamp,
+    rewardProgram
   );
 };
 
-exports.getProcessedVSData = (snapshotVS) => {
+exports.getProcessedVSData = (snapshotVS, rewardProgram) => {
   let {
     snapshots_validators: [{ snapshot_data: validatorSnapshotData }],
     snapshots_vs_claims: [{ snapshot_data: claimsSnapshotData = {} } = {}],
@@ -73,9 +79,13 @@ exports.getProcessedVSData = (snapshotVS) => {
     validatorSnapshotData
   );
 
-  const claimEventsByUserByTimestamp = createClaimEvents(claimsSnapshotData);
+  const claimEventsByUserByTimestamp = createClaimEvents(
+    claimsSnapshotData,
+    rewardProgram
+  );
   const dispensationEventsByUserByTimestamp = createDispensationEvents(
-    dispensationsSnapshotData
+    dispensationsSnapshotData,
+    rewardProgram
   );
 
   console.time('remapVS');
@@ -113,13 +123,16 @@ function processUserEventsByTimestamp(
   rewardProgramType,
   snapshotTimeseriesFinalIndex,
   claimEventsByUserByTimestamp = {},
-  dispensationEventsByUserByTimestamp = {}
+  dispensationEventsByUserByTimestamp = {},
+  rewardProgram
 ) {
   console.time('processvs');
-  const VSGlobalStates = [GlobalTimestampState.getInitial()];
-
+  const VSGlobalStates = [GlobalTimestampState.getInitial({ rewardProgram })];
+  const programConfig = configs[rewardProgram];
+  const { EVENT_INTERVAL_MINUTES, NUMBER_OF_INTERVALS_TO_RUN, START_DATETIME } =
+    programConfig;
   for (
-    let i = getTimeIndex(new Date(START_DATETIME)) + 1;
+    let i = getTimeIndex(new Date(START_DATETIME), rewardProgram) + 1;
     i <= NUMBER_OF_INTERVALS_TO_RUN;
     i++
   ) {
@@ -146,7 +159,8 @@ function processUserEventsByTimestamp(
         rewardProgramType,
         isSimulatedFutureInterval,
         claimEventsByUser,
-        dispensationEventsByUser
+        dispensationEventsByUser,
+        rewardProgram
       );
     }
     if (cacheEnabled && !isSimulatedFutureInterval && !cachedTimestampState) {

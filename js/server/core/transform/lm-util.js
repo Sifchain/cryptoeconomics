@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const { EVENT_INTERVAL_MINUTES } = require('../../config');
+const configs = require('../../config');
 const { getTimeIndex } = require('../../util/getTimeIndex');
 const { DelegateEvent } = require('../types');
 const moment = require('moment');
@@ -32,7 +32,8 @@ let smallestTimestampUnix = Infinity;
 //     await new Promise((r) => setTimeout(r, 20000));
 //   }
 // })();
-function remapLMAddresses(addresses, deltaCoeff) {
+function remapLMAddresses(addresses, deltaCoeff, rewardProgram) {
+  const { EVENT_INTERVAL_MINUTES } = configs[rewardProgram];
   // delete addresses['sif1zdh3jjrfp3jjs5ufccdsk0uml22dgl7gghu98g'];
   const mapped = _.map(addresses, (tokens, address) => {
     const addressTokenEvents = _.map(tokens, (timeIntervals, token) => {
@@ -44,7 +45,8 @@ function remapLMAddresses(addresses, deltaCoeff) {
               : smallestTimestampUnix;
           return DelegateEvent.fromJSON({
             timestamp:
-              (getTimeIndex(interval.unix_timestamp * 1000) + 1) *
+              (getTimeIndex(interval.unix_timestamp * 1000, rewardProgram) +
+                1) *
               EVENT_INTERVAL_MINUTES,
             amount: interval.delta, //* deltaCoeff,
             delegateAddress: address,
@@ -97,12 +99,13 @@ function remapLMAddresses(addresses, deltaCoeff) {
   return allTimeIntervalAddressEvents;
 }
 
-function createClaimEvents(addresses) {
+function createClaimEvents(addresses, rewardProgram) {
+  const { EVENT_INTERVAL_MINUTES } = configs[rewardProgram];
   const claimEventsByUserByTimestamp = {};
   for (const addr in addresses) {
     const claimEventsTimeSeries = addresses[addr];
     for (let item of claimEventsTimeSeries) {
-      const timelineIndex = getTimeIndex(item.unix * 1000);
+      const timelineIndex = getTimeIndex(item.unix * 1000, rewardProgram);
       const didClaim = true;
       const timestamp = (1 + timelineIndex) * EVENT_INTERVAL_MINUTES;
       claimEventsByUserByTimestamp[timestamp] =
@@ -115,14 +118,16 @@ function createClaimEvents(addresses) {
   return claimEventsByUserByTimestamp;
 }
 
-function createDispensationEvents(addresses) {
+function createDispensationEvents(addresses, rewardProgram) {
+  const { EVENT_INTERVAL_MINUTES } = configs[rewardProgram];
+
   const dispensationEventsByUserByTimestamp = {};
   for (const addr in addresses) {
     const dispensationEventsTimeSeries = addresses[addr];
     for (let i = 0; i < dispensationEventsTimeSeries.length; i++) {
       const item = dispensationEventsTimeSeries[i];
       const amountToDistribute = item.amount;
-      const timelineIndex = getTimeIndex(item.timestamp);
+      const timelineIndex = getTimeIndex(item.timestamp, rewardProgram);
       const timestamp = (timelineIndex + 1) * EVENT_INTERVAL_MINUTES;
       dispensationEventsByUserByTimestamp[timestamp] =
         dispensationEventsByUserByTimestamp[timestamp] || {};

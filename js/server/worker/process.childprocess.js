@@ -36,7 +36,7 @@ class BackgroundProcessor {
     return this.actions[action](payload);
   }
 
-  async reloadAndReprocessSnapshots({ network }) {
+  async reloadAndReprocessSnapshots({ network, rewardProgram }) {
     if (process.env.LOCAL_SNAPSHOT_DEV_MODE === 'enabled') {
       console.log(
         'LOCAL_SNAPSHOT_DEV_MODE enabled - Will not refresh or reprocess snapshots.'
@@ -57,7 +57,7 @@ class BackgroundProcessor {
         ]
       : await Promise.all([
           retryOnFail({
-            fn: () => loadLiquidityMinersSnapshot(network),
+            fn: () => loadLiquidityMinersSnapshot(network, rewardProgram),
             iterations: 5,
             waitFor: 1000,
           }),
@@ -102,7 +102,7 @@ class BackgroundProcessor {
         //     return +r;
         //   })
         //   .catch(console.error);
-        this.lmDataParsed = getProcessedLMData(json, deltaCoeff);
+        this.lmDataParsed = getProcessedLMData(json, deltaCoeff, rewardProgram);
         console.timeEnd('getProcessedLMData');
         this.previousLMSnapshotIdentifier = snapshotIdentifier;
       } else {
@@ -218,7 +218,7 @@ class BackgroundProcessor {
     instance.listenForParentThreadInvokations();
   }
 
-  static startAsMainProcess(network) {
+  static startAsMainProcess(network, rewardProgram) {
     const instance = new this();
     (async () => {
       while (true) {
@@ -227,6 +227,7 @@ class BackgroundProcessor {
             fn: () =>
               instance.dispatch(RELOAD_AND_REPROCESS_SNAPSHOTS, {
                 network: network,
+                rewardProgram: rewardProgram,
               }),
             waitFor: 6000,
             iterations: 5,

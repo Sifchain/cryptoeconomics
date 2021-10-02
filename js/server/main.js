@@ -49,12 +49,18 @@ if (process.env.DATABASE_URL) {
 // interfaces with `./process.childprocess.js`
 
 let createTestnetHandler = () => {
-  const testnetHandler = ProcessingHandler.init(TESTNET);
+  const testnetHandler = ProcessingHandler.init(TESTNET, 'harvest');
   createTestnetHandler = () => testnetHandler;
   return testnetHandler;
 };
 const processingHandlers = {
-  [MAINNET]: ProcessingHandler.init(MAINNET),
+  [MAINNET]: {
+    ['harvest']: ProcessingHandler.init(MAINNET, 'harvest'),
+    COSMOS_IBC_REWARDS_V1: ProcessingHandler.init(
+      MAINNET,
+      'COSMOS_IBC_REWARDS_V1'
+    ),
+  },
   get [DEVNET]() {
     return createTestnetHandler();
   },
@@ -182,15 +188,24 @@ app.get('/api/lm', async (req, res, next) => {
     req.query[SNAPSHOT_SOURCE_KEY] ||
     req.headers[SNAPSHOT_SOURCE_KEY] ||
     MAINNET;
-  const processingHandler =
+  console.log();
+  const rewardProgram = req.query.program || 'COSMOS_IBC_REWARDS_V1';
+  let processingHandler =
     processingHandlers[snapshotSource] || processingHandlers[MAINNET];
+  processingHandler =
+    processingHandler[rewardProgram + ''] || processingHandler;
+
+  console.log({ snapshotSource, rewardProgram, processingHandler });
   const key = req.query.key;
   let responseJSON;
   await processingHandler.waitForReadyState();
   switch (key) {
     case 'apy-summary': {
       const summaryAPY = await processingHandler.dispatch(
-        GET_LM_CURRENT_APY_SUMMARY
+        GET_LM_CURRENT_APY_SUMMARY,
+        {
+          programName: rewardProgram,
+        }
       );
       console.log({ summaryAPY });
       responseJSON = { summaryAPY };
@@ -198,7 +213,8 @@ app.get('/api/lm', async (req, res, next) => {
     }
     case 'userDispensationJob': {
       const { job, internalEpochTimestamp } = await processingHandler.dispatch(
-        GET_LM_DISPENSATION_JOB
+        GET_LM_DISPENSATION_JOB,
+        { programName: rewardProgram }
       );
       if (req.query.download === 'true') {
         res.setHeader(
@@ -222,10 +238,11 @@ app.get('/api/lm', async (req, res, next) => {
     }
     case 'userData': {
       const address = req.query.address;
-      const timeIndex = getTimeIndex(req.query.timestamp);
+      const timeIndex = getTimeIndex(req.query.timestamp, rewardProgram);
       responseJSON = await processingHandler.dispatch('GET_LM_USER_DATA', {
         address,
         timeIndex,
+        rewardProgram: rewardProgram,
       });
       if (responseJSON) {
         if (responseJSON.user) {

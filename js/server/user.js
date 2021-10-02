@@ -1,12 +1,12 @@
 const { fetch } = require('cross-fetch');
 const { RateLimitProtector } = require('./util/RateLimitProtector');
-const config = require('./config');
+const configs = require('./config');
 const clpFetch = new RateLimitProtector({ padding: 100 }).buildAsyncShield(
   fetch,
   fetch
 );
 exports.getUserTimeSeriesData = (all, address) => {
-  const rtn = all.map(timestampData => {
+  const rtn = all.map((timestampData) => {
     const userData = timestampData.users[address];
     // maintain compatibility with older dev branches until mainnet server is stable
     // return userData.totalAccruedCommissionsAndClaimableRewards;
@@ -16,16 +16,16 @@ exports.getUserTimeSeriesData = (all, address) => {
         ? 0
         : userData.totalAccruedCommissionsAndClaimableRewards +
           userData.dispensed +
-          userData.claimedCommissionsAndRewardsAwaitingDispensation
+          userData.claimedCommissionsAndRewardsAwaitingDispensation,
     };
   });
   rtn.shift();
   return rtn;
 };
 
-exports.getUserData = async (all, { timeIndex, address }) => {
+exports.getUserData = async (all, { timeIndex, address, rewardProgram }) => {
   if (!timeIndex) {
-    const data = all.map(timestampGlobalState => {
+    const data = all.map((timestampGlobalState) => {
       let user = timestampGlobalState.users[address];
       if (user) {
         user.delegatorAddresses = [];
@@ -33,7 +33,7 @@ exports.getUserData = async (all, { timeIndex, address }) => {
       return {
         ...timestampGlobalState,
         users: undefined,
-        user: user
+        user: user,
       };
     });
     return data;
@@ -41,7 +41,8 @@ exports.getUserData = async (all, { timeIndex, address }) => {
   try {
     const { users, ...globalState } = all[timeIndex];
     const user = users[address];
-    const matureUser = all[config.NUMBER_OF_INTERVALS_TO_RUN - 1];
+    const matureUser =
+      all[configs[rewardProgram].NUMBER_OF_INTERVALS_TO_RUN - 1];
     return {
       ...globalState,
       user: user
@@ -51,23 +52,23 @@ exports.getUserData = async (all, { timeIndex, address }) => {
             __allDelegatorAddressesAtMaturity: matureUser
               ? matureUser.delegatorAddresses
               : null,
-            maturityAPY: await getUserMaturityAPY(user, address)
+            maturityAPY: await getUserMaturityAPY(user, address),
           }
-        : null
+        : null,
     };
   } catch (e) {
     console.error(e);
   }
 };
 
-async function getUserMaturityAPY (user, address) {
+async function getUserMaturityAPY(user, address) {
   if (!user) {
     return 0;
   }
   try {
     const assets = await clpFetch(
       `https://api.sifchain.finance/clp/getAssets?lpAddress=${address}`
-    ).then(r => r.json());
+    ).then((r) => r.json());
     /*
     Returns: {
       "height":"1304365",
@@ -84,10 +85,10 @@ async function getUserMaturityAPY (user, address) {
 
     const providerData = await Promise.all(
       assets.result.map(
-        a =>
+        (a) =>
           clpFetch(
             `https://api.sifchain.finance/clp/getLiquidityProvider?symbol=${a.symbol}&lpAddress=${address}`
-          ).then(r => r.json())
+          ).then((r) => r.json())
         /*
         Returns: {"height":"1304422","result":{
           "LiquidityProvider": {

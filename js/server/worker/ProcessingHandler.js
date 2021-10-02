@@ -1,10 +1,10 @@
 const { fork } = require('child_process');
 const moment = require('moment');
 const path = require('path');
-const { DEPOSIT_CUTOFF_DATETIME } = require('../config');
+const configs = require('../config');
 const {
   CHECK_IF_PARSED_DATA_READY,
-  RELOAD_AND_REPROCESS_SNAPSHOTS
+  RELOAD_AND_REPROCESS_SNAPSHOTS,
 } = require('../constants/action-names');
 const { MAINNET } = require('../constants/snapshot-source-names');
 const { retryOnFail } = require('../util/retryOnFail');
@@ -22,34 +22,36 @@ if (RELOAD_INTERVAL < 6 * 60 * 1000) {
 
 // Provides #dispatch method by which the express router endpoints can interact with processed data
 class ProcessingHandler {
-  constructor (network = MAINNET) {
+  constructor(network = MAINNET, rewardProgram) {
     this.network = network;
     this.freshProcess = new SubscriberProcess({ network: network });
     this.staleProcess = new SubscriberProcess({ network: network });
     this.readyStatePromise = undefined;
+    this.rewardProgram = rewardProgram;
   }
 
-  static init (network = MAINNET) {
-    const instance = new this(network);
+  static init(network = MAINNET, rewardProgram) {
+    const instance = new this(network, rewardProgram);
     instance.start();
     return instance;
   }
 
-  dispatch (...args) {
+  dispatch(...args) {
     return retryOnFail({
       fn: () => this.freshProcess.dispatch(...args),
       iterations: 5,
-      waitFor: 1000
+      waitFor: 1000,
     });
   }
 
-  async startLight () {
+  async startLight() {
     let timeout = setTimeout(() => {}, 0);
     this.freshProcess.onStart(async () => {
       clearTimeout(timeout);
       const reloadAndReparse = () =>
         this.freshProcess.dispatch(RELOAD_AND_REPROCESS_SNAPSHOTS, {
-          network: this.network
+          network: this.network,
+          rewardProgram: this.rewardProgram,
         });
       while (true) {
         try {
@@ -57,27 +59,26 @@ class ProcessingHandler {
         } catch (e) {
           console.error(e);
         }
-        await new Promise(resolve => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 0));
       }
     });
     this.freshProcess.wake();
   }
 
-  get hasSnapshotsStillUpdating () {
-    return moment()
-      .utc()
-      .isBefore(moment.utc(DEPOSIT_CUTOFF_DATETIME));
+  get hasSnapshotsStillUpdating() {
+    const { DEPOSIT_CUTOFF_DATETIME } = configs[this.rewardProgram];
+    return moment().utc().isBefore(moment.utc(DEPOSIT_CUTOFF_DATETIME));
   }
 
-  async start () {
+  async start() {
     this.beginProcessRotation();
   }
 
-  async waitForReadyState () {
+  async waitForReadyState() {
     if (this.readyStatePromise) {
       return this.readyStatePromise;
     }
-    const promise = new Promise(resolve => {
+    const promise = new Promise((resolve) => {
       // expires after 5 minutes
       (async () => {
         while (true) {
@@ -92,7 +93,7 @@ class ProcessingHandler {
               this.readyStatePromise = undefined;
               return resolve(true);
             }
-            await new Promise(resolve => setTimeout(resolve, 5000));
+            await new Promise((resolve) => setTimeout(resolve, 5000));
           } catch (e) {
             console.error(e);
           }
@@ -103,11 +104,11 @@ class ProcessingHandler {
     return promise;
   }
 
-  log (msg) {
+  log(msg) {
     console.log(`${this.network}:`, msg);
   }
 
-  async beginProcessRotation () {
+  async beginProcessRotation() {
     this.freshProcess.wake();
     this.staleProcess.wake();
     while (true) {
@@ -115,13 +116,14 @@ class ProcessingHandler {
         this.log(`Waking stale process: #${this.staleProcess.id}.`);
         // this.staleProcess.wake();
         await this.staleProcess.dispatch(RELOAD_AND_REPROCESS_SNAPSHOTS, {
-          network: this.network
+          network: this.network,
+          rewardProgram: this.rewardProgram,
         });
         // await this.waitForReadyState(this.staleProcess);
 
         [this.freshProcess, this.staleProcess] = [
           this.staleProcess,
-          this.freshProcess
+          this.freshProcess,
         ];
         this.log(
           `#${this.freshProcess.id}-ready-Rotated-#${this.staleProcess.id}-to-#${this.freshProcess.id}`
@@ -132,19 +134,19 @@ class ProcessingHandler {
         // const onErrorOrExit = this.freshProcess.waitForErrorOrExit();
         await Promise.race([
           // onErrorOrExit.promise,
-          new Promise(resolve =>
+          new Promise((resolve) =>
             setTimeout(() => {
               resolve();
               // onErrorOrExit.cancel();
             }, RELOAD_INTERVAL)
-          )
+          ),
         ]);
         this.log(`Snapshot data expired.`);
       } catch (e) {
         this.log('🔁 Process Rotation Error:');
         console.error(e);
       }
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       // Wait until snapshot data is expired
     }
   }
@@ -153,7 +155,7 @@ class ProcessingHandler {
 let idCounter = 0;
 let invokationCounter = 0;
 class SubscriberProcess {
-  constructor ({ network }) {
+  constructor({ network }) {
     this.network = network;
     this.id = idCounter++;
     this.childProcess = null;
@@ -162,32 +164,32 @@ class SubscriberProcess {
     this.onStartCallbacks = [];
   }
 
-  onStart (cb) {
+  onStart(cb) {
     if (typeof cb === 'function') {
       this.onStartCallbacks.push(cb);
     }
   }
 
-  wake () {
+  wake() {
     this.isSleeping = false;
     this.childProcess = this.fork();
     setTimeout(() => {
-      this.onStartCallbacks.forEach(cb => cb(this.childProcess));
+      this.onStartCallbacks.forEach((cb) => cb(this.childProcess));
     }, 250);
   }
 
-  sleep () {
+  sleep() {
     this.isSleeping = true;
     if (this.childProcess && this.childProcess.connected) {
       this.childProcess.kill();
     }
   }
 
-  log (msg) {
+  log(msg) {
     console.log(`${this.network}:${msg}`);
   }
 
-  dispatch (method, arg) {
+  dispatch(method, arg) {
     const invokationId = (invokationCounter++).toString();
     this.log(`${method}:DISPATCH`);
     const invokation = {
@@ -195,18 +197,18 @@ class SubscriberProcess {
       payload: {
         fn: method,
         args: [arg],
-        id: invokationId
-      }
+        id: invokationId,
+      },
     };
     return new Promise((resolve, reject) => {
       let timerName = `${this.network}:${method}:${invokationId}`;
       console.time(timerName);
-      const errorHandler = async error => {
+      const errorHandler = async (error) => {
         this.log(`${method}:KILLED`);
         console.timeEnd(timerName);
         reject(new Error(error));
       };
-      const messageHandler = async msg => {
+      const messageHandler = async (msg) => {
         const isValidInvokationResponse =
           typeof msg === 'object' &&
           msg.payload &&
@@ -232,12 +234,12 @@ class SubscriberProcess {
     });
   }
 
-  async restart () {
+  async restart() {
     this.isRestarting = true;
     try {
       let exited = Promise.resolve();
       if (this.childProcess.connected) {
-        exited = new Promise(resolve => {
+        exited = new Promise((resolve) => {
           this.childProcess.once('exit', () => {
             // new childProcess is created above in `exit` event handler, which will execute before this
             resolve();
@@ -253,9 +255,9 @@ class SubscriberProcess {
     this.isRestarting = false;
   }
 
-  waitForErrorOrExit () {
+  waitForErrorOrExit() {
     let cancel = () => {};
-    let promise = new Promise(resolve => {
+    let promise = new Promise((resolve) => {
       this.childProcess.once('error', resolve);
       this.childProcess.once('exit', resolve);
       cancel = () => {
@@ -265,14 +267,14 @@ class SubscriberProcess {
     });
     return {
       promise,
-      cancel
+      cancel,
     };
   }
 
-  fork () {
+  fork() {
     const p = fork(path.join(__dirname, `process.childprocess.js`));
     p.setMaxListeners(100000);
-    p.on('error', e => {
+    p.on('error', (e) => {
       if (!this.isRestarting) this.restart();
       this.log(`ERROR:`);
       console.error(e);
@@ -293,5 +295,5 @@ class SubscriberProcess {
 }
 
 module.exports = {
-  ProcessingHandler
+  ProcessingHandler,
 };

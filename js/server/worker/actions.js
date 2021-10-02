@@ -20,7 +20,7 @@ const {
   GET_VS_DISPENSATION_JOB,
   GET_LM_CURRENT_APY_SUMMARY,
 } = require('../constants/action-names');
-const { EVENT_INTERVAL_MINUTES } = require('../config');
+const configs = require('../config');
 const { getTimeIndex } = require('../util/getTimeIndex');
 // const { retryOnFail } = require('../util/retryOnFail');
 /*
@@ -30,9 +30,10 @@ const { getTimeIndex } = require('../util/getTimeIndex');
 // Use `KEY: () => {}` syntax to ensure `processor` is bound correctly.
 function actions(processor) {
   return {
-    [GET_LM_CURRENT_APY_SUMMARY]() {
+    [GET_LM_CURRENT_APY_SUMMARY]({ programName }) {
+      const { EVENT_INTERVAL_MINUTES } = configs[programName];
       // could easily make this a FOMO calculator endpoint
-      const timeIndex = getTimeIndex('now');
+      const timeIndex = getTimeIndex('now', programName);
       const currentTimestampState =
         processor.lmDataParsed.processedData[timeIndex];
       const currentTotal = currentTimestampState.totalDepositedAmount;
@@ -62,21 +63,23 @@ function actions(processor) {
       // convert to percentage
       return (sampleRewardProjectedOneYear / sampleDeposit) * 100;
     },
-    [GET_LM_DISPENSATION_JOB]() {
-      const timeIndex = getTimeIndex('now');
+    [GET_LM_DISPENSATION_JOB]({ programName }) {
+      const timeIndex = getTimeIndex('now', programName);
       const currentTimestampState =
         processor.lmDataParsed.processedData[timeIndex];
       return currentTimestampState.createDispensationJob();
     },
-    [GET_VS_DISPENSATION_JOB]() {
-      const timeIndex = getTimeIndex('now');
+    [GET_VS_DISPENSATION_JOB]({ programName }) {
+      const timeIndex = getTimeIndex('now', programName);
       const currentTimestampState =
         processor.vsDataParsed.processedData[timeIndex];
       return currentTimestampState.createDispensationJob();
     },
-    [GET_SNAPSHOT_UPDATE_TIME_STATS]() {
+    [GET_SNAPSHOT_UPDATE_TIME_STATS]({ rewardProgram }) {
+      const { EVENT_INTERVAL_MINUTES } = configs[rewardProgram];
       const lastUpdatedAt = getDateFromSnapshotIndex(
-        processor.lmDataParsed.snapshotTimeseriesFinalIndex - 1
+        processor.lmDataParsed.snapshotTimeseriesFinalIndex - 1,
+        rewardProgram
       ).valueOf();
       // add 6 to account for maximum server reload delay
       // add 2 to account for maximum server processing time
@@ -87,7 +90,7 @@ function actions(processor) {
         nextExpectedUpdateAt,
       };
     },
-    [RELOAD_AND_REPROCESS_SNAPSHOTS]: async ({ network }) => {
+    [RELOAD_AND_REPROCESS_SNAPSHOTS]: async ({ network, rewardProgram }) => {
       // For testing fault-tolerance
       // if (Math.random() > 0.25) {
       //   process.exit();
@@ -95,7 +98,7 @@ function actions(processor) {
       // if (Math.random() > 0.5) {
       //   throw new Error('SAMPLE ERROR!JSLFJSFJ');
       // }
-      return processor.reloadAndReprocessSnapshots({ network });
+      return processor.reloadAndReprocessSnapshots({ network, rewardProgram });
     },
     /* Internal Actions */
     [CHECK_IF_PARSED_DATA_READY]: () => {
@@ -117,7 +120,11 @@ function actions(processor) {
       );
     },
     [GET_LM_USER_DATA]: (payload) => {
-      augmentUserVSData(payload.address, processor.lmDataParsed.processedData);
+      augmentUserVSData(
+        payload.address,
+        processor.lmDataParsed.processedData,
+        payload.rewardProgram
+      );
       return getUserData(processor.lmDataParsed.processedData, payload);
     },
     [GET_LM_STACK_DATA]: () => {
@@ -131,19 +138,25 @@ function actions(processor) {
       return processor.vsDataParsed[key];
     },
     [GET_VS_USER_TIME_SERIES_DATA]: (address) => {
+      // needs to take in programName
       augmentUserVSData(address, processor.vsDataParsed.processedData);
       return getUserTimeSeriesData(
         processor.vsDataParsed.processedData,
         address
       );
     },
-    [GET_VS_USER_DATA]: async ({ address, timeIndex }) => {
-      augmentUserVSData(address, processor.vsDataParsed.processedData);
+    [GET_VS_USER_DATA]: async ({ address, timeIndex, rewardProgram }) => {
+      augmentUserVSData(
+        address,
+        processor.vsDataParsed.processedData,
+        rewardProgram
+      );
       const userDataOut = await getUserData(
         processor.vsDataParsed.processedData,
         {
           address,
           timeIndex,
+          rewardProgram,
         }
       );
       return userDataOut;

@@ -1,0 +1,4 @@
+- [] Add reward program all the way through the callstack
+- [] Add custom configs for reward program 
+- [] Create endpoint that lists all reward programs
+- [] Frontend updates
