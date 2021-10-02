@@ -206,7 +206,7 @@ const server = new ApolloServer({
               'uatom',
               'uiris',
               'uxprt',
-              'ubasecro',
+              'basecro',
               'uregen',
             ],
             documentationURL:
