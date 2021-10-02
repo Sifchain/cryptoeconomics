@@ -3,6 +3,7 @@ const fs = require('fs');
 const cors = require('cors');
 const { getTimeIndex } = require('./util/getTimeIndex');
 const compression = require('compression');
+const configs = require('./config');
 // implements process.js in separate thread
 const { ProcessingHandler } = require('./worker');
 const {
@@ -20,6 +21,8 @@ const { encrypt, decrypt } = require('./util/encrypt');
 const {
   createGenericDispensationJob,
 } = require('./core/transform/createGenericDispensationJob.js');
+const { gql } = require('apollo-server-core');
+const { ApolloServer } = require('apollo-server-express');
 
 if (process.env.DATABASE_URL) {
   const encrypted = encrypt(process.env.DATABASE_URL);
@@ -79,61 +82,151 @@ app.use(cors());
 
 // compress responses
 app.use(compression());
-// const server = new ApolloServer({
-//   typeDefs: gql`
-//     type Participant {
-//       claimableRewardsOnWithdrawnAssets: Int
-//       dispensed: Int
-//       forfeited: Int
-//       totalAccruedCommissionsAndClaimableRewards: Int
-//       totalClaimableCommissionsAndClaimableRewards: Int
-//       reservedReward: Int
-//       totalDepositedAmount: Int
-//       totalClaimableRewardsOnDepositedAssets: Int
-//       currentTotalCommissionsOnClaimableDelegatorRewards: Int
-//       totalAccruedCommissionsAtMaturity: Int
-//       totalCommissionsAndRewardsAtMaturity: Int
-//       claimableCommissions: Int
-//       forfeitedCommissions: Int
-//       claimedCommissionsAndRewardsAwaitingDispensation: Int
-//       totalRewardsOnDepositedAssetsAtMaturity: Int
-//       ticketAmountAtMaturity: Int
-//       yieldAtMaturity: Int
-//       nextRewardShare: Int
-//       currentYieldOnTickets: Int
-//       maturityDate: Int
-//       maturityDateISO: Int
-//       yearsToMaturity: Int
-//       currentAPYOnTickets: Int
-//       maturityDateMs: Int
-//       futureReward: Int
-//       nextReward: Int
-//       nextRewardProjectedFutureReward: Int
-//       nextRewardProjectedAPYOnTickets: Int
-//       delegatorAddresses: [String]
-//       tickets: [String]
-//     }
-//     enum Network {
-//       mainnet
-//     }
-//     enum RewardProgramVariant {
-//       vs
-//       lm
-//     }
-//     type Query {
-//       reward(
-//         program: RewardProgramVariant!
-//         network: Network
-//         address: String
-//       ): Participant
-//     }
-//   `,
-//   resolvers: {
-//     Query: {},
-//   },
-// });
-// server.start();
-// server.applyMiddleware({ app });
+const server = new ApolloServer({
+  typeDefs: gql`
+    type Participant {
+      claimableRewardsOnWithdrawnAssets: Float
+      dispensed: Float
+      forfeited: Float
+      totalAccruedCommissionsAndClaimableRewards: Float
+      totalClaimableCommissionsAndClaimableRewards: Float
+      reservedReward: Float
+      totalDepositedAmount: Float
+      totalClaimableRewardsOnDepositedAssets: Float
+      currentTotalCommissionsOnClaimableDelegatorRewards: Float
+      totalAccruedCommissionsAtMaturity: Float
+      totalCommissionsAndRewardsAtMaturity: Float
+      claimableCommissions: Float
+      forfeitedCommissions: Float
+      claimedCommissionsAndRewardsAwaitingDispensation: Float
+      totalRewardsOnDepositedAssetsAtMaturity: Float
+      ticketAmountAtMaturity: Float
+      yieldAtMaturity: Float
+      nextRewardShare: Float
+      currentYieldOnTickets: Float
+      maturityDate: Float
+      maturityDateISO: Float
+      yearsToMaturity: Float
+      currentAPYOnTickets: Float
+      maturityDateMs: Float
+      futureReward: Float
+      nextReward: Float
+      nextRewardProjectedFutureReward: Float
+      nextRewardProjectedAPYOnTickets: Float
+      delegatorAddresses: [String]
+      tickets: [String]
+    }
+    enum Network {
+      mainnet
+    }
+    enum RewardProgramType {
+      vs
+      lm
+    }
+    enum RewardProgramName {
+      COSMOS_IBC_REWARDS_V1
+      harvest
+    }
+    enum DistributionPattern {
+      GEYSER
+      LINEAR
+    }
+    type RewardProgram {
+      participant(address: String!): Participant
+      displayName: String!
+      rewardProgramType: RewardProgramType!
+      rewardProgramName: RewardProgramName!
+      summaryAPY(percentage: Boolean = true): Float!
+      incentivizedTokenDenoms: [String!]!
+      isUniversal: Boolean!
+      startDateTimeISO: String!
+      endDateTimeISO: String!
+      documentationURL: String!
+      distributionPattern: DistributionPattern!
+    }
+    type Query {
+      rewardPrograms: [RewardProgram!]!
+    }
+  `,
+  resolvers: {
+    RewardProgram: {
+      async participant({ rewardProgramName }, { address }) {
+        let responseJSON = {};
+        const timeIndex = getTimeIndex('now', rewardProgramName);
+        const processingHandler =
+          processingHandlers[MAINNET][rewardProgramName];
+        await processingHandler.waitForReadyState();
+        responseJSON = await processingHandler.dispatch('GET_LM_USER_DATA', {
+          address,
+          timeIndex,
+          rewardProgram: rewardProgramName,
+        });
+        if (responseJSON) {
+          if (responseJSON.user) {
+            if (responseJSON.user.currentAPYOnTickets) {
+              responseJSON.user.currentAPYOnTickets =
+                responseJSON.user.currentAPYOnTickets * 100;
+            }
+          }
+        }
+        return responseJSON.user;
+      },
+      async summaryAPY(rewardProgram, { percentage }) {
+        console.log(rewardProgram.name);
+        const processingHandler =
+          processingHandlers[MAINNET][rewardProgram.rewardProgramName];
+        await processingHandler.waitForReadyState();
+        return (
+          (await processingHandler.dispatch(GET_LM_CURRENT_APY_SUMMARY, {
+            programName: rewardProgram.rewardProgramName,
+          })) * (percentage ? 1 : 1 / 100)
+        );
+      },
+    },
+    Query: {
+      async rewardPrograms(root, args, context, info) {
+        return [
+          {
+            displayName: `Sif's Harvest`,
+            rewardProgramType: 'lm',
+            rewardProgramName: 'harvest',
+            incentivizedTokenDenoms: ['*'],
+            documentationURL:
+              'https://docs.sifchain.finance/resources/rewards-programs#sifs-harvest-liquidity-mining-program',
+            isUniversal: true,
+            distributionPattern: 'LINEAR',
+          },
+          {
+            displayName: `.42 Liquidity Mining`,
+            rewardProgramType: 'lm',
+            rewardProgramName: 'COSMOS_IBC_REWARDS_V1',
+            incentivizedTokenDenoms: [
+              'uakt',
+              'uvpn',
+              'uatom',
+              'uiris',
+              'uxprt',
+              'ubasecro',
+              'uregen',
+            ],
+            documentationURL:
+              'https://docs.sifchain.finance/resources/rewards-programs#42-liquidity-mining-program',
+            isUniversal: false,
+            distributionPattern: 'GEYSER',
+          },
+        ].map((rewardProgram) => {
+          const config = configs[rewardProgram.rewardProgramName];
+          return {
+            ...rewardProgram,
+            startDateTimeISO: config.START_DATETIME,
+            endDateTimeISO: config.END_OF_REWARD_ACCRUAL_DATETIME,
+          };
+        });
+      },
+    },
+  },
+});
+server.start().then(() => server.applyMiddleware({ app }));
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);

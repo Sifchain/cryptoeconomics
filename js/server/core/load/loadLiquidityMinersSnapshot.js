@@ -82,7 +82,7 @@ const getSQLQueryByNetwork = (network, rewardProgram) => {
             slonik.sql`select * from snapshots_lm rf where rf.snapshot_time = (select max(snapshot_time) from snapshots_lm)`
           );
         })();
-
+        console.log({ rewardProgram });
         const snapshots_lm_claims = tx.any(
           slonik.sql`
             SELECT
@@ -92,8 +92,9 @@ const getSQLQueryByNetwork = (network, rewardProgram) => {
               snapshots_claims
             WHERE
               is_current = true 
-              AND reward_program = ${rewardProgram};
           `
+          // re-enable when multi-claims are enabled
+          // AND reward_program = ${rewardProgram};
         );
         const snapshots_lm_dispensation = tx.any(
           slonik.sql`
@@ -105,11 +106,10 @@ const getSQLQueryByNetwork = (network, rewardProgram) => {
               MAX("height") "height"
             from post_distribution pd
             GROUP BY pd.height, pd.recipient, pd.reward_program
+            HAVING reward_program = ${rewardProgram}
             ORDER BY timestamp ASC
           `
         );
-        // each claim claims all rn.
-        // where reward_program = ${rewardProgram}
         const [...snapshotsNewLoaded] = await snapshots_new;
         const firstItemSnapshotData = snapshotsNewLoaded[0].snapshot_data;
         while (snapshotsNewLoaded.length > 1) {
