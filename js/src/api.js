@@ -14,6 +14,8 @@ const serverURL = (() => {
   }
 })();
 
+const getProgramNameQueryString = (network) =>
+  network === networks.DEVNET ? '&program=harvest' : '';
 const getSnapshotNetworkHeaders = (network) => ({
   'snapshot-source': network || networks.MAINNET,
 });
@@ -25,9 +27,12 @@ function handleFailedRequest() {
 }
 export const fetchUsers = (type, network) => {
   return window
-    .fetch(`${serverURL}/${type}?key=users`, {
-      headers: getSnapshotNetworkHeaders(network),
-    })
+    .fetch(
+      `${serverURL}/${type}?key=users${getProgramNameQueryString(network)}`,
+      {
+        headers: getSnapshotNetworkHeaders(network),
+      }
+    )
     .then((response) => response.json())
     .catch(handleFailedRequest);
 };
@@ -35,9 +40,9 @@ export const fetchUsers = (type, network) => {
 export const fetchUserData = (address, type, timestamp, network) => {
   return window
     .fetch(
-      `${serverURL}/${type}?key=userData&address=${address}${
-        timestamp ? `&timestamp=${new Date(timestamp).toISOString()}` : ``
-      }`,
+      `${serverURL}/${type}?key=userData&address=${address}${getProgramNameQueryString(
+        network
+      )}}${timestamp ? `&timestamp=${new Date(timestamp).toISOString()}` : ``}`,
       {
         headers: getSnapshotNetworkHeaders(network),
       }
@@ -48,18 +53,26 @@ export const fetchUserData = (address, type, timestamp, network) => {
 
 export const fetchUserTimeSeriesData = (address, type, network) => {
   return window
-    .fetch(`${serverURL}/${type}?key=userTimeSeriesData&address=${address}`, {
-      headers: getSnapshotNetworkHeaders(network),
-    })
+    .fetch(
+      `${serverURL}/${type}?key=userTimeSeriesData&address=${address}${getProgramNameQueryString(
+        network
+      )}}`,
+      {
+        headers: getSnapshotNetworkHeaders(network),
+      }
+    )
     .then((response) => response.json())
     .catch(handleFailedRequest);
 };
 
 export const fetchStack = (type, network) => {
   return window
-    .fetch(`${serverURL}/${type}?key=stack`, {
-      headers: getSnapshotNetworkHeaders(network),
-    })
+    .fetch(
+      `${serverURL}/${type}?key=stack${getProgramNameQueryString(network)}}`,
+      {
+        headers: getSnapshotNetworkHeaders(network),
+      }
+    )
     .then((response) => response.json())
     .catch(handleFailedRequest);
 };
