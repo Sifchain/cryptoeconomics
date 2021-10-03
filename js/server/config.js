@@ -77,7 +77,7 @@ module.exports = {
     initialRowan: 40_000_000,
     startsAt: '2021-09-29T22:12:15.000Z',
     durationInWeeks: 6,
-    intervalDurationMinutes: 200,
+    intervalDurationMinutes: 59,
     initialRewardMultiplier: 1,
   }),
 };

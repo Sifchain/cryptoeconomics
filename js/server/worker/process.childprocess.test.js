@@ -1,6 +1,7 @@
 const { BackgroundProcessor } = require('./process.childprocess');
 const _ = require('lodash');
 const { MAINNET } = require('../constants/snapshot-source-names');
+const { GET_LM_CURRENT_APY_SUMMARY } = require('../constants/action-names');
 
 // simple test setup
 const describe = async (description, describer) => {
@@ -88,11 +89,17 @@ const runTests = (type, parsedData, network) => {
 const bp = new BackgroundProcessor();
 bp.reloadAndReprocessSnapshots({
   network: MAINNET,
-  rewardProgram: 'COSMOS_IBC_REWARDS_V1',
+  rewardProgram: 'harvest',
 })
   // test reload caching
   // .then(async () => bp.reloadAndReprocessSnapshots({ network: MAINNET }))
   .then(async () => {
     await runTests('lm', bp.lmDataParsed, MAINNET);
+    console.log(
+      bp.dispatch(GET_LM_CURRENT_APY_SUMMARY, {
+        programName: 'harvest',
+      })
+    );
+
     // await runTests('vs', bp.vsDataParsed, MAINNET);
   });
