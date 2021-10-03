@@ -41,7 +41,7 @@ export const fetchUserData = (address, type, timestamp, network) => {
     .fetch(
       `${serverURL}/${type}?key=userData&address=${address}${getProgramNameQueryString(
         network
-      )}}${timestamp ? `&timestamp=${new Date(timestamp).toISOString()}` : ``}`,
+      )}${timestamp ? `&timestamp=${new Date(timestamp).toISOString()}` : ``}`,
       {
         headers: getSnapshotNetworkHeaders(network),
       }
@@ -55,7 +55,7 @@ export const fetchUserTimeSeriesData = (address, type, network) => {
     .fetch(
       `${serverURL}/${type}?key=userTimeSeriesData&address=${address}${getProgramNameQueryString(
         network
-      )}}`,
+      )}`,
       {
         headers: getSnapshotNetworkHeaders(network),
       }
@@ -67,7 +67,7 @@ export const fetchUserTimeSeriesData = (address, type, network) => {
 export const fetchStack = (type, network) => {
   return window
     .fetch(
-      `${serverURL}/${type}?key=stack${getProgramNameQueryString(network)}}`,
+      `${serverURL}/${type}?key=stack${getProgramNameQueryString(network)}`,
       {
         headers: getSnapshotNetworkHeaders(network),
       }
