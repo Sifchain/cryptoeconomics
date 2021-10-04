@@ -169,7 +169,20 @@ const server = new ApolloServer({
             }
           }
         }
-        return responseJSON.user;
+        function reducePrecisionForJsonNumbers ({...obj}) {
+          for (let key in obj) {
+            switch(typeof obj[key]) {
+              case 'number': 
+                obj[key] = +obj[key].toFixed(10)
+                break;
+              case 'object': 
+                if (!Array.isArray(obj[key])) {
+                  obj[key] = reducePrecisionForJsonNumbers(obj[key])
+                }
+            }
+          }
+        }
+        return responseJSON.user ?? reducePrecisionForJsonNumbers(responseJSON.user);
       },
       async summaryAPY(rewardProgram, { percentage }) {
         console.log(rewardProgram.name);
