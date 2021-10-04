@@ -75,7 +75,7 @@ module.exports = {
   }),
   harvest: createConfig({
     initialRowan: 40_000_000,
-    startsAt: '2021-09-29T22:12:15.000Z',
+    startsAt: '2021-10-04T00:00:00.000Z',
     durationInWeeks: 6,
     intervalDurationMinutes: 59,
     initialRewardMultiplier: 1,
