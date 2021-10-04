@@ -135,13 +135,14 @@ class User {
     let maturityDateISO = userAtPrevTimestamp.maturityDateISO;
     let maturityDateMs = userAtPrevTimestamp.maturityDateMs;
     let maturityDateMoment;
+    const config = configs[rewardProgram]
     if (
       maturityDate === undefined && // maturity date not yet reached
       isAfterRewardPeriod && // reward period is over
       this.totalClaimableRewardsOnDepositedAssets >= this.reservedReward // rewards have matured
     ) {
       maturityDateMoment = moment
-        .utc(configs[rewardProgram].START_DATETIME)
+        .utc(config.START_DATETIME)
         .add(currentTimestampInMinutes, 'm');
       maturityDate = maturityDateMoment.format('MMMM Do YYYY, h:mm:ss a');
       maturityDateMs = maturityDateMoment.valueOf();
@@ -160,7 +161,7 @@ class User {
         : this.futureReward / this.totalDepositedAmount;
     this.nextReward = this.nextRewardShare * nextBucketGlobalReward;
     this.nextRewardProjectedFutureReward =
-      (this.nextReward / 200) * 60 * 24 * 365;
+      (this.nextReward / config.EVENT_INTERVAL_MINUTES) * 60 * 24 * 365;
     this.nextRewardProjectedAPYOnTickets =
       // likely scenario for validators (no tickets)
       this.totalDepositedAmount === 0
