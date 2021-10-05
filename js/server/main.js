@@ -187,7 +187,7 @@ const server = new ApolloServer({
         );
       },
       async summaryAPY(rewardProgram, { percentage }) {
-        if (rewardProgram === 'COSMOS_IBC_REWARDS_V1') {
+        if (rewardProgram.rewardProgramName === 'COSMOS_IBC_REWARDS_V1') {
           return 0;
         }
         console.log(rewardProgram.name);
