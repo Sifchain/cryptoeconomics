@@ -131,6 +131,7 @@ const server = new ApolloServer({
     type RewardProgram {
       participant(address: String!): Participant
       displayName: String!
+      description: String!
       rewardProgramType: RewardProgramType!
       rewardProgramName: String!
       summaryAPY(percentage: Boolean = true): Float!
@@ -202,17 +203,8 @@ const server = new ApolloServer({
       async rewardPrograms(root, args, context, info) {
         return [
           {
-            displayName: `Sif's Bonus Pool`,
-            rewardProgramType: 'lm',
-            rewardProgramName: 'bonus_v1',
-            incentivizedPoolSymbols: ['ujuno'],
-            documentationURL:
-              'https://docs.sifchain.finance/resources/rewards-programs#sifs-harvest-liquidity-mining-program',
-            isUniversal: false,
-            distributionPattern: 'LINEAR',
-          },
-          {
             displayName: `Sif's Harvest`,
+            description: `Immediately earn and claim rewards of mythological proportions by providing liquidity to any of Sifchain's token pools.`,
             rewardProgramType: 'lm',
             rewardProgramName: 'harvest',
             incentivizedPoolSymbols: ['*'],
@@ -222,7 +214,19 @@ const server = new ApolloServer({
             distributionPattern: 'LINEAR',
           },
           {
+            displayName: `Sif's Bonus Pool`,
+            description: `Immediately earn and claim rewards by pooling Junø.`,
+            rewardProgramType: 'lm',
+            rewardProgramName: 'bonus_v1',
+            incentivizedPoolSymbols: ['ujuno'],
+            documentationURL:
+              'https://docs.sifchain.finance/resources/rewards-programs',
+            isUniversal: false,
+            distributionPattern: 'LINEAR',
+          },
+          {
             displayName: `.42 Liquidity Mining`,
+            description: `Earn additional rewards by providing liquidity to any of Sifchain's Cosmos IBC token pools.`,
             rewardProgramType: 'lm',
             rewardProgramName: 'COSMOS_IBC_REWARDS_V1',
             incentivizedPoolSymbols: [
