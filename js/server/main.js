@@ -215,7 +215,7 @@ const server = new ApolloServer({
           },
           {
             displayName: `Sif's Bonus Pool`,
-            description: `Immediately earn and claim rewards by pooling Junø.`,
+            description: `Immediately earn and claim rewards by pooling JUNØ.`,
             rewardProgramType: 'lm',
             rewardProgramName: 'bonus_v1',
             incentivizedPoolSymbols: ['juno'],
