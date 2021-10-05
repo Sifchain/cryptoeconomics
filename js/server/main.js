@@ -218,7 +218,7 @@ const server = new ApolloServer({
             description: `Immediately earn and claim rewards by pooling Junø.`,
             rewardProgramType: 'lm',
             rewardProgramName: 'bonus_v1',
-            incentivizedPoolSymbols: ['ujuno'],
+            incentivizedPoolSymbols: ['juno'],
             documentationURL:
               'https://docs.sifchain.finance/resources/rewards-programs',
             isUniversal: false,
