@@ -5,7 +5,12 @@ import {
 } from './config';
 import './App.css';
 import React, { useEffect, useMemo, useState } from 'react';
-import { fetchUsers, fetchUserData, fetchUserTimeSeriesData } from './api';
+import {
+  fetchUsers,
+  fetchUserData,
+  fetchUserTimeSeriesData,
+  fetchRewardPrograms,
+} from './api';
 import JSONPretty from 'react-json-pretty';
 import 'react-json-pretty/themes/monikai.css';
 import moment from 'moment';
@@ -152,7 +157,15 @@ class App extends React.Component {
       isLoadingLeaderboard: false,
       originalTitle: window.document.title,
       router: router,
+      rewardPrograms: [],
     };
+    fetchRewardPrograms().then((rps) => {
+      console.log(rps);
+      this.setState({
+        rewardPrograms: rps,
+      }),
+        () => console.log('set reward progs');
+    });
     if (this.state.network !== networks.MAINNET) {
       window.document.title = (window.document.title || '').replace(
         'Sifchain',
@@ -751,6 +764,21 @@ class App extends React.Component {
               .
             </div>
           )}
+          <select
+            className="dropdown--select-network"
+            value={this.state.network}
+            onChange={(e) => {
+              window.localStorage.setItem('rewardProgram', e.target.value);
+              window.location.reload();
+            }}
+            defaultValue={'harvest'}
+          >
+            {this.state.rewardPrograms.map((rp) => {
+              <option key={rp.rewardPgro} value={rp.rewardProgramName}>
+                {rp.rewardProgramName}
+              </option>;
+            })}
+          </select>
           <select
             className="dropdown--select-network"
             value={this.state.network}

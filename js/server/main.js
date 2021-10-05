@@ -58,11 +58,12 @@ let createTestnetHandler = () => {
 };
 const processingHandlers = {
   [MAINNET]: {
-    ['harvest']: ProcessingHandler.init(MAINNET, 'harvest'),
-    COSMOS_IBC_REWARDS_V1: ProcessingHandler.init(
-      MAINNET,
-      'COSMOS_IBC_REWARDS_V1'
-    ),
+    ...Object.keys(configs).reduce((prev, key) => {
+      return {
+        ...prev,
+        [key]: ProcessingHandler.init(MAINNET, key),
+      };
+    }, {}),
   },
   get [DEVNET]() {
     return createTestnetHandler();
@@ -123,10 +124,6 @@ const server = new ApolloServer({
       vs
       lm
     }
-    enum RewardProgramName {
-      COSMOS_IBC_REWARDS_V1
-      harvest
-    }
     enum DistributionPattern {
       GEYSER
       LINEAR
@@ -135,7 +132,7 @@ const server = new ApolloServer({
       participant(address: String!): Participant
       displayName: String!
       rewardProgramType: RewardProgramType!
-      rewardProgramName: RewardProgramName!
+      rewardProgramName: String!
       summaryAPY(percentage: Boolean = true): Float!
       incentivizedPoolSymbols: [String!]!
       isUniversal: Boolean!
@@ -204,6 +201,16 @@ const server = new ApolloServer({
     Query: {
       async rewardPrograms(root, args, context, info) {
         return [
+          {
+            displayName: `Sif's Bonus Pool`,
+            rewardProgramType: 'lm',
+            rewardProgramName: 'bonus_v1',
+            incentivizedPoolSymbols: ['ujuno'],
+            documentationURL:
+              'https://docs.sifchain.finance/resources/rewards-programs#sifs-harvest-liquidity-mining-program',
+            isUniversal: false,
+            distributionPattern: 'LINEAR',
+          },
           {
             displayName: `Sif's Harvest`,
             rewardProgramType: 'lm',

@@ -73,13 +73,13 @@ const getSQLQueryByNetwork = (network, rewardProgram) => {
     default: {
       return getDatabase().transaction(async (tx) => {
         const snapshots_new = (() => {
-          if (rewardProgram === 'harvest') {
+          if (rewardProgram === 'COSMOS_IBC_REWARDS_V1') {
             return tx.many(
-              slonik.sql`select * from snapshots_reward where is_latest = true and reward_program=${rewardProgram}`
+              slonik.sql`select * from snapshots_lm rf where rf.snapshot_time = (select max(snapshot_time) from snapshots_lm)`
             );
           }
           return tx.many(
-            slonik.sql`select * from snapshots_lm rf where rf.snapshot_time = (select max(snapshot_time) from snapshots_lm)`
+            slonik.sql`select * from snapshots_reward where is_latest = true and reward_program=${rewardProgram}`
           );
         })();
         console.log({ rewardProgram });

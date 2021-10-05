@@ -50,6 +50,7 @@ const runTests = (type, parsedData, network) => {
     )
   );
 
+  console.log({ totalPoolDominanceRatio });
   describe('Verify Rewards', ({ test }) => {
     /* 
           expect devnet rewards to be lower than 45,000,000 because 
@@ -89,7 +90,7 @@ const runTests = (type, parsedData, network) => {
 const bp = new BackgroundProcessor();
 bp.reloadAndReprocessSnapshots({
   network: MAINNET,
-  rewardProgram: 'harvest',
+  rewardProgram: 'bonus_v1',
 })
   // test reload caching
   // .then(async () => bp.reloadAndReprocessSnapshots({ network: MAINNET }))
@@ -97,9 +98,8 @@ bp.reloadAndReprocessSnapshots({
     await runTests('lm', bp.lmDataParsed, MAINNET);
     console.log(
       bp.dispatch(GET_LM_CURRENT_APY_SUMMARY, {
-        programName: 'harvest',
+        programName: 'bonus_v1',
       })
     );
-
     // await runTests('vs', bp.vsDataParsed, MAINNET);
   });

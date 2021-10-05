@@ -1,7 +1,8 @@
 import { networks } from './config';
 const serverURL = (() => {
   let environment = process.env.REACT_APP_DEPLOYMENT_TAG;
-  // environment = 'localnet';
+  // environment = 'production';
+
   switch (environment) {
     case 'production':
       return 'https://api-cryptoeconomics.sifchain.finance/api';
@@ -14,7 +15,9 @@ const serverURL = (() => {
   }
 })();
 
-const getProgramNameQueryString = (network) => '&program=harvest';
+const rewardProgram = window.localStorage.getItem('rewardProgram') || 'harvest';
+
+const getProgramNameQueryString = (network) => `&program=${rewardProgram}`;
 const getSnapshotNetworkHeaders = (network) => ({
   'snapshot-source': network || networks.MAINNET,
 });
@@ -48,6 +51,26 @@ export const fetchUserData = (address, type, timestamp, network) => {
     )
     .then((response) => response.json())
     .catch(handleFailedRequest);
+};
+
+export const fetchRewardPrograms = () => {
+  const serverUrlParts = serverURL.split('/');
+  serverUrlParts.pop();
+  return window
+    .fetch(`${serverUrlParts.join('/')}/graphql`, {
+      method: 'POST',
+      body: JSON.stringify({
+        query: `{
+          rewardPrograms {
+            rewardProgramName
+          }
+        }`,
+        variables: {},
+      }),
+      headers: [['content-type', 'application/json']],
+    })
+    .then((r) => r.json())
+    .then((r) => r.data.rewardPrograms);
 };
 
 export const fetchUserTimeSeriesData = (address, type, network) => {
