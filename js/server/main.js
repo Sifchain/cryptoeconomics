@@ -169,22 +169,27 @@ const server = new ApolloServer({
             }
           }
         }
-        function reducePrecisionForJsonNumbers ({...obj}) {
+        function reducePrecisionForJsonNumbers({ ...obj }) {
           for (let key in obj) {
-            switch(typeof obj[key]) {
-              case 'number': 
-                obj[key] = +obj[key].toFixed(10)
+            switch (typeof obj[key]) {
+              case 'number':
+                obj[key] = +obj[key].toFixed(10);
                 break;
-              case 'object': 
+              case 'object':
                 if (!Array.isArray(obj[key])) {
-                  obj[key] = reducePrecisionForJsonNumbers(obj[key])
+                  obj[key] = reducePrecisionForJsonNumbers(obj[key]);
                 }
             }
           }
         }
-        return responseJSON.user ?? reducePrecisionForJsonNumbers(responseJSON.user);
+        return (
+          responseJSON.user ?? reducePrecisionForJsonNumbers(responseJSON.user)
+        );
       },
       async summaryAPY(rewardProgram, { percentage }) {
+        if (rewardProgram === 'COSMOS_IBC_REWARDS_V1') {
+          return 0;
+        }
         console.log(rewardProgram.name);
         const processingHandler =
           processingHandlers[MAINNET][rewardProgram.rewardProgramName];
@@ -338,7 +343,7 @@ app.get('/api/lm', async (req, res, next) => {
       const address = req.query.address;
       responseJSON = await processingHandler.dispatch(
         'GET_LM_USER_TIME_SERIES_DATA',
-        address
+        { address, rewardProgram }
       );
       break;
     }

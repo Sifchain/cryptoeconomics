@@ -113,8 +113,12 @@ function actions(processor) {
     [GET_LM_KEY_VALUE]: (key) => {
       return processor.lmDataParsed[key];
     },
-    [GET_LM_USER_TIME_SERIES_DATA]: (address) => {
-      augmentUserVSData(address, processor.lmDataParsed.processedData);
+    [GET_LM_USER_TIME_SERIES_DATA]: ({ rewardProgram, address }) => {
+      augmentUserVSData(
+        address,
+        processor.lmDataParsed.processedData,
+        rewardProgram
+      );
       return getUserTimeSeriesData(
         processor.lmDataParsed.processedData,
         address
