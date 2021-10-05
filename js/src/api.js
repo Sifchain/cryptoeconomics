@@ -2,11 +2,11 @@ import { networks } from './config';
 const serverURL = (() => {
   let environment = process.env.REACT_APP_DEPLOYMENT_TAG;
   // environment = 'localnet';
-  return 'https://api-cryptoeconomics-devnet.sifchain.finance/api';
   switch (environment) {
     case 'production':
       return 'https://api-cryptoeconomics.sifchain.finance/api';
     case 'devnet':
+      return 'https://api-cryptoeconomics-devnet.sifchain.finance/api';
     case 'testnet':
       return 'https://api-cryptoeconomics-testnet.sifchain.finance/api';
     default:
