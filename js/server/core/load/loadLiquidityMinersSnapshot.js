@@ -82,6 +82,26 @@ const getSQLQueryByNetwork = (network, rewardProgram) => {
             slonik.sql`select * from snapshots_reward where is_latest = true and reward_program=${rewardProgram}`
           );
         })();
+        function augmentLMSnapshotToHideNonProgramLiquidityRemovals(
+          snapshots_new
+        ) {
+          for (let snapshot of snapshots_new) {
+            const liquidityByTokens = snapshot.snapshot_data[snapshot.address];
+            for (let token in liquidityByTokens) {
+              let liquidityDeltaEvents = liquidityByTokens[token];
+              let total = 0;
+              for (let deltaEvent of liquidityDeltaEvents) {
+                let nextTotal = total + deltaEvent.delta;
+                if (nextTotal < 0) {
+                  deltaEvent.delta = -total;
+                  nextTotal = 0;
+                }
+                total = nextTotal;
+              }
+            }
+          }
+        }
+        augmentLMSnapshotToHideNonProgramLiquidityRemovals(await snapshots_new);
         console.log({ rewardProgram });
         const snapshots_lm_claims = tx.any(
           slonik.sql`

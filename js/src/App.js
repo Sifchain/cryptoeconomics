@@ -10,6 +10,7 @@ import {
   fetchUserData,
   fetchUserTimeSeriesData,
   fetchRewardPrograms,
+  serverURL,
 } from './api';
 import JSONPretty from 'react-json-pretty';
 import 'react-json-pretty/themes/monikai.css';
@@ -766,18 +767,49 @@ class App extends React.Component {
           )}
           <select
             className="dropdown--select-network"
-            value={this.state.network}
+            value={window.sessionStorage.getItem('rewardProgram')}
             onChange={(e) => {
-              window.localStorage.setItem('rewardProgram', e.target.value);
+              window.sessionStorage.setItem('rewardProgram', e.target.value);
               window.location.reload();
             }}
-            defaultValue={'harvest'}
           >
-            {this.state.rewardPrograms.map((rp) => {
-              <option key={rp.rewardPgro} value={rp.rewardProgramName}>
-                {rp.rewardProgramName}
-              </option>;
-            })}
+            <option value={'harvest'}>Program: Harvest</option>;
+            <option value={'COSMOS_IBC_REWARDS_V1'}>Program: IBC</option>;
+            <option value={'bonus_v1'}>Program: Sif's Bonus v1</option>;
+          </select>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              window.location.reload();
+            }}
+          >
+            <input
+              type="text"
+              className="dropdown--select-network"
+              value={window.sessionStorage.getItem('endpoint')}
+              onChange={(e) => {
+                window.sessionStorage.setItem('endpoint', e.target.value);
+              }}
+            />
+          </form>
+          <select
+            className="dropdown--select-network"
+            value={window.sessionStorage.getItem('endpoint')}
+            onChange={(e) => {
+              window.sessionStorage.setItem('endpoint', e.target.value);
+              window.location.reload();
+            }}
+          >
+            <option value={'https://api-cryptoeconomics.sifchain.finance/api'}>
+              Env: Production
+            </option>
+            ;
+            <option
+              value={'https://api-cryptoeconomics-devnet.sifchain.finance/api'}
+            >
+              Env: Devnet
+            </option>
+            <option value={'http://localhost:3000/api'}>Env: Local</option>;
           </select>
           <select
             className="dropdown--select-network"
@@ -785,10 +817,11 @@ class App extends React.Component {
             onChange={(e) => this.updateNetwork(e.target.value)}
             defaultValue={networks.MAINNET}
           >
-            <option value={networks.MAINNET}>MAINNET</option>
-            <option value={networks.TESTNET}>TESTNET</option>
+            <option value={networks.MAINNET}>Blockchain: betanet</option>
+            <option value={networks.TESTNET}>Blockchain: testnet</option>
           </select>
         </div>
+        <pre style={{ color: 'white' }}>{serverURL}</pre>
       </div>
     );
   }

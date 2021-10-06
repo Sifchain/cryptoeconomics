@@ -1,8 +1,16 @@
 import { networks } from './config';
-const serverURL = (() => {
+export const serverURL = (() => {
   let environment = process.env.REACT_APP_DEPLOYMENT_TAG;
-  // environment = 'production';
-
+  environment = 'local';
+  if (window.sessionStorage.getItem('endpoint')) {
+    return window.sessionStorage.getItem('endpoint');
+  } else {
+    window.sessionStorage.setItem(
+      'endpoint',
+      'https://api-cryptoeconomics.sifchain.finance/api'
+    );
+    window.location.reload();
+  }
   switch (environment) {
     case 'production':
       return 'https://api-cryptoeconomics.sifchain.finance/api';
@@ -15,7 +23,8 @@ const serverURL = (() => {
   }
 })();
 
-const rewardProgram = window.localStorage.getItem('rewardProgram') || 'harvest';
+const rewardProgram =
+  window.sessionStorage.getItem('rewardProgram') || 'harvest';
 
 const getProgramNameQueryString = (network) => `&program=${rewardProgram}`;
 const getSnapshotNetworkHeaders = (network) => ({
