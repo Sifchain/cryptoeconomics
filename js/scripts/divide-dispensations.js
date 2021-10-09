@@ -19,6 +19,8 @@ const rewardPrograms = {
   '39_SUNSET_VALIDATOR_SUBSIDY': '39_VALIDATOR_SUBSIDY',
   '39_AIRDROP': '39_AIRDROP',
   COSMOS_IBC_REWARDS_V1: 'COSMOS_IBC_REWARDS_V1',
+  harvest: 'harvest',
+  bonus_v1: 'bonus_v1',
 };
 
 const getOutputPath = (...paths) =>
@@ -40,7 +42,7 @@ async function divideDispensations() {
     path.join(__dirname, `./output/divide-dispensations/${dispensationName}`)
   );
 
-  for (let type of ['vs', 'lm', 'lm_ibc']) {
+  for (let type of ['lm_juno', 'lm_harvest', 'lm_ibc']) {
     const rawDist = await fetch(
       `https://data.sifchain.finance/beta/network/dispensation/${type}`
     ).then((r) => r.json());
@@ -115,6 +117,10 @@ function createDispensationRunKit() {
         return rewardPrograms['39_SUNSET_LIQUIDITY_MINING'];
       case 'lm_ibc':
         return rewardPrograms['COSMOS_IBC_REWARDS_V1'];
+      case 'lm_harvest':
+        return rewardPrograms['harvest'];
+      case 'lm_juno':
+        return rewardPrograms['bonus_v1'];
       case 'airdrop':
         return rewardPrograms['39_AIRDROP'];
     }
@@ -124,6 +130,8 @@ function createDispensationRunKit() {
       case 'vs':
         return 'ValidatorSubsidy';
       case 'lm':
+      case 'lm_harvest':
+      case 'lm_juno':
       case 'lm_ibc':
         return 'LiquidityMining';
       case 'airdrop':
