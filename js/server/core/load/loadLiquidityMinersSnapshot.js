@@ -91,6 +91,12 @@ const getSQLQueryByNetwork = (network, rewardProgram) => {
               let liquidityDeltaEvents = liquidityByTokens[token];
               let total = 0;
               for (let deltaEvent of liquidityDeltaEvents) {
+                if (
+                  snapshot.address ===
+                  'sif1umh8vzlrjl84kh8lhw7d2nuaxlh4nglfu9zcy4'
+                ) {
+                  //
+                }
                 let nextTotal = total + deltaEvent.delta;
                 if (nextTotal < 0) {
                   deltaEvent.delta = -total;
@@ -101,8 +107,8 @@ const getSQLQueryByNetwork = (network, rewardProgram) => {
             }
           }
         }
-        augmentLMSnapshotToHideNonProgramLiquidityRemovals(await snapshots_new);
-        console.log({ rewardProgram });
+        // augmentLMSnapshotToHideNonProgramLiquidityRemovals(await snapshots_new);
+        // console.log({ rewardProgram });
         const snapshots_lm_claims = tx.any(
           slonik.sql`
             SELECT
