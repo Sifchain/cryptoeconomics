@@ -204,7 +204,7 @@ const server = new ApolloServer({
         return [
           {
             displayName: `Sif's Harvest`,
-            description: `Immediately earn and claim rewards of mythological proportions by providing liquidity to any of Sifchain's token pools.`,
+            description: `Earn rewards of mythological proportions by providing liquidity to any of Sifchain's token pools.`,
             rewardProgramType: 'lm',
             rewardProgramName: 'harvest',
             incentivizedPoolSymbols: ['*'],
@@ -215,7 +215,7 @@ const server = new ApolloServer({
           },
           {
             displayName: `Sif's IXO Bonus Pool`,
-            description: `Earn Rowan every 60 minutes and claim rewards immediately by pooling IXO.`,
+            description: `Earn Rowan rewards by pooling IXO.`,
             rewardProgramType: 'lm',
             rewardProgramName: 'bonus_v1_ixo',
             incentivizedPoolSymbols: ['ixo'],
@@ -226,7 +226,7 @@ const server = new ApolloServer({
           },
           {
             displayName: `Sif's Junø Bonus Pool`,
-            description: `Earn Rowan every 60 minutes and claim rewards immediately by pooling JUNØ.`,
+            description: `Earn Rowan rewards by pooling JUNØ.`,
             rewardProgramType: 'lm',
             rewardProgramName: 'bonus_v1',
             incentivizedPoolSymbols: ['juno'],
