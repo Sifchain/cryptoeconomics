@@ -215,7 +215,7 @@ const server = new ApolloServer({
           },
           {
             displayName: `Sif's IXO Bonus Pool`,
-            description: `Earn rewards by pooling IXO.`,
+            description: `Earn Rowan rewards by pooling IXO.`,
             rewardProgramType: 'lm',
             rewardProgramName: 'bonus_v1_ixo',
             incentivizedPoolSymbols: ['ixo'],
@@ -226,7 +226,7 @@ const server = new ApolloServer({
           },
           {
             displayName: `Sif's Junø Bonus Pool`,
-            description: `Earn rewards by pooling JUNØ.`,
+            description: `Earn Rowan rewards by pooling JUNØ.`,
             rewardProgramType: 'lm',
             rewardProgramName: 'bonus_v1',
             incentivizedPoolSymbols: ['juno'],
