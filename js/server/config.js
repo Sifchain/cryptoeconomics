@@ -94,7 +94,7 @@ module.exports = {
     initialRewardMultiplier: 1,
   }),
   bonus_v1_ixo: createConfig({
-    initialRowan: 500_000,
+    initialRowan: 100_000,
     startsAt: '2021-10-12T13:29:01.255Z',
     durationInWeeks: 2,
     weeksToTotalMaturity: 2.1,
