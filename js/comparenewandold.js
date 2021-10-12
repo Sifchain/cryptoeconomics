@@ -6,7 +6,7 @@ let totalIncrease = 0;
 let totalDecrease = 0;
 for (let key in { ...currentvals, ...oldvsasl }) {
   const diff = (currentvals[key] || 0) - (oldvsasl[key] || 0);
-  diffs[key] = diff;
+  if (diff < 100) diffs[key] = diff;
   if (diff > 0) {
     totalIncrease += diff;
   } else {
