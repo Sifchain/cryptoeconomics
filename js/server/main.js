@@ -214,8 +214,19 @@ const server = new ApolloServer({
             distributionPattern: 'LINEAR',
           },
           {
-            displayName: `Sif's Bonus Pool`,
-            description: `Immediately earn and claim rewards by pooling JUNØ.`,
+            displayName: `Sif's IXO Bonus Pool`,
+            description: `Earn Rowan every 60 minutes and claim rewards immediately by pooling IXO.`,
+            rewardProgramType: 'lm',
+            rewardProgramName: 'bonus_v1_ixo',
+            incentivizedPoolSymbols: ['ixo'],
+            documentationURL:
+              'https://docs.sifchain.finance/resources/rewards-programs',
+            isUniversal: false,
+            distributionPattern: 'LINEAR',
+          },
+          {
+            displayName: `Sif's Junø Bonus Pool`,
+            description: `Earn Rowan every 60 minutes and claim rewards immediately by pooling JUNØ.`,
             rewardProgramType: 'lm',
             rewardProgramName: 'bonus_v1',
             incentivizedPoolSymbols: ['juno'],

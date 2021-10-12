@@ -1,6 +1,7 @@
 function createConfig({
   startsAt,
   durationInWeeks,
+  weeksToTotalMaturity,
   intervalDurationMinutes,
   initialRowan,
   initialRewardMultiplier,
@@ -58,7 +59,9 @@ function createConfig({
     DEPOSITS_ALLOWED_DURATION_MS,
     MULTIPLIER_MATURITY:
       REWARD_ACCRUAL_DURATION_MS / 1000 / 60 / EVENT_INTERVAL_MINUTES, // 6 weeks in in 200minute intervals,
-    NUMBER_OF_INTERVALS_TO_RUN: REWARD_ACCRUAL_DURATION_INTERVAL_COUNT * 2, // duration of bucket drain + duration to latest possible multiplier maturity
+    NUMBER_OF_INTERVALS_TO_RUN:
+      REWARD_ACCRUAL_DURATION_INTERVAL_COUNT *
+      (weeksToTotalMaturity / durationInWeeks), // duration of bucket drain + duration to latest possible multiplier maturity
     REWARD_ACCRUAL_DURATION_INTERVAL_COUNT,
     INITIAL_REWARD_MULTIPLIER: initialRewardMultiplier,
   };
@@ -70,6 +73,7 @@ module.exports = {
     initialRowan: 10_000_000,
     startsAt: '2021-08-24T20:06:15.000Z',
     durationInWeeks: 6,
+    weeksToTotalMaturity: 12,
     intervalDurationMinutes: 200,
     initialRewardMultiplier: 0.25,
   }),
@@ -77,6 +81,7 @@ module.exports = {
     initialRowan: 40_000_000,
     startsAt: '2021-10-04T00:00:00.000Z',
     durationInWeeks: 6,
+    weeksToTotalMaturity: 6.1,
     intervalDurationMinutes: 59,
     initialRewardMultiplier: 1,
   }),
@@ -84,6 +89,15 @@ module.exports = {
     initialRowan: 1_000_000,
     startsAt: '2021-10-05T19:00:00.000Z',
     durationInWeeks: 2,
+    weeksToTotalMaturity: 2.1,
+    intervalDurationMinutes: 60,
+    initialRewardMultiplier: 1,
+  }),
+  bonus_v1_ixo: createConfig({
+    initialRowan: 500_000,
+    startsAt: '2021-10-12T13:29:01.255Z',
+    durationInWeeks: 2,
+    weeksToTotalMaturity: 2.1,
     intervalDurationMinutes: 60,
     initialRewardMultiplier: 1,
   }),

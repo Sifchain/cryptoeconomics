@@ -46,7 +46,9 @@ exports.augmentVSData = (
       const userAtTimestamp = timestamp.users[user.address] || new User();
       if (userAtTimestamp.totalAccruedCommissionsAndClaimableRewards) {
         accum[user.address] =
-          userAtTimestamp.totalAccruedCommissionsAndClaimableRewards;
+          userAtTimestamp.totalAccruedCommissionsAndClaimableRewards +
+          userAtTimestamp.dispensed +
+          userAtTimestamp.claimedCommissionsAndRewardsAwaitingDispensation;
       }
       return accum;
     }, {});

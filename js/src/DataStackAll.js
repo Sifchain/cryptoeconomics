@@ -3,25 +3,31 @@ import React from 'react';
 import { fetchStack } from './api';
 import { Chart, _adapters, registerables } from 'chart.js';
 import { registerChartDateAdapter } from './registerChartDateAdapter';
-Chart.register(...registerables);
+import zoomPlugin from 'chartjs-plugin-zoom';
+
+import serverConfigs from './serverConfig';
+const serverConfig =
+  serverConfigs[window.sessionStorage.getItem('rewardProgram')];
+
+Chart.register(...registerables, zoomPlugin);
 registerChartDateAdapter(_adapters);
 
 // const totalInitialRowan = rewardBucketsTimeSeries[0].totalInitialRowan
 
 class DataStackAll extends React.Component {
-  constructor ({ onLoadingStateChange = isLoading => {}, network, ...props }) {
+  constructor({ onLoadingStateChange = (isLoading) => {}, network, ...props }) {
     super({ onLoadingStateChange, network, ...props });
     this.myRef = React.createRef();
     this.state = {};
     console.log('working');
   }
 
-  renderD3 () {
+  renderD3() {
     let self = this;
-    function * createDatasets () {
+    function* createDatasets() {
       let data = self.state.rewardData;
       let addresses = Object.keys(data[0])
-        .filter(k => k !== 'timestamp')
+        .filter((k) => k !== 'timestamp')
         .slice(0, 10);
 
       for (let addr of addresses) {
@@ -35,13 +41,13 @@ class DataStackAll extends React.Component {
           data: self.state.rewardData.map((d, xIndex) => {
             return {
               y: d[addr],
-              x: timestampToDate(xIndex * 200)
+              x: timestampToDate(xIndex * serverConfig.EVENT_INTERVAL_MINUTES),
             };
-          })
+          }),
         };
       }
     }
-    const incrementallyUpdateChart = async chart => {
+    const incrementallyUpdateChart = async (chart) => {
       let gen = createDatasets();
       chart.data.datasets = [];
       let datasets = [];
@@ -65,42 +71,53 @@ class DataStackAll extends React.Component {
     const config = {
       type: 'line',
       data: {
-        datasets: []
+        datasets: [],
       },
       options: {
         // animation,
         interaction: {
           mode: 'nearest',
-          intersect: false
+          intersect: false,
         },
         plugins: {
-          legend: false
+          legend: false,
+          zoom: {
+            zoom: {
+              wheel: {
+                enabled: true,
+              },
+              pinch: {
+                enabled: true,
+              },
+              mode: 'x',
+            },
+          },
         },
         scales: {
           x: {
             type: 'time',
             ticks: {
-              color: 'rgba(255,255,255,0.9)'
-            }
+              color: 'rgba(255,255,255,0.9)',
+            },
           },
           y: {
             title: {
               text: 'Rewards (ROWAN)',
               display: true,
-              color: 'rgba(255,255,255,0.9)'
+              color: 'rgba(255,255,255,0.9)',
             },
             ticks: {
-              color: 'rgba(255,255,255,0.9)'
-            }
-          }
-        }
-      }
+              color: 'rgba(255,255,255,0.9)',
+            },
+          },
+        },
+      },
     };
     const ctx = this.myRef.current.getContext('2d');
     const chart = new Chart(ctx, config);
     this.setState(
       {
-        chart: chart
+        chart: chart,
       },
       () => {
         incrementallyUpdateChart(chart);
@@ -108,37 +125,37 @@ class DataStackAll extends React.Component {
     );
   }
 
-  clearD3 () {
+  clearD3() {
     if (!this.state || !this.state.chart) return;
     this.state.chart.clear();
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.props.onLoadingStateChange(true);
     fetchStack(this.props.type, this.props.network)
-      .then(rewardData => {
+      .then((rewardData) => {
         this.setState({ rewardData }, this.renderD3);
         this.props.onLoadingStateChange(false);
       })
-      .catch(e => this.props.onLoadingStateChange(false));
+      .catch((e) => this.props.onLoadingStateChange(false));
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.clearD3();
   }
 
-  render () {
+  render() {
     if (!this.state.rewardData) {
       <div style={{ color: 'turquoise' }}>Loading Leaderboard...</div>;
     }
     return (
-      <div className='chart-container'>
+      <div className="chart-container">
         <canvas
-          className='chart'
+          className="chart"
           ref={this.myRef}
-          id='myChart'
-          width='900'
-          height='350'
+          id="myChart"
+          width="900"
+          height="350"
         />
       </div>
     );

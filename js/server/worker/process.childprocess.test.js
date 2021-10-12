@@ -2,6 +2,7 @@ const { BackgroundProcessor } = require('./process.childprocess');
 const _ = require('lodash');
 const { MAINNET } = require('../constants/snapshot-source-names');
 const { GET_LM_CURRENT_APY_SUMMARY } = require('../constants/action-names');
+const { getTimeIndex } = require('../util/getTimeIndex');
 
 // simple test setup
 const describe = async (description, describer) => {
@@ -39,10 +40,28 @@ const describe = async (description, describer) => {
   console.groupEnd();
 };
 
-const runTests = (type, parsedData, network) => {
+const runTests = (type, parsedData, network, programName) => {
   const finalGlobalTimestampState =
     parsedData.processedData[parsedData.processedData.length - 1];
   const users = Object.values(finalGlobalTimestampState.users);
+
+  const totalValuePerUser = Object.entries(
+    parsedData.processedData[getTimeIndex('now', programName)].users
+  ).reduce((prev, [addr, curr]) => {
+    if (!curr) return prev;
+    prev[addr] =
+      curr.totalAccruedCommissionsAndClaimableRewards +
+      curr.claimedCommissionsAndRewardsAwaitingDispensation +
+      curr.forfeitedCommissions +
+      curr.forfeited +
+      curr.dispensed;
+    return prev;
+  }, {});
+
+  require('fs').writeFileSync(
+    './userExitStates.new.json',
+    Buffer.from(JSON.stringify(totalValuePerUser, null, 2))
+  );
 
   const totalPoolDominanceRatio = _.sum(
     _.flattenDeep(
@@ -88,17 +107,19 @@ const runTests = (type, parsedData, network) => {
 };
 
 const bp = new BackgroundProcessor();
+// const bp2 = new BackgroundProcessor();
+const programName = 'bonus_v1_ixo';
 bp.reloadAndReprocessSnapshots({
   network: MAINNET,
-  rewardProgram: 'bonus_v1',
+  rewardProgram: programName,
 })
   // test reload caching
   // .then(async () => bp.reloadAndReprocessSnapshots({ network: MAINNET }))
   .then(async () => {
-    await runTests('lm', bp.lmDataParsed, MAINNET);
+    await runTests('lm', bp.lmDataParsed, MAINNET, programName);
     console.log(
       bp.dispatch(GET_LM_CURRENT_APY_SUMMARY, {
-        programName: 'bonus_v1',
+        programName: programName,
       })
     );
     // await runTests('vs', bp.vsDataParsed, MAINNET);

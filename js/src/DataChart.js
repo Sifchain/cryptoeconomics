@@ -3,6 +3,9 @@ import { timestampToDate } from './utils';
 import { Chart, _adapters, registerables } from 'chart.js';
 import { registerChartDateAdapter } from './registerChartDateAdapter';
 import zoomPlugin from 'chartjs-plugin-zoom';
+import serverConfigs from './serverConfig';
+const serverConfig =
+  serverConfigs[window.sessionStorage.getItem('rewardProgram')];
 
 // let margin = { top: 10, right: 30, bottom: 30, left: 60 };
 // let width = 860 - margin.left - margin.right;
@@ -10,7 +13,7 @@ import zoomPlugin from 'chartjs-plugin-zoom';
 Chart.register(...registerables, zoomPlugin);
 registerChartDateAdapter(_adapters);
 
-export default props => {
+export default (props) => {
   const myRef = useRef();
   const containerRef = useRef();
   const [chart, setChart] = useState(undefined);
@@ -29,12 +32,12 @@ export default props => {
   const [w, h] = [900, 350];
 
   return (
-    <div ref={containerRef} className='chart-container' style={{ height: h }}>
+    <div ref={containerRef} className="chart-container" style={{ height: h }}>
       <canvas
         onClick={() => chart.resetZoom()}
-        className='chart'
+        className="chart"
         ref={myRef}
-        id='myChart'
+        id="myChart"
         width={w}
         height={h}
       />
@@ -42,7 +45,7 @@ export default props => {
   );
 };
 
-function renderChart (canvasElement, data, chart) {
+function renderChart(canvasElement, data, chart) {
   const createDatasets = () => {
     return [
       {
@@ -55,10 +58,12 @@ function renderChart (canvasElement, data, chart) {
         data: data.map((d, index) => {
           return {
             y: typeof d === 'object' ? d.userClaimableReward : d,
-            x: timestampToDate((index - 1) * 200)
+            x: timestampToDate(
+              (index - 1) * serverConfig.EVENT_INTERVAL_MINUTES
+            ),
           };
-        })
-      }
+        }),
+      },
       // {
       //   borderColor: Utils.CHART_COLORS.blue,
       //   borderWidth: 1,
@@ -74,7 +79,7 @@ function renderChart (canvasElement, data, chart) {
   }
   const totalDuration = 2000;
   const delayBetweenPoints = totalDuration / data.length;
-  const previousY = ctx =>
+  const previousY = (ctx) =>
     ctx.index === 0
       ? ctx.chart.scales.y.getPixelForValue(100)
       : ctx.chart
@@ -86,60 +91,60 @@ function renderChart (canvasElement, data, chart) {
       easing: 'linear',
       duration: delayBetweenPoints,
       from: NaN, // the point is initially skipped
-      delay (ctx) {
+      delay(ctx) {
         if (ctx.type !== 'data' || ctx.xStarted) {
           return 0;
         }
         ctx.xStarted = true;
         return ctx.index * delayBetweenPoints;
-      }
+      },
     },
     y: {
       type: 'number',
       easing: 'linear',
       duration: delayBetweenPoints,
       from: previousY,
-      delay (ctx) {
+      delay(ctx) {
         if (ctx.type !== 'data' || ctx.yStarted) {
           return 0;
         }
         ctx.yStarted = true;
         return ctx.index * delayBetweenPoints;
-      }
-    }
+      },
+    },
   };
 
   const config = {
     type: 'line',
     data: {
-      datasets: createDatasets()
+      datasets: createDatasets(),
     },
     options: {
       // animation: false,
       animation,
       interaction: {
-        intersect: false
+        intersect: false,
       },
       plugins: {
         legend: false,
         zoom: {
           zoom: {
             wheel: {
-              enabled: false
+              enabled: true,
             },
             pinch: {
-              enabled: true
+              enabled: true,
             },
-            mode: 'x'
-          }
-        }
+            mode: 'x',
+          },
+        },
       },
       scales: {
         x: {
           type: 'time',
           ticks: {
-            color: 'rgba(255,255,255,0.9)'
-          }
+            color: 'rgba(255,255,255,0.9)',
+          },
         },
         y: {
           title: {
@@ -147,15 +152,15 @@ function renderChart (canvasElement, data, chart) {
             display: true,
             color: 'white',
             fontColor: 'white',
-            textStrokeColor: 'white'
+            textStrokeColor: 'white',
           },
 
           ticks: {
-            color: 'rgba(255,255,255,0.9)'
-          }
-        }
-      }
-    }
+            color: 'rgba(255,255,255,0.9)',
+          },
+        },
+      },
+    },
   };
   const ctx = canvasElement.getContext('2d');
 

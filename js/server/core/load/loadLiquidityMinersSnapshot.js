@@ -2,6 +2,7 @@
 const { TESTNET } = require('../../constants/snapshot-source-names');
 const slonik = require('slonik');
 const { getDatabase } = require('./utils/getDatabase');
+const lmHarvestStartingState = require('./lm-harvest-starting-state.json');
 /* 
   WARNING: DO NOT ADD MORE QUERIES OR FIELDS TO THE GRAPHQL QUERY.
   QUERIES ARE CACHED USING THE LENGTH OF THE TEXT CONTENT OF THE RESPONSE OBJECT
@@ -88,6 +89,18 @@ const getSQLQueryByNetwork = (network, rewardProgram) => {
           for (let snapshot of snapshots_new) {
             const liquidityByTokens = snapshot.snapshot_data[snapshot.address];
             for (let token in liquidityByTokens) {
+              let startingUserState = 0;
+              const startingPoolState = lmHarvestStartingState[token];
+              if (
+                !startingPoolState &&
+                Object.values(liquidityByTokens).filter((v) => v.length > 0)
+                  .length > 2
+              ) {
+                debugger;
+              }
+              if (startingPoolState) {
+                startingUserState = startingPoolState[snapshot.address] || 0;
+              }
               let liquidityDeltaEvents = liquidityByTokens[token];
               let total = 0;
               for (let deltaEvent of liquidityDeltaEvents) {

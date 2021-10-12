@@ -1,8 +1,4 @@
-import {
-  START_DATETIME,
-  networks,
-  RECENT_ADDRESS_LIST_STORAGE_KEY,
-} from './config';
+import { networks, RECENT_ADDRESS_LIST_STORAGE_KEY } from './config';
 import './App.css';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
@@ -19,7 +15,10 @@ import DataChart from './DataChart';
 import DataStackAll from './DataStackAll';
 import { StatBlocks } from './StatBlocks';
 import { UserDataSummary } from './UserDataSummary';
+import serverConfigs from './serverConfig';
 
+const serverConfig =
+  serverConfigs[window.sessionStorage.getItem('rewardProgram')];
 // show all fields locally
 const SHOULD_HIDE_NON_USER_FRIENDLY_FIELDS =
   !!process.env.REACT_APP_DEPLOYMENT_TAG;
@@ -92,7 +91,7 @@ class Router {
 }
 // const now = moment.utc(Date.parse(new Date()));
 // function initTimestamp() {
-//   return moment.duration(now.diff(START_DATETIME)).asMinutes() / 200;
+//   return moment.duration(now.diff(START_DATETIME)).asMinutes() / serverConfig.EVENT_INTERVAL_MINUTES;
 // }
 
 const CountDown = ({ until = moment() }) => {
@@ -191,7 +190,9 @@ class App extends React.Component {
     time = moment.utc(time);
     return (
       Math.floor(
-        moment.duration(time.diff(moment.utc(START_DATETIME))).asMinutes() / 200
+        moment
+          .duration(time.diff(moment.utc(serverConfig.START_DATETIME)))
+          .asMinutes() / serverConfig.EVENT_INTERVAL_MINUTES
       ) + 1
     );
   }
@@ -314,8 +315,11 @@ class App extends React.Component {
 
   updateTimestamp(timeIndex) {
     // because genesis block is included
-    const minutes = timeIndex * 200;
-    const dateObj = moment.utc(START_DATETIME).add(minutes, 'm').utc();
+    const minutes = timeIndex * serverConfig.EVENT_INTERVAL_MINUTES;
+    const dateObj = moment
+      .utc(serverConfig.START_DATETIME)
+      .add(minutes, 'm')
+      .utc();
     const date = dateObj;
     this.setState({
       date,
@@ -605,7 +609,7 @@ class App extends React.Component {
                   {this.state.date.format(
                     `ddd MMMM Do YYYY[,] [${this.state.date
                       .clone()
-                      .subtract(200, 'minutes')
+                      .subtract(serverConfig.EVENT_INTERVAL_MINUTES, 'minutes')
                       .format(`hh:mm A`)}] - hh:mm A`
                   ) + ' UTC'}
                 </div>
@@ -622,7 +626,10 @@ class App extends React.Component {
                       `ddd MMMM Do YYYY[,] [${this.state.date
                         .clone()
                         .local()
-                        .subtract(200, 'minutes')
+                        .subtract(
+                          serverConfig.EVENT_INTERVAL_MINUTES,
+                          'minutes'
+                        )
                         .format(`hh:mm A`)}] - hh:mm A`
                     ) + ' LOCAL'}
                   <hr />
