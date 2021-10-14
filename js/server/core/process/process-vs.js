@@ -1,11 +1,18 @@
 const _ = require('lodash');
 const configs = require('../../config');
 const { processRewardBuckets } = require('./bucket-util');
-const { User, GlobalTimestampState, UserTicket } = require('../types');
+const {
+  User,
+  GlobalTimestampState,
+  UserTicket,
+  DelegateEvent,
+} = require('../types');
 const {
   VALIDATOR_STAKING,
   LIQUIDITY_MINING,
 } = require('../../constants/reward-program-types');
+const lmHarvestHardResetState = require('../../scripts/harvest-exit-states.json');
+const { getTimeIndex } = require('../../util/getTimeIndex');
 
 /*
   Filter out deposit events after config.DEPOSIT_CUTOFF_DATETIME,
@@ -38,6 +45,35 @@ function processVSGlobalState(
     isSimulatedFutureInterval,
     rewardProgram
   );
+  // if (
+  //   lmHarvestHardResetState.rewardProgram === rewardProgram &&
+  //   lastGlobalState.timestamp ===
+  //     (getTimeIndex(new Date(lmHarvestHardResetState.date), rewardProgram) +
+  //       1) *
+  //       configs[rewardProgram].EVENT_INTERVAL_MINUTES
+  // ) {
+  //   // for (let addr in users) {
+  //   //   const userState = lmHarvestHardResetState.balances[addr];
+  //   //   if (!userState) continue;
+  //   //   users[addr] = User.fromJSON({
+  //   //     dispensed: userState.dispensed,
+  //   //     claimedCommissionsAndRewardsAwaitingDispensation: userState.claimed,
+  //   //     totalAccruedCommissionsAndClaimableRewards: userState.accrued,
+  //   //     totalClaimableRewardsOnWithdrawnAssets: userState.accrued,
+  //   //     forfeited: userState.forfeited,
+  //   //     tickets: [
+  //   //       UserTicket.fromEvent(
+  //   //         DelegateEvent.fromJSON({
+  //   //           timestamp: lastGlobalState.timestamp,
+  //   //           delegateAddress: addr,
+  //   //           amount: userState.accrued,
+  //   //         }),
+  //   //         rewardProgram
+  //   //       ),
+  //   //     ],
+  //   //   });
+  //   // }
+  // }
   users = processUserClaims(users, claimEventsByUser, rewardProgram);
   users = processUserDispensations(users, dispensationEventsByUser);
   users = processUserEvents(

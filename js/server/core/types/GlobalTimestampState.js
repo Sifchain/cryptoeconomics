@@ -86,15 +86,27 @@ class GlobalTimestampState {
     );
     return next;
   }
-
-  static getInitial({ rewardProgram }) {
+  startBucket({ rewardProgram }) {
     const programConfig = configs[rewardProgram];
-    let instance = new this();
-    instance.bucketEvent = {
+    this.bucketEvent = {
       rowan: programConfig.INITIAL_ROWAN,
       initialRowan: programConfig.INITIAL_ROWAN,
       duration: programConfig.REWARD_ACCRUAL_DURATION_INTERVAL_COUNT,
     };
+  }
+  endBuckets({ rewardProgram }) {
+    const programConfig = configs[rewardProgram];
+    this.bucketEvent = undefined;
+    this.rewardBuckets = [];
+  }
+  static getInitial({ rewardProgram }) {
+    const programConfig = configs[rewardProgram];
+    let instance = new this();
+    // instance.bucketEvent = {
+    //   rowan: programConfig.INITIAL_ROWAN,
+    //   initialRowan: programConfig.INITIAL_ROWAN,
+    //   duration: programConfig.REWARD_ACCRUAL_DURATION_INTERVAL_COUNT,
+    // };
     return instance;
   }
 }

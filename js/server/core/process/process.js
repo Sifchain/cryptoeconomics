@@ -129,6 +129,20 @@ function processUserEventsByTimestamp(
   console.time('processvs');
   const VSGlobalStates = [GlobalTimestampState.getInitial({ rewardProgram })];
   const programConfig = configs[rewardProgram];
+  const startBucketTimestamp =
+    (getTimeIndex(
+      new Date(programConfig.REWARD_BUCKET_START_DATETIME),
+      rewardProgram
+    ) +
+      1) *
+    programConfig.EVENT_INTERVAL_MINUTES;
+  const endBucketTimestamp =
+    (getTimeIndex(
+      new Date(programConfig.REWARD_BUCKET_END_DATETIME),
+      rewardProgram
+    ) +
+      1) *
+    programConfig.EVENT_INTERVAL_MINUTES;
   const { EVENT_INTERVAL_MINUTES, NUMBER_OF_INTERVALS_TO_RUN, START_DATETIME } =
     programConfig;
   for (
@@ -138,6 +152,20 @@ function processUserEventsByTimestamp(
   ) {
     let nextGlobalState;
     const timestamp = i * EVENT_INTERVAL_MINUTES;
+    const lastGlobalState = VSGlobalStates[VSGlobalStates.length - 1];
+
+    if (
+      timestamp ===
+      startBucketTimestamp + programConfig.EVENT_INTERVAL_MINUTES
+    ) {
+      lastGlobalState.startBucket({ rewardProgram });
+    }
+    if (
+      timestamp ===
+      endBucketTimestamp + programConfig.EVENT_INTERVAL_MINUTES * 2
+    ) {
+      lastGlobalState.endBuckets({ rewardProgram });
+    }
     const isSimulatedFutureInterval = i > snapshotTimeseriesFinalIndex - 1;
     const isPendingInterval = i === snapshotTimeseriesFinalIndex - 1;
     const rewardProgramCache = history[rewardProgramType];
@@ -145,12 +173,12 @@ function processUserEventsByTimestamp(
     if (cacheEnabled && cachedTimestampState && !isSimulatedFutureInterval) {
       nextGlobalState = cachedTimestampState;
     } else {
-      const lastGlobalState = VSGlobalStates[VSGlobalStates.length - 1];
       const userEvents = userEventsByTimestamp['' + timestamp] || [];
       const claimEventsByUser =
         claimEventsByUserByTimestamp['' + timestamp] || {};
       const dispensationEventsByUser =
         dispensationEventsByUserByTimestamp['' + timestamp];
+
       nextGlobalState = processVSGlobalState(
         lastGlobalState,
         timestamp,

@@ -1,11 +1,15 @@
+const moment = require('moment');
 function createConfig({
   startsAt,
   durationInWeeks,
+  weeksToTotalMaturity,
   intervalDurationMinutes,
   initialRowan,
   initialRewardMultiplier,
+  rewardBucketStartDateTime = startsAt,
+  rewardBucketEndDateTime = undefined,
+  ignoreInitialPoolState,
 }) {
-  const moment = require('moment');
   /*
   - The network was started prior to the DEX launch. There is roughly ~week worth of blocks that had no meaningful transactions as the product was not launched.
     Because the snapshots start at the genesis block, they include that week of null activity epochs. This has an impact on the reward distribution. The changes we make to the snapshot will remove those null epochs and balance out the rewards distribution.
@@ -50,41 +54,75 @@ function createConfig({
   console.log({ REWARD_ACCRUAL_DURATION_INTERVAL_COUNT });
 
   const config = {
+    ACCOUNT_FOR_INITIAL_POOL_STATE: !ignoreInitialPoolState,
     INITIAL_ROWAN: initialRowan,
     START_DATETIME,
+    REWARD_BUCKET_START_DATETIME: rewardBucketStartDateTime,
+    REWARD_BUCKET_END_DATETIME:
+      rewardBucketEndDateTime || END_OF_REWARD_ACCRUAL_DATETIME,
     DEPOSIT_CUTOFF_DATETIME,
     END_OF_REWARD_ACCRUAL_DATETIME,
     EVENT_INTERVAL_MINUTES,
     DEPOSITS_ALLOWED_DURATION_MS,
     MULTIPLIER_MATURITY:
       REWARD_ACCRUAL_DURATION_MS / 1000 / 60 / EVENT_INTERVAL_MINUTES, // 6 weeks in in 200minute intervals,
-    NUMBER_OF_INTERVALS_TO_RUN: REWARD_ACCRUAL_DURATION_INTERVAL_COUNT, // duration of bucket drain + duration to latest possible multiplier maturity
+    NUMBER_OF_INTERVALS_TO_RUN:
+      REWARD_ACCRUAL_DURATION_INTERVAL_COUNT *
+      (weeksToTotalMaturity / durationInWeeks), // duration of bucket drain + duration to latest possible multiplier maturity
     REWARD_ACCRUAL_DURATION_INTERVAL_COUNT,
     INITIAL_REWARD_MULTIPLIER: initialRewardMultiplier,
   };
   return config;
 }
 
+const HARVEST_RELOAD_DATETIME = '2021-10-13T23:00:00.000Z';
+
 module.exports = {
   COSMOS_IBC_REWARDS_V1: createConfig({
     initialRowan: 10_000_000,
     startsAt: '2021-08-24T20:06:15.000Z',
     durationInWeeks: 6,
+    weeksToTotalMaturity: 12,
     intervalDurationMinutes: 200,
     initialRewardMultiplier: 0.25,
+    ignoreInitialPoolState: true,
   }),
   harvest: createConfig({
     initialRowan: 40_000_000,
     startsAt: '2021-10-04T00:00:00.000Z',
     durationInWeeks: 6,
+    rewardBucketEndDateTime: HARVEST_RELOAD_DATETIME,
+    weeksToTotalMaturity: 6.1,
     intervalDurationMinutes: 59,
     initialRewardMultiplier: 1,
+    ignoreInitialPoolState: true,
+  }),
+  harvest_reloaded: createConfig({
+    initialRowan: 40_000_000,
+    startsAt: '2021-10-04T00:00:00.000Z',
+    durationInWeeks: 6,
+    rewardBucketStartDateTime: HARVEST_RELOAD_DATETIME,
+    weeksToTotalMaturity: 6.1,
+    intervalDurationMinutes: 59,
+    initialRewardMultiplier: 1,
+    ignoreInitialPoolState: false,
   }),
   bonus_v1: createConfig({
     initialRowan: 1_000_000,
     startsAt: '2021-10-05T19:00:00.000Z',
     durationInWeeks: 2,
+    weeksToTotalMaturity: 2.1,
     intervalDurationMinutes: 60,
     initialRewardMultiplier: 1,
+    ignoreInitialPoolState: true,
+  }),
+  bonus_v1_ixo: createConfig({
+    initialRowan: 100_000,
+    startsAt: '2021-10-12T13:29:01.255Z',
+    durationInWeeks: 2,
+    weeksToTotalMaturity: 2.1,
+    intervalDurationMinutes: 60,
+    initialRewardMultiplier: 1,
+    ignoreInitialPoolState: true,
   }),
 };

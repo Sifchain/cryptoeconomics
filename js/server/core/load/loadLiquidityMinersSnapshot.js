@@ -48,6 +48,8 @@ const lmHarvestStartingState = require('./lm-harvest-starting-state.json');
 // };
 
 const getSQLQueryByNetwork = (network, rewardProgram) => {
+  const rewardProgramName =
+    rewardProgram === 'harvest_reloaded' ? 'harvest' : rewardProgram;
   network = network ? network.toLowerCase() : network;
   switch (network) {
     // case TESTNET: {
@@ -74,13 +76,13 @@ const getSQLQueryByNetwork = (network, rewardProgram) => {
     default: {
       return getDatabase().transaction(async (tx) => {
         const snapshots_new = (() => {
-          if (rewardProgram === 'COSMOS_IBC_REWARDS_V1') {
+          if (rewardProgramName === 'COSMOS_IBC_REWARDS_V1') {
             return tx.many(
               slonik.sql`select * from snapshots_lm rf where rf.snapshot_time = (select max(snapshot_time) from snapshots_lm)`
             );
           }
           return tx.many(
-            slonik.sql`select * from snapshots_reward where is_latest = true and reward_program=${rewardProgram}`
+            slonik.sql`select * from snapshots_reward where is_latest = true and reward_program=${rewardProgramName}`
           );
         })();
         function augmentLMSnapshotToHideNonProgramLiquidityRemovals(
@@ -145,7 +147,7 @@ const getSQLQueryByNetwork = (network, rewardProgram) => {
               MAX("height") "height"
             from post_distribution pd
             GROUP BY pd.height, pd.recipient, pd.reward_program
-            HAVING reward_program = ${rewardProgram}
+            HAVING reward_program = ${rewardProgramName}
             ORDER BY timestamp ASC
           `
         );
@@ -161,6 +163,8 @@ const getSQLQueryByNetwork = (network, rewardProgram) => {
         const firstItemClaimData = {};
         while (snapshotsClaimsLoaded.length) {
           const item = snapshotsClaimsLoaded.pop();
+          if (item.address === 'sif10prgaf6ap3hkn8qtnzkys8vxm8ut0rr7jwzrqx') {
+          }
           firstItemClaimData[item.address] = [
             ...(firstItemClaimData[item.address] || []),
             item,

@@ -5,7 +5,7 @@ import { registerChartDateAdapter } from './registerChartDateAdapter';
 import zoomPlugin from 'chartjs-plugin-zoom';
 import serverConfigs from './serverConfig';
 const serverConfig =
-  serverConfigs[window.sessionStorage.getItem('rewardProgram')];
+  serverConfigs[window.sessionStorage.getItem('rewardProgram') || 'harvest'];
 
 // let margin = { top: 10, right: 30, bottom: 30, left: 60 };
 // let width = 860 - margin.left - margin.right;

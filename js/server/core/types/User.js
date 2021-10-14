@@ -135,7 +135,7 @@ class User {
     let maturityDateISO = userAtPrevTimestamp.maturityDateISO;
     let maturityDateMs = userAtPrevTimestamp.maturityDateMs;
     let maturityDateMoment;
-    const config = configs[rewardProgram]
+    const config = configs[rewardProgram];
     if (
       maturityDate === undefined && // maturity date not yet reached
       isAfterRewardPeriod && // reward period is over

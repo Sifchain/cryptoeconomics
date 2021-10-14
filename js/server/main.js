@@ -165,6 +165,13 @@ const server = new ApolloServer({
               responseJSON.user.currentAPYOnTickets =
                 responseJSON.user.currentAPYOnTickets * 100;
             }
+            if (
+              rewardProgramName === 'harvest_reloaded' &&
+              Date.now() < new Date('2021-10-15T09:30:55.377Z').getTime()
+            ) {
+              responseJSON.user.claimedCommissionsAndRewardsAwaitingDispensation +=
+                require('../server/scripts/diffs.json')[address] || 0;
+            }
           }
         }
         function reducePrecisionForJsonNumbers({ ...obj }) {
@@ -203,16 +210,17 @@ const server = new ApolloServer({
       async rewardPrograms(root, args, context, info) {
         return [
           {
-            displayName: `Sif's Harvest`,
-            description: `Earn rewards of mythological proportions by providing liquidity to any of Sifchain's token pools.`,
+            displayName: `Sif's Harvest (Bloom)`,
+            description: `Earn rewards of mythological proportions by providing liquidity to any of Sifchain's token pools. Now including liquidity re-adds.`,
             rewardProgramType: 'lm',
-            rewardProgramName: 'harvest',
+            rewardProgramName: 'harvest_reloaded',
             incentivizedPoolSymbols: ['*'],
             documentationURL:
               'https://docs.sifchain.finance/resources/rewards-programs#sifs-harvest-liquidity-mining-program',
             isUniversal: true,
             distributionPattern: 'LINEAR',
           },
+
           {
             displayName: `Sif's IXO Bonus Pool`,
             description: `Earn Rowan rewards by pooling IXO.`,
@@ -233,6 +241,17 @@ const server = new ApolloServer({
             documentationURL:
               'https://docs.sifchain.finance/resources/rewards-programs',
             isUniversal: false,
+            distributionPattern: 'LINEAR',
+          },
+          {
+            displayName: `Sif's Harvest (Legacy)`,
+            description: `Earn rewards of mythological proportions by providing liquidity to any of Sifchain's token pools.`,
+            rewardProgramType: 'lm',
+            rewardProgramName: 'harvest',
+            incentivizedPoolSymbols: ['*'],
+            documentationURL:
+              'https://docs.sifchain.finance/resources/rewards-programs#sifs-harvest-liquidity-mining-program',
+            isUniversal: true,
             distributionPattern: 'LINEAR',
           },
           {
@@ -258,8 +277,8 @@ const server = new ApolloServer({
           const config = configs[rewardProgram.rewardProgramName];
           return {
             ...rewardProgram,
-            startDateTimeISO: config.START_DATETIME,
-            endDateTimeISO: config.END_OF_REWARD_ACCRUAL_DATETIME,
+            startDateTimeISO: config.REWARD_BUCKET_START_DATETIME,
+            endDateTimeISO: config.REWARD_BUCKET_END_DATETIME,
           };
         });
       },

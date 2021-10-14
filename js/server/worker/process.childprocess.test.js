@@ -46,7 +46,9 @@ const runTests = (type, parsedData, network, programName) => {
   const users = Object.values(finalGlobalTimestampState.users);
 
   const totalValuePerUser = Object.entries(
-    parsedData.processedData[getTimeIndex('now', programName)].users
+    parsedData.processedData[
+      getTimeIndex('2021-10-14T23:00:00.000Z', programName)
+    ].users
   ).reduce((prev, [addr, curr]) => {
     if (!curr) return prev;
     prev[addr] =
@@ -59,7 +61,7 @@ const runTests = (type, parsedData, network, programName) => {
   }, {});
 
   require('fs').writeFileSync(
-    './userExitStates.new.json',
+    './user-exit-states.with-readds.json',
     Buffer.from(JSON.stringify(totalValuePerUser, null, 2))
   );
 
@@ -108,7 +110,7 @@ const runTests = (type, parsedData, network, programName) => {
 
 const bp = new BackgroundProcessor();
 // const bp2 = new BackgroundProcessor();
-const programName = 'bonus_v1_ixo';
+const programName = 'harvest';
 bp.reloadAndReprocessSnapshots({
   network: MAINNET,
   rewardProgram: programName,
