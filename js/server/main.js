@@ -166,7 +166,7 @@ const server = new ApolloServer({
                 responseJSON.user.currentAPYOnTickets * 100;
             }
             if (
-              rewardProgramName === 'harvest_reloaded' &&
+              rewardProgramName === 'harvest' &&
               Date.now() < new Date('2021-10-15T09:30:55.377Z').getTime()
             ) {
               responseJSON.user.claimedCommissionsAndRewardsAwaitingDispensation +=
@@ -187,9 +187,9 @@ const server = new ApolloServer({
             }
           }
         }
-        return (
-          responseJSON.user ?? reducePrecisionForJsonNumbers(responseJSON.user)
-        );
+        return !!responseJSON.user
+          ? reducePrecisionForJsonNumbers(responseJSON.user)
+          : null;
       },
       async summaryAPY(rewardProgram, { percentage }) {
         if (rewardProgram.rewardProgramName === 'COSMOS_IBC_REWARDS_V1') {
