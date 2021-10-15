@@ -169,8 +169,10 @@ const server = new ApolloServer({
               rewardProgramName === 'harvest' &&
               Date.now() < new Date('2021-10-15T09:30:55.377Z').getTime()
             ) {
+              debugger;
               responseJSON.user.claimedCommissionsAndRewardsAwaitingDispensation +=
                 require('../server/scripts/diffs.json')[address] || 0;
+              debugger;
             }
           }
         }
@@ -181,11 +183,12 @@ const server = new ApolloServer({
                 obj[key] = +obj[key].toFixed(10);
                 break;
               case 'object':
-                if (!Array.isArray(obj[key])) {
+                if (!Array.isArray(obj[key]) && !!obj[key]) {
                   obj[key] = reducePrecisionForJsonNumbers(obj[key]);
                 }
             }
           }
+          return obj;
         }
         return !!responseJSON.user
           ? reducePrecisionForJsonNumbers(responseJSON.user)
