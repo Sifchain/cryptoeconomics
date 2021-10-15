@@ -147,7 +147,7 @@ const getSQLQueryByNetwork = (network, rewardProgram) => {
               MAX("height") "height"
             from post_distribution pd
             GROUP BY pd.height, pd.recipient, pd.reward_program
-            HAVING reward_program = ${rewardProgramName}
+            HAVING reward_program = ${rewardProgram}
             ORDER BY timestamp ASC
           `
         );

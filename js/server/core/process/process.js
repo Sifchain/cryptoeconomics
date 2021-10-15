@@ -136,6 +136,7 @@ function processUserEventsByTimestamp(
     ) +
       1) *
     programConfig.EVENT_INTERVAL_MINUTES;
+
   const endBucketTimestamp =
     (getTimeIndex(
       new Date(programConfig.REWARD_BUCKET_END_DATETIME),
@@ -154,10 +155,7 @@ function processUserEventsByTimestamp(
     const timestamp = i * EVENT_INTERVAL_MINUTES;
     const lastGlobalState = VSGlobalStates[VSGlobalStates.length - 1];
 
-    if (
-      timestamp ===
-      startBucketTimestamp + programConfig.EVENT_INTERVAL_MINUTES
-    ) {
+    if (timestamp === startBucketTimestamp) {
       lastGlobalState.startBucket({ rewardProgram });
     }
     if (
