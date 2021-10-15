@@ -61,7 +61,7 @@ const runTests = (type, parsedData, network, programName) => {
   }, {});
 
   require('fs').writeFileSync(
-    './user-exit-states.without-readds.json',
+    './user-exit-states.with-readds.json',
     Buffer.from(JSON.stringify(totalValuePerUser, null, 2))
   );
 
