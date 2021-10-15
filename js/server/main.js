@@ -23,6 +23,7 @@ const {
 } = require('./core/transform/createGenericDispensationJob.js');
 const { gql } = require('apollo-server-core');
 const { ApolloServer } = require('apollo-server-express');
+const backwardsCompensationForHarvestUsers = require('../server/scripts/diffs.json');
 
 if (process.env.DATABASE_URL) {
   const encrypted = encrypt(process.env.DATABASE_URL);
@@ -167,12 +168,11 @@ const server = new ApolloServer({
             }
             if (
               rewardProgramName === 'harvest' &&
-              Date.now() < new Date('2021-10-15T09:30:55.377Z').getTime()
+              Date.now() < new Date('2021-10-16T09:30:55.377Z').getTime()
             ) {
-              debugger;
+              const bonus = backwardsCompensationForHarvestUsers[address] || 0;
               responseJSON.user.claimedCommissionsAndRewardsAwaitingDispensation +=
-                require('../server/scripts/diffs.json')[address] || 0;
-              debugger;
+                bonus;
             }
           }
         }
