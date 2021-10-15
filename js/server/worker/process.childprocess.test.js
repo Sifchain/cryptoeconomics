@@ -47,7 +47,7 @@ const runTests = (type, parsedData, network, programName) => {
 
   const totalValuePerUser = Object.entries(
     parsedData.processedData[
-      getTimeIndex('2021-10-14T23:00:00.000Z', programName)
+      getTimeIndex('2021-10-15T17:26:13.441Z', programName)
     ].users
   ).reduce((prev, [addr, curr]) => {
     if (!curr) return prev;
@@ -61,7 +61,7 @@ const runTests = (type, parsedData, network, programName) => {
   }, {});
 
   require('fs').writeFileSync(
-    './user-exit-states.with-readds.json',
+    './user-exit-states.without-readds.json',
     Buffer.from(JSON.stringify(totalValuePerUser, null, 2))
   );
 

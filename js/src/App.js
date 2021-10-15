@@ -796,7 +796,7 @@ class App extends React.Component {
             <input
               type="text"
               className="dropdown--select-network"
-              value={window.sessionStorage.getItem('endpoint')}
+              defaultValue={window.sessionStorage.getItem('endpoint')}
               onChange={(e) => {
                 window.sessionStorage.setItem('endpoint', e.target.value);
               }}

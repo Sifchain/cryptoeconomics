@@ -68,13 +68,17 @@ function actions(processor) {
       const timeIndex = getTimeIndex('now', programName);
       const currentTimestampState =
         processor.lmDataParsed.processedData[timeIndex];
-      return currentTimestampState.createDispensationJob();
+      return currentTimestampState.createDispensationJob({
+        rewardProgramName: programName,
+      });
     },
     [GET_VS_DISPENSATION_JOB]({ programName }) {
       const timeIndex = getTimeIndex('now', programName);
       const currentTimestampState =
         processor.vsDataParsed.processedData[timeIndex];
-      return currentTimestampState.createDispensationJob();
+      return currentTimestampState.createDispensationJob({
+        rewardProgramName: programName,
+      });
     },
     [GET_SNAPSHOT_UPDATE_TIME_STATS]({ rewardProgram }) {
       const { EVENT_INTERVAL_MINUTES } = configs[rewardProgram];

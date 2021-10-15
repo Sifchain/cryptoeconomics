@@ -9,6 +9,7 @@ function createConfig({
   rewardBucketStartDateTime = startsAt,
   rewardBucketEndDateTime = undefined,
   ignoreInitialPoolState,
+  timerBuckets = [],
 }) {
   /*
   - The network was started prior to the DEX launch. There is roughly ~week worth of blocks that had no meaningful transactions as the product was not launched.
@@ -75,7 +76,35 @@ function createConfig({
   return config;
 }
 
-const HARVEST_RELOAD_DATETIME = '2021-10-14T23:00:00.000Z';
+function createTimerBucket({
+  startsAt,
+  durationInWeeks,
+  amount,
+  intervalDurationMinutes,
+}) {
+  const DEPOSIT_CUTOFF_DATETIME = moment
+    .utc(startsAt)
+    .add(moment.duration(durationInWeeks, 'weeks'))
+    .toISOString();
+  // But they can continue to accrue rewards until the final end date
+  const END_OF_REWARD_ACCRUAL_DATETIME = DEPOSIT_CUTOFF_DATETIME;
+  // Snapshot of all Validator events is split into 200 minute intervals (https://github.com/Sifchain/Vanir/issues/13)
+  const EVENT_INTERVAL_MINUTES = intervalDurationMinutes;
+
+  // Amount of time that users can accrue rewards
+  const REWARD_ACCRUAL_DURATION_MS =
+    new Date(END_OF_REWARD_ACCRUAL_DATETIME).getTime() -
+    new Date(startsAt).getTime();
+  return {
+    duration: Math.floor(
+      REWARD_ACCRUAL_DURATION_MS / 1000 / 60 / intervalDurationMinutes
+    ),
+    startsAt,
+    amount,
+  };
+}
+
+const HARVEST_RELOAD_DATETIME = '2021-10-15T17:26:13.441Z';
 
 module.exports = {
   COSMOS_IBC_REWARDS_V1: createConfig({
@@ -115,6 +144,14 @@ module.exports = {
     intervalDurationMinutes: 60,
     initialRewardMultiplier: 1,
     ignoreInitialPoolState: true,
+    timerBuckets: [
+      createTimerBucket({
+        startsAt: '2021-10-15T02:55:33.503Z',
+        durationInWeeks: 2,
+        amount: 500_000,
+        intervalDurationMinutes: 60,
+      }),
+    ],
   }),
   bonus_v1_ixo: createConfig({
     initialRowan: 100_000,

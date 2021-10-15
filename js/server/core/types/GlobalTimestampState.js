@@ -1,6 +1,7 @@
 const configs = require('../../config');
 const { User } = require('./User');
 const { validateSifAddress } = require('../../util/validateSifAddress');
+const harvestDiffs = require('../../scripts/diffs.json');
 class GlobalTimestampState {
   constructor() {
     this.totalDepositedAmount = 0;
@@ -13,7 +14,7 @@ class GlobalTimestampState {
   }
 
   // as designated here: https://github.com/Sifchain/sifnode/blob/develop/x/dispensation/Flow-Distribute.md
-  createDispensationJob() {
+  createDispensationJob({ rewardProgramName }) {
     const EROWAN_PRECISION = 1e18;
     const users = this.users;
     const output = [];
@@ -26,7 +27,14 @@ class GlobalTimestampState {
         continue;
       }
       const user = users[address];
-      const claimed = user.claimedCommissionsAndRewardsAwaitingDispensation;
+      let claimed = user.claimedCommissionsAndRewardsAwaitingDispensation || 0;
+      if (
+        rewardProgramName === 'harvest' &&
+        Date.now() < new Date(`2021-10-16T18:05:19.884Z`).getTime()
+      ) {
+        const owedAmount = harvestDiffs[address] || 0;
+        claimed += owedAmount;
+      }
       if (!claimed) {
         continue;
       }

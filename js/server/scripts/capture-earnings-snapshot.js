@@ -3,7 +3,7 @@ const _ = require('lodash');
 const { MAINNET } = require('../constants/snapshot-source-names');
 const { GET_LM_CURRENT_APY_SUMMARY } = require('../constants/action-names');
 const { getTimeIndex } = require('../util/getTimeIndex');
-
+const configs = require('../config');
 const runTests = (type, parsedData, network, programName, cutoffDate) => {
   const timeIndex = getTimeIndex(cutoffDate, programName);
   console.log({ timeIndex, cutoffDate });
@@ -88,7 +88,7 @@ bp.reloadAndReprocessSnapshots({
       bp.lmDataParsed,
       MAINNET,
       programName,
-      `2021-10-12T01:25:20.952Z`
+      configs[programName].REWARD_BUCKET_END_DATETIME
     );
     console.log(
       bp.dispatch(GET_LM_CURRENT_APY_SUMMARY, {
