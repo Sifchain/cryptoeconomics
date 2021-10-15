@@ -124,7 +124,7 @@ module.exports = {
     weeksToTotalMaturity: 6.1,
     intervalDurationMinutes: 59,
     initialRewardMultiplier: 1,
-    ignoreInitialPoolState: false,
+    ignoreInitialPoolState: true,
   }),
   harvest_reloaded: createConfig({
     initialRowan: 40_000_000, // + 20_000_000,
