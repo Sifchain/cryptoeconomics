@@ -49,7 +49,11 @@ function actions(processor) {
         currentTotal
       );
       if (!bucketEvent) return 0;
-      const rewardPerInterval = bucketEvent.initialRowan / bucketEvent.duration;
+      let rewardPerInterval = bucketEvent.initialRowan / bucketEvent.duration;
+      if (currentTimestampState.rewardBuckets[1]) {
+        const bucket2 = currentTimestampState.rewardBuckets[1];
+        rewardPerInterval += bucket2.initialRowan / bucket2.duration;
+      }
       const sampleRewardsPerInterval =
         sampleDepositDominanceRatio * rewardPerInterval;
       const intervalsPerYear = (60 * 24 * 365) / EVENT_INTERVAL_MINUTES;

@@ -223,18 +223,6 @@ const server = new ApolloServer({
             isUniversal: true,
             distributionPattern: 'LINEAR',
           },
-
-          {
-            displayName: `Sif's IXO Bonus Pool`,
-            description: `Earn Rowan rewards by pooling IXO.`,
-            rewardProgramType: 'lm',
-            rewardProgramName: 'bonus_v1_ixo',
-            incentivizedPoolSymbols: ['ixo'],
-            documentationURL:
-              'https://docs.sifchain.finance/resources/rewards-programs',
-            isUniversal: false,
-            distributionPattern: 'LINEAR',
-          },
           {
             displayName: `Sif's Junø Bonus Pool`,
             description: `Earn Rowan rewards by pooling JUNØ.`,
@@ -246,6 +234,18 @@ const server = new ApolloServer({
             isUniversal: false,
             distributionPattern: 'LINEAR',
           },
+          {
+            displayName: `Sif's IXO Bonus Pool`,
+            description: `Earn Rowan rewards by pooling IXO.`,
+            rewardProgramType: 'lm',
+            rewardProgramName: 'bonus_v1_ixo',
+            incentivizedPoolSymbols: ['ixo'],
+            documentationURL:
+              'https://docs.sifchain.finance/resources/rewards-programs',
+            isUniversal: false,
+            distributionPattern: 'LINEAR',
+          },
+
           {
             displayName: `Sif's Harvest (Legacy)`,
             description: `Earn rewards of mythological proportions by providing liquidity to any of Sifchain's token pools.`,

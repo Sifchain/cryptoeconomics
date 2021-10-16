@@ -144,14 +144,6 @@ module.exports = {
     intervalDurationMinutes: 60,
     initialRewardMultiplier: 1,
     ignoreInitialPoolState: true,
-    timerBuckets: [
-      createTimerBucket({
-        startsAt: '2021-10-15T02:55:33.503Z',
-        durationInWeeks: 2,
-        amount: 500_000,
-        intervalDurationMinutes: 60,
-      }),
-    ],
   }),
   bonus_v1_ixo: createConfig({
     initialRowan: 100_000,

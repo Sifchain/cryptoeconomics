@@ -137,6 +137,10 @@ function processUserEventsByTimestamp(
       1) *
     programConfig.EVENT_INTERVAL_MINUTES;
 
+  const junoBucketStartTimestamp =
+    (getTimeIndex(new Date('2021-10-14T01:52:44.915Z'), rewardProgram) + 1) *
+    programConfig.EVENT_INTERVAL_MINUTES;
+
   const endBucketTimestamp =
     (getTimeIndex(
       new Date(programConfig.REWARD_BUCKET_END_DATETIME),
@@ -157,6 +161,20 @@ function processUserEventsByTimestamp(
 
     if (timestamp === startBucketTimestamp) {
       lastGlobalState.startBucket({ rewardProgram });
+    }
+    if (
+      rewardProgram === 'bonus_v1' &&
+      timestamp === junoBucketStartTimestamp
+    ) {
+      const REWARD_ACCRUAL_DURATION_MS = 2 * 7 * 24 * 60 * 60 * 1000;
+      const REWARD_ACCRUAL_DURATION_INTERVAL_COUNT = Math.floor(
+        REWARD_ACCRUAL_DURATION_MS / 1000 / 60 / EVENT_INTERVAL_MINUTES
+      );
+      lastGlobalState.bucketEvent = {
+        rowan: 500_000,
+        initialRowan: 500_000,
+        duration: REWARD_ACCRUAL_DURATION_INTERVAL_COUNT,
+      };
     }
     if (
       timestamp ===
