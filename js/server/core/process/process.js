@@ -170,6 +170,9 @@ function processUserEventsByTimestamp(
       const REWARD_ACCRUAL_DURATION_INTERVAL_COUNT = Math.floor(
         REWARD_ACCRUAL_DURATION_MS / 1000 / 60 / EVENT_INTERVAL_MINUTES
       );
+      console.log({
+        REWARD_ACCRUAL_DURATION_MS___JUNO_BOOST: REWARD_ACCRUAL_DURATION_MS,
+      });
       lastGlobalState.bucketEvent = {
         rowan: 500_000,
         initialRowan: 500_000,

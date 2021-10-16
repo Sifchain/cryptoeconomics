@@ -281,7 +281,10 @@ const server = new ApolloServer({
           return {
             ...rewardProgram,
             startDateTimeISO: config.REWARD_BUCKET_START_DATETIME,
-            endDateTimeISO: config.REWARD_BUCKET_END_DATETIME,
+            endDateTimeISO:
+              rewardProgram.rewardProgramName === 'bonus_v1'
+                ? '2021-10-23T02:00:48.506Z'
+                : config.REWARD_BUCKET_END_DATETIME,
           };
         });
       },
