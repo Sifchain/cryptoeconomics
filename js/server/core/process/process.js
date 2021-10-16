@@ -166,7 +166,7 @@ function processUserEventsByTimestamp(
       rewardProgram === 'bonus_v1' &&
       timestamp === junoBucketStartTimestamp
     ) {
-      const REWARD_ACCRUAL_DURATION_MS = 2 * 7 * 24 * 60 * 60 * 1000;
+      const REWARD_ACCRUAL_DURATION_MS = 1 * 7 * 24 * 60 * 60 * 1000;
       const REWARD_ACCRUAL_DURATION_INTERVAL_COUNT = Math.floor(
         REWARD_ACCRUAL_DURATION_MS / 1000 / 60 / EVENT_INTERVAL_MINUTES
       );
