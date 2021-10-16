@@ -138,7 +138,7 @@ function processUserEventsByTimestamp(
     programConfig.EVENT_INTERVAL_MINUTES;
 
   const junoBucketStartTimestamp =
-    (getTimeIndex(new Date('2021-10-14T01:52:44.915Z'), rewardProgram) + 1) *
+    (getTimeIndex(new Date('2021-10-16T02:00:48.506Z'), rewardProgram) + 1) *
     programConfig.EVENT_INTERVAL_MINUTES;
 
   const endBucketTimestamp =
