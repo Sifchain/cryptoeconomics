@@ -369,7 +369,7 @@ app.get('/api/lm', async (req, res, next) => {
     case 'userDispensationJob': {
       const { job, internalEpochTimestamp } = await processingHandler.dispatch(
         GET_LM_DISPENSATION_JOB,
-        { programName: rewardProgram }
+        { programName: rewardProgram, timestamp: req.query.timestamp || 'now' }
       );
       if (req.query.download === 'true') {
         res.setHeader(

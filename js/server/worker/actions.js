@@ -64,16 +64,16 @@ function actions(processor) {
       // convert to percentage
       return (sampleRewardProjectedOneYear / sampleDeposit) * 100;
     },
-    [GET_LM_DISPENSATION_JOB]({ programName }) {
-      const timeIndex = getTimeIndex('now', programName);
+    [GET_LM_DISPENSATION_JOB]({ programName, timestamp = 'now' }) {
+      const timeIndex = getTimeIndex(timestamp, programName);
       const currentTimestampState =
         processor.lmDataParsed.processedData[timeIndex];
       return currentTimestampState.createDispensationJob({
         rewardProgramName: programName,
       });
     },
-    [GET_VS_DISPENSATION_JOB]({ programName }) {
-      const timeIndex = getTimeIndex('now', programName);
+    [GET_VS_DISPENSATION_JOB]({ programName, timestamp = 'now' }) {
+      const timeIndex = getTimeIndex(timestamp, programName);
       const currentTimestampState =
         processor.vsDataParsed.processedData[timeIndex];
       return currentTimestampState.createDispensationJob({
