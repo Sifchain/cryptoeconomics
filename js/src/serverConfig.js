@@ -110,7 +110,7 @@ module.exports = {
   bonus_v1: createConfig({
     initialRowan: 1_000_000,
     startsAt: '2021-10-05T19:00:00.000Z',
-    durationInWeeks: 2,
+    durationInWeeks: 3,
     weeksToTotalMaturity: 2.1,
     intervalDurationMinutes: 60,
     initialRewardMultiplier: 1,
