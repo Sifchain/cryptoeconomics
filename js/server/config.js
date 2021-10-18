@@ -154,4 +154,13 @@ module.exports = {
     initialRewardMultiplier: 1,
     ignoreInitialPoolState: true,
   }),
+  bonus_v1_osmo: createConfig({
+    initialRowan: 250_000,
+    startsAt: '2021-10-18T23:00:00.000Z',
+    durationInWeeks: 2,
+    weeksToTotalMaturity: 2.1,
+    intervalDurationMinutes: 60,
+    initialRewardMultiplier: 1,
+    ignoreInitialPoolState: true,
+  }),
 };

@@ -213,6 +213,17 @@ const server = new ApolloServer({
       async rewardPrograms(root, args, context, info) {
         return [
           {
+            displayName: `Sif's OSMO Bonus Pool`,
+            description: `Earn Rowan rewards by pooling OSMO.`,
+            rewardProgramType: 'lm',
+            rewardProgramName: 'bonus_v1_osmo',
+            incentivizedPoolSymbols: ['osmo'],
+            documentationURL:
+              'https://docs.sifchain.finance/resources/rewards-programs',
+            isUniversal: false,
+            distributionPattern: 'LINEAR',
+          },
+          {
             displayName: `Sif's Harvest (Bloom)`,
             description: `Earn rewards of mythological proportions by providing liquidity to any of Sifchain's token pools. Now including liquidity re-adds.`,
             rewardProgramType: 'lm',
@@ -276,17 +287,19 @@ const server = new ApolloServer({
             isUniversal: false,
             distributionPattern: 'GEYSER',
           },
-        ].map((rewardProgram) => {
-          const config = configs[rewardProgram.rewardProgramName];
-          return {
-            ...rewardProgram,
-            startDateTimeISO: config.REWARD_BUCKET_START_DATETIME,
-            endDateTimeISO:
-              rewardProgram.rewardProgramName === 'bonus_v1'
-                ? '2021-10-23T02:00:48.506Z'
-                : config.REWARD_BUCKET_END_DATETIME,
-          };
-        });
+        ]
+          .map((rewardProgram) => {
+            const config = configs[rewardProgram.rewardProgramName];
+            return {
+              ...rewardProgram,
+              startDateTimeISO: config.REWARD_BUCKET_START_DATETIME,
+              endDateTimeISO:
+                rewardProgram.rewardProgramName === 'bonus_v1'
+                  ? '2021-10-23T02:00:48.506Z'
+                  : config.REWARD_BUCKET_END_DATETIME,
+            };
+          })
+          .filter((r) => new Date(r.startDateTimeISO).getTime() <= Date.now());
       },
     },
   },
