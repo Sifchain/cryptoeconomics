@@ -213,7 +213,7 @@ const server = new ApolloServer({
       async rewardPrograms(root, args, context, info) {
         return [
           {
-            displayName: `Sif's OSMO Bonus Pool`,
+            displayName: `Sif's OSMO Bonus Pool (Boosted)`,
             description: `Earn Rowan rewards by pooling OSMO.`,
             rewardProgramType: 'lm',
             rewardProgramName: 'bonus_v1_osmo',
