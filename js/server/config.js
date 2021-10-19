@@ -139,6 +139,7 @@ module.exports = {
   bonus_v1: createConfig({
     initialRowan: 1_000_000,
     startsAt: '2021-10-05T19:00:00.000Z',
+    rewardBucketEndDateTime: '2021-10-28T23:00:00.000Z',
     durationInWeeks: 2,
     weeksToTotalMaturity: 4,
     intervalDurationMinutes: 60,
