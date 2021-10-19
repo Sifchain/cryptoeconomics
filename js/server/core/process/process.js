@@ -140,7 +140,9 @@ function processUserEventsByTimestamp(
   const junoBucketStartTimestamp =
     (getTimeIndex(new Date('2021-10-16T02:00:48.506Z'), rewardProgram) + 1) *
     programConfig.EVENT_INTERVAL_MINUTES;
-
+  const osmoBucketStartTimestamp =
+    (getTimeIndex(new Date('2021-10-19T20:00:00.000Z'), rewardProgram) + 1) *
+    programConfig.EVENT_INTERVAL_MINUTES;
   const endBucketTimestamp =
     (getTimeIndex(
       new Date(programConfig.REWARD_BUCKET_END_DATETIME),
@@ -176,6 +178,23 @@ function processUserEventsByTimestamp(
       lastGlobalState.bucketEvent = {
         rowan: 500_000,
         initialRowan: 500_000,
+        duration: REWARD_ACCRUAL_DURATION_INTERVAL_COUNT,
+      };
+    }
+    if (
+      rewardProgram === 'bonus_v1_osmo' &&
+      timestamp === osmoBucketStartTimestamp
+    ) {
+      const REWARD_ACCRUAL_DURATION_MS = 1 * 7 * 24 * 60 * 60 * 1000;
+      const REWARD_ACCRUAL_DURATION_INTERVAL_COUNT = Math.floor(
+        REWARD_ACCRUAL_DURATION_MS / 1000 / 60 / EVENT_INTERVAL_MINUTES
+      );
+      console.log({
+        REWARD_ACCRUAL_DURATION_MS___OSMO_BOOST: REWARD_ACCRUAL_DURATION_MS,
+      });
+      lastGlobalState.bucketEvent = {
+        rowan: 250_000,
+        initialRowan: 250_000,
         duration: REWARD_ACCRUAL_DURATION_INTERVAL_COUNT,
       };
     }
