@@ -26,6 +26,10 @@ const { ApolloServer } = require('apollo-server-express');
 const backwardsCompensationForHarvestUsers = require('../server/scripts/diffs.json');
 
 if (process.env.DATABASE_URL) {
+  process.env.DATABASE_URL = process.env.DATABASE_URL.replace(
+    'PASSWORD',
+    encodeURIComponent(process.env.DATABASE_PASSWORD)
+  );
   const encrypted = encrypt(process.env.DATABASE_URL);
   fs.writeFileSync('./DATABASE_URL.enc', encrypted.encryptedData);
 } else {
