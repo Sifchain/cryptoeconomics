@@ -166,7 +166,7 @@ module.exports = {
   }),
   bonus_v1_ratom: createConfig({
     initialRowan: 250_000,
-    startsAt: '2021-10-21T06:00:00:00.000Z',
+    startsAt: '2021-10-21T06:00:00.000Z',
     durationInWeeks: 2,
     weeksToTotalMaturity: 2.5,
     intervalDurationMinutes: 60,
