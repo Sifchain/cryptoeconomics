@@ -68,8 +68,11 @@ class ProcessingHandler {
 
   get hasSnapshotsStillUpdating() {
     const { DEPOSIT_CUTOFF_DATETIME } = configs[this.rewardProgram];
-    return moment().utc().isBefore(moment.utc(DEPOSIT_CUTOFF_DATETIME).add(moment.duration(1, 'weeks'))
-);
+    return moment()
+      .utc()
+      .isBefore(
+        moment.utc(DEPOSIT_CUTOFF_DATETIME).add(moment.duration(1, 'weeks'))
+      );
   }
 
   async start() {
