@@ -158,6 +158,7 @@ module.exports = {
   bonus_v1_osmo: createConfig({
     initialRowan: 250_000,
     startsAt: '2021-10-18T23:00:00.000Z',
+    rewardBucketEndDateTime: '2021-11-01T23:00:00.000Z',
     durationInWeeks: 2,
     weeksToTotalMaturity: 2.5,
     intervalDurationMinutes: 60,
