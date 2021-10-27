@@ -194,7 +194,7 @@ const server = new ApolloServer({
           }
           return obj;
         }
-        return !!responseJSON.user
+        return !!responseJSON && !!responseJSON.user
           ? reducePrecisionForJsonNumbers(responseJSON.user)
           : null;
       },

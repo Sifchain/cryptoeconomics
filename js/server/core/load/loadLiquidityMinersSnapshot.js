@@ -81,9 +81,14 @@ const getSQLQueryByNetwork = (network, rewardProgram) => {
               slonik.sql`select * from snapshots_lm rf where rf.snapshot_time = (select max(snapshot_time) from snapshots_lm)`
             );
           }
-          return tx.many(
-            slonik.sql`select * from snapshots_reward where is_latest = true and reward_program=${rewardProgramName}`
-          );
+          return tx
+            .many(
+              slonik.sql`select * from snapshots_reward where is_latest = true and reward_program=${rewardProgramName}`
+            )
+            .catch((e) => {
+              console.error('\n\n\n' + rewardProgram + '\n\n\n');
+              throw e;
+            });
         })();
         function augmentLMSnapshotToHideNonProgramLiquidityRemovals(
           snapshots_new
