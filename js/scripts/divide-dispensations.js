@@ -25,6 +25,8 @@ const rewardPrograms = {
   harvest_reloaded: 'harvest_reloaded',
   bonus_v1_osmo: 'bonus_v1_osmo',
   bonus_v1_ratom: 'bonus_v1_ratom',
+  bonus_v1_luna: 'bonus_v1_osmo',
+  bonus_v1_usd: 'bonus_v1_ratom',
 };
 
 const getOutputPath = (...paths) =>
@@ -54,6 +56,8 @@ async function divideDispensations() {
     'lm_harvest_reloaded',
     'lm_osmo',
     'lm_ratom',
+    'lm_luna',
+    'lm_usd',
   ]) {
     const rawDist = await fetch(
       `https://data.sifchain.finance/beta/network/dispensation/${type}`
@@ -143,23 +147,20 @@ function createDispensationRunKit() {
         return rewardPrograms['bonus_v1_osmo'];
       case 'lm_ratom':
         return rewardPrograms['bonus_v1_ratom'];
+      case 'lm_luna':
+        return rewardPrograms['bonus_v1_luna'];
+      case 'lm_usd':
+        return rewardPrograms['bonus_v1_usd'];
     }
   }
   function getDistributionTypeByType(type) {
     switch (type) {
       case 'vs':
         return 'ValidatorSubsidy';
-      case 'lm':
-      case 'lm_harvest':
-      case 'lm_juno':
-      case 'lm_ibc':
-      case 'lm_ixo':
-      case 'lm_osmo':
-      case 'lm_ratom':
-      case 'lm_harvest_reloaded':
-        return 'LiquidityMining';
       case 'airdrop':
         return 'Airdrop';
+      default:
+        return 'LiquidityMining';
     }
   }
   const templateValues = {
