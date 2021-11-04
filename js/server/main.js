@@ -226,7 +226,7 @@ const server = new ApolloServer({
             description: `Earn Rowan rewards by pooling EEUR.`,
             rewardProgramType: 'lm',
             rewardProgramName: 'bonus_v1_eur',
-            incentivizedPoolSymbols: ['eeur'],
+            incentivizedPoolSymbols: ['eur'],
             documentationURL:
               'https://docs.sifchain.finance/resources/rewards-programs',
             isUniversal: false,
