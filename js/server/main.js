@@ -219,7 +219,19 @@ const server = new ApolloServer({
     },
     Query: {
       async rewardPrograms(root, args, context, info) {
+        // eeur
         return [
+          {
+            displayName: `Sif's EEUR Bonus Pool`,
+            description: `Earn Rowan rewards by pooling EEUR.`,
+            rewardProgramType: 'lm',
+            rewardProgramName: 'bonus_v1_eeur',
+            incentivizedPoolSymbols: ['eeur'],
+            documentationURL:
+              'https://docs.sifchain.finance/resources/rewards-programs',
+            isUniversal: false,
+            distributionPattern: 'LINEAR',
+          },
           {
             displayName: `Sif's Luna Bonus Pool`,
             description: `Earn Rowan rewards by pooling Terra LUNA.`,

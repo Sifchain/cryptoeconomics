@@ -192,4 +192,13 @@ module.exports = {
     initialRewardMultiplier: 1,
     ignoreInitialPoolState: true,
   }),
+  bonus_v1_eeur: createConfig({
+    initialRowan: 250_000,
+    startsAt: '2021-11-04T13:30:00.000Z',
+    durationInWeeks: 2,
+    weeksToTotalMaturity: 3,
+    intervalDurationMinutes: 60,
+    initialRewardMultiplier: 1,
+    ignoreInitialPoolState: true,
+  }),
 };
