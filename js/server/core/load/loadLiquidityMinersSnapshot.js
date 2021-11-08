@@ -113,10 +113,11 @@ const getSQLQueryByNetwork = (network, rewardProgram) => {
               for (let deltaEvent of liquidityDeltaEvents) {
                 if (
                   snapshot.address ===
-                  'sif1umh8vzlrjl84kh8lhw7d2nuaxlh4nglfu9zcy4'
+                  'sif18vnw53wvw4q4pvus98pqjvy6mmuz4q0g5w5swx'
                 ) {
                   //
                 }
+                debugger;
                 let nextTotal = total + deltaEvent.delta;
                 if (nextTotal < 0) {
                   deltaEvent.delta = -total;
@@ -159,10 +160,33 @@ const getSQLQueryByNetwork = (network, rewardProgram) => {
         const [...snapshotsNewLoaded] = await snapshots_new;
         const firstItemSnapshotData = snapshotsNewLoaded[0].snapshot_data;
         while (snapshotsNewLoaded.length > 1) {
-          Object.assign(
-            firstItemSnapshotData,
-            snapshotsNewLoaded.pop().snapshot_data
-          );
+          const snapshotItem = snapshotsNewLoaded.pop();
+          const snapshotData = snapshotItem.snapshot_data;
+          if (
+            snapshotItem.address ===
+            'sif18vnw53wvw4q4pvus98pqjvy6mmuz4q0g5w5swx'
+          ) {
+            // debugger;
+          }
+          try {
+            delete snapshotData[snapshotItem.address][
+              `ibc/7B8A3357032F3DB000ACFF3B2C9F8E77B932F21004FC93B5A8F77DE24161A573`
+            ];
+            delete snapshotData[snapshotItem.address][
+              `ibc/ACA7D0100794F39DF3FF0C5E31638B24737321C24F32C2C486A24C78DD8F2029`
+            ];
+            // for (let token in snapshotData[snapshotItem.address]) {
+            //   const events = [];
+            //   for (let event of snapshotData[snapshotItem.address][token]) {
+            //     events.push(event);
+            //     if (event.unix_timestamp > 1635795480) {
+            //       break;
+            //     }
+            //   }
+            //   snapshotData[snapshotItem.address][token] = events;
+            // }
+          } catch (e) {}
+          Object.assign(firstItemSnapshotData, snapshotData);
         }
         const [...snapshotsClaimsLoaded] = await snapshots_lm_claims;
         const firstItemClaimData = {};

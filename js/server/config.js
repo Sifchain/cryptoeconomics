@@ -17,7 +17,7 @@ function createConfig({
     Because we are extending the program to June 30th(initially ended ~May 14th) there was initially a 6 week accumulation period after the official end of the program. So users could accumulate rewards up until ~June 19th.
   - We decided to extend the program eligibility to June 30th, but did not extend the accumulation of reward period relative to the same rules that were implemented when we started the program.
     Extending to August 4th will maintain our initial program details that were communicated to the community
-*/
+  */
 
   // Rewards begin accruing
   // const START_DATETIME = '2021-08-16T06:00:00.000Z';

@@ -796,6 +796,21 @@ class App extends React.Component {
             <input
               type="text"
               className="dropdown--select-network"
+              defaultValue={window.sessionStorage.getItem('rewardProgram')}
+              onChange={(e) => {
+                window.sessionStorage.setItem('rewardProgram', e.target.value);
+              }}
+            />
+          </form>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              window.location.reload();
+            }}
+          >
+            <input
+              type="text"
+              className="dropdown--select-network"
               defaultValue={window.sessionStorage.getItem('endpoint')}
               onChange={(e) => {
                 window.sessionStorage.setItem('endpoint', e.target.value);
