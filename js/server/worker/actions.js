@@ -36,7 +36,10 @@ function actions(processor) {
       // could easily make this a FOMO calculator endpoint
       const timeIndex = getTimeIndex('now', programName);
       const currentTimestampState =
-        processor.lmDataParsed.processedData[timeIndex];
+        processor.lmDataParsed.processedData[timeIndex] ||
+        processor.lmDataParsed.processedData[
+          processor.lmDataParsed.processedData.length - 1
+        ];
       const currentTotal = currentTimestampState.totalDepositedAmount;
       const sampleDeposit = 10;
       const sampleDepositDominanceRatio =
