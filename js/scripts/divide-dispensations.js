@@ -28,6 +28,8 @@ const rewardPrograms = {
   bonus_v1_luna: 'bonus_v1_luna',
   bonus_v1_usd: 'bonus_v1_usd',
   bonus_v1_eur: 'bonus_v1_eur',
+  universal_vol: 'universal_vol',
+  universal_txn: 'universal_txn',
 };
 
 const getOutputPath = (...paths) =>
@@ -60,6 +62,8 @@ async function divideDispensations() {
     'lm_luna',
     'lm_usd',
     'lm_eur',
+    'universal_txn',
+    'universal_vol',
   ]) {
     const rawDist = await fetch(
       `https://data.sifchain.finance/beta/network/dispensation/${type}`
@@ -155,6 +159,10 @@ function createDispensationRunKit() {
         return rewardPrograms['bonus_v1_usd'];
       case 'lm_eur':
         return rewardPrograms['bonus_v1_eur'];
+      case 'universal_txn':
+        return rewardPrograms['universal_txn'];
+      case 'universal_vol':
+        return rewardPrograms['universal_vol'];
     }
   }
 
@@ -163,6 +171,8 @@ function createDispensationRunKit() {
       case 'vs':
         return 'ValidatorSubsidy';
       case 'airdrop':
+      case 'universal_txn':
+      case 'universal_vol':
         return 'Airdrop';
       default:
         return 'LiquidityMining';
