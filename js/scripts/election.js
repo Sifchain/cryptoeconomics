@@ -29,53 +29,66 @@ async function election() {
     pollState.ballotsByAddress[userAddress] =
       json.tx.body.memo.toUpperCase().trim() || '_empty_';
   }
+  const promises = [];
+  let index = 0;
   for (let addr in pollState.ballotsByAddress) {
-    const balanceRes = await fetch(
-      `https://api.sifchain.finance/cosmos/bank/v1beta1/balances/${addr}/rowan?height=${Math.min(
-        latestBlockHeight,
-        pollState.endHeight
-      )}`
-    ).then((r) => r.json());
-    const poolAmounts = await Promise.all(
-      pools.map((p) =>
-        fetch(
-          `https://api.sifchain.finance/clp/getLiquidityProvider?lpAddress=${addr}&symbol=${p.external_asset.symbol}`
-        )
-          .then((r) => r.json())
-          .then((r) => {
-            const poolRatio = +r.pool_units / +r.pool_units;
-            const amountOfRowan =
-              (poolRatio || 0) * (+p.native_asset_balance || 0);
-            return amountOfRowan;
-          })
-          .catch((e) => console.log('failed') || 0)
-      )
-    );
-    const pooledSum = BigInt(
-      poolAmounts
-        .reduce((prev, curr) => {
-          return prev + curr;
-        }, 0)
-        .toFixed(0)
-    );
-    const { validators } = await fetch(
-      `https://api.sifchain.finance/cosmos/staking/v1beta1/delegators/${addr}/validators`
-    ).then((r) => r.json());
-    let totalStaked = 0n;
-    for (let validator of validators) {
-      const delegationInfo = await fetch(
-        `https://api.sifchain.finance/cosmos/staking/v1beta1/validators/${validator.operator_address}/delegations/${addr}`
+    index++;
+    const promise = (async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1000 * index));
+      console.log('starting');
+      const balanceRes = await fetch(
+        `https://api.sifchain.finance/cosmos/bank/v1beta1/balances/${addr}/rowan?height=${Math.min(
+          latestBlockHeight,
+          pollState.endHeight
+        )}`
       ).then((r) => r.json());
-      totalStaked += BigInt(delegationInfo.delegation_response.balance.amount);
-    }
-    const ballot = pollState.ballotsByAddress[addr];
-    pollState.weightedVotes[ballot] =
-      (pollState.weightedVotes[ballot] || 0n) +
-      BigInt(balanceRes.balance.amount) +
-      BigInt(totalStaked) +
-      BigInt(pooledSum);
-    console.log(JSON.stringify(pollState, null, 2));
+      const poolAmounts = await Promise.all(
+        pools.map((p) =>
+          fetch(
+            `https://api.sifchain.finance/clp/getLiquidityProvider?lpAddress=${addr}&symbol=${p.external_asset.symbol}`
+          )
+            .then((r) => r.json())
+            .then((r) => {
+              const poolRatio = +r.pool_units / +r.pool_units;
+              const amountOfRowan =
+                (poolRatio || 0) * (+p.native_asset_balance || 0);
+              return amountOfRowan;
+            })
+            .catch((e) => console.log('failed') || 0)
+        )
+      );
+      const pooledSum = BigInt(
+        poolAmounts
+          .reduce((prev, curr) => {
+            return prev + curr;
+          }, 0)
+          .toFixed(0)
+      );
+      const { validators } = await fetch(
+        `https://api.sifchain.finance/cosmos/staking/v1beta1/delegators/${addr}/validators`
+      ).then((r) => r.json());
+      let totalStaked = 0n;
+      for (let validator of validators) {
+        const delegationInfo = await fetch(
+          `https://api.sifchain.finance/cosmos/staking/v1beta1/validators/${validator.operator_address}/delegations/${addr}`
+        ).then((r) => r.json());
+        totalStaked += BigInt(
+          delegationInfo.delegation_response.balance.amount
+        );
+      }
+      const ballot = pollState.ballotsByAddress[addr];
+      pollState.weightedVotes[ballot] =
+        (pollState.weightedVotes[ballot] || 0n) +
+        BigInt(balanceRes.balance.amount) +
+        BigInt(totalStaked) +
+        BigInt(pooledSum);
+      console.log(pollState);
+      console.log('done');
+    })();
+    promises.push(promise);
   }
+  await Promise.all(promises);
   console.log(pollState);
+  console.log('done');
 }
 election();
