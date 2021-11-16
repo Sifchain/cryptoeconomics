@@ -70,6 +70,7 @@ function actions(processor) {
         sampleRewardsPerInterval * intervalsPerYear;
       // convert to percentage
       return (sampleRewardProjectedOneYear / sampleDeposit) * 100;
+      (sampleRewardProjectedOneYear / sampleDeposit) * (100 = (300 / 100) * deposit) / intervalsPerYear
     },
     [GET_LM_DISPENSATION_JOB]({ programName, timestamp = 'now' }) {
       const timeIndex = getTimeIndex(timestamp, programName);
