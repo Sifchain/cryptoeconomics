@@ -1,0 +1,252 @@
+[
+  {
+    "selection": "ZCX",
+    "voting power": 28396006.44,
+    "accounts": 6
+  },
+  {
+    "selection": "ETH",
+    "voting power": 6876103.6,
+    "accounts": 65
+  },
+  {
+    "selection": "UST",
+    "voting power": 5694373.88,
+    "accounts": 91
+  },
+  {
+    "selection": "USDT",
+    "voting power": 5448557.39,
+    "accounts": 51
+  },
+  {
+    "selection": "RUNE",
+    "voting power": 5378286.41,
+    "accounts": 20
+  },
+  {
+    "selection": "JUNO",
+    "voting power": 5043573.51,
+    "accounts": 39
+  },
+  {
+    "selection": "LUNA",
+    "voting power": 3821617.4,
+    "accounts": 53
+  },
+  {
+    "selection": "OSMO",
+    "voting power": 3458250.48,
+    "accounts": 50
+  },
+  {
+    "selection": "USDC",
+    "voting power": 3431194.89,
+    "accounts": 30
+  },
+  {
+    "selection": "EEUR",
+    "voting power": 2894170.85,
+    "accounts": 18
+  },
+  {
+    "selection": "AKT",
+    "voting power": 1739796.54,
+    "accounts": 19
+  },
+  {
+    "selection": "SAND",
+    "voting power": 1508664.17,
+    "accounts": 1
+  },
+  {
+    "selection": "ATOM",
+    "voting power": 812093.43,
+    "accounts": 21
+  },
+  {
+    "selection": "METIS",
+    "voting power": 666959.15,
+    "accounts": 13
+  },
+  {
+    "selection": "DVPN",
+    "voting power": 494873.18,
+    "accounts": 8
+  },
+  {
+    "selection": "BAT",
+    "voting power": 410182.25,
+    "accounts": 2
+  },
+  {
+    "selection": "REGEN",
+    "voting power": 369548.11,
+    "accounts": 2
+  },
+  {
+    "selection": "XPRT",
+    "voting power": 344194.8,
+    "accounts": 3
+  },
+  {
+    "selection": "RATOM",
+    "voting power": 282390.41,
+    "accounts": 4
+  },
+  {
+    "selection": "TERA",
+    "voting power": 227372.88,
+    "accounts": 3
+  },
+  {
+    "selection": "RLY",
+    "voting power": 148099.08,
+    "accounts": 2
+  },
+  {
+    "selection": "CRO",
+    "voting power": 109825.32,
+    "accounts": 8
+  },
+  {
+    "selection": "LINK",
+    "voting power": 96210.12,
+    "accounts": 1
+  },
+  {
+    "selection": "SAITO",
+    "voting power": 89283.48,
+    "accounts": 1
+  },
+  {
+    "selection": "WBTC",
+    "voting power": 63167.34,
+    "accounts": 2
+  },
+  {
+    "selection": "BAND",
+    "voting power": 49575.46,
+    "accounts": 1
+  },
+  {
+    "selection": "RFUEL",
+    "voting power": 49575.46,
+    "accounts": 1
+  },
+  {
+    "selection": "AXS",
+    "voting power": 48528.13,
+    "accounts": 2
+  },
+  {
+    "selection": "BTC",
+    "voting power": 47768.27,
+    "accounts": 3
+  },
+  {
+    "selection": "MANA",
+    "voting power": 30652.86,
+    "accounts": 1
+  },
+  {
+    "selection": "SXP",
+    "voting power": 30652.86,
+    "accounts": 1
+  },
+  {
+    "selection": "SHIB",
+    "voting power": 30652.86,
+    "accounts": 1
+  },
+  {
+    "selection": "KEEP",
+    "voting power": 29090.22,
+    "accounts": 3
+  },
+  {
+    "selection": "DAI",
+    "voting power": 27080.2,
+    "accounts": 6
+  },
+  {
+    "selection": "1INCH",
+    "voting power": 24283.33,
+    "accounts": 3
+  },
+  {
+    "selection": "IRIS",
+    "voting power": 23550.36,
+    "accounts": 3
+  },
+  {
+    "selection": "IXO",
+    "voting power": 21253.48,
+    "accounts": 1
+  },
+  {
+    "selection": "MATIC",
+    "voting power": 20188.73,
+    "accounts": 3
+  },
+  {
+    "selection": "RNDR",
+    "voting power": 19526.92,
+    "accounts": 1
+  },
+  {
+    "selection": "POLS",
+    "voting power": 19525.57,
+    "accounts": 1
+  },
+  {
+    "selection": "OH",
+    "voting power": 19525.57,
+    "accounts": 1
+  },
+  {
+    "selection": "CTK",
+    "voting power": 18280.65,
+    "accounts": 1
+  },
+  {
+    "selection": "OSMOSIS",
+    "voting power": 17253.85,
+    "accounts": 1
+  },
+  {
+    "selection": "FUCK",
+    "voting power": 8821.11,
+    "accounts": 1
+  },
+  {
+    "selection": "ZCN",
+    "voting power": 8050.94,
+    "accounts": 1
+  },
+  {
+    "selection": "B20",
+    "voting power": 4449.33,
+    "accounts": 1
+  },
+  {
+    "selection": "QUICK",
+    "voting power": 4068.46,
+    "accounts": 1
+  },
+  {
+    "selection": "SCRT",
+    "voting power": 2130.49,
+    "accounts": 1
+  },
+  {
+    "selection": "AAVE",
+    "voting power": 1921.69,
+    "accounts": 2
+  },
+  {
+    "selection": "SRM",
+    "voting power": 107.04,
+    "accounts": 1
+  }
+]

@@ -1,0 +1,21 @@
+{
+  "title": "Sif's Expansion Bonus Pools",
+  "description": "Select bonus pools to receive 300% APR's in Sif's expansion",
+  "aggregator": "rowan-transfer-memo",
+  "strategies": [
+    {
+      "name": "rowan-balance",
+      "weight": 1
+    },
+    {
+      "name": "rowan-pooled",
+      "weight": 1
+    },
+    {
+      "name": "rowan-staked",
+      "weight": 1
+    }
+  ],
+  "startHeight": 4215336,
+  "endHeight": 1000000000
+}

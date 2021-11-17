@@ -1,0 +1,13 @@
+{
+  "title": "Example title",
+  "description": "Example description",
+  "aggregator": "rowan-transfer-memo",
+  "strategies": [
+    {
+      "name": "rowan-balance",
+      "weight": 1
+    }
+  ],
+  "startHeight": 0,
+  "endHeight": 100000000
+}
