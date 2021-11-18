@@ -195,9 +195,6 @@ function remapLMAddresses(addresses, deltaCoeff, rewardProgram) {
               delegateAddress: address,
               amount: addressEvents.reduce((accum, addressEvent) => {
                 const nextVal = accum + parseFloat(addressEvent.amount);
-                if (ACCOUNT_FOR_INITIAL_POOL_STATE) {
-                  return Math.max(0, nextVal);
-                }
                 return nextVal;
               }, 0),
             }),
