@@ -341,6 +341,7 @@ const server = new ApolloServer({
             distributionPattern: 'GEYSER',
           },
         ]
+          .filter((r) => r.rewardProgramName === 'harvest_reloaded')
           .map((rewardProgram) => {
             const config = configs[rewardProgram.rewardProgramName];
             return {

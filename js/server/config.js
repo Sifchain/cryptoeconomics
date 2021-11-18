@@ -104,7 +104,7 @@ function createTimerBucket({
   };
 }
 
-const HARVEST_RELOAD_DATETIME = '2021-10-15T17:26:13.441Z';
+const HARVEST_RELOAD_DATETIME = '2021-11-05T17:26:13.441Z';
 
 module.exports = {
   // COSMOS_IBC_REWARDS_V1: createConfig({
@@ -128,10 +128,10 @@ module.exports = {
   // }),
   harvest_reloaded: createConfig({
     initialRowan: 40_000_000, // + 20_000_000,
-    startsAt: '2021-10-04T00:00:00.000Z',
+    startsAt: '2021-11-05T00:00:00.000Z',
     durationInWeeks: 6,
-    rewardBucketStartDateTime: HARVEST_RELOAD_DATETIME,
-    weeksToTotalMaturity: 8,
+    // rewardBucketStartDateTime: HARVEST_RELOAD_DATETIME,
+    weeksToTotalMaturity: 6,
     intervalDurationMinutes: 59,
     initialRewardMultiplier: 1,
     ignoreInitialPoolState: false,
