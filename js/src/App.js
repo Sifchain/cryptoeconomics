@@ -18,7 +18,9 @@ import { UserDataSummary } from './UserDataSummary';
 import serverConfigs from './serverConfig';
 
 const serverConfig =
-  serverConfigs[window.sessionStorage.getItem('rewardProgram') || 'harvest'];
+  serverConfigs[
+    window.sessionStorage.getItem('rewardProgram') || 'harvest_reloaded'
+  ];
 // show all fields locally
 const SHOULD_HIDE_NON_USER_FRIENDLY_FIELDS =
   !!process.env.REACT_APP_DEPLOYMENT_TAG;

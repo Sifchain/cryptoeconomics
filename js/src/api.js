@@ -24,7 +24,7 @@ export const serverURL = (() => {
 })();
 
 const rewardProgram =
-  window.sessionStorage.getItem('rewardProgram') || 'harvest';
+  window.sessionStorage.getItem('rewardProgram') || 'harvest_reloaded';
 
 const getProgramNameQueryString = (network) => `&program=${rewardProgram}`;
 const getSnapshotNetworkHeaders = (network) => ({
