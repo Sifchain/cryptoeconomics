@@ -27,14 +27,8 @@ class GlobalTimestampState {
         continue;
       }
       const user = users[address];
+
       let claimed = user.claimedCommissionsAndRewardsAwaitingDispensation || 0;
-      if (
-        rewardProgramName === 'harvest' &&
-        Date.now() < new Date(`2021-10-16T18:05:19.884Z`).getTime()
-      ) {
-        const owedAmount = harvestDiffs[address] || 0;
-        claimed += owedAmount;
-      }
       if (!claimed) {
         continue;
       }

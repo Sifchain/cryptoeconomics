@@ -237,6 +237,18 @@ function processUserEventsByTimestamp(
     }
     VSGlobalStates.push(nextGlobalState);
   }
+
+  VSGlobalStates.forEach((state) => {
+    for (let address in state.users) {
+      const getUserByAddress = (address) => {
+        return state.users[address];
+      };
+      state.users[address].claimAllCurrentCommissionsAndRewards(
+        getUserByAddress,
+        rewardProgram
+      );
+    }
+  });
   console.timeEnd('processvs');
 
   return augmentVSData(VSGlobalStates, snapshotTimeseriesFinalIndex);
