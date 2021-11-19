@@ -238,17 +238,21 @@ function processUserEventsByTimestamp(
     VSGlobalStates.push(nextGlobalState);
   }
 
-  VSGlobalStates.forEach((state) => {
-    for (let address in state.users) {
-      const getUserByAddress = (address) => {
-        return state.users[address];
-      };
-      state.users[address].claimAllCurrentCommissionsAndRewards(
-        getUserByAddress,
-        rewardProgram
-      );
-    }
-  });
+  const finalTimeIndex = getTimeIndex(
+    `2021-11-19T17:10:46.096Z`,
+    rewardProgram
+  );
+  const finalState =
+    VSGlobalStates[finalTimeIndex] || VSGlobalStates[VSGlobalStates.length - 1];
+  for (let address in finalState.users) {
+    const getUserByAddress = (address) => {
+      return finalState.users[address];
+    };
+    finalState.users[address].claimAllCurrentCommissionsAndRewards(
+      getUserByAddress,
+      rewardProgram
+    );
+  }
   console.timeEnd('processvs');
 
   return augmentVSData(VSGlobalStates, snapshotTimeseriesFinalIndex);
