@@ -84,7 +84,7 @@ function processVSGlobalState(
   );
   users = processUserClaims(users, claimEventsByUser, rewardProgram);
   const i = timestamp / EVENT_INTERVAL_MINUTES;
-  if (i === autoclaimTimeIndex || i === NUMBER_OF_INTERVALS_TO_RUN) {
+  if (i === autoclaimTimeIndex || i === NUMBER_OF_INTERVALS_TO_RUN - 5) {
     for (let address in lastGlobalState.users) {
       const getUserByAddress = (address) => {
         return lastGlobalState.users[address];
