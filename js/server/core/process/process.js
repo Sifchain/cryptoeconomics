@@ -44,6 +44,7 @@ exports.getProcessedLMData = (snapshotLM, deltaCoeff, rewardProgram) => {
     claimsSnapshotData,
     rewardProgram
   );
+
   const dispensationEventsByUserByTimestamp = createDispensationEvents(
     dispensationsSnapshotData,
     rewardProgram

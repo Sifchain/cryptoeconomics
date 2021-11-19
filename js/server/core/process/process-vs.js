@@ -78,18 +78,19 @@ function processVSGlobalState(
   //   //   });
   //   // }
   // }
+
+  users = processUserClaims(users, claimEventsByUser, rewardProgram);
   const autoclaimTimeIndex = getTimeIndex(
     `2021-11-19T17:10:46.096Z`,
     rewardProgram
   );
-  users = processUserClaims(users, claimEventsByUser, rewardProgram);
   const i = timestamp / EVENT_INTERVAL_MINUTES;
   if (i === autoclaimTimeIndex || i === NUMBER_OF_INTERVALS_TO_RUN - 5) {
-    for (let address in lastGlobalState.users) {
+    for (let address in users) {
       const getUserByAddress = (address) => {
-        return lastGlobalState.users[address];
+        return users[address];
       };
-      lastGlobalState.users[address].claimAllCurrentCommissionsAndRewards(
+      users[address].claimAllCurrentCommissionsAndRewards(
         getUserByAddress,
         rewardProgram
       );
