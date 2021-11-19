@@ -29,7 +29,11 @@ function processVSGlobalState(
   dispensationEventsByUser,
   rewardProgram
 ) {
-  const { MULTIPLIER_MATURITY } = configs[rewardProgram];
+  const {
+    MULTIPLIER_MATURITY,
+    NUMBER_OF_INTERVALS_TO_RUN,
+    EVENT_INTERVAL_MINUTES,
+  } = configs[rewardProgram];
   const { rewardBuckets, globalRewardAccrued } = processRewardBuckets(
     lastGlobalState.rewardBuckets,
     lastGlobalState.bucketEvent,
@@ -74,7 +78,23 @@ function processVSGlobalState(
   //   //   });
   //   // }
   // }
+  const autoclaimTimeIndex = getTimeIndex(
+    `2021-11-19T17:10:46.096Z`,
+    rewardProgram
+  );
   users = processUserClaims(users, claimEventsByUser, rewardProgram);
+  const i = timestamp / EVENT_INTERVAL_MINUTES;
+  if (i === autoclaimTimeIndex || i === NUMBER_OF_INTERVALS_TO_RUN) {
+    for (let address in lastGlobalState.users) {
+      const getUserByAddress = (address) => {
+        return lastGlobalState.users[address];
+      };
+      lastGlobalState.users[address].claimAllCurrentCommissionsAndRewards(
+        getUserByAddress,
+        rewardProgram
+      );
+    }
+  }
   users = processUserDispensations(users, dispensationEventsByUser);
   users = processUserEvents(
     users,

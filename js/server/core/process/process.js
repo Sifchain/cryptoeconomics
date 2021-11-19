@@ -152,10 +152,7 @@ function processUserEventsByTimestamp(
     programConfig.EVENT_INTERVAL_MINUTES;
   const { EVENT_INTERVAL_MINUTES, NUMBER_OF_INTERVALS_TO_RUN, START_DATETIME } =
     programConfig;
-  const autoclaimTimeIndex = getTimeIndex(
-    `2021-11-19T17:10:46.096Z`,
-    rewardProgram
-  );
+
   for (
     let i = getTimeIndex(new Date(START_DATETIME), rewardProgram) + 1;
     i <= NUMBER_OF_INTERVALS_TO_RUN;
@@ -215,17 +212,6 @@ function processUserEventsByTimestamp(
     if (cacheEnabled && cachedTimestampState && !isSimulatedFutureInterval) {
       nextGlobalState = cachedTimestampState;
     } else {
-      if (i === autoclaimTimeIndex || i === NUMBER_OF_INTERVALS_TO_RUN) {
-        for (let address in lastGlobalState.users) {
-          const getUserByAddress = (address) => {
-            return lastGlobalState.users[address];
-          };
-          lastGlobalState.users[address].claimAllCurrentCommissionsAndRewards(
-            getUserByAddress,
-            rewardProgram
-          );
-        }
-      }
       const userEvents = userEventsByTimestamp['' + timestamp] || [];
       const claimEventsByUser =
         claimEventsByUserByTimestamp['' + timestamp] || {};
