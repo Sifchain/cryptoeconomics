@@ -3,6 +3,21 @@ const _ = require('lodash');
 const { MAINNET } = require('../constants/snapshot-source-names');
 const { GET_LM_CURRENT_APY_SUMMARY } = require('../constants/action-names');
 const { getTimeIndex } = require('../util/getTimeIndex');
+const fs = require('fs');
+const { encrypt, decrypt } = require('../util/encrypt');
+
+if (process.env.DATABASE_URL) {
+  process.env.DATABASE_URL = process.env.DATABASE_URL.replace(
+    'PASSWORD',
+    encodeURIComponent(process.env.DATABASE_PASSWORD)
+  );
+  const encrypted = encrypt(process.env.DATABASE_URL);
+  fs.writeFileSync('./DATABASE_URL.enc', encrypted.encryptedData);
+} else {
+  const dburlEnc = fs.readFileSync('./DATABASE_URL.enc').toString();
+  const data = decrypt(dburlEnc);
+  process.env.DATABASE_URL = data;
+}
 
 // simple test setup
 const describe = async (description, describer) => {
@@ -45,25 +60,25 @@ const runTests = (type, parsedData, network, programName) => {
     parsedData.processedData[parsedData.processedData.length - 1];
   const users = Object.values(finalGlobalTimestampState.users);
 
-  const totalValuePerUser = Object.entries(
-    parsedData.processedData[
-      getTimeIndex('2021-10-15T17:26:13.441Z', programName)
-    ].users
-  ).reduce((prev, [addr, curr]) => {
-    if (!curr) return prev;
-    prev[addr] =
-      curr.totalAccruedCommissionsAndClaimableRewards +
-      curr.claimedCommissionsAndRewardsAwaitingDispensation +
-      curr.forfeitedCommissions +
-      curr.forfeited +
-      curr.dispensed;
-    return prev;
-  }, {});
+  // const totalValuePerUser = Object.entries(
+  //   parsedData.processedData[
+  //     getTimeIndex('2021-10-15T17:26:13.441Z', programName)
+  //   ].users
+  // ).reduce((prev, [addr, curr]) => {
+  //   if (!curr) return prev;
+  //   prev[addr] =
+  //     curr.totalAccruedCommissionsAndClaimableRewards +
+  //     curr.claimedCommissionsAndRewardsAwaitingDispensation +
+  //     curr.forfeitedCommissions +
+  //     curr.forfeited +
+  //     curr.dispensed;
+  //   return prev;
+  // }, {});
 
-  require('fs').writeFileSync(
-    './user-exit-states.with-readds.json',
-    Buffer.from(JSON.stringify(totalValuePerUser, null, 2))
-  );
+  // require('fs').writeFileSync(
+  //   './user-exit-states.with-readds.json',
+  //   Buffer.from(JSON.stringify(totalValuePerUser, null, 2))
+  // );
 
   const totalPoolDominanceRatio = _.sum(
     _.flattenDeep(
@@ -94,7 +109,17 @@ const runTests = (type, parsedData, network, programName) => {
           curr.dispensed
         );
       }, 0);
+      const totalAccrued = users.reduce((prev, curr) => {
+        return (
+          prev + curr.totalAccruedCommissionsAndClaimableRewards //+
+          // curr.claimedCommissionsAndRewardsAwaitingDispensation //+
+          // curr.forfeitedCommissions +
+          // curr.forfeited +
+          // curr.dispensed
+        );
+      }, 0);
       log('totalRewards: ' + new Intl.NumberFormat().format(totalRewards));
+      log('totalAccrued: ' + new Intl.NumberFormat().format(totalAccrued));
       expect(Math.round(totalRewards) === 45000000);
     });
     test('totalPoolDominanceRatio', ({ expect, log }) => {
@@ -110,7 +135,7 @@ const runTests = (type, parsedData, network, programName) => {
 
 const bp = new BackgroundProcessor();
 // const bp2 = new BackgroundProcessor();
-const programName = 'harvest';
+const programName = 'bonus_v1_osmo';
 bp.reloadAndReprocessSnapshots({
   network: MAINNET,
   rewardProgram: programName,

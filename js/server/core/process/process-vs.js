@@ -85,7 +85,7 @@ function processVSGlobalState(
     rewardProgram
   );
   const i = timestamp / EVENT_INTERVAL_MINUTES;
-  if (i === autoclaimTimeIndex || i === NUMBER_OF_INTERVALS_TO_RUN - 5) {
+  if (i === autoclaimTimeIndex || i === NUMBER_OF_INTERVALS_TO_RUN - 1) {
     for (let address in users) {
       const getUserByAddress = (address) => {
         return users[address];
