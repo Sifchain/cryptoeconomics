@@ -70,7 +70,7 @@ function remapLMAddresses(addresses, deltaCoeff, rewardProgram) {
     let rawTimestampGroupedEvents = _.groupBy(rawEvents, 'rawTimestamp');
     _.mapValues(rawTimestampGroupedEvents, (timeIntervalEvents) => {
       return timeIntervalEvents.map((event) => {
-        if (event.amount < 0 && rewardProgram === 'harvest') {
+        if (event.amount < 0 && rewardProgram === 'harvest_reloaded') {
           const subtractMaxFromUserPool = (token) => {
             // initial token balances for all users
             const tokenBalances = lmHarvestStartingState[token];
