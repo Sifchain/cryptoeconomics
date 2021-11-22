@@ -55,7 +55,7 @@ function createConfig({
   console.log({ REWARD_ACCRUAL_DURATION_INTERVAL_COUNT });
 
   const config = {
-    ACCOUNT_FOR_INITIAL_POOL_STATE: !ignoreInitialPoolState,
+    SHOULD_SUBTRACT_WITHDRAWALS_FROM_INITIAL_BALANCE: !ignoreInitialPoolState,
     INITIAL_ROWAN: initialRowan,
     START_DATETIME,
     REWARD_BUCKET_START_DATETIME: rewardBucketStartDateTime,

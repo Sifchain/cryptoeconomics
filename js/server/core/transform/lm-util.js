@@ -34,8 +34,10 @@ let smallestTimestampUnix = Infinity;
 //   }
 // })();
 function remapLMAddresses(addresses, deltaCoeff, rewardProgram) {
-  const { EVENT_INTERVAL_MINUTES, ACCOUNT_FOR_INITIAL_POOL_STATE } =
-    configs[rewardProgram];
+  const {
+    EVENT_INTERVAL_MINUTES,
+    SHOULD_SUBTRACT_WITHDRAWALS_FROM_INITIAL_BALANCE,
+  } = configs[rewardProgram];
   // delete addresses['sif1zdh3jjrfp3jjs5ufccdsk0uml22dgl7gghu98g'];
   const mapped = _.map(addresses, (tokens, address) => {
     const addressTokenEvents = _.map(tokens, (timeIntervals, token) => {
@@ -63,14 +65,16 @@ function remapLMAddresses(addresses, deltaCoeff, rewardProgram) {
 
   let rawEvents = _.flattenDeep(mapped);
 
-  if (ACCOUNT_FOR_INITIAL_POOL_STATE) {
+  // this only runs when we want liquidity removals to be subtracted from previous liquidity, but not
+  // for previous liquidity to be automatically included. i.e. users need to re-add liquidity.
+  if (SHOULD_SUBTRACT_WITHDRAWALS_FROM_INITIAL_BALANCE) {
     rawEvents = rawEvents
       .sort((a, b) => a.amount - b.amount)
       .sort((a, b) => a.rawTimestamp - b.rawTimestamp);
     let rawTimestampGroupedEvents = _.groupBy(rawEvents, 'rawTimestamp');
     _.mapValues(rawTimestampGroupedEvents, (timeIntervalEvents) => {
       return timeIntervalEvents.map((event) => {
-        if (event.amount < 0 && rewardProgram === 'harvest') {
+        if (event.amount < 0) {
           const subtractMaxFromUserPool = (token) => {
             // initial token balances for all users
             const tokenBalances = lmHarvestStartingState[token];
@@ -117,12 +121,6 @@ function remapLMAddresses(addresses, deltaCoeff, rewardProgram) {
             if (externalAssetEvents.length) {
               // subtract this rowan amount from those
               while (event.amount < 0 && externalAssetEvents.length) {
-                if (
-                  event.delegateAddress ===
-                  'sif1vcd6gx3jqng2m7tw6k7e766skayv5rkhn3levl'
-                ) {
-                  // debugger;
-                }
                 subtractMaxFromUserPool(externalAssetEvents.pop().token);
               }
             } else {
@@ -132,12 +130,7 @@ function remapLMAddresses(addresses, deltaCoeff, rewardProgram) {
                 ) {
                   subtractMaxFromUserPool(tokenKey);
                 }
-                if (
-                  event.delegateAddress ===
-                  'sif1vcd6gx3jqng2m7tw6k7e766skayv5rkhn3levl'
-                ) {
-                  // debugger;
-                }
+
                 if (event.amount === 0) {
                   break;
                 }
@@ -149,16 +142,6 @@ function remapLMAddresses(addresses, deltaCoeff, rewardProgram) {
         }
       });
     });
-
-    const regendudeinitial = Object.entries(lmHarvestStartingState)
-      .map(([k, v]) => {
-        return v['sif1vcd6gx3jqng2m7tw6k7e766skayv5rkhn3levl'];
-      })
-      .filter((v) => !!v);
-    const regendude = rawEvents.filter(
-      (ev) =>
-        ev.delegateAddress === 'sif1vcd6gx3jqng2m7tw6k7e766skayv5rkhn3levl'
-    );
   }
   let allTimeIntervalEvents = _.groupBy(rawEvents, 'timestamp');
   allTimeIntervalEvents = _.mapValues(
@@ -184,7 +167,7 @@ function remapLMAddresses(addresses, deltaCoeff, rewardProgram) {
       return _.mapValues(
         timeIntervalAddressEvents,
         (addressEvents, address) => {
-          if (ACCOUNT_FOR_INITIAL_POOL_STATE) {
+          if (SHOULD_SUBTRACT_WITHDRAWALS_FROM_INITIAL_BALANCE) {
             addressEvents = addressEvents.sort((a, b) => {
               return a.rawTimestamp - b.rawTimestamp;
             });
