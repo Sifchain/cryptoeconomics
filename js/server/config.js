@@ -10,6 +10,7 @@ function createConfig({
   rewardBucketEndDateTime = undefined,
   ignoreInitialPoolState,
   timerBuckets = [],
+  shouldIncludeInitialLiquidity = false,
 }) {
   /*
   - The network was started prior to the DEX launch. There is roughly ~week worth of blocks that had no meaningful transactions as the product was not launched.
@@ -56,6 +57,7 @@ function createConfig({
 
   const config = {
     SHOULD_SUBTRACT_WITHDRAWALS_FROM_INITIAL_BALANCE: !ignoreInitialPoolState,
+    SHOULD_INCLUDE_INITIAL_LIQUIDITY: shouldIncludeInitialLiquidity,
     INITIAL_ROWAN: initialRowan,
     START_DATETIME,
     REWARD_BUCKET_START_DATETIME: rewardBucketStartDateTime,
@@ -128,13 +130,15 @@ module.exports = {
   // }),
   harvest_reloaded: createConfig({
     initialRowan: 40_000_000, // + 20_000_000,
-    startsAt: '2021-11-05T00:00:00.000Z',
-    durationInWeeks: 6,
+    // startsAt: '2021-11-05T00:00:00.000Z',
+    startsAt: '2021-10-04T00:00:00.000Z',
+    durationInWeeks: 12,
     // rewardBucketStartDateTime: HARVEST_RELOAD_DATETIME,
-    weeksToTotalMaturity: 6,
-    intervalDurationMinutes: 59,
+    weeksToTotalMaturity: 12,
+    intervalDurationMinutes: 60,
     initialRewardMultiplier: 1,
     ignoreInitialPoolState: false,
+    shouldIncludeInitialLiquidity: true,
   }),
   // bonus_v1: createConfig({
   //   initialRowan: 1_000_000,

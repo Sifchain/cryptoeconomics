@@ -39,7 +39,7 @@ exports.getUserData = async (all, { timeIndex, address, rewardProgram }) => {
     return data;
   }
   try {
-    const { users, ...globalState } = all[timeIndex];
+    const { users, ...globalState } = all[Math.min(timeIndex, all.length - 1)];
     const user = users[address];
     const matureUser =
       all[configs[rewardProgram].NUMBER_OF_INTERVALS_TO_RUN - 1];
