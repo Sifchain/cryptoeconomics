@@ -4,9 +4,9 @@ const { getTimeIndex } = require('../../util/getTimeIndex');
 const { DelegateEvent } = require('../types');
 const moment = require('moment');
 const fetch = require('cross-fetch').fetch;
-const lmHarvestStartingState = require('../load/lm-harvest-starting-state.json');
 const rewardProgramStartingStates = {
-  harvest_reloaded: lmHarvestStartingState,
+  harvest_expansion: require('../load/starting-states/lm-harvest_expansion-starting-state.json'),
+  expansion_bonus: require('../load/starting-states/lm-expansion_bonus-starting-state.json'),
 };
 
 const getLMTimeseriesFinalIndex = (snapshotData) => {
@@ -41,6 +41,7 @@ function remapLMAddresses(addresses, deltaCoeff, rewardProgram) {
     EVENT_INTERVAL_MINUTES,
     SHOULD_SUBTRACT_WITHDRAWALS_FROM_INITIAL_BALANCE,
     SHOULD_INCLUDE_INITIAL_LIQUIDITY,
+    START_DATETIME,
   } = configs[rewardProgram];
   // delete addresses['sif1zdh3jjrfp3jjs5ufccdsk0uml22dgl7gghu98g'];
   const mapped = _.map(addresses, (tokens, address) => {
@@ -81,7 +82,8 @@ function remapLMAddresses(addresses, deltaCoeff, rewardProgram) {
         if (event.amount < 0) {
           const subtractMaxFromUserPool = (token) => {
             // initial token balances for all users
-            const tokenBalances = lmHarvestStartingState[token];
+            const tokenBalances =
+              rewardProgramStartingStates[rewardProgram][token];
             // initial token balance for current user
             const remainingInitialRemovableBalance = tokenBalances
               ? tokenBalances[event.delegateAddress] || 0
@@ -93,16 +95,20 @@ function remapLMAddresses(addresses, deltaCoeff, rewardProgram) {
             // if the result is negative, the withdrawal exceeded the initial amount
             if (amountRemainingAfterRemoval < 0) {
               // if the token existed at the starting time
-              if (lmHarvestStartingState[token])
+              if (rewardProgramStartingStates[rewardProgram][token])
                 // the initial amount has now been zero'ed out
-                lmHarvestStartingState[token][event.delegateAddress] = 0;
+                rewardProgramStartingStates[rewardProgram][token][
+                  event.delegateAddress
+                ] = 0;
               // the remaining withdrawal = the amount that it exceeded the initial amount
               event.amount = amountRemainingAfterRemoval;
             } else {
               // if the token existed at program genesis
-              if (lmHarvestStartingState[token])
+              if (rewardProgramStartingStates[rewardProgram][token])
                 // if there is a positive amount remaining, set to that positive amount.
-                lmHarvestStartingState[token][event.delegateAddress] = BigInt(
+                rewardProgramStartingStates[rewardProgram][token][
+                  event.delegateAddress
+                ] = BigInt(
                   Math.floor(amountRemainingAfterRemoval * 10 ** 18)
                 ).toString();
               // the withdrawal is covered by the initial amount
@@ -128,9 +134,11 @@ function remapLMAddresses(addresses, deltaCoeff, rewardProgram) {
                 subtractMaxFromUserPool(externalAssetEvents.pop().token);
               }
             } else {
-              for (let tokenKey in lmHarvestStartingState) {
+              for (let tokenKey in rewardProgramStartingStates[rewardProgram]) {
                 if (
-                  lmHarvestStartingState[tokenKey][event.delegateAddress] > 0
+                  rewardProgramStartingStates[rewardProgram][tokenKey][
+                    event.delegateAddress
+                  ] > 0
                 ) {
                   subtractMaxFromUserPool(tokenKey);
                 }
@@ -148,6 +156,28 @@ function remapLMAddresses(addresses, deltaCoeff, rewardProgram) {
     });
   }
 
+  const startingState = rewardProgramStartingStates[rewardProgram];
+  if (SHOULD_INCLUDE_INITIAL_LIQUIDITY && !!startingState) {
+    console.log('including initial liquidity!!!!');
+    const addressList = Object.keys(addresses);
+    for (let address of addressList) {
+      let sum = 0n;
+      for (let token in startingState) {
+        const initialAmount = startingState[token][address];
+        sum += BigInt(initialAmount || 0);
+      }
+      rawEvents.unshift(
+        DelegateEvent.fromJSON({
+          timestamp:
+            (getTimeIndex(START_DATETIME, rewardProgram) + 1) *
+            EVENT_INTERVAL_MINUTES,
+          amount: +sum.toString() / 1e18, //* deltaCoeff,
+          delegateAddress: address,
+          token: 'rowan',
+        })
+      );
+    }
+  }
   let allTimeIntervalEvents = _.groupBy(rawEvents, 'timestamp');
   allTimeIntervalEvents = _.mapValues(
     allTimeIntervalEvents,
@@ -165,32 +195,6 @@ function remapLMAddresses(addresses, deltaCoeff, rewardProgram) {
       return _.groupBy(timeIntervalEvents, 'delegateAddress');
     }
   );
-
-  const startingState = rewardProgramStartingStates[rewardProgram];
-  if (SHOULD_INCLUDE_INITIAL_LIQUIDITY && !!startingState) {
-    console.log('including initial liquidity!!!!');
-    const addressList = Object.keys(addresses);
-    for (let address of addressList) {
-      let sum = 0n;
-      for (let token in startingState) {
-        const initialAmount = startingState[token][address];
-        sum += BigInt(initialAmount || 0);
-      }
-      allTimeIntervalAddressEvents['2'] =
-        allTimeIntervalAddressEvents['2'] || {};
-      allTimeIntervalAddressEvents['2'][address] =
-        allTimeIntervalAddressEvents['2'][address] || [];
-      allTimeIntervalAddressEvents['2'][address] = [
-        ...allTimeIntervalAddressEvents['2'][address],
-        DelegateEvent.fromJSON({
-          timestamp: 0,
-          amount: +sum.toString() / 1e18, //* deltaCoeff,
-          delegateAddress: address,
-          token: 'rowan',
-        }),
-      ];
-    }
-  }
 
   allTimeIntervalAddressEvents = _.mapValues(
     allTimeIntervalAddressEvents,

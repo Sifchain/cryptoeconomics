@@ -11,6 +11,7 @@ function createConfig({
   ignoreInitialPoolState,
   timerBuckets = [],
   shouldIncludeInitialLiquidity = false,
+  coinWhitelist = undefined,
 }) {
   /*
   - The network was started prior to the DEX launch. There is roughly ~week worth of blocks that had no meaningful transactions as the product was not launched.
@@ -74,6 +75,7 @@ function createConfig({
       (weeksToTotalMaturity / durationInWeeks), // duration of bucket drain + duration to latest possible multiplier maturity
     REWARD_ACCRUAL_DURATION_INTERVAL_COUNT,
     INITIAL_REWARD_MULTIPLIER: initialRewardMultiplier,
+    COIN_WHITELIST: coinWhitelist,
   };
   return config;
 }
@@ -128,10 +130,22 @@ module.exports = {
   //   initialRewardMultiplier: 1,
   //   ignoreInitialPoolState: true,
   // }),
-  harvest_reloaded: createConfig({
-    initialRowan: 40_000_000, // + 20_000_000,
+  // harvest_reloaded: createConfig({
+  //   initialRowan: 40_000_000, // + 20_000_000,
+  //   // startsAt: '2021-11-05T00:00:00.000Z',
+  //   startsAt: '2021-10-04T00:00:00.000Z',
+  //   durationInWeeks: 12,
+  //   // rewardBucketStartDateTime: HARVEST_RELOAD_DATETIME,
+  //   weeksToTotalMaturity: 12,
+  //   intervalDurationMinutes: 60,
+  //   initialRewardMultiplier: 1,
+  //   ignoreInitialPoolState: false,
+  //   shouldIncludeInitialLiquidity: true,
+  // }),
+  expansion_bonus: createConfig({
+    initialRowan: 0, // + 20_000_000,
     // startsAt: '2021-11-05T00:00:00.000Z',
-    startsAt: '2021-10-04T00:00:00.000Z',
+    startsAt: '2021-11-22T10:00:00.000Z',
     durationInWeeks: 12,
     // rewardBucketStartDateTime: HARVEST_RELOAD_DATETIME,
     weeksToTotalMaturity: 12,
@@ -139,6 +153,29 @@ module.exports = {
     initialRewardMultiplier: 1,
     ignoreInitialPoolState: false,
     shouldIncludeInitialLiquidity: true,
+    coinWhitelist: [
+      // ATOM
+      'ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2',
+      // UST
+      'ibc/17F5C77854734CFE1301E6067AA42CDF62DAF836E4467C635E6DB407853C6082',
+      // JUNØ
+      'ibc/F279AB967042CAC10BFF70FAECB179DCE37AAAE4CD4C1BC4565C2BBC383BC0FA',
+      'czcx',
+      'ceth',
+    ],
+  }),
+  harvest_expansion: createConfig({
+    initialRowan: 0, // + 20_000_000,
+    // startsAt: '2021-11-05T00:00:00.000Z',
+    startsAt: '2021-11-22T10:00:00.000Z',
+    durationInWeeks: 12,
+    // rewardBucketStartDateTime: HARVEST_RELOAD_DATETIME,
+    weeksToTotalMaturity: 12,
+    intervalDurationMinutes: 60,
+    initialRewardMultiplier: 1,
+    ignoreInitialPoolState: false,
+    shouldIncludeInitialLiquidity: true,
+    coinWhitelist: undefined,
   }),
   // bonus_v1: createConfig({
   //   initialRowan: 1_000_000,

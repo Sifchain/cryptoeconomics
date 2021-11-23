@@ -132,6 +132,7 @@ const server = new ApolloServer({
     enum DistributionPattern {
       GEYSER
       LINEAR
+      STATIC_APR
     }
     type RewardProgram {
       participant(address: String!): Participant
@@ -222,6 +223,28 @@ const server = new ApolloServer({
         // eeur
         return [
           {
+            displayName: `Sif's Expansion`,
+            description: `100% APR. All pools. Until Deep Margin launch.`,
+            rewardProgramType: 'lm',
+            rewardProgramName: 'harvest_expansion',
+            incentivizedPoolSymbols: ['*'],
+            documentationURL:
+              'https://docs.sifchain.finance/resources/rewards-programs',
+            isUniversal: true,
+            distributionPattern: 'STATIC_APR',
+          },
+          {
+            displayName: `Pools of the People`,
+            description: `300% total APR (Expansion included). 5 pools. Selected by the community. Until Deep Margin launch.`,
+            rewardProgramType: 'lm',
+            rewardProgramName: 'expansion_bonus',
+            incentivizedPoolSymbols: ['atom', 'usd', 'juno', 'zcx', 'eth'],
+            documentationURL:
+              'https://docs.sifchain.finance/resources/rewards-programs',
+            isUniversal: true,
+            distributionPattern: 'STATIC_APR',
+          },
+          /*          {
             displayName: `Sif's EEUR Bonus Pool`,
             description: `Earn Rowan rewards by pooling EEUR.`,
             rewardProgramType: 'lm',
@@ -340,8 +363,8 @@ const server = new ApolloServer({
             isUniversal: false,
             distributionPattern: 'GEYSER',
           },
+          */
         ]
-          .filter((r) => r.rewardProgramName === 'harvest_reloaded')
           .map((rewardProgram) => {
             const config = configs[rewardProgram.rewardProgramName];
             return {
