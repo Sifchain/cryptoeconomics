@@ -7,7 +7,10 @@ import zoomPlugin from 'chartjs-plugin-zoom';
 
 import serverConfigs from './serverConfig';
 const serverConfig =
-  serverConfigs[window.sessionStorage.getItem('rewardProgram') || 'harvest'];
+  serverConfigs[
+    window.sessionStorage.getItem('rewardProgram') ||
+      Object.keys(serverConfigs)[0]
+  ] || serverConfigs[Object.keys(serverConfigs)[0]];
 
 Chart.register(...registerables, zoomPlugin);
 registerChartDateAdapter(_adapters);

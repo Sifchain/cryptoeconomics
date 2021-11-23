@@ -21,7 +21,7 @@ const serverConfig =
   serverConfigs[
     window.sessionStorage.getItem('rewardProgram') ||
       Object.keys(serverConfigs)[0]
-  ];
+  ] || serverConfigs[Object.keys(serverConfigs)[0]];
 // show all fields locally
 const SHOULD_HIDE_NON_USER_FRIENDLY_FIELDS =
   !!process.env.REACT_APP_DEPLOYMENT_TAG;
