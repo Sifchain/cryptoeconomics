@@ -159,9 +159,19 @@ function remapLMAddresses(addresses, deltaCoeff, rewardProgram) {
   const startingState = rewardProgramStartingStates[rewardProgram];
   if (SHOULD_INCLUDE_INITIAL_LIQUIDITY && !!startingState) {
     console.log('including initial liquidity!!!!');
-    const addressList = Object.keys(addresses);
+    const addressList = [
+      ...new Set(
+        Object.values(startingState).reduce((prev, curr) => {
+          prev.push(...Object.keys(curr));
+          return prev;
+        }, [])
+      ),
+    ];
     for (let address of addressList) {
       let sum = 0n;
+      if (address === 'sif1fxj3ptcp8w6pnq5l4f7napwds7q4jphz2x0eet') {
+        void 0;
+      }
       for (let token in startingState) {
         const initialAmount = startingState[token][address];
         sum += BigInt(initialAmount || 0);

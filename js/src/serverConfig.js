@@ -12,6 +12,7 @@ function createConfig({
   timerBuckets = [],
   shouldIncludeInitialLiquidity = false,
   coinWhitelist = undefined,
+  staticAPRPercentage = undefined,
 }) {
   /*
   - The network was started prior to the DEX launch. There is roughly ~week worth of blocks that had no meaningful transactions as the product was not launched.
@@ -76,6 +77,7 @@ function createConfig({
     REWARD_ACCRUAL_DURATION_INTERVAL_COUNT,
     INITIAL_REWARD_MULTIPLIER: initialRewardMultiplier,
     COIN_WHITELIST: coinWhitelist,
+    STATIC_APR_PERCENTAGE: staticAPRPercentage,
   };
   return config;
 }
@@ -143,9 +145,9 @@ module.exports = {
   //   shouldIncludeInitialLiquidity: true,
   // }),
   expansion_bonus: createConfig({
-    initialRowan: 40_000_000_000, // + 20_000_000,
+    initialRowan: 0, // + 20_000_000,
     // startsAt: '2021-11-05T00:00:00.000Z',
-    startsAt: '2021-11-22T00:00:00.000Z',
+    startsAt: '2021-11-22T10:00:00.000Z',
     durationInWeeks: 12,
     // rewardBucketStartDateTime: HARVEST_RELOAD_DATETIME,
     weeksToTotalMaturity: 12,
@@ -153,6 +155,7 @@ module.exports = {
     initialRewardMultiplier: 1,
     ignoreInitialPoolState: false,
     shouldIncludeInitialLiquidity: true,
+    staticAPRPercentage: 200,
     coinWhitelist: [
       // ATOM
       'ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2',
@@ -165,10 +168,11 @@ module.exports = {
     ],
   }),
   harvest_expansion: createConfig({
-    initialRowan: 40_000_000_000, // + 20_000_000,
+    initialRowan: 0, // + 20_000_000,
     // startsAt: '2021-11-05T00:00:00.000Z',
-    startsAt: '2021-11-22T00:00:00.000Z',
+    startsAt: '2021-11-22T10:00:00.000Z',
     durationInWeeks: 12,
+    staticAPRPercentage: 100,
     // rewardBucketStartDateTime: HARVEST_RELOAD_DATETIME,
     weeksToTotalMaturity: 12,
     intervalDurationMinutes: 60,
