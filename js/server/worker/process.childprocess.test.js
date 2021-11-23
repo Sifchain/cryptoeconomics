@@ -3,6 +3,21 @@ const _ = require('lodash');
 const { MAINNET } = require('../constants/snapshot-source-names');
 const { GET_LM_CURRENT_APY_SUMMARY } = require('../constants/action-names');
 const { getTimeIndex } = require('../util/getTimeIndex');
+const { encrypt, decrypt } = require('../util/encrypt');
+const fs = require('fs');
+
+if (process.env.DATABASE_URL) {
+  process.env.DATABASE_URL = process.env.DATABASE_URL.replace(
+    'PASSWORD',
+    encodeURIComponent(process.env.DATABASE_PASSWORD)
+  );
+  const encrypted = encrypt(process.env.DATABASE_URL);
+  fs.writeFileSync('./DATABASE_URL.enc', encrypted.encryptedData);
+} else {
+  const dburlEnc = fs.readFileSync('./DATABASE_URL.enc').toString();
+  const data = decrypt(dburlEnc);
+  process.env.DATABASE_URL = data;
+}
 
 // simple test setup
 const describe = async (description, describer) => {
@@ -46,9 +61,7 @@ const runTests = (type, parsedData, network, programName) => {
   const users = Object.values(finalGlobalTimestampState.users);
 
   const totalValuePerUser = Object.entries(
-    parsedData.processedData[
-      getTimeIndex('2021-10-15T17:26:13.441Z', programName)
-    ].users
+    parsedData.processedData[getTimeIndex('now', programName)].users
   ).reduce((prev, [addr, curr]) => {
     if (!curr) return prev;
     prev[addr] =
@@ -60,10 +73,10 @@ const runTests = (type, parsedData, network, programName) => {
     return prev;
   }, {});
 
-  require('fs').writeFileSync(
-    './user-exit-states.with-readds.json',
-    Buffer.from(JSON.stringify(totalValuePerUser, null, 2))
-  );
+  // require('fs').writeFileSync(
+  //   './user-exit-states.with-readds.json',
+  //   Buffer.from(JSON.stringify(totalValuePerUser, null, 2))
+  // );
 
   const totalPoolDominanceRatio = _.sum(
     _.flattenDeep(
@@ -110,7 +123,7 @@ const runTests = (type, parsedData, network, programName) => {
 
 const bp = new BackgroundProcessor();
 // const bp2 = new BackgroundProcessor();
-const programName = 'harvest';
+const programName = 'harvest_expansion';
 bp.reloadAndReprocessSnapshots({
   network: MAINNET,
   rewardProgram: programName,
