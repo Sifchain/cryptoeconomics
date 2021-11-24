@@ -241,7 +241,7 @@ const server = new ApolloServer({
             incentivizedPoolSymbols: ['atom', 'usd', 'juno', 'zcx', 'eth'],
             documentationURL:
               'https://docs.sifchain.finance/resources/rewards-programs',
-            isUniversal: true,
+            isUniversal: false,
             distributionPattern: 'STATIC_APR',
           },
           /*          {

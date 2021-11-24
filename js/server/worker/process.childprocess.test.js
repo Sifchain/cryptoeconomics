@@ -72,6 +72,36 @@ const runTests = async (type, parsedData, network, programName) => {
     parsedData.processedData[currentTimeIndex],
     parsedData.processedData[currentTimeIndex + intervalsInADay],
   ];
+  const expectedDepositedAmount = await fetch(
+    `https://api.sifchain.finance/clp/getPools`
+  )
+    .then((r) => r.json())
+    .then((r) => {
+      return (
+        +r.result.pools
+          .reduce((prev, curr) => {
+            if (
+              config.COIN_WHITELIST &&
+              !(
+                config.COIN_WHITELIST.includes(curr.external_asset.symbol) ||
+                config.COIN_WHITELIST.includes('c' + curr.external_asset.symbol)
+              )
+            )
+              return prev;
+            return prev + BigInt(curr.native_asset_balance) * 2n;
+          }, 0n)
+          .toString() /
+        10 ** 18
+      );
+    });
+  console.log('Total deposited amounts');
+  console.log(
+    (expectedDepositedAmount -
+      currentGlobalTimestampState.totalDepositedAmount) /
+      currentGlobalTimestampState.totalDepositedAmount,
+    expectedDepositedAmount,
+    currentGlobalTimestampState.totalDepositedAmount
+  );
   const expectedDailyRate = config.STATIC_APR_PERCENTAGE / 365;
   function checkCurrentPoolValueInRowan(address) {
     return fetch(
