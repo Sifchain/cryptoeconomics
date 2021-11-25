@@ -63,22 +63,6 @@ const runTests = async (type, parsedData, network, programName) => {
   const finalGlobalTimestampState =
     parsedData.processedData[parsedData.processedData.length - 1];
 
-  // const totalValuePerUser = Object.entries(
-  //   parsedData.processedData[
-  //     getTimeIndex('2021-10-15T17:26:13.441Z', programName)
-  //   ].users
-  // ).reduce((prev, [addr, curr]) => {
-  //   if (!curr) return prev;
-  //   prev[addr] =
-  //     curr.totalAccruedCommissionsAndClaimableRewards +
-  //     curr.claimedCommissionsAndRewardsAwaitingDispensation +
-  //     curr.forfeitedCommissions +
-  //     curr.forfeited +
-  //     curr.dispensed;
-  //   return prev;
-  // }, {});
-
-=======
   console.log('final ');
   const currentGlobalTimestampState =
     parsedData.processedData[currentTimeIndex];
@@ -156,25 +140,25 @@ const runTests = async (type, parsedData, network, programName) => {
     }
     if (sample1.totalDepositedAmount !== sample2.totalDepositedAmount) continue;
     const actualDailyRate = (rewardDelta / sample1.totalDepositedAmount) * 100;
-    // console.log(
-    //   address,
-    //   expectedDailyRate.toFixed(4) === actualDailyRate.toFixed(4),
-    //   expectedDailyRate,
-    //   actualDailyRate
-    // );
+    console.log(
+      address,
+      expectedDailyRate.toFixed(4) === actualDailyRate.toFixed(4),
+      expectedDailyRate,
+      actualDailyRate
+    );
     const expectedPoolValueInRowan = await checkCurrentPoolValueInRowan(
       address
     );
     const actualPoolValueInRowan = sample1.totalDepositedAmount;
     const diff = Math.abs(expectedPoolValueInRowan - actualPoolValueInRowan);
-    console.log(
-      address,
-      diff / expectedPoolValueInRowan,
-      expectedPoolValueInRowan,
-      actualPoolValueInRowan
-    );
+    // console.log(
+    //   address,
+    //   diff / expectedPoolValueInRowan,
+    //   expectedPoolValueInRowan,
+    //   actualPoolValueInRowan
+    // );
   }
-  const users = Object.values(finalGlobalTimestampState.users);
+  const users = Object.values(currentGlobalTimestampState.users);
 
   // const totalValuePerUser = Object.entries(
   //   parsedData.processedData[
@@ -191,7 +175,6 @@ const runTests = async (type, parsedData, network, programName) => {
   //   return prev;
   // }, {});
 
->>>>>>> develop
   // require('fs').writeFileSync(
   //   './user-exit-states.with-readds.json',
   //   Buffer.from(JSON.stringify(totalValuePerUser, null, 2))
@@ -252,12 +235,8 @@ const runTests = async (type, parsedData, network, programName) => {
 
 const bp = new BackgroundProcessor();
 // const bp2 = new BackgroundProcessor();
-<<<<<<< HEAD
-const programName = 'bonus_v1_osmo';
-=======
-// const programName = 'harvest_expansion';
-const programName = 'expansion_bonus';
->>>>>>> develop
+const programName = 'harvest_expansion';
+// const programName = 'expansion_bonus';
 bp.reloadAndReprocessSnapshots({
   network: MAINNET,
   rewardProgram: programName,

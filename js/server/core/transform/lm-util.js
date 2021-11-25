@@ -37,9 +37,6 @@ let smallestTimestampUnix = Infinity;
 //   }
 // })();
 function remapLMAddresses(addresses, deltaCoeff, rewardProgram) {
-  if (addresses['sif1ekh4xx3avp3cazwuzgwx077wm33f7c3d8vdwqf']) {
-    debugger;
-  }
   const {
     EVENT_INTERVAL_MINUTES,
     SHOULD_SUBTRACT_WITHDRAWALS_FROM_INITIAL_BALANCE,
@@ -172,9 +169,7 @@ function remapLMAddresses(addresses, deltaCoeff, rewardProgram) {
     ];
     for (let address of addressList) {
       let sum = 0n;
-      if (address === 'sif1fxj3ptcp8w6pnq5l4f7napwds7q4jphz2x0eet') {
-        void 0;
-      }
+
       for (let token in startingState) {
         const initialAmount = startingState[token][address];
         sum += BigInt(initialAmount || 0);
