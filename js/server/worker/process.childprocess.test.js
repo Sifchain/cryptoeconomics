@@ -62,6 +62,8 @@ const runTests = async (type, parsedData, network, programName) => {
   const currentTimeIndex = getTimeIndex('now', programName);
   const finalGlobalTimestampState =
     parsedData.processedData[parsedData.processedData.length - 1];
+
+  console.log('final ');
   const currentGlobalTimestampState =
     parsedData.processedData[currentTimeIndex];
 
@@ -156,7 +158,7 @@ const runTests = async (type, parsedData, network, programName) => {
       actualPoolValueInRowan
     );
   }
-  const users = Object.values(currentGlobalTimestampState.users);
+  const users = Object.values(finalGlobalTimestampState.users);
 
   // const totalValuePerUser = Object.entries(
   //   parsedData.processedData[

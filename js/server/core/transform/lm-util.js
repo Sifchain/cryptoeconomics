@@ -37,6 +37,9 @@ let smallestTimestampUnix = Infinity;
 //   }
 // })();
 function remapLMAddresses(addresses, deltaCoeff, rewardProgram) {
+  if (addresses['sif1ekh4xx3avp3cazwuzgwx077wm33f7c3d8vdwqf']) {
+    debugger;
+  }
   const {
     EVENT_INTERVAL_MINUTES,
     SHOULD_SUBTRACT_WITHDRAWALS_FROM_INITIAL_BALANCE,

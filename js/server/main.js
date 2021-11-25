@@ -224,7 +224,7 @@ const server = new ApolloServer({
         return [
           {
             displayName: `Sif's Expansion`,
-            description: `100% APR. All pools. Until Deep Margin launch.`,
+            description: `100% APR. All pools.`,
             rewardProgramType: 'lm',
             rewardProgramName: 'harvest_expansion',
             incentivizedPoolSymbols: ['*'],
@@ -235,7 +235,7 @@ const server = new ApolloServer({
           },
           {
             displayName: `Pools of the People`,
-            description: `300% total APR (Expansion included). 5 pools. Selected by the community. Until Deep Margin launch.`,
+            description: `300% total APR (Expansion included). 5 pools. Selected by the community.`,
             rewardProgramType: 'lm',
             rewardProgramName: 'expansion_bonus',
             incentivizedPoolSymbols: ['atom', 'usd', 'juno', 'zcx', 'eth'],
