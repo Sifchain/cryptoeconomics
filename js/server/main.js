@@ -437,7 +437,10 @@ app.get('/api/lm', async (req, res, next) => {
     req.headers[SNAPSHOT_SOURCE_KEY] ||
     MAINNET;
   console.log();
-  const rewardProgram = req.query.program || 'COSMOS_IBC_REWARDS_V1';
+  const rewardProgram =
+    req.query.program ||
+    Object.keys(configs).filter((n) => n === 'harvest_expansion')[0] ||
+    Object.keys(configs)[0];
   let processingHandler =
     processingHandlers[snapshotSource] || processingHandlers[MAINNET];
   processingHandler =

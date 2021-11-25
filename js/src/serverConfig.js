@@ -8,7 +8,7 @@ function createConfig({
   initialRewardMultiplier,
   rewardBucketStartDateTime = startsAt,
   rewardBucketEndDateTime = undefined,
-  ignoreInitialPoolState,
+  shouldSubtractWithdrawalsFromInitialBalance,
   timerBuckets = [],
   shouldIncludeInitialLiquidity = false,
   coinWhitelist = undefined,
@@ -58,7 +58,8 @@ function createConfig({
   console.log({ REWARD_ACCRUAL_DURATION_INTERVAL_COUNT });
 
   const config = {
-    SHOULD_SUBTRACT_WITHDRAWALS_FROM_INITIAL_BALANCE: !ignoreInitialPoolState,
+    SHOULD_SUBTRACT_WITHDRAWALS_FROM_INITIAL_BALANCE:
+      shouldSubtractWithdrawalsFromInitialBalance,
     SHOULD_INCLUDE_INITIAL_LIQUIDITY: shouldIncludeInitialLiquidity,
     INITIAL_ROWAN: initialRowan,
     START_DATETIME,
@@ -153,7 +154,7 @@ module.exports = {
     weeksToTotalMaturity: 12,
     intervalDurationMinutes: 60,
     initialRewardMultiplier: 1,
-    ignoreInitialPoolState: false,
+    shouldSubtractWithdrawalsFromInitialBalance: false,
     shouldIncludeInitialLiquidity: true,
     staticAPRPercentage: 200,
     coinWhitelist: [
@@ -177,7 +178,7 @@ module.exports = {
     weeksToTotalMaturity: 12,
     intervalDurationMinutes: 60,
     initialRewardMultiplier: 1,
-    ignoreInitialPoolState: false,
+    shouldSubtractWithdrawalsFromInitialBalance: false,
     shouldIncludeInitialLiquidity: true,
     coinWhitelist: undefined,
   }),

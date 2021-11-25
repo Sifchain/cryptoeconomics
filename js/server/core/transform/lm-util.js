@@ -73,6 +73,7 @@ function remapLMAddresses(addresses, deltaCoeff, rewardProgram) {
   // this only runs when we want liquidity removals to be subtracted from previous liquidity, but not
   // for previous liquidity to be automatically included. i.e. users need to re-add liquidity.
   if (SHOULD_SUBTRACT_WITHDRAWALS_FROM_INITIAL_BALANCE) {
+    console.log('subtracting withdrawals from initial balance');
     rawEvents = rawEvents
       .sort((a, b) => a.amount - b.amount)
       .sort((a, b) => a.rawTimestamp - b.rawTimestamp);
