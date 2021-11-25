@@ -18,7 +18,10 @@ import { UserDataSummary } from './UserDataSummary';
 import serverConfigs from './serverConfig';
 
 const serverConfig =
-  serverConfigs[window.sessionStorage.getItem('rewardProgram') || 'harvest'];
+  serverConfigs[
+    window.sessionStorage.getItem('rewardProgram') ||
+      Object.keys(serverConfigs)[0]
+  ] || serverConfigs[Object.keys(serverConfigs)[0]];
 // show all fields locally
 const SHOULD_HIDE_NON_USER_FRIENDLY_FIELDS =
   !!process.env.REACT_APP_DEPLOYMENT_TAG;
@@ -780,12 +783,11 @@ class App extends React.Component {
               window.location.reload();
             }}
           >
-            <option value={'harvest'}>Program: Harvest</option>;
-            <option value={'harvest_reloaded'}>
-              Program: Harvest Reloaded
-            </option>
-            ;<option value={'COSMOS_IBC_REWARDS_V1'}>Program: IBC</option>;
-            <option value={'bonus_v1'}>Program: Sif's Bonus v1</option>;
+            {Object.keys(serverConfigs).map((c) => (
+              <option key={c} value={c}>
+                Program: {c}
+              </option>
+            ))}
           </select>
           <form
             onSubmit={(e) => {

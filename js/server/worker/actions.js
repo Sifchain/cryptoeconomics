@@ -32,7 +32,11 @@ function actions(processor) {
   return {
     [GET_LM_CURRENT_APY_SUMMARY]({ programName }) {
       console.log(programName);
-      const { EVENT_INTERVAL_MINUTES } = configs[programName];
+      const { EVENT_INTERVAL_MINUTES, STATIC_APR_PERCENTAGE } =
+        configs[programName];
+      if (STATIC_APR_PERCENTAGE !== undefined) {
+        return STATIC_APR_PERCENTAGE;
+      }
       // could easily make this a FOMO calculator endpoint
       const timeIndex = getTimeIndex('now', programName);
       const currentTimestampState =

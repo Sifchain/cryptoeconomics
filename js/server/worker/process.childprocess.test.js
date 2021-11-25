@@ -5,6 +5,8 @@ const { GET_LM_CURRENT_APY_SUMMARY } = require('../constants/action-names');
 const { getTimeIndex } = require('../util/getTimeIndex');
 const fs = require('fs');
 const { encrypt, decrypt } = require('../util/encrypt');
+const configs = require('../config');
+const fetch = require('cross-fetch').fetch;
 
 if (process.env.DATABASE_URL) {
   process.env.DATABASE_URL = process.env.DATABASE_URL.replace(
@@ -55,9 +57,123 @@ const describe = async (description, describer) => {
   console.groupEnd();
 };
 
-const runTests = (type, parsedData, network, programName) => {
+const runTests = async (type, parsedData, network, programName) => {
+  const config = configs[programName];
+  const currentTimeIndex = getTimeIndex('now', programName);
   const finalGlobalTimestampState =
     parsedData.processedData[parsedData.processedData.length - 1];
+
+  // const totalValuePerUser = Object.entries(
+  //   parsedData.processedData[
+  //     getTimeIndex('2021-10-15T17:26:13.441Z', programName)
+  //   ].users
+  // ).reduce((prev, [addr, curr]) => {
+  //   if (!curr) return prev;
+  //   prev[addr] =
+  //     curr.totalAccruedCommissionsAndClaimableRewards +
+  //     curr.claimedCommissionsAndRewardsAwaitingDispensation +
+  //     curr.forfeitedCommissions +
+  //     curr.forfeited +
+  //     curr.dispensed;
+  //   return prev;
+  // }, {});
+
+=======
+  console.log('final ');
+  const currentGlobalTimestampState =
+    parsedData.processedData[currentTimeIndex];
+
+  const rankedAddresses = parsedData.users;
+  let addressIndexToCheck = 50;
+  const intervalsInADay = (24 * 60) / config.EVENT_INTERVAL_MINUTES;
+  const sampleStates = [
+    parsedData.processedData[currentTimeIndex],
+    parsedData.processedData[currentTimeIndex + intervalsInADay],
+  ];
+  const expectedDepositedAmount = await fetch(
+    `https://api.sifchain.finance/clp/getPools`
+  )
+    .then((r) => r.json())
+    .then((r) => {
+      return (
+        +r.result.pools
+          .reduce((prev, curr) => {
+            if (
+              config.COIN_WHITELIST &&
+              !(
+                config.COIN_WHITELIST.includes(curr.external_asset.symbol) ||
+                config.COIN_WHITELIST.includes('c' + curr.external_asset.symbol)
+              )
+            )
+              return prev;
+            return prev + BigInt(curr.native_asset_balance) * 2n;
+          }, 0n)
+          .toString() /
+        10 ** 18
+      );
+    });
+  console.log('Total deposited amounts');
+  console.log(
+    (expectedDepositedAmount -
+      currentGlobalTimestampState.totalDepositedAmount) /
+      currentGlobalTimestampState.totalDepositedAmount,
+    expectedDepositedAmount,
+    currentGlobalTimestampState.totalDepositedAmount
+  );
+  const expectedDailyRate = config.STATIC_APR_PERCENTAGE / 365;
+  function checkCurrentPoolValueInRowan(address) {
+    return fetch(
+      `https://api.sifchain.finance/sifchain/clp/v1/liquidity_provider_data/${address}`
+    )
+      .then((r) => r.json())
+      .then((r) => {
+        return (
+          +r.liquidity_provider_data
+            .reduce((prev, curr) => {
+              if (
+                config.COIN_WHITELIST &&
+                !config.COIN_WHITELIST.includes(
+                  curr.liquidity_provider.asset.symbol
+                )
+              )
+                return prev;
+              return prev + BigInt(curr.native_asset_balance) * 2n;
+            }, 0n)
+            .toString() /
+          10 ** 18
+        );
+      });
+  }
+  while (addressIndexToCheck--) {
+    const address = rankedAddresses[addressIndexToCheck];
+    const sample1 = sampleStates[0].users[address];
+    const sample2 = sampleStates[1].users[address];
+    const rewardDelta =
+      sample2.totalAccruedCommissionsAndClaimableRewards -
+      sample1.totalAccruedCommissionsAndClaimableRewards;
+    if (!(sample1.totalDepositedAmount || sample2.totalDepositedAmount)) {
+      continue;
+    }
+    if (sample1.totalDepositedAmount !== sample2.totalDepositedAmount) continue;
+    const actualDailyRate = (rewardDelta / sample1.totalDepositedAmount) * 100;
+    // console.log(
+    //   address,
+    //   expectedDailyRate.toFixed(4) === actualDailyRate.toFixed(4),
+    //   expectedDailyRate,
+    //   actualDailyRate
+    // );
+    const expectedPoolValueInRowan = await checkCurrentPoolValueInRowan(
+      address
+    );
+    const actualPoolValueInRowan = sample1.totalDepositedAmount;
+    const diff = Math.abs(expectedPoolValueInRowan - actualPoolValueInRowan);
+    console.log(
+      address,
+      diff / expectedPoolValueInRowan,
+      expectedPoolValueInRowan,
+      actualPoolValueInRowan
+    );
+  }
   const users = Object.values(finalGlobalTimestampState.users);
 
   // const totalValuePerUser = Object.entries(
@@ -75,6 +191,7 @@ const runTests = (type, parsedData, network, programName) => {
   //   return prev;
   // }, {});
 
+>>>>>>> develop
   // require('fs').writeFileSync(
   //   './user-exit-states.with-readds.json',
   //   Buffer.from(JSON.stringify(totalValuePerUser, null, 2))
@@ -135,7 +252,12 @@ const runTests = (type, parsedData, network, programName) => {
 
 const bp = new BackgroundProcessor();
 // const bp2 = new BackgroundProcessor();
+<<<<<<< HEAD
 const programName = 'bonus_v1_osmo';
+=======
+// const programName = 'harvest_expansion';
+const programName = 'expansion_bonus';
+>>>>>>> develop
 bp.reloadAndReprocessSnapshots({
   network: MAINNET,
   rewardProgram: programName,

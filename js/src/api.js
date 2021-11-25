@@ -1,4 +1,6 @@
 import { networks } from './config';
+import serverConfigs from './serverConfig';
+
 export const serverURL = (() => {
   let environment = process.env.REACT_APP_DEPLOYMENT_TAG;
   environment = 'local';
@@ -24,7 +26,8 @@ export const serverURL = (() => {
 })();
 
 const rewardProgram =
-  window.sessionStorage.getItem('rewardProgram') || 'harvest';
+  window.sessionStorage.getItem('rewardProgram') ||
+  Object.keys(serverConfigs)[0];
 
 const getProgramNameQueryString = (network) => `&program=${rewardProgram}`;
 const getSnapshotNetworkHeaders = (network) => ({

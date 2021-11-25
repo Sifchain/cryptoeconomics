@@ -185,7 +185,8 @@ function processUserTickets(
   isSimulatedFutureInterval,
   rewardProgram
 ) {
-  const { MULTIPLIER_MATURITY } = configs[rewardProgram];
+  const { MULTIPLIER_MATURITY, EVENT_INTERVAL_MINUTES, STATIC_APR_PERCENTAGE } =
+    configs[rewardProgram];
   const users = lastGlobalState.users;
   const lastStateWasPending = lastGlobalState.isPending;
   const lastStateWasSimulated = lastGlobalState.isSimulated;
@@ -219,7 +220,13 @@ function processUserTickets(
       currentTotalCommissionsOnClaimableDelegatorRewards: 0,
       tickets: user.tickets.map((ticket) => {
         const poolDominanceRatio = ticket.amount / (totalShares || 1);
-        const rewardDelta = poolDominanceRatio * globalRewardAccrued;
+        const minutesInAYear = 60 * 24 * 365;
+        const intervalsPerYear = minutesInAYear / EVENT_INTERVAL_MINUTES;
+        let rewardDelta = poolDominanceRatio * globalRewardAccrued;
+        if (STATIC_APR_PERCENTAGE !== undefined) {
+          rewardDelta =
+            ((STATIC_APR_PERCENTAGE / 100) * ticket.amount) / intervalsPerYear;
+        }
         const nextMul = ticket.mul + 0.75 / MULTIPLIER_MATURITY;
         return ticket.cloneWith({
           mul: nextMul < 1 ? nextMul : 1,

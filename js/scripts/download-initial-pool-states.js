@@ -1,4 +1,5 @@
 const fetch = require('cross-fetch').default;
+const configs = require('../server/config');
 const loadPoolStateAtHeight = async (
   height,
   {
@@ -22,7 +23,7 @@ const loadPoolStateAtHeight = async (
       const totalPoolValueRowan = +poolNativeAssetBalance * 2;
       const userPoolShare = +userUnits / +poolUnits;
       const userPoolValue = BigInt(
-        userPoolShare * totalPoolValueRowan
+        Math.floor(userPoolShare * totalPoolValueRowan)
       ).toString();
       if (userPoolValue !== '0') {
         userStates[userAddress] = userPoolValue;
@@ -33,7 +34,7 @@ const loadPoolStateAtHeight = async (
   }
 };
 
-const loadStateAtHeight = async (height) => {
+const loadStateAtHeight = async (height, coinWhitelist = undefined) => {
   const userStatesByPool = {};
   const {
     result: { pools },
@@ -41,6 +42,8 @@ const loadStateAtHeight = async (height) => {
     `https://api-archive.sifchain.finance/clp/getPools?height=${height}`
   ).then((r) => r.json());
   for (let pool of pools) {
+    if (coinWhitelist && !coinWhitelist.includes(pool.external_asset.symbol))
+      continue;
     userStatesByPool[pool.external_asset.symbol] = await loadPoolStateAtHeight(
       height,
       pool
@@ -49,10 +52,28 @@ const loadStateAtHeight = async (height) => {
   console.log(userStatesByPool);
   return userStatesByPool;
 };
+const startingHeights = {
+  // harvest: '3587345',
+  harvest_expansion: '4335023',
+  expansion_bonus: '4335023',
+};
 async function main() {
-  require('fs').writeFileSync(
-    './data.json',
-    Buffer.from(JSON.stringify(await loadStateAtHeight('3587345'), null, 2))
-  );
+  for (let programName in startingHeights) {
+    const { COIN_WHITELIST } = configs[programName];
+    const preProgramHeight = (+startingHeights[programName] - 1).toFixed(0);
+    require('fs').writeFileSync(
+      require('path').join(
+        __dirname,
+        `./lm-${programName}-starting-state.json`
+      ),
+      Buffer.from(
+        JSON.stringify(
+          await loadStateAtHeight(preProgramHeight, COIN_WHITELIST),
+          null,
+          2
+        )
+      )
+    );
+  }
 }
 main();
