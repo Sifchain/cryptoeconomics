@@ -30,6 +30,8 @@ const rewardPrograms = {
   bonus_v1_eur: 'bonus_v1_eur',
   universal_vol: 'universal_vol',
   universal_txn: 'universal_txn',
+  expansion_bonus: 'expansion_bonus',
+  harvest_expansion: 'harvest_expansion',
 };
 
 const getOutputPath = (...paths) =>
@@ -52,18 +54,21 @@ async function divideDispensations() {
   );
 
   for (let type of [
-    'lm_juno',
-    'lm_harvest',
-    'lm_ibc',
-    'lm_ixo',
-    'lm_harvest_reloaded',
-    'lm_osmo',
-    'lm_ratom',
-    'lm_luna',
-    'lm_usd',
-    'lm_eur',
+    // 'lm_juno',
+    // 'lm_harvest',
+    // 'lm_ibc',
+    // 'lm_ixo',
+    // 'lm_harvest_reloaded',
+    // 'lm_osmo',
+    // 'lm_ratom',
+    // 'lm_luna',
+    // 'lm_usd',
+    // 'lm_eur',
     'universal_txn',
     'universal_vol',
+    // harvest expansion
+    'lm_harvest',
+    'lm_bonus',
   ]) {
     const rawDist = await fetch(
       `https://data.sifchain.finance/beta/network/dispensation/${type}`
@@ -107,10 +112,15 @@ function createTarball() {
     require('path').join(__dirname, `./output/divide-dispensations/`)
   )[0];
   const filePaths = fs
-    .readdirSync(`./output/divide-dispensations/${dispensationNameComputed}`)
+    .readdirSync(
+      require('path').join(
+        __dirname,
+        `./output/divide-dispensations/${dispensationNameComputed}`
+      )
+    )
     .filter((f) => f.endsWith('.json'));
   exec(
-    `cd ./output/divide-dispensations/${dispensationNameComputed} && tar -czvf ${dispensationNameComputed}.tar.gz ${filePaths.join(
+    `cd ${__dirname}/output/divide-dispensations/${dispensationNameComputed} && tar -czvf ${dispensationNameComputed}.tar.gz ${filePaths.join(
       ' '
     )}`
   );
@@ -118,10 +128,12 @@ function createTarball() {
 
 function createDispensationRunKit() {
   const dispensationNameComputed = fs
-    .readdirSync(`./output/divide-dispensations/`)
+    .readdirSync(`${__dirname}/output/divide-dispensations/`)
     .find((f) => f.includes('dispensation'));
   const filePaths = fs
-    .readdirSync(`./output/divide-dispensations/${dispensationNameComputed}`)
+    .readdirSync(
+      `${__dirname}/output/divide-dispensations/${dispensationNameComputed}`
+    )
     .filter((f) => f.endsWith('.json'));
   let RUNNER_ADDRESS = 'sif1mprngjjx26srkyakm2rsczhnshutysw8rnsq85';
   let DISTRIBUTOR_ADDRESS = 'sif1ngfel80xak4hqegeg42vlx8lnvx5x42es57t8n';
@@ -137,10 +149,14 @@ function createDispensationRunKit() {
         return rewardPrograms['39_SUNSET_VALIDATOR_SUBSIDY'];
       case 'lm':
         return rewardPrograms['39_SUNSET_LIQUIDITY_MINING'];
+      case 'lm_harvest':
+        return rewardPrograms['harvest_expansion'];
+      case 'lm_bonus':
+        return rewardPrograms['expansion_bonus'];
       case 'lm_ibc':
         return rewardPrograms['COSMOS_IBC_REWARDS_V1'];
-      case 'lm_harvest':
-        return rewardPrograms['harvest'];
+      // case 'lm_harvest':
+      //   return rewardPrograms['harvest'];
       case 'lm_juno':
         return rewardPrograms['bonus_v1'];
       case 'lm_harvest_reloaded':
