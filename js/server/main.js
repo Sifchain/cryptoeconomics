@@ -24,7 +24,10 @@ const {
 const { gql } = require('apollo-server-core');
 const { ApolloServer } = require('apollo-server-express');
 const backwardsCompensationForHarvestUsers = require('../server/scripts/diffs.json');
-
+const RateLimitProtector =
+  require('./util/RateLimitProtector').RateLimitProtector;
+const path = require('path');
+const { election } = require('../scripts/election/election');
 if (process.env.DATABASE_URL) {
   process.env.DATABASE_URL = process.env.DATABASE_URL.replace(
     'PASSWORD',
@@ -78,6 +81,32 @@ const processingHandlers = {
   },
 };
 
+const proposals = fs
+  .readdirSync(path.join(__dirname, '../scripts/election/proposals'))
+  .sort((a, b) => {
+    return a.localeCompare(b);
+  })
+  .filter((file) => !file.includes('[SAMPLE]'))
+  .map((fileName) => ({
+    ...JSON.parse(
+      fs
+        .readFileSync(
+          path.join(__dirname, '../scripts/election/proposals', fileName)
+        )
+        .toString()
+    ),
+    id: fileName.split('.')[0],
+  }))
+  .map((proposal) => {
+    return;
+  });
+
+const electionResultCache = {
+  exampleProposalName: {
+    output: null,
+    updatedAt: null,
+  },
+};
 // const processingHandler = BackgroundProcessor.startAsMainProcess();
 
 const SNAPSHOT_SOURCE_KEY = 'snapshot-source';
@@ -122,6 +151,37 @@ const server = new ApolloServer({
       delegatorAddresses: [String]
       tickets: [String]
     }
+    type ElectionStrategy {
+      name: String!
+      weight: Float!
+    }
+    type ElectionProposal {
+      id: ID!
+      title: String!
+      description: String!
+      aggregator: String!
+      strategies: [ElectionStrategy!]!
+      startHeight: Int!
+      endHeight: Int!
+    }
+    type ElectionSelectionResult {
+      selection: String!
+      votingPower: Float!
+      voteCount: Int!
+    }
+    enum ElectionStatus {
+      # before election starts
+      DORMANT
+      # election is running
+      PENDING
+      # election is over
+      COMPLETE
+    }
+    type ElectionResult {
+      proposal: ElectionProposal!
+      results: [ElectionSelectionResult!]!
+      status: ElectionStatus!
+    }
     enum Network {
       mainnet
     }
@@ -150,6 +210,7 @@ const server = new ApolloServer({
     }
     type Query {
       rewardPrograms: [RewardProgram!]!
+      electionResults: [ElectionResult!]!
     }
   `,
   resolvers: {
@@ -218,7 +279,37 @@ const server = new ApolloServer({
         );
       },
     },
+    ElectionResult: {
+      async results({ title }) {
+        const cached = electionResultCache[title];
+        // if it hasn't been updated in the last 20 minutes, update it
+        if (
+          cached.updatedAt &&
+          Date.now() - cached.updatedAt < 1000 * 60 * 60
+        ) {
+          return cached.output;
+        }
+        try {
+          const results = election({ proposal });
+        } catch (e) {
+          console.log(e);
+        }
+      },
+    },
     Query: {
+      async electionResults(root, args, context, info) {
+        // get all files in folder and sort by name
+        return proposals.map((proposal) => ({
+          proposal,
+        }));
+        return [
+          {
+            proposal: {},
+            results: [],
+            status: 'COMPLETE',
+          },
+        ];
+      },
       async rewardPrograms(root, args, context, info) {
         // eeur
         return [
