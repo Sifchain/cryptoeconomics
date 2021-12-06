@@ -82,7 +82,7 @@ const getSQLQueryByNetwork = (network, rewardProgram) => {
           }
           return tx
             .many(
-              slonik.sql`select * from snapshots_reward where is_latest = true and reward_program=${rewardProgramName}`
+              slonik.sql`select * from snapshots_reward_v2 where is_latest = true and reward_program=${rewardProgramName}`
             )
             .catch((e) => {
               console.error('\n\n\n' + rewardProgram + '\n\n\n');
