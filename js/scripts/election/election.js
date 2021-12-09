@@ -8,7 +8,11 @@ const fetch = new RateLimitProtector({ padding: 50 }).buildAsyncShield(
   _fetch,
   _fetch
 );
-async function election() {
+module.exports.election = async function election(
+  params = {
+    proposal: 'latest',
+  }
+) {
   const {
     result: {
       response: { last_block_height: latestBlockHeight },
@@ -22,12 +26,12 @@ async function election() {
     .sort((a, b) => a.localeCompare(b));
 
   const proposalName =
-    config.proposal === 'latest'
+    params.proposal === 'latest'
       ? proposals[proposals.length - 1].replace('.json', '')
-      : config.proposal;
+      : params.proposal;
 
   if (!proposals.includes(`${proposalName}.json`))
-    throw new Error('proposal not found with name ' + config.proposal);
+    throw new Error('proposal not found with name ' + params.proposal);
   const proposal = require(`./proposals/${proposalName}.json`);
 
   const startHeight = proposal.startHeight;
@@ -72,33 +76,49 @@ async function election() {
     votes.push({
       selection: ballot,
       votingPower: +(+weightedVotes[ballot].toString() / 10 ** 18).toFixed(2),
-      accounts: Object.entries(ballotsByAddress).filter(([k, v]) => {
+      voteCount: Object.entries(ballotsByAddress).filter(([k, v]) => {
         return v.join(',').toUpperCase().includes(ballot.toUpperCase());
       }).length,
     });
   }
-  const formattedElectionResults = votes
-    .sort((a, b) => b.votingPower - a.votingPower)
-    .map((obj) => ({
-      selection: obj.selection,
-      'voting power': obj.votingPower,
-      accounts: obj.accounts,
-    }));
-  console.table(formattedElectionResults);
-  require('fs').writeFileSync(
-    require('path').join(
-      __dirname,
-      `./results/${proposalName}.${
-        endHeight < latestBlockHeight
-          ? 'final'
-          : `${new Date().getFullYear()}-${
-              new Date().getMonth() + 1
-            }-${new Date().getDate()}`
-      }.json`
-    ),
-    JSON.stringify(formattedElectionResults, null, 2)
+  const formattedElectionResults = votes.sort(
+    (a, b) => b.votingPower - a.votingPower
   );
+
+  console.table(formattedElectionResults);
+
   // console.log('FINAL:', pollState);
   console.log('COMPLETE.');
+  return {
+    formattedElectionResults,
+    endHeight,
+    latestBlockHeight,
+    proposalName,
+  };
+};
+
+// if script is being run directly
+if (require.main === module) {
+  (async () => {
+    const {
+      formattedElectionResults,
+      endHeight,
+      latestBlockHeight,
+      proposalName,
+    } = await election(config);
+    require('fs').writeFileSync(
+      require('path').join(
+        __dirname,
+        `./results/${proposalName}.${
+          endHeight < latestBlockHeight
+            ? 'final'
+            : `${new Date().getFullYear()}-${
+                new Date().getMonth() + 1
+              }-${new Date().getDate()}`
+        }.json`
+      ),
+      JSON.stringify(formattedElectionResults, null, 2)
+    );
+  })();
+  // if being executed as a script, save the output to a file
 }
-election();

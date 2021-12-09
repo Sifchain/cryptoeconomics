@@ -57,6 +57,24 @@ const describe = async (description, describer) => {
   console.groupEnd();
 };
 
+async function loadAllLiquidityProviderAddresses() {
+  const LIMIT = 200;
+  let offset = 0;
+  const addresses = new Set();
+  while (true) {
+    const { liquidity_providers: liquidityProviders } = await fetch(
+      `https://api.sifchain.finance/sifchain/clp/v1/liquidity_providers?pagination.limit=${LIMIT}&pagination.offset=${offset}`
+    ).then((res) => res.json());
+    if (!liquidityProviders || !liquidityProviders.length) {
+      return [...addresses];
+    }
+    offset += LIMIT;
+    liquidityProviders.forEach((lp) =>
+      addresses.add(lp.liquidity_provider_address)
+    );
+  }
+}
+
 const runTests = async (type, parsedData, network, programName) => {
   const config = configs[programName];
   const currentTimeIndex = getTimeIndex('now', programName);
@@ -67,13 +85,17 @@ const runTests = async (type, parsedData, network, programName) => {
   const currentGlobalTimestampState =
     parsedData.processedData[currentTimeIndex];
 
-  const rankedAddresses = parsedData.users;
-  let addressIndexToCheck = 10;
+  // const rankedAddresses = parsedData.users;
+  const rankedAddresses = await loadAllLiquidityProviderAddresses();
+  // let addressIndexToCheck = 50;
+  let addressIndexToCheck = rankedAddresses.length - 1;
+
   const intervalsInADay = (24 * 60) / config.EVENT_INTERVAL_MINUTES;
   const sampleStates = [
     parsedData.processedData[currentTimeIndex],
     parsedData.processedData[currentTimeIndex + intervalsInADay],
   ];
+
   const expectedDepositedAmount = await fetch(
     `https://api.sifchain.finance/clp/getPools`
   )
@@ -132,31 +154,42 @@ const runTests = async (type, parsedData, network, programName) => {
     const address = rankedAddresses[addressIndexToCheck];
     const sample1 = sampleStates[0].users[address];
     const sample2 = sampleStates[1].users[address];
+    if (!sample1 && !sample2) {
+      console.log('user not found: ' + address);
+    }
     const rewardDelta =
       sample2.totalAccruedCommissionsAndClaimableRewards -
       sample1.totalAccruedCommissionsAndClaimableRewards;
     if (!(sample1.totalDepositedAmount || sample2.totalDepositedAmount)) {
       continue;
     }
-    if (sample1.totalDepositedAmount !== sample2.totalDepositedAmount) continue;
+    if (sample1.totalDepositedAmount !== sample2.totalDepositedAmount) {
+      console.log('skipping ' + address);
+      continue;
+    }
     const actualDailyRate = (rewardDelta / sample1.totalDepositedAmount) * 100;
-    console.log(
+    const hasExpectedDailyRate =
+      expectedDailyRate.toFixed(4) === actualDailyRate.toFixed(4);
+    console.log({
       address,
-      expectedDailyRate.toFixed(4) === actualDailyRate.toFixed(4),
+      hasExpectedDailyRate,
       expectedDailyRate,
-      actualDailyRate
-    );
+      actualDailyRate,
+    });
     const expectedPoolValueInRowan = await checkCurrentPoolValueInRowan(
       address
     );
     const actualPoolValueInRowan = sample1.totalDepositedAmount;
     const diff = Math.abs(expectedPoolValueInRowan - actualPoolValueInRowan);
-    // console.log(
-    //   address,
-    //   diff / expectedPoolValueInRowan,
-    //   expectedPoolValueInRowan,
-    //   actualPoolValueInRowan
-    // );
+    const diffPercentage = (diff / actualPoolValueInRowan) * 100;
+    if (diffPercentage > 50) {
+      console.log({
+        address,
+        diffPercentage: diffPercentage.toFixed(2) + '%',
+        expectedPoolValueInRowan,
+        actualPoolValueInRowan,
+      });
+    }
   }
   const users = Object.values(currentGlobalTimestampState.users);
 
