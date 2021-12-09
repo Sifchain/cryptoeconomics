@@ -68,7 +68,7 @@ const runTests = async (type, parsedData, network, programName) => {
     parsedData.processedData[currentTimeIndex];
 
   const rankedAddresses = parsedData.users;
-  let addressIndexToCheck = 50;
+  let addressIndexToCheck = 10;
   const intervalsInADay = (24 * 60) / config.EVENT_INTERVAL_MINUTES;
   const sampleStates = [
     parsedData.processedData[currentTimeIndex],
