@@ -168,6 +168,22 @@ module.exports = {
       'ceth',
     ],
   }),
+  bonus_v2_luna: createConfig({
+    initialRowan: 0, // + 20_000_000,
+    // startsAt: '2021-11-05T00:00:00.000Z',
+    startsAt: new Date('12/14/2021, 8:00:00 AM PST').toISOString(),
+    durationInWeeks: 1,
+    // rewardBucketStartDateTime: HARVEST_RELOAD_DATETIME,
+    weeksToTotalMaturity: 1,
+    intervalDurationMinutes: 60,
+    initialRewardMultiplier: 1,
+    shouldSubtractWithdrawalsFromInitialBalance: false,
+    shouldIncludeInitialLiquidity: true,
+    staticAPRPercentage: 200,
+    coinWhitelist: [
+      'ibc/F141935FF02B74BDC6B8A0BD6FE86A23EE25D10E89AA0CD9158B3D92B63FDF4D',
+    ],
+  }),
   harvest_expansion: createConfig({
     initialRowan: 0, // + 20_000_000,
     // startsAt: '2021-11-05T00:00:00.000Z',

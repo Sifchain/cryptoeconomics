@@ -9,10 +9,16 @@ module.exports.default = async ({ startHeight, endHeight }, { fetch }) => {
   do {
     const { result } = await fetch(
       // optimally, would implement startHeight greater than & endHeight less than
+      // https://lcd-ccc.omniflix.tv/cosmos/tx/v1beta1/txs?events=tx.height%3E=82&pagination.limit=100
+      // `https://rpc.sifchain.finance/tx_search?query="transfer.recipient='sif1seftxu8l6v7d50ltm3v7hl55jlyxrps53rmjl8'"&per_page=100&page=${page}``https://rpc.sifchain.finance/tx_search?query="transfer.recipient='sif1seftxu8l6v7d50ltm3v7hl55jlyxrps53rmjl8'"&per_page=100&page=${page}`
       `https://rpc.sifchain.finance/tx_search?query="transfer.recipient='sif1seftxu8l6v7d50ltm3v7hl55jlyxrps53rmjl8'"&per_page=100&page=${page}`
     ).then((r) => r.json());
     totalCount = +result.total_count;
-    allTxs.push(...result.txs);
+    allTxs.push(
+      ...result.txs.filter(
+        (tx) => tx.height >= startHeight && tx.height <= endHeight
+      )
+    );
   } while (page++ * 100 < totalCount);
 
   await Promise.all(

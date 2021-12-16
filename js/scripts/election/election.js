@@ -8,7 +8,7 @@ const fetch = new RateLimitProtector({ padding: 50 }).buildAsyncShield(
   _fetch,
   _fetch
 );
-module.exports.election = async function election(
+const election = (module.exports.election = async function election(
   params = {
     proposal: 'latest',
   }
@@ -70,6 +70,13 @@ module.exports.election = async function election(
     })();
     promises.push(promise);
   }
+  console.log(
+    Object.fromEntries(
+      Object.entries(ballotsByAddress).filter(([, ballotList]) =>
+        ballotList.includes('LGCY')
+      )
+    )
+  );
   await Promise.all(promises.map((r) => r.catch(console.error)));
   const votes = [];
   for (let ballot in weightedVotes) {
@@ -85,17 +92,24 @@ module.exports.election = async function election(
     (a, b) => b.votingPower - a.votingPower
   );
 
-  console.table(formattedElectionResults);
+  console.table(
+    formattedElectionResults.map((r) => ({
+      ...r,
+      votingPower: new Intl.NumberFormat('en-US').format(r.votingPower),
+    }))
+  );
 
   // console.log('FINAL:', pollState);
   console.log('COMPLETE.');
   return {
     formattedElectionResults,
+    ballotsByAddress,
     endHeight,
     latestBlockHeight,
     proposalName,
+    votes,
   };
-};
+});
 
 // if script is being run directly
 if (require.main === module) {
@@ -105,6 +119,8 @@ if (require.main === module) {
       endHeight,
       latestBlockHeight,
       proposalName,
+      ballotsByAddress,
+      votes,
     } = await election(config);
     require('fs').writeFileSync(
       require('path').join(
@@ -118,6 +134,19 @@ if (require.main === module) {
         }.json`
       ),
       JSON.stringify(formattedElectionResults, null, 2)
+    );
+    require('fs').writeFileSync(
+      require('path').join(
+        __dirname,
+        `./results/${proposalName}.${
+          endHeight < latestBlockHeight
+            ? 'final'
+            : `${new Date().getFullYear()}-${
+                new Date().getMonth() + 1
+              }-${new Date().getDate()}`
+        }.cache.json`
+      ),
+      JSON.stringify(ballotsByAddress, null, 2)
     );
   })();
   // if being executed as a script, save the output to a file

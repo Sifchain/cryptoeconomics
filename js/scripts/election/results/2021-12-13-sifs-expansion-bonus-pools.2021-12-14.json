@@ -1,0 +1,137 @@
+[
+  {
+    "selection": "ZCX",
+    "votingPower": 43039254.33,
+    "voteCount": 13
+  },
+  {
+    "selection": "LGCY",
+    "votingPower": 21607877.61,
+    "voteCount": 6
+  },
+  {
+    "selection": "UST",
+    "votingPower": 6891307.15,
+    "voteCount": 27
+  },
+  {
+    "selection": "USDT",
+    "votingPower": 2406503.61,
+    "voteCount": 10
+  },
+  {
+    "selection": "LUNA",
+    "votingPower": 2310493.67,
+    "voteCount": 21
+  },
+  {
+    "selection": "ETH",
+    "votingPower": 2286526.33,
+    "voteCount": 16
+  },
+  {
+    "selection": "METIS",
+    "votingPower": 1689509.37,
+    "voteCount": 2
+  },
+  {
+    "selection": "SAND",
+    "votingPower": 1525369.85,
+    "voteCount": 1
+  },
+  {
+    "selection": "AKT",
+    "votingPower": 904387.73,
+    "voteCount": 5
+  },
+  {
+    "selection": "OSMO",
+    "votingPower": 512213.96,
+    "voteCount": 11
+  },
+  {
+    "selection": "JUNO",
+    "votingPower": 485614.65,
+    "voteCount": 13
+  },
+  {
+    "selection": "CRO",
+    "votingPower": 379387.13,
+    "voteCount": 5
+  },
+  {
+    "selection": "DVPN",
+    "votingPower": 133347.23,
+    "voteCount": 2
+  },
+  {
+    "selection": "ATOM",
+    "votingPower": 103295.88,
+    "voteCount": 1
+  },
+  {
+    "selection": "IRIS",
+    "votingPower": 95333.13,
+    "voteCount": 2
+  },
+  {
+    "selection": "RUNE",
+    "votingPower": 87261.6,
+    "voteCount": 4
+  },
+  {
+    "selection": "REGEN",
+    "votingPower": 68350.07,
+    "voteCount": 1
+  },
+  {
+    "selection": "USDC",
+    "votingPower": 66843.66,
+    "voteCount": 3
+  },
+  {
+    "selection": "1INCH",
+    "votingPower": 32471.45,
+    "voteCount": 1
+  },
+  {
+    "selection": "RNDR",
+    "votingPower": 29278.93,
+    "voteCount": 2
+  },
+  {
+    "selection": "LINK",
+    "votingPower": 28558.57,
+    "voteCount": 1
+  },
+  {
+    "selection": "WSCRT",
+    "votingPower": 26983.07,
+    "voteCount": 1
+  },
+  {
+    "selection": "POND",
+    "votingPower": 26983.07,
+    "voteCount": 1
+  },
+  {
+    "selection": "FTM",
+    "votingPower": 20156.31,
+    "voteCount": 1
+  },
+  {
+    "selection": "MATIC",
+    "votingPower": 20156.31,
+    "voteCount": 1
+  },
+  {
+    "selection": "WBTC",
+    "votingPower": 11866.78,
+    "voteCount": 1
+  },
+  {
+    "selection": "COMP",
+    "votingPower": 698.4,
+    "voteCount": 1
+  }
+]

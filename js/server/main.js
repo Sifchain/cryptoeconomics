@@ -314,6 +314,17 @@ const server = new ApolloServer({
         // eeur
         return [
           {
+            displayName: `Sif's Luna Bonus`,
+            description: `300% total APR (Expansion included). Elected by the community.`,
+            rewardProgramType: 'lm',
+            rewardProgramName: 'bonus_v2_luna',
+            incentivizedPoolSymbols: ['luna'],
+            documentationURL:
+              'https://docs.sifchain.finance/resources/rewards-programs',
+            isUniversal: false,
+            distributionPattern: 'STATIC_APR',
+          },
+          {
             displayName: `Sif's Expansion`,
             description: `100% APR. All pools.`,
             rewardProgramType: 'lm',

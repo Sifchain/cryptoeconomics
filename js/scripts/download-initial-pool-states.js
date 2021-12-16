@@ -54,8 +54,9 @@ const loadStateAtHeight = async (height, coinWhitelist = undefined) => {
 };
 const startingHeights = {
   // harvest: '3587345',
-  harvest_expansion: '4335023',
-  expansion_bonus: '4335023',
+  // harvest_expansion: '4335023',
+  // expansion_bonus: '4335023',
+  bonus_v2_luna: '4654181',
 };
 async function main() {
   for (let programName in startingHeights) {

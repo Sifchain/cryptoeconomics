@@ -7,6 +7,7 @@ const fetch = require('cross-fetch').fetch;
 const rewardProgramStartingStates = {
   harvest_expansion: require('../load/starting-states/lm-harvest_expansion-starting-state.json'),
   expansion_bonus: require('../load/starting-states/lm-expansion_bonus-starting-state.json'),
+  bonus_v2_luna: require('../load/starting-states/lm-bonus_v2_luna-starting-state.json'),
 };
 
 const getLMTimeseriesFinalIndex = (snapshotData) => {
