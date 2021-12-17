@@ -57,7 +57,7 @@ const describe = async (description, describer) => {
   console.groupEnd();
 };
 
-async function loadAllLiquidityProviderAddresses() {
+async function loadAllLiquidityProviderAddresses(programName) {
   const LIMIT = 200;
   let offset = 0;
   const addresses = new Set();
@@ -69,9 +69,15 @@ async function loadAllLiquidityProviderAddresses() {
       return [...addresses];
     }
     offset += LIMIT;
-    liquidityProviders.forEach((lp) =>
-      addresses.add(lp.liquidity_provider_address)
-    );
+    const configuration = configs[programName];
+    liquidityProviders
+      .filter((lp) => {
+        return (
+          !configuration.COIN_WHITELIST ||
+          configuration.COIN_WHITELIST.includes(lp.asset.symbol)
+        );
+      })
+      .forEach((lp) => addresses.add(lp.liquidity_provider_address));
   }
 }
 
@@ -86,7 +92,7 @@ const runTests = async (type, parsedData, network, programName) => {
     parsedData.processedData[currentTimeIndex];
 
   // const rankedAddresses = parsedData.users;
-  const rankedAddresses = await loadAllLiquidityProviderAddresses();
+  const rankedAddresses = await loadAllLiquidityProviderAddresses(programName);
   // let addressIndexToCheck = 50;
   let addressIndexToCheck = rankedAddresses.length - 1;
   const intervalsInADay = (24 * 60) / config.EVENT_INTERVAL_MINUTES;
@@ -169,12 +175,12 @@ const runTests = async (type, parsedData, network, programName) => {
     const actualDailyRate = (rewardDelta / sample1.totalDepositedAmount) * 100;
     const hasExpectedDailyRate =
       expectedDailyRate.toFixed(4) === actualDailyRate.toFixed(4);
-    console.log({
-      address,
-      hasExpectedDailyRate,
-      expectedDailyRate,
-      actualDailyRate,
-    });
+    // console.log({
+    //   address,
+    //   hasExpectedDailyRate,
+    //   expectedDailyRate,
+    //   actualDailyRate,
+    // });
     const expectedPoolValueInRowan = await checkCurrentPoolValueInRowan(
       address
     );
@@ -267,8 +273,9 @@ const runTests = async (type, parsedData, network, programName) => {
 
 const bp = new BackgroundProcessor();
 // const bp2 = new BackgroundProcessor();
-const programName = 'harvest_expansion';
+// const programName = 'harvest_expansion';
 // const programName = 'expansion_bonus';
+const programName = 'bonus_v2_luna';
 bp.reloadAndReprocessSnapshots({
   network: MAINNET,
   rewardProgram: programName,
