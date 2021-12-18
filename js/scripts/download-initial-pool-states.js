@@ -56,17 +56,22 @@ const startingHeights = {
   // harvest: '3587345',
   // harvest_expansion: '4335023',
   // expansion_bonus: '4335023',
-  bonus_v2_luna: '4654181',
+  bonus_v2_luna: '4654182',
+  // bonus_v2_luna: '4643830',
 };
 async function main() {
   for (let programName in startingHeights) {
     const { COIN_WHITELIST } = configs[programName];
     const preProgramHeight = (+startingHeights[programName] - 1).toFixed(0);
+    const filePath = require('path').join(
+      __dirname,
+      `../server/core/load/starting-states/lm-${programName}-starting-state.json`
+    );
+    try {
+      require('fs').unlinkSync(filePath);
+    } catch (e) {}
     require('fs').writeFileSync(
-      require('path').join(
-        __dirname,
-        `./lm-${programName}-starting-state.json`
-      ),
+      filePath,
       Buffer.from(
         JSON.stringify(
           await loadStateAtHeight(preProgramHeight, COIN_WHITELIST),

@@ -161,6 +161,7 @@ const runTests = async (type, parsedData, network, programName) => {
     const sample2 = sampleStates[1].users[address];
     if (!sample1 && !sample2) {
       console.log('user not found: ' + address);
+      continue;
     }
     const rewardDelta =
       sample2.totalAccruedCommissionsAndClaimableRewards -
