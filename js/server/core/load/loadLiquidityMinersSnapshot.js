@@ -132,10 +132,10 @@ const getSQLQueryByNetwork = (network, rewardProgram) => {
         const snapshots_lm_claims = tx.any(
           slonik.sql`
             SELECT
-              snapshots_claims.claim_time unix,
+              snapshots_claims_v2.claim_time unix,
               address, reward_program, distribution_type
             FROM
-              snapshots_claims
+              snapshots_claims_v2
             WHERE
               is_current = true 
           `
@@ -156,6 +156,13 @@ const getSQLQueryByNetwork = (network, rewardProgram) => {
             ORDER BY timestamp ASC
           `
         );
+        /* 
+          ✅ all users included in final snapshot
+            >_ totalRewards: 12,178,336.116
+            >_ totalAccrued: 7,848,538.813
+            >_ 0.9999999999999997
+            >_ users 4193
+        */
         const [...snapshotsNewLoaded] = await snapshots_new;
         const firstItemSnapshotData = snapshotsNewLoaded[0].snapshot_data;
         while (snapshotsNewLoaded.length > 1) {

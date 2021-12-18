@@ -95,6 +95,7 @@ const runTests = async (type, parsedData, network, programName) => {
   const rankedAddresses = await loadAllLiquidityProviderAddresses(programName);
   // let addressIndexToCheck = 50;
   let addressIndexToCheck = rankedAddresses.length - 1;
+
   const intervalsInADay = (24 * 60) / config.EVENT_INTERVAL_MINUTES;
   const sampleStates = [
     parsedData.processedData[currentTimeIndex],
