@@ -32,6 +32,7 @@ const rewardPrograms = {
   universal_txn: 'universal_txn',
   expansion_bonus: 'expansion_bonus',
   harvest_expansion: 'harvest_expansion',
+  bonus_v2_luna: 'bonus_v2_luna',
 };
 
 const getOutputPath = (...paths) =>
@@ -61,7 +62,7 @@ async function divideDispensations() {
     // 'lm_harvest_reloaded',
     // 'lm_osmo',
     // 'lm_ratom',
-    // 'lm_luna',
+    'lm_luna',
     // 'lm_usd',
     // 'lm_eur',
     'universal_txn',
@@ -170,7 +171,7 @@ function createDispensationRunKit() {
       case 'lm_ratom':
         return rewardPrograms['bonus_v1_ratom'];
       case 'lm_luna':
-        return rewardPrograms['bonus_v1_luna'];
+        return rewardPrograms['bonus_v2_luna'];
       case 'lm_usd':
         return rewardPrograms['bonus_v1_usd'];
       case 'lm_eur':
