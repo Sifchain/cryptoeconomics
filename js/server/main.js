@@ -339,6 +339,27 @@ const server = new ApolloServer({
             displayName: `Pools of the People`,
             description: `300% total APR (Expansion included). 5 pools. Selected by the community.`,
             rewardProgramType: 'lm',
+            rewardProgramName: 'expansion_v2_bonus',
+            incentivizedPoolSymbols: [
+              'zcx',
+              'eth',
+              'lgcy',
+              // JUNØ
+              'juno',
+              // LUNA
+              'luna',
+              // ATOM
+              'atom',
+            ],
+            documentationURL:
+              'https://docs.sifchain.finance/resources/rewards-programs',
+            isUniversal: false,
+            distributionPattern: 'STATIC_APR',
+          },
+          {
+            displayName: `Pools of the People (v1)`,
+            description: `300% total APR (Expansion included). 5 pools. Selected by the community.`,
+            rewardProgramType: 'lm',
             rewardProgramName: 'expansion_bonus',
             incentivizedPoolSymbols: ['atom', 'usd', 'juno', 'zcx', 'eth'],
             documentationURL:
