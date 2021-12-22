@@ -56,8 +56,8 @@ const startingHeights = {
   // harvest: '3587345',
   // harvest_expansion: '4335023',
   // expansion_bonus: '4335023',
-  bonus_v2_luna: '4654182',
-  // bonus_v2_luna: '4643830',
+  // bonus_v2_luna: '4654182',
+  expansion_v2_bonus: '4696788',
 };
 async function main() {
   for (let programName in startingHeights) {
