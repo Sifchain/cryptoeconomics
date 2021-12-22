@@ -115,7 +115,7 @@ const HARVEST_RELOAD_DATETIME = '2021-11-05T17:26:13.441Z';
 
 const expansionBonusDurationInWeeks =
   (new Date('2021-11-22T10:00:00.000Z').getTime() -
-    new Date('12/22/2021, 8:30:00 PM PST').getTime()) /
+    new Date('12/22/2021, 8:30:00 AM PST').getTime()) /
   1000 /
   60 /
   60 /
