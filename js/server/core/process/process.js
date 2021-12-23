@@ -200,10 +200,12 @@ function processUserEventsByTimestamp(
         duration: REWARD_ACCRUAL_DURATION_INTERVAL_COUNT,
       };
     }
-    if (
-      timestamp ===
-      endBucketTimestamp + programConfig.EVENT_INTERVAL_MINUTES * 2
-    ) {
+
+    const finalRewardAccrualTimestamp =
+      endBucketTimestamp + programConfig.EVENT_INTERVAL_MINUTES * 2;
+    const isEndOfRewardPeriod = timestamp === finalRewardAccrualTimestamp;
+    const rewardPeriodHasEnded = timestamp >= finalRewardAccrualTimestamp;
+    if (isEndOfRewardPeriod) {
       lastGlobalState.endBuckets({ rewardProgram });
     }
     const isSimulatedFutureInterval = i > snapshotTimeseriesFinalIndex - 1;
@@ -228,7 +230,8 @@ function processUserEventsByTimestamp(
         isSimulatedFutureInterval,
         claimEventsByUser,
         dispensationEventsByUser,
-        rewardProgram
+        rewardProgram,
+        rewardPeriodHasEnded
       );
     }
     if (cacheEnabled && !isSimulatedFutureInterval && !cachedTimestampState) {

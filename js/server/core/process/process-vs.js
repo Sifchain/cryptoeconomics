@@ -27,7 +27,8 @@ function processVSGlobalState(
   isSimulatedFutureInterval,
   claimEventsByUser,
   dispensationEventsByUser,
-  rewardProgram
+  rewardProgram,
+  rewardPeriodHasEnded
 ) {
   const {
     MULTIPLIER_MATURITY,
@@ -47,7 +48,8 @@ function processVSGlobalState(
     getCurrentCommissionRateByValidatorStakeAddress,
     rewardProgramType,
     isSimulatedFutureInterval,
-    rewardProgram
+    rewardProgram,
+    rewardPeriodHasEnded
   );
   // if (
   //   lmHarvestHardResetState.rewardProgram === rewardProgram &&
@@ -85,7 +87,10 @@ function processVSGlobalState(
     rewardProgram
   );
   const i = timestamp / EVENT_INTERVAL_MINUTES;
-  if (i === autoclaimTimeIndex || i === NUMBER_OF_INTERVALS_TO_RUN - 1) {
+  if (
+    i ===
+    autoclaimTimeIndex /* || i === NUMBER_OF_INTERVALS_TO_RUN - 1 // auto-claims at end of program  */
+  ) {
     for (let address in users) {
       const getUserByAddress = (address) => {
         return users[address];
@@ -183,7 +188,8 @@ function processUserTickets(
   getCurrentCommissionRateByValidatorStakeAddress,
   rewardProgramType,
   isSimulatedFutureInterval,
-  rewardProgram
+  rewardProgram,
+  rewardPeriodHasEnded
 ) {
   const { MULTIPLIER_MATURITY, EVENT_INTERVAL_MINUTES, STATIC_APR_PERCENTAGE } =
     configs[rewardProgram];
@@ -226,6 +232,9 @@ function processUserTickets(
         if (STATIC_APR_PERCENTAGE !== undefined) {
           rewardDelta =
             ((STATIC_APR_PERCENTAGE / 100) * ticket.amount) / intervalsPerYear;
+        }
+        if (rewardPeriodHasEnded) {
+          rewardDelta = 0;
         }
         const nextMul = ticket.mul + 0.75 / MULTIPLIER_MATURITY;
         return ticket.cloneWith({

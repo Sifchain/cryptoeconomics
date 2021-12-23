@@ -336,8 +336,8 @@ const server = new ApolloServer({
             distributionPattern: 'STATIC_APR',
           },
           {
-            displayName: `Pools of the People`,
-            description: `300% total APR (Expansion included). 5 pools. Selected by the community.`,
+            displayName: `Pools of the People (v2)`,
+            description: `300% total APR (Expansion included). 6 pools. Selected by the community.`,
             rewardProgramType: 'lm',
             rewardProgramName: 'expansion_v2_bonus',
             incentivizedPoolSymbols: [
