@@ -114,8 +114,8 @@ function createTimerBucket({
 const HARVEST_RELOAD_DATETIME = '2021-11-05T17:26:13.441Z';
 
 const expansionBonusDurationInWeeks =
-  (new Date('2021-11-22T10:00:00.000Z').getTime() -
-    new Date('12/22/2021, 8:30:00 AM PST').getTime()) /
+  (new Date('12/22/2021, 10:00:00 AM PST').getTime() -
+    new Date('2021-11-22T10:00:00.000Z').getTime()) /
   1000 /
   60 /
   60 /
@@ -157,7 +157,7 @@ module.exports = {
     initialRowan: 0, // + 20_000_000,
     // startsAt: '2021-11-05T00:00:00.000Z',
     startsAt: '2021-11-22T10:00:00.000Z',
-    durationInWeeks: 4,
+    durationInWeeks: expansionBonusDurationInWeeks,
     // rewardBucketStartDateTime: HARVEST_RELOAD_DATETIME,
     weeksToTotalMaturity: 8,
     intervalDurationMinutes: 60,
