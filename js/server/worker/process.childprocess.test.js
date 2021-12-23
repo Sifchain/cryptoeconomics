@@ -93,8 +93,8 @@ const runTests = async (type, parsedData, network, programName) => {
 
   // const rankedAddresses = parsedData.users;
   const rankedAddresses = await loadAllLiquidityProviderAddresses(programName);
-  // let addressIndexToCheck = 50;
-  let addressIndexToCheck = rankedAddresses.length - 1;
+  let addressIndexToCheck = 100;
+  // let addressIndexToCheck = rankedAddresses.length - 1;
 
   const intervalsInADay = (24 * 60) / config.EVENT_INTERVAL_MINUTES;
   const sampleStates = [
@@ -160,7 +160,10 @@ const runTests = async (type, parsedData, network, programName) => {
     const address = rankedAddresses[addressIndexToCheck];
     const sample1 = sampleStates[0].users[address];
     const sample2 = sampleStates[1].users[address];
-    if (!sample1 && !sample2) {
+    if (!sample1 || !sample2) {
+      console.log(
+        `sample 1 present: ${!!sample1}, sample 2 present: ${!!sample2}`
+      );
       console.log('user not found: ' + address);
       continue;
     }
@@ -226,6 +229,13 @@ const runTests = async (type, parsedData, network, programName) => {
     )
   );
 
+  function getCurrentHeight(programName) {
+    return fetch(`https://rpc.sifchain.finance/abci_info?`)
+      .then((r) => r.json())
+      .then((r) => r.result.height);
+  }
+  const currheight = await getCurrentHeight(programName);
+
   console.log({ totalPoolDominanceRatio });
   describe('Verify Rewards', ({ test }) => {
     /* 
@@ -275,9 +285,10 @@ const runTests = async (type, parsedData, network, programName) => {
 
 const bp = new BackgroundProcessor();
 // const bp2 = new BackgroundProcessor();
-// const programName = 'harvest_expansion';
+const programName = 'harvest_expansion';
 // const programName = 'expansion_bonus';
-const programName = 'bonus_v2_luna';
+// const programName = 'bonus_v2_luna';
+// const programName = 'expansion_v2_bonus';
 bp.reloadAndReprocessSnapshots({
   network: MAINNET,
   rewardProgram: programName,
