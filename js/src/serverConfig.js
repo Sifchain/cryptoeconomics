@@ -115,7 +115,7 @@ const HARVEST_RELOAD_DATETIME = '2021-11-05T17:26:13.441Z';
 
 const expansionBonusDurationInWeeks =
   (new Date('2021-11-22T10:00:00.000Z').getTime() -
-    new Date('12/21/2021, 8:30:00 PM PST').getTime()) /
+    new Date('12/22/2021, 8:30:00 AM PST').getTime()) /
   1000 /
   60 /
   60 /
@@ -157,9 +157,9 @@ module.exports = {
     initialRowan: 0, // + 20_000_000,
     // startsAt: '2021-11-05T00:00:00.000Z',
     startsAt: '2021-11-22T10:00:00.000Z',
-    durationInWeeks: expansionBonusDurationInWeeks,
+    durationInWeeks: 4,
     // rewardBucketStartDateTime: HARVEST_RELOAD_DATETIME,
-    weeksToTotalMaturity: expansionBonusDurationInWeeks,
+    weeksToTotalMaturity: 8,
     intervalDurationMinutes: 60,
     initialRewardMultiplier: 1,
     shouldSubtractWithdrawalsFromInitialBalance: false,
@@ -179,10 +179,10 @@ module.exports = {
   expansion_v2_bonus: createConfig({
     initialRowan: 0, // + 20_000_000,
     // startsAt: '2021-11-05T00:00:00.000Z',
-    startsAt: new Date('12/21/2021, 12:00:00 AM PST').toISOString(),
+    startsAt: new Date('12/21/2021, 8:00:00 AM PST').toISOString(),
     durationInWeeks: 4,
     // rewardBucketStartDateTime: HARVEST_RELOAD_DATETIME,
-    weeksToTotalMaturity: 4,
+    weeksToTotalMaturity: 8,
     intervalDurationMinutes: 60,
     initialRewardMultiplier: 1,
     shouldSubtractWithdrawalsFromInitialBalance: false,
@@ -206,7 +206,7 @@ module.exports = {
     startsAt: new Date('12/14/2021, 8:00:00 AM PST').toISOString(),
     durationInWeeks: 1,
     // rewardBucketStartDateTime: HARVEST_RELOAD_DATETIME,
-    weeksToTotalMaturity: 1,
+    weeksToTotalMaturity: 8,
     intervalDurationMinutes: 60,
     initialRewardMultiplier: 1,
     shouldSubtractWithdrawalsFromInitialBalance: false,

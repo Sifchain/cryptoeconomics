@@ -206,7 +206,7 @@ module.exports = {
     startsAt: new Date('12/14/2021, 8:00:00 AM PST').toISOString(),
     durationInWeeks: 1,
     // rewardBucketStartDateTime: HARVEST_RELOAD_DATETIME,
-    weeksToTotalMaturity: 1,
+    weeksToTotalMaturity: 8,
     intervalDurationMinutes: 60,
     initialRewardMultiplier: 1,
     shouldSubtractWithdrawalsFromInitialBalance: false,
