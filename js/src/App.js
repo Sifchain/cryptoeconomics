@@ -22,6 +22,33 @@ const serverConfig =
     window.sessionStorage.getItem('rewardProgram') ||
       Object.keys(serverConfigs)[0]
   ] || serverConfigs[Object.keys(serverConfigs)[0]];
+
+function checkCurrentPoolValueInRowan(address) {
+    const config = serverConfig;
+    return fetch(
+      `https://api.sifchain.finance/sifchain/clp/v1/liquidity_provider_data/${address}`
+    )
+      .then((r) => r.json())
+      .then((r) => {
+        return (
+          +r.liquidity_provider_data
+            .reduce((prev, curr) => {
+              if (
+                config.COIN_WHITELIST &&
+                !config.COIN_WHITELIST.includes(
+                  curr.liquidity_provider.asset.symbol
+                )
+              )
+                return prev;
+              return prev + BigInt(curr.native_asset_balance) * 2n;
+            }, 0n)
+            .toString() /
+          10 ** 18
+        );
+      });
+  }
+
+
 // show all fields locally
 const SHOULD_HIDE_NON_USER_FRIENDLY_FIELDS =
   !!process.env.REACT_APP_DEPLOYMENT_TAG;
@@ -161,6 +188,7 @@ class App extends React.Component {
       originalTitle: window.document.title,
       router: router,
       rewardPrograms: [],
+      actualUserPooledRowan:0
     };
     fetchRewardPrograms().then((rps) => {
       console.log(rps);
@@ -180,6 +208,7 @@ class App extends React.Component {
     this.updateTimestamp = this.updateTimestamp.bind(this);
     this.updateType = this.updateType.bind(this);
     this.updateAddress(this.state.address);
+  
   }
 
   updateWebsiteTitle() {
@@ -299,11 +328,13 @@ class App extends React.Component {
             this.state.type,
             undefined,
             this.state.network
-          ).then((bulkUserData) => {
+          ).then(async (bulkUserData) => {
+            const actualUserPooledRowan = await checkCurrentPoolValueInRowan(address)
             const userData = bulkUserData[this.state.timeIndex];
             this.setState({
               bulkUserData,
               userData,
+              actualUserPooledRowan
             });
           });
         })
@@ -313,6 +344,7 @@ class App extends React.Component {
       address,
       userData: undefined,
       userTimeSeriesData: undefined,
+      actualUserPooledRowan: 0
     });
   }
 
@@ -536,6 +568,10 @@ class App extends React.Component {
             </div>
           </div>
         </header>
+
+        <div style={{color: 'white'}}>
+         Actual pool liquidity in units of Rowan:  {new Intl.NumberFormat().format(this.state.actualUserPooledRowan)}
+        </div>
 
         <div className="content">
           {this.state.address === 'leaderboard' && (
