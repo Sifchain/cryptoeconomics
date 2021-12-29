@@ -62,14 +62,19 @@ async function divideDispensations() {
     // 'lm_harvest_reloaded',
     // 'lm_osmo',
     // 'lm_ratom',
-    'lm_luna',
     // 'lm_usd',
     // 'lm_eur',
-    'universal_txn',
-    'universal_vol',
     // harvest expansion
-    'lm_harvest',
-    'lm_bonus',
+    // 'lm_luna',
+    // 'universal_txn',
+    // 'universal_vol',
+    // 'lm_harvest',
+    // 'lm_bonus',
+    // new names
+    'harvest_expansion',
+    'expansion_v2_bonus',
+    'expansion_bonus',
+    'bonus_v2_luna'
   ]) {
     const rawDist = await fetch(
       `https://data.sifchain.finance/beta/network/dispensation/${type}`
@@ -145,6 +150,7 @@ function createDispensationRunKit() {
   // RUNNER_ADDRESS = 'sif1pvnu2kh826vn8r0ttlgt82hsmfknvcnf7qmpvk';
   // DISTRIBUTOR_ADDRESS = 'sif1pvnu2kh826vn8r0ttlgt82hsmfknvcnf7qmpvk';
   function getRewardProgramNameByType(type) {
+    return type;
     switch (type) {
       case 'vs':
         return rewardPrograms['39_SUNSET_VALIDATOR_SUBSIDY'];
@@ -170,7 +176,7 @@ function createDispensationRunKit() {
         return rewardPrograms['bonus_v1_osmo'];
       case 'lm_ratom':
         return rewardPrograms['bonus_v1_ratom'];
-      case 'lm_luna':
+      case 'bonus_v2_luna':
         return rewardPrograms['bonus_v2_luna'];
       case 'lm_usd':
         return rewardPrograms['bonus_v1_usd'];
@@ -180,6 +186,7 @@ function createDispensationRunKit() {
         return rewardPrograms['universal_txn'];
       case 'universal_vol':
         return rewardPrograms['universal_vol'];
+        
     }
   }
 
