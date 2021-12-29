@@ -210,7 +210,7 @@ function createDispensationRunKit() {
     DOWNLOAD_DIST_LIST_COMMAND: `curl "<TARBALL_FILE_URL>" -o ${dispensationName}.tar.gz && mkdir ./${dispensationName} && tar -xzvf ${dispensationName}.tar.gz -C ${dispensationName} && cd ${dispensationName}`,
     CREATE_DISTRIBUTIONS_COMMAND: filePaths
       .filter((p) => p.includes('.split.'))
-
+      // NOTE: data services no longer depends on the memo field. However, it should remain anyway for historical purposes.
       .map(
         (p) =>
           `sleep 8;\n\n\n\nsifnoded tx dispensation create ${getDistributionTypeByType(
