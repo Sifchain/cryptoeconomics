@@ -1,0 +1,42 @@
+[
+  {
+    "selection": "USDC",
+    "votingPower": 12931150.76,
+    "voteCount": 8
+  },
+  {
+    "selection": "USDT",
+    "votingPower": 12247927.81,
+    "voteCount": 26
+  },
+  {
+    "selection": "UST",
+    "votingPower": 5099291.89,
+    "voteCount": 18
+  },
+  {
+    "selection": "USDR",
+    "votingPower": 2560488.86,
+    "voteCount": 1
+  },
+  {
+    "selection": "EEUR",
+    "votingPower": 276579.78,
+    "voteCount": 1
+  },
+  {
+    "selection": "LGCY",
+    "votingPower": 28266.96,
+    "voteCount": 1
+  },
+  {
+    "selection": "METIS",
+    "votingPower": 12466.42,
+    "voteCount": 1
+  },
+  {
+    "selection": "BNB",
+    "votingPower": 7.7,
+    "voteCount": 1
+  }
+]

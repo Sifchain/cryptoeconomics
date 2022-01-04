@@ -1,0 +1,157 @@
+[
+  {
+    "selection": "ZCX",
+    "votingPower": 12894281.5,
+    "voteCount": 15
+  },
+  {
+    "selection": "ETH",
+    "votingPower": 12196259.22,
+    "voteCount": 32
+  },
+  {
+    "selection": "UST",
+    "votingPower": 7753472.43,
+    "voteCount": 57
+  },
+  {
+    "selection": "JUNO",
+    "votingPower": 7562300.26,
+    "voteCount": 33
+  },
+  {
+    "selection": "LGCY",
+    "votingPower": 7169579.93,
+    "voteCount": 10
+  },
+  {
+    "selection": "LUNA",
+    "votingPower": 5420970.31,
+    "voteCount": 56
+  },
+  {
+    "selection": "AKT",
+    "votingPower": 1111977.42,
+    "voteCount": 8
+  },
+  {
+    "selection": "USDT",
+    "votingPower": 761500.85,
+    "voteCount": 23
+  },
+  {
+    "selection": "SAND",
+    "votingPower": 723367.46,
+    "voteCount": 3
+  },
+  {
+    "selection": "ATOM",
+    "votingPower": 604412.13,
+    "voteCount": 6
+  },
+  {
+    "selection": "OSMO",
+    "votingPower": 348134.33,
+    "voteCount": 14
+  },
+  {
+    "selection": "CRO",
+    "votingPower": 314428.34,
+    "voteCount": 7
+  },
+  {
+    "selection": "METIS",
+    "votingPower": 279800.63,
+    "voteCount": 4
+  },
+  {
+    "selection": "LINA",
+    "votingPower": 276135.02,
+    "voteCount": 2
+  },
+  {
+    "selection": "REGEN",
+    "votingPower": 93965.3,
+    "voteCount": 2
+  },
+  {
+    "selection": "IRIS",
+    "votingPower": 93411.55,
+    "voteCount": 2
+  },
+  {
+    "selection": "USDC",
+    "votingPower": 90501.28,
+    "voteCount": 6
+  },
+  {
+    "selection": "DVPN",
+    "votingPower": 88659.07,
+    "voteCount": 2
+  },
+  {
+    "selection": "NGM",
+    "votingPower": 58140.71,
+    "voteCount": 1
+  },
+  {
+    "selection": "WSCRT",
+    "votingPower": 37987.26,
+    "voteCount": 1
+  },
+  {
+    "selection": "RUNE",
+    "votingPower": 22161.37,
+    "voteCount": 6
+  },
+  {
+    "selection": "RNDR",
+    "votingPower": 11170.89,
+    "voteCount": 2
+  },
+  {
+    "selection": "1INCH",
+    "votingPower": 8279.7,
+    "voteCount": 1
+  },
+  {
+    "selection": "POND",
+    "votingPower": 4748.41,
+    "voteCount": 1
+  },
+  {
+    "selection": "LINK",
+    "votingPower": 3895.57,
+    "voteCount": 1
+  },
+  {
+    "selection": "FTM",
+    "votingPower": 3750.26,
+    "voteCount": 1
+  },
+  {
+    "selection": "MATIC",
+    "votingPower": 1875.13,
+    "voteCount": 1
+  },
+  {
+    "selection": "WBTC",
+    "votingPower": 1858.32,
+    "voteCount": 1
+  },
+  {
+    "selection": "DAI",
+    "votingPower": 1607.79,
+    "voteCount": 1
+  },
+  {
+    "selection": "COMP",
+    "votingPower": 731.22,
+    "voteCount": 1
+  },
+  {
+    "selection": "ROWAN",
+    "votingPower": 531.68,
+    "voteCount": 1
+  }
+]

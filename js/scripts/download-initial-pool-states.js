@@ -13,7 +13,7 @@ const loadPoolStateAtHeight = async (
   let offset = 0;
   while (true) {
     const { result: liquidityProviders } = await fetch(
-      `https://api-archive.sifchain.finance/clp/getLpList?symbol=${symbol}&height=${height}&offset=${offset}`
+      `https://api.sifchain.finance/clp/getLpList?symbol=${symbol}&height=${height}&offset=${offset}`
     ).then((r) => r.json());
     if (liquidityProviders === null) return userStates;
     for (let {
@@ -39,7 +39,7 @@ const loadStateAtHeight = async (height, coinWhitelist = undefined) => {
   const {
     result: { pools },
   } = await fetch(
-    `https://api-archive.sifchain.finance/clp/getPools?height=${height}`
+    `https://api.sifchain.finance/clp/getPools?height=${height}`
   ).then((r) => r.json());
   for (let pool of pools) {
     if (coinWhitelist && !coinWhitelist.includes(pool.external_asset.symbol))

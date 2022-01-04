@@ -1,0 +1,67 @@
+[
+  {
+    "selection": "USDT",
+    "votingPower": 14230226.37,
+    "voteCount": 35
+  },
+  {
+    "selection": "USDC",
+    "votingPower": 13246788.76,
+    "voteCount": 8
+  },
+  {
+    "selection": "UST",
+    "votingPower": 4863419.44,
+    "voteCount": 21
+  },
+  {
+    "selection": "USDR",
+    "votingPower": 2583291.39,
+    "voteCount": 1
+  },
+  {
+    "selection": "ETH",
+    "votingPower": 1227111.08,
+    "voteCount": 3
+  },
+  {
+    "selection": "EEUR",
+    "votingPower": 266991.04,
+    "voteCount": 1
+  },
+  {
+    "selection": "RUNE",
+    "votingPower": 188539.76,
+    "voteCount": 2
+  },
+  {
+    "selection": "ATOM",
+    "votingPower": 150831.95,
+    "voteCount": 2
+  },
+  {
+    "selection": "LGCY",
+    "votingPower": 28423.43,
+    "voteCount": 2
+  },
+  {
+    "selection": "METIS",
+    "votingPower": 12196.78,
+    "voteCount": 1
+  },
+  {
+    "selection": "JUNO",
+    "votingPower": 1197.3,
+    "voteCount": 6
+  },
+  {
+    "selection": "EMPTY",
+    "votingPower": 10.26,
+    "voteCount": 1
+  },
+  {
+    "selection": "BNB",
+    "votingPower": 7.7,
+    "voteCount": 1
+  }
+]

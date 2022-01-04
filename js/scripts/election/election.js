@@ -30,6 +30,7 @@ const election = (module.exports.election = async function election(
       ? proposals[proposals.length - 1].replace('.json', '')
       : params.proposal;
 
+  console.log(`running election for proposal ${proposalName}`);
   if (!proposals.includes(`${proposalName}.json`))
     throw new Error('proposal not found with name ' + params.proposal);
   const proposal = require(`./proposals/${proposalName}.json`);
@@ -53,30 +54,37 @@ const election = (module.exports.election = async function election(
   for (let _address in ballotsByAddress) {
     const address = _address;
     const promise = (async () => {
-      const ballotList = ballotsByAddress[address];
-      for (let ballot of ballotList) {
-        const strategyOutput = await strategies.reduce(
-          (prev, strategy) =>
-            prev.then((prevOut) =>
-              strategy({ startHeight, endHeight, address }, { fetch }).then(
-                (out) => prevOut + out
-              )
-            ),
-          Promise.resolve(0n)
-        );
-
-        weightedVotes[ballot] = (weightedVotes[ballot] || 0n) + strategyOutput;
+      const ballotsRaw = ballotsByAddress[address];
+      const ballotList = [...new Set(ballotsRaw)].slice(0, proposal.maxBallots || ballotsRaw.length);
+      if (ballotList.includes('USDR')){
+        console.log(`${address} has a USDR ballot`);
+      }
+      const strategyOutput = await strategies.reduce(
+        (prev, strategy, strategyIndex) =>
+          prev.then((prevOut) =>
+            strategy({ startHeight, endHeight, address }, { fetch }).then(
+              (out) =>
+                prevOut +
+                BigInt(
+                  Math.floor(
+                    +out.toString() * proposal.strategies[strategyIndex].weight
+                  )
+                )
+            )
+          ),
+        Promise.resolve(0n)
+      );
+      for (let i = 0; i < ballotList.length; i++) {
+        const ballot = ballotList[i];
+        const rankWeight = 1 / 2 ** i;
+        const ballotWeight = +strategyOutput.toString() * rankWeight;
+        weightedVotes[ballot] =
+          (weightedVotes[ballot] || 0n) + BigInt(Math.floor(ballotWeight));
       }
     })();
     promises.push(promise);
   }
-  console.log(
-    Object.fromEntries(
-      Object.entries(ballotsByAddress).filter(([, ballotList]) =>
-        ballotList.includes('LGCY')
-      )
-    )
-  );
+
   await Promise.all(promises.map((r) => r.catch(console.error)));
   const votes = [];
   for (let ballot in weightedVotes) {
