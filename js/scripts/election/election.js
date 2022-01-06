@@ -48,6 +48,8 @@ const election = (module.exports.election = async function election(
     (strategy) => require(`./strategies/${strategy.name}`).default
   );
 
+  const powerByStrategyByAddress = {};
+  const powerByStrategyByBallot = {};
   const promises = [];
   let index = 0;
   const weightedVotes = {};
@@ -55,21 +57,28 @@ const election = (module.exports.election = async function election(
     const address = _address;
     const promise = (async () => {
       const ballotsRaw = ballotsByAddress[address];
-      const ballotList = [...new Set(ballotsRaw)].slice(0, proposal.maxBallots || ballotsRaw.length);
-      if (ballotList.includes('USDR')){
+      const ballotList = [...new Set(ballotsRaw)].slice(
+        0,
+        proposal.maxBallots || ballotsRaw.length
+      );
+      if (ballotList.includes('USDR')) {
         console.log(`${address} has a USDR ballot`);
       }
       const strategyOutput = await strategies.reduce(
         (prev, strategy, strategyIndex) =>
           prev.then((prevOut) =>
             strategy({ startHeight, endHeight, address }, { fetch }).then(
-              (out) =>
-                prevOut +
-                BigInt(
-                  Math.floor(
-                    +out.toString() * proposal.strategies[strategyIndex].weight
-                  )
-                )
+              (out) => {
+                const strategyConfig = proposal.strategies[strategyIndex];
+                const power = Math.floor(
+                  +out.toString() * strategyConfig.weight
+                );
+                powerByStrategyByAddress[address] =
+                  powerByStrategyByAddress[address] || {};
+                powerByStrategyByAddress[address][strategyConfig.name] = power;
+
+                return prevOut + BigInt(power);
+              }
             )
           ),
         Promise.resolve(0n)
@@ -78,6 +87,12 @@ const election = (module.exports.election = async function election(
         const ballot = ballotList[i];
         const rankWeight = 1 / 2 ** i;
         const ballotWeight = +strategyOutput.toString() * rankWeight;
+        powerByStrategyByBallot[ballot] = powerByStrategyByBallot[ballot] || {};
+        for (let strategyName in powerByStrategyByAddress[address]) {
+          powerByStrategyByBallot[ballot][strategyName] =
+            (powerByStrategyByBallot[ballot][strategyName] || 0) +
+            powerByStrategyByAddress[address][strategyName] * rankWeight;
+        }
         weightedVotes[ballot] =
           (weightedVotes[ballot] || 0n) + BigInt(Math.floor(ballotWeight));
       }
@@ -94,6 +109,14 @@ const election = (module.exports.election = async function election(
       voteCount: Object.entries(ballotsByAddress).filter(([k, v]) => {
         return v.join(',').toUpperCase().includes(ballot.toUpperCase());
       }).length,
+      ...Object.fromEntries(
+        Object.entries(powerByStrategyByBallot[ballot]).map(([k, v]) => [
+          k + ` power`,
+          new Intl.NumberFormat('en-US', {}).format(
+            +(+v.toString() / 10 ** 18).toFixed(2)
+          ),
+        ])
+      ),
     });
   }
   const formattedElectionResults = votes.sort(
