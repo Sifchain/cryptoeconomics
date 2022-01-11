@@ -55,6 +55,7 @@ const election = (module.exports.election = async function election(
   const weightedVotes = {};
   for (let _address in ballotsByAddress) {
     const address = _address;
+
     const promise = (async () => {
       const ballotsRaw = ballotsByAddress[address];
       const ballotList = [...new Set(ballotsRaw)].slice(
@@ -83,6 +84,13 @@ const election = (module.exports.election = async function election(
           ),
         Promise.resolve(0n)
       );
+      if (['LGCY', 'ZCX'].some((predicate) => ballotList.includes(predicate))) {
+        console.log(
+          `${address} voted for ${ballotList.join(
+            ','
+          )}. Power: ${strategyOutput}`
+        );
+      }
       for (let i = 0; i < ballotList.length; i++) {
         const ballot = ballotList[i];
         const rankWeight = 1 / 2 ** i;

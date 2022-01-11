@@ -156,51 +156,51 @@ const runTests = async (type, parsedData, network, programName) => {
         );
       });
   }
-  while (addressIndexToCheck--) {
-    const address = rankedAddresses[addressIndexToCheck];
-    const sample1 = sampleStates[0].users[address];
-    const sample2 = sampleStates[1].users[address];
-    if (!sample1 || !sample2) {
-      console.log(
-        `sample 1 present: ${!!sample1}, sample 2 present: ${!!sample2}`
-      );
-      console.log('user not found: ' + address);
-      continue;
-    }
-    const rewardDelta =
-      sample2.totalAccruedCommissionsAndClaimableRewards -
-      sample1.totalAccruedCommissionsAndClaimableRewards;
-    if (!(sample1.totalDepositedAmount || sample2.totalDepositedAmount)) {
-      continue;
-    }
-    if (sample1.totalDepositedAmount !== sample2.totalDepositedAmount) {
-      console.log('skipping ' + address);
-      continue;
-    }
-    const actualDailyRate = (rewardDelta / sample1.totalDepositedAmount) * 100;
-    const hasExpectedDailyRate =
-      expectedDailyRate.toFixed(4) === actualDailyRate.toFixed(4);
-    // console.log({
-    //   address,
-    //   hasExpectedDailyRate,
-    //   expectedDailyRate,
-    //   actualDailyRate,
-    // });
-    const expectedPoolValueInRowan = await checkCurrentPoolValueInRowan(
-      address
-    );
-    const actualPoolValueInRowan = sample1.totalDepositedAmount;
-    const diff = Math.abs(expectedPoolValueInRowan - actualPoolValueInRowan);
-    const diffPercentage = (diff / actualPoolValueInRowan) * 100;
-    if (diffPercentage > 50) {
-      console.log({
-        address,
-        diffPercentage: diffPercentage.toFixed(2) + '%',
-        expectedPoolValueInRowan,
-        actualPoolValueInRowan,
-      });
-    }
-  }
+  // while (addressIndexToCheck--) {
+  //   const address = rankedAddresses[addressIndexToCheck];
+  //   const sample1 = sampleStates[0].users[address];
+  //   const sample2 = sampleStates[1].users[address];
+  //   if (!sample1 || !sample2) {
+  //     console.log(
+  //       `sample 1 present: ${!!sample1}, sample 2 present: ${!!sample2}`
+  //     );
+  //     console.log('user not found: ' + address);
+  //     continue;
+  //   }
+  //   const rewardDelta =
+  //     sample2.totalAccruedCommissionsAndClaimableRewards -
+  //     sample1.totalAccruedCommissionsAndClaimableRewards;
+  //   if (!(sample1.totalDepositedAmount || sample2.totalDepositedAmount)) {
+  //     continue;
+  //   }
+  //   if (sample1.totalDepositedAmount !== sample2.totalDepositedAmount) {
+  //     console.log('skipping ' + address);
+  //     continue;
+  //   }
+  //   const actualDailyRate = (rewardDelta / sample1.totalDepositedAmount) * 100;
+  //   const hasExpectedDailyRate =
+  //     expectedDailyRate.toFixed(4) === actualDailyRate.toFixed(4);
+  //   // console.log({
+  //   //   address,
+  //   //   hasExpectedDailyRate,
+  //   //   expectedDailyRate,
+  //   //   actualDailyRate,
+  //   // });
+  //   const expectedPoolValueInRowan = await checkCurrentPoolValueInRowan(
+  //     address
+  //   );
+  //   const actualPoolValueInRowan = sample1.totalDepositedAmount;
+  //   const diff = Math.abs(expectedPoolValueInRowan - actualPoolValueInRowan);
+  //   const diffPercentage = (diff / actualPoolValueInRowan) * 100;
+  //   if (diffPercentage > 50) {
+  //     console.log({
+  //       address,
+  //       diffPercentage: diffPercentage.toFixed(2) + '%',
+  //       expectedPoolValueInRowan,
+  //       actualPoolValueInRowan,
+  //     });
+  //   }
+  // }
   const users = Object.values(currentGlobalTimestampState.users);
 
   // const totalValuePerUser = Object.entries(
@@ -285,10 +285,10 @@ const runTests = async (type, parsedData, network, programName) => {
 
 const bp = new BackgroundProcessor();
 // const bp2 = new BackgroundProcessor();
-// const programName = 'harvest_expansion';
+const programName = 'harvest_expansion';
 // const programName = 'expansion_bonus';
 // const programName = 'bonus_v2_luna';
-const programName = 'expansion_v2_bonus';
+// const programName = 'expansion_v2_bonus';
 bp.reloadAndReprocessSnapshots({
   network: MAINNET,
   rewardProgram: programName,
