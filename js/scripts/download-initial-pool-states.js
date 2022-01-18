@@ -13,7 +13,7 @@ const loadPoolStateAtHeight = async (
   let offset = 0;
   while (true) {
     const { result: liquidityProviders } = await fetch(
-      `https://api.sifchain.finance/clp/getLpList?symbol=${symbol}&height=${height}&offset=${offset}`
+      `https://api-archive.sifchain.finance/clp/getLpList?symbol=${symbol}&height=${height}&offset=${offset}`
     ).then((r) => r.json());
     if (liquidityProviders === null) return userStates;
     for (let {
@@ -39,7 +39,7 @@ const loadStateAtHeight = async (height, coinWhitelist = undefined) => {
   const {
     result: { pools },
   } = await fetch(
-    `https://api.sifchain.finance/clp/getPools?height=${height}`
+    `https://api-archive.sifchain.finance/clp/getPools?height=${height}`
   ).then((r) => r.json());
   for (let pool of pools) {
     if (coinWhitelist && !coinWhitelist.includes(pool.external_asset.symbol))
@@ -57,7 +57,8 @@ const startingHeights = {
   // harvest_expansion: '4335023',
   // expansion_bonus: '4335023',
   // bonus_v2_luna: '4654182',
-  expansion_v2_bonus: '4756424',
+  // expansion_v2_bonus: '4756424',
+  expansion_v3_bonus: '5163394',
 };
 async function main() {
   for (let programName in startingHeights) {

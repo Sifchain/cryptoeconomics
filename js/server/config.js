@@ -200,6 +200,31 @@ module.exports = {
       'ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2',
     ],
   }),
+  expansion_v3_bonus: createConfig({
+    initialRowan: 0, // + 20_000_000,
+    // startsAt: '2021-11-05T00:00:00.000Z',
+    startsAt: new Date('01/18/2022, 8:00:00 AM PST').toISOString(),
+    durationInWeeks: 4,
+    // rewardBucketStartDateTime: HARVEST_RELOAD_DATETIME,
+    weeksToTotalMaturity: 8,
+    intervalDurationMinutes: 60,
+    initialRewardMultiplier: 1,
+    shouldSubtractWithdrawalsFromInitialBalance: false,
+    shouldIncludeInitialLiquidity: true,
+    staticAPRPercentage: 200,
+    coinWhitelist: [
+      'czcx',
+      'ceth',
+      'clgcy',
+      'cusdc',
+      // JUNØ
+      'ibc/F279AB967042CAC10BFF70FAECB179DCE37AAAE4CD4C1BC4565C2BBC383BC0FA',
+      // LUNA
+      'ibc/F141935FF02B74BDC6B8A0BD6FE86A23EE25D10E89AA0CD9158B3D92B63FDF4D',
+      // ATOM
+      'ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2',
+    ],
+  }),
   bonus_v2_luna: createConfig({
     initialRowan: 0, // + 20_000_000,
     // startsAt: '2021-11-05T00:00:00.000Z',

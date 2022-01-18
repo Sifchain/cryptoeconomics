@@ -86,7 +86,6 @@ const runTests = async (type, parsedData, network, programName) => {
   const currentTimeIndex = getTimeIndex('now', programName);
   const finalGlobalTimestampState =
     parsedData.processedData[parsedData.processedData.length - 1];
-
   console.log('final ');
   const currentGlobalTimestampState =
     parsedData.processedData[currentTimeIndex];
@@ -285,10 +284,11 @@ const runTests = async (type, parsedData, network, programName) => {
 
 const bp = new BackgroundProcessor();
 // const bp2 = new BackgroundProcessor();
-const programName = 'harvest_expansion';
+// const programName = 'harvest_expansion';
 // const programName = 'expansion_bonus';
 // const programName = 'bonus_v2_luna';
 // const programName = 'expansion_v2_bonus';
+const programName = 'expansion_v3_bonus';
 bp.reloadAndReprocessSnapshots({
   network: MAINNET,
   rewardProgram: programName,
