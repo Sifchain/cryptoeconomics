@@ -320,7 +320,7 @@ const server = new ApolloServer({
             rewardProgramName: 'bonus_v2_luna',
             incentivizedPoolSymbols: ['luna'],
             documentationURL:
-              'https://docs.sifchain.finance/resources/rewards-programs',
+              'https://docs.sifchain.finance/using-the-website/web-ui-step-by-step/rewards/liquidity-mining-rewards-programs',
             isUniversal: false,
             distributionPattern: 'STATIC_APR',
           },
@@ -331,7 +331,7 @@ const server = new ApolloServer({
             rewardProgramName: 'harvest_expansion',
             incentivizedPoolSymbols: ['*'],
             documentationURL:
-              'https://docs.sifchain.finance/resources/rewards-programs',
+              'https://docs.sifchain.finance/using-the-website/web-ui-step-by-step/rewards/liquidity-mining-rewards-programs',
             isUniversal: true,
             distributionPattern: 'STATIC_APR',
           },
@@ -353,7 +353,7 @@ const server = new ApolloServer({
               'atom',
             ],
             documentationURL:
-              'https://docs.sifchain.finance/resources/rewards-programs',
+              'https://docs.sifchain.finance/using-the-website/web-ui-step-by-step/rewards/liquidity-mining-rewards-programs',
             isUniversal: false,
             distributionPattern: 'STATIC_APR',
           },
@@ -374,7 +374,7 @@ const server = new ApolloServer({
               'atom',
             ],
             documentationURL:
-              'https://docs.sifchain.finance/resources/rewards-programs',
+              'https://docs.sifchain.finance/using-the-website/web-ui-step-by-step/rewards/liquidity-mining-rewards-programs',
             isUniversal: false,
             distributionPattern: 'STATIC_APR',
           },
@@ -385,7 +385,7 @@ const server = new ApolloServer({
             rewardProgramName: 'expansion_bonus',
             incentivizedPoolSymbols: ['atom', 'usd', 'juno', 'zcx', 'eth'],
             documentationURL:
-              'https://docs.sifchain.finance/resources/rewards-programs',
+              'https://docs.sifchain.finance/using-the-website/web-ui-step-by-step/rewards/liquidity-mining-rewards-programs',
             isUniversal: false,
             distributionPattern: 'STATIC_APR',
           },
