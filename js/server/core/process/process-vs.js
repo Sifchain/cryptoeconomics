@@ -34,6 +34,7 @@ function processVSGlobalState(
     MULTIPLIER_MATURITY,
     NUMBER_OF_INTERVALS_TO_RUN,
     EVENT_INTERVAL_MINUTES,
+    AUTO_CLAIM_TIME_INDEX_LOOKUP,
   } = configs[rewardProgram];
   const { rewardBuckets, globalRewardAccrued } = processRewardBuckets(
     lastGlobalState.rewardBuckets,
@@ -87,9 +88,11 @@ function processVSGlobalState(
     rewardProgram
   );
   const i = timestamp / EVENT_INTERVAL_MINUTES;
+
   if (
     i ===
-    autoclaimTimeIndex /* || i === NUMBER_OF_INTERVALS_TO_RUN - 1 // auto-claims at end of program  */
+      autoclaimTimeIndex /* || i === NUMBER_OF_INTERVALS_TO_RUN - 1 // auto-claims at end of program  */ ||
+    AUTO_CLAIM_TIME_INDEX_LOOKUP[i]
   ) {
     for (let address in users) {
       const getUserByAddress = (address) => {

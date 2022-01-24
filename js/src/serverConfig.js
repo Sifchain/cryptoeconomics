@@ -1,4 +1,69 @@
 const moment = require('moment');
+function getTimeIndex(timestampFromClient, config) {
+  const { START_DATETIME, EVENT_INTERVAL_MINUTES } = config;
+  if (!timestampFromClient) {
+    return;
+  }
+  let nowMoment;
+  if (timestampFromClient === 'now') {
+    nowMoment = moment.utc(new Date());
+  } else {
+    nowMoment = moment.utc(new Date(timestampFromClient));
+  }
+  const diff = nowMoment.diff(moment.utc(START_DATETIME));
+  const rtn =
+    Math.floor(moment.duration(diff).asMinutes() / EVENT_INTERVAL_MINUTES) + 1;
+  return rtn;
+}
+function calculateDateOfNextDispensation(currentDate) {
+  const date = currentDate;
+  date.setMinutes(0, 0, 0);
+  let hoursIterationLimit = 24 * 7.5;
+  while (hoursIterationLimit--) {
+    date.setHours(date.getHours() + 1);
+    // output format: Friday, December 31, 2021 at 4:17:29 PM PST
+    const formattedDate = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/Los_Angeles',
+      dateStyle: 'full',
+      timeStyle: 'long',
+    }).format(date);
+    // console.log(formattedDate);
+    // dispensations are on Mondays at 8:00 AM PST
+    if (
+      formattedDate.includes('Monday') &&
+      formattedDate.includes('8:00:00 AM PST')
+    ) {
+      console.log(formattedDate);
+      return date;
+    }
+  }
+  throw new Error('date not found');
+}
+
+function calculateClaimDateTimes(start, end) {
+  const claimDateTimes = [];
+  let currentDate = start;
+  while (currentDate.getTime() <= end.getTime()) {
+    const dateOfNextClaim = calculateDateOfNextDispensation(currentDate);
+    claimDateTimes.push(dateOfNextClaim);
+    const oneDay = 24 * 60 * 60 * 1000;
+    currentDate = new Date(dateOfNextClaim.getTime() + oneDay);
+  }
+  claimDateTimes.push(end);
+  return claimDateTimes;
+}
+
+const createAutoClaimTimeIndexLookup = (start, end, config) => {
+  const list = calculateClaimDateTimes(start, end).map((d) =>
+    getTimeIndex(d, config)
+  );
+  const lookup = {};
+  list.forEach((v) => {
+    lookup[v] = true;
+  });
+  return lookup;
+};
+
 function createConfig({
   startsAt,
   durationInWeeks,
@@ -79,7 +144,22 @@ function createConfig({
     INITIAL_REWARD_MULTIPLIER: initialRewardMultiplier,
     COIN_WHITELIST: coinWhitelist,
     STATIC_APR_PERCENTAGE: staticAPRPercentage,
+    AUTO_CLAIM_TIME_INDEX_LOOKUP: {},
   };
+  config.AUTO_CLAIM_TIME_INDEX_LOOKUP = createAutoClaimTimeIndexLookup(
+    new Date(
+      Math.max(
+        new Date(START_DATETIME).getTime(),
+        new Date(`2022-01-22T17:22:26.092Z`).getTime()
+      )
+    ),
+    new Date(END_OF_REWARD_ACCRUAL_DATETIME),
+    config
+  );
+  console.log(
+    'AUTO_CLAIM_TIME_INDEX_LOOKUP',
+    config.AUTO_CLAIM_TIME_INDEX_LOOKUP
+  );
   return config;
 }
 
@@ -114,8 +194,8 @@ function createTimerBucket({
 const HARVEST_RELOAD_DATETIME = '2021-11-05T17:26:13.441Z';
 
 const expansionBonusDurationInWeeks =
-  (new Date('2021-11-22T10:00:00.000Z').getTime() -
-    new Date('12/22/2021, 8:30:00 AM PST').getTime()) /
+  (new Date('12/22/2021, 10:00:00 AM PST').getTime() -
+    new Date('2021-11-22T10:00:00.000Z').getTime()) /
   1000 /
   60 /
   60 /
@@ -157,7 +237,7 @@ module.exports = {
     initialRowan: 0, // + 20_000_000,
     // startsAt: '2021-11-05T00:00:00.000Z',
     startsAt: '2021-11-22T10:00:00.000Z',
-    durationInWeeks: 4,
+    durationInWeeks: expansionBonusDurationInWeeks,
     // rewardBucketStartDateTime: HARVEST_RELOAD_DATETIME,
     weeksToTotalMaturity: 8,
     intervalDurationMinutes: 60,
@@ -192,6 +272,31 @@ module.exports = {
       'czcx',
       'ceth',
       'clgcy',
+      // JUNØ
+      'ibc/F279AB967042CAC10BFF70FAECB179DCE37AAAE4CD4C1BC4565C2BBC383BC0FA',
+      // LUNA
+      'ibc/F141935FF02B74BDC6B8A0BD6FE86A23EE25D10E89AA0CD9158B3D92B63FDF4D',
+      // ATOM
+      'ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2',
+    ],
+  }),
+  expansion_v3_bonus: createConfig({
+    initialRowan: 0, // + 20_000_000,
+    // startsAt: '2021-11-05T00:00:00.000Z',
+    startsAt: new Date('01/18/2022, 8:00:00 AM PST').toISOString(),
+    durationInWeeks: 4,
+    // rewardBucketStartDateTime: HARVEST_RELOAD_DATETIME,
+    weeksToTotalMaturity: 8,
+    intervalDurationMinutes: 60,
+    initialRewardMultiplier: 1,
+    shouldSubtractWithdrawalsFromInitialBalance: false,
+    shouldIncludeInitialLiquidity: true,
+    staticAPRPercentage: 200,
+    coinWhitelist: [
+      'czcx',
+      'ceth',
+      'clgcy',
+      'cusdc',
       // JUNØ
       'ibc/F279AB967042CAC10BFF70FAECB179DCE37AAAE4CD4C1BC4565C2BBC383BC0FA',
       // LUNA
