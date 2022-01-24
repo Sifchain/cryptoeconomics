@@ -24,30 +24,29 @@ const serverConfig =
   ] || serverConfigs[Object.keys(serverConfigs)[0]];
 
 function checkCurrentPoolValueInRowan(address) {
-    const config = serverConfig;
-    return fetch(
-      `https://api.sifchain.finance/sifchain/clp/v1/liquidity_provider_data/${address}`
-    )
-      .then((r) => r.json())
-      .then((r) => {
-        return (
-          +r.liquidity_provider_data
-            .reduce((prev, curr) => {
-              if (
-                config.COIN_WHITELIST &&
-                !config.COIN_WHITELIST.includes(
-                  curr.liquidity_provider.asset.symbol
-                )
+  const config = serverConfig;
+  return fetch(
+    `https://api.sifchain.finance/sifchain/clp/v1/liquidity_provider_data/${address}`
+  )
+    .then((r) => r.json())
+    .then((r) => {
+      return (
+        +r.liquidity_provider_data
+          .reduce((prev, curr) => {
+            if (
+              config.COIN_WHITELIST &&
+              !config.COIN_WHITELIST.includes(
+                curr.liquidity_provider.asset.symbol
               )
-                return prev;
-              return prev + BigInt(curr.native_asset_balance) * 2n;
-            }, 0n)
-            .toString() /
-          10 ** 18
-        );
-      });
-  }
-
+            )
+              return prev;
+            return prev + BigInt(curr.native_asset_balance) * 2n;
+          }, 0n)
+          .toString() /
+        10 ** 18
+      );
+    });
+}
 
 // show all fields locally
 const SHOULD_HIDE_NON_USER_FRIENDLY_FIELDS =
@@ -188,7 +187,7 @@ class App extends React.Component {
       originalTitle: window.document.title,
       router: router,
       rewardPrograms: [],
-      actualUserPooledRowan:0
+      actualUserPooledRowan: 0,
     };
     fetchRewardPrograms().then((rps) => {
       console.log(rps);
@@ -208,7 +207,6 @@ class App extends React.Component {
     this.updateTimestamp = this.updateTimestamp.bind(this);
     this.updateType = this.updateType.bind(this);
     this.updateAddress(this.state.address);
-  
   }
 
   updateWebsiteTitle() {
@@ -329,12 +327,14 @@ class App extends React.Component {
             undefined,
             this.state.network
           ).then(async (bulkUserData) => {
-            const actualUserPooledRowan = await checkCurrentPoolValueInRowan(address)
+            const actualUserPooledRowan = await checkCurrentPoolValueInRowan(
+              address
+            );
             const userData = bulkUserData[this.state.timeIndex];
             this.setState({
               bulkUserData,
               userData,
-              actualUserPooledRowan
+              actualUserPooledRowan,
             });
           });
         })
@@ -344,7 +344,7 @@ class App extends React.Component {
       address,
       userData: undefined,
       userTimeSeriesData: undefined,
-      actualUserPooledRowan: 0
+      actualUserPooledRowan: 0,
     });
   }
 
@@ -569,8 +569,9 @@ class App extends React.Component {
           </div>
         </header>
 
-        <div style={{color: 'white'}}>
-         Actual pool liquidity in units of Rowan:  {new Intl.NumberFormat().format(this.state.actualUserPooledRowan)}
+        <div style={{ color: 'white' }}>
+          Actual pool liquidity in units of Rowan:{' '}
+          {new Intl.NumberFormat().format(this.state.actualUserPooledRowan)}
         </div>
 
         <div className="content">
@@ -645,12 +646,11 @@ class App extends React.Component {
                   )}
                 </div>
                 <div className="timestamp-slider-description__datetime">
-                  {this.state.date.format(
-                    `ddd MMMM Do YYYY[,] [${this.state.date
-                      .clone()
-                      .subtract(serverConfig.EVENT_INTERVAL_MINUTES, 'minutes')
-                      .format(`hh:mm A`)}] - hh:mm A`
-                  ) + ' UTC'}
+                  {new Intl.DateTimeFormat('en-US', {
+                    timeZone: 'America/Los_Angeles',
+                    dateStyle: 'full',
+                    timeStyle: 'long',
+                  }).format(this.state.date.toDate())}
                 </div>
                 <div
                   style={{
