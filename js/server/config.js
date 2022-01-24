@@ -16,7 +16,7 @@ function getTimeIndex(timestampFromClient, config) {
   return rtn;
 }
 function calculateDateOfNextDispensation(currentDate) {
-  const date = currentDate;
+  const date = new Date(currentDate);
   date.setMinutes(0, 0, 0);
   let hoursIterationLimit = 24 * 7.5;
   while (hoursIterationLimit--) {
