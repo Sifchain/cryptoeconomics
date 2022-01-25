@@ -65,6 +65,7 @@ const createAutoClaimTimeIndexLookup = (start, end, config) => {
 };
 
 function createConfig({
+  name,
   startsAt,
   durationInWeeks,
   weeksToTotalMaturity,
@@ -157,7 +158,7 @@ function createConfig({
     config
   );
   console.log(
-    'AUTO_CLAIM_TIME_INDEX_LOOKUP',
+    name + ':AUTO_CLAIM_TIME_INDEX_LOOKUP',
     config.AUTO_CLAIM_TIME_INDEX_LOOKUP
   );
   return config;
@@ -234,6 +235,7 @@ module.exports = {
   //   shouldIncludeInitialLiquidity: true,
   // }),
   expansion_bonus: createConfig({
+    name: 'expansion_bonus',
     initialRowan: 0, // + 20_000_000,
     // startsAt: '2021-11-05T00:00:00.000Z',
     startsAt: '2021-11-22T10:00:00.000Z',
@@ -257,6 +259,7 @@ module.exports = {
     ],
   }),
   expansion_v2_bonus: createConfig({
+    name: 'expansion_v2_bonus',
     initialRowan: 0, // + 20_000_000,
     // startsAt: '2021-11-05T00:00:00.000Z',
     startsAt: new Date('12/21/2021, 8:00:00 AM PST').toISOString(),
@@ -281,6 +284,7 @@ module.exports = {
     ],
   }),
   expansion_v3_bonus: createConfig({
+    name: 'expansion_v3_bonus',
     initialRowan: 0, // + 20_000_000,
     // startsAt: '2021-11-05T00:00:00.000Z',
     startsAt: new Date('01/18/2022, 8:00:00 AM PST').toISOString(),
@@ -306,6 +310,7 @@ module.exports = {
     ],
   }),
   bonus_v2_luna: createConfig({
+    name: 'bonus_v2_luna',
     initialRowan: 0, // + 20_000_000,
     // startsAt: '2021-11-05T00:00:00.000Z',
     startsAt: new Date('12/14/2021, 8:00:00 AM PST').toISOString(),
@@ -322,6 +327,7 @@ module.exports = {
     ],
   }),
   harvest_expansion: createConfig({
+    name: 'harvest_expansion',
     initialRowan: 0, // + 20_000_000,
     // startsAt: '2021-11-05T00:00:00.000Z',
     startsAt: '2021-11-22T10:00:00.000Z',
