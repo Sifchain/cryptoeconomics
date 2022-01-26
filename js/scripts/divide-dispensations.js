@@ -73,8 +73,9 @@ async function divideDispensations() {
     // new names
     'harvest_expansion',
     'expansion_v2_bonus',
+    'expansion_v3_bonus',
     'expansion_bonus',
-    'bonus_v2_luna'
+    'bonus_v2_luna',
   ]) {
     const rawDist = await fetch(
       `https://data.sifchain.finance/beta/network/dispensation/${type}`
@@ -186,7 +187,6 @@ function createDispensationRunKit() {
         return rewardPrograms['universal_txn'];
       case 'universal_vol':
         return rewardPrograms['universal_vol'];
-        
     }
   }
 
