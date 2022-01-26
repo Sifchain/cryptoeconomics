@@ -6,16 +6,12 @@
   "maxBallots": 4,
   "strategies": [
     {
-      "name": "rowan-balance",
+      "name": "rowan-staked",
       "weight": 1
     },
     {
       "name": "rowan-pooled",
       "weight": 1
-    },
-    {
-      "name": "rowan-staked",
-      "weight": 2
     }
   ],
   "startHeight": 4963426,

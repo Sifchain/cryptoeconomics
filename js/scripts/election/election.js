@@ -17,9 +17,12 @@ const election = (module.exports.election = async function election(
     result: {
       response: { last_block_height: latestBlockHeight },
     },
-  } = await fetch(`https://rpc.sifchain.finance/abci_info?`).then((r) =>
-    r.json()
-  );
+  } = await fetch(`https://rpc-archive.sifchain.finance/abci_info?`)
+    .then((r) => r.text())
+    .then((r) => {
+      console.log(r);
+      return JSON.parse(r);
+    });
 
   const proposals = fs
     .readdirSync(path.join(__dirname, './proposals'))
@@ -48,14 +51,31 @@ const election = (module.exports.election = async function election(
     (strategy) => require(`./strategies/${strategy.name}`).default
   );
 
-  const powerByStrategyByAddress = {};
-  const powerByStrategyByBallot = {};
+  const cacheFile = '/tmp/.election-js-cache';
+  const cache = {
+    setItem(key, val) {
+      fs.writeFileSync(cacheFile + key, JSON.stringify(val));
+    },
+    getItem(key) {
+      try {
+        return JSON.parse(fs.readFileSync(cacheFile + key).toString());
+      } catch {
+        return {};
+      }
+    },
+  };
+
+  const powerByStrategyByAddress = cache.getItem('powerByStrategyByAddress');
+  const powerByStrategyByBallot = cache.getItem('powerByStrategyByBallot');
+  const totalPowerByStrategy = cache.getItem('totalPowerByStrategy');
+  const weightedVotes = cache.getItem('weightedVotes');
+
+  const wasCached = !!Object.keys(totalPowerByStrategy).length;
   const promises = [];
   let index = 0;
-  const weightedVotes = {};
   for (let _address in ballotsByAddress) {
+    if (wasCached) break;
     const address = _address;
-
     const promise = (async () => {
       const ballotsRaw = ballotsByAddress[address];
       const ballotList = [...new Set(ballotsRaw)].slice(
@@ -71,6 +91,9 @@ const election = (module.exports.election = async function election(
             strategy({ startHeight, endHeight, address }, { fetch }).then(
               (out) => {
                 const strategyConfig = proposal.strategies[strategyIndex];
+                console.log(
+                  `successfully loaded data for ${strategyConfig.name}`
+                );
                 const power = Math.floor(
                   +out.toString() * strategyConfig.weight
                 );
@@ -78,37 +101,66 @@ const election = (module.exports.election = async function election(
                   powerByStrategyByAddress[address] || {};
                 powerByStrategyByAddress[address][strategyConfig.name] = power;
 
+                totalPowerByStrategy[strategyConfig.name] =
+                  totalPowerByStrategy[strategyConfig.name] || 0;
+                totalPowerByStrategy[strategyConfig.name] += power;
                 return prevOut + BigInt(power);
               }
             )
           ),
         Promise.resolve(0n)
       );
-      if (['LGCY', 'ZCX'].some((predicate) => ballotList.includes(predicate))) {
-        console.log(
-          `${address} voted for ${ballotList.join(
-            ','
-          )}. Power: ${strategyOutput}`
-        );
-      }
-      for (let i = 0; i < ballotList.length; i++) {
-        const ballot = ballotList[i];
-        const rankWeight = 1 / 2 ** i;
-        const ballotWeight = +strategyOutput.toString() * rankWeight;
-        powerByStrategyByBallot[ballot] = powerByStrategyByBallot[ballot] || {};
-        for (let strategyName in powerByStrategyByAddress[address]) {
-          powerByStrategyByBallot[ballot][strategyName] =
-            (powerByStrategyByBallot[ballot][strategyName] || 0) +
-            powerByStrategyByAddress[address][strategyName] * rankWeight;
-        }
-        weightedVotes[ballot] =
-          (weightedVotes[ballot] || 0n) + BigInt(Math.floor(ballotWeight));
-      }
     })();
     promises.push(promise);
   }
-
   await Promise.all(promises.map((r) => r.catch(console.error)));
+  cache.setItem('powerByStrategyByAddress', powerByStrategyByAddress);
+  cache.setItem('powerByStrategyByBallot', powerByStrategyByBallot);
+  cache.setItem('totalPowerByStrategy', totalPowerByStrategy);
+  cache.setItem('weightedVotes', weightedVotes);
+
+  const dynamicWeightsByStrategy = {};
+  let totalPower = 0;
+  let strategyCount = 0;
+  for (let strategy in totalPowerByStrategy) {
+    strategyCount++;
+    totalPower += totalPowerByStrategy[strategy];
+  }
+  const meanPowerPerStrategy = totalPower / strategyCount;
+  for (let strategy in totalPowerByStrategy) {
+    dynamicWeightsByStrategy[strategy] =
+      meanPowerPerStrategy / totalPowerByStrategy[strategy];
+  }
+  for (let address in ballotsByAddress) {
+    const ballotsRaw = ballotsByAddress[address];
+    const ballotList = [...new Set(ballotsRaw)].slice(
+      0,
+      proposal.maxBallots || ballotsRaw.length
+    );
+    let remainingRankWeight = 1;
+    for (let i = 0; i < ballotList.length; i++) {
+      const ballot = ballotList[i];
+      // example weights = .5 .25 .125 .125
+      remainingRankWeight =
+        i === proposal.maxBallots - 1
+          ? remainingRankWeight
+          : remainingRankWeight * 0.5;
+      const rankWeight = remainingRankWeight;
+      let totalUserPower = 0;
+      for (let strategy in totalPowerByStrategy)
+        totalUserPower +=
+          totalPowerByStrategy[strategy] * dynamicWeightsByStrategy[strategy];
+      const ballotWeight = +totalUserPower.toString() * rankWeight;
+      weightedVotes[ballot] =
+        (weightedVotes[ballot] || 0n) + BigInt(Math.floor(ballotWeight));
+      powerByStrategyByBallot[ballot] = powerByStrategyByBallot[ballot] || {};
+      for (let strategyName in powerByStrategyByAddress[address]) {
+        powerByStrategyByBallot[ballot][strategyName] =
+          (powerByStrategyByBallot[ballot][strategyName] || 0) +
+          powerByStrategyByAddress[address][strategyName] * rankWeight;
+      }
+    }
+  }
   const votes = [];
   for (let ballot in weightedVotes) {
     votes.push({

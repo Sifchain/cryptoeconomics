@@ -1,0 +1,336 @@
+[
+  {
+    "selection": "ETH",
+    "votingPower": 2508316849.8,
+    "voteCount": 144,
+    "rowan-staked power": "557,638.32",
+    "rowan-pooled power": "8,589,495"
+  },
+  {
+    "selection": "JUNO",
+    "votingPower": 1987420379.39,
+    "voteCount": 96,
+    "rowan-staked power": "1,568,471.65",
+    "rowan-pooled power": "9,608,517.54"
+  },
+  {
+    "selection": "LUNA",
+    "votingPower": 1730979040.11,
+    "voteCount": 87,
+    "rowan-staked power": "840,843.83",
+    "rowan-pooled power": "10,118,087.01"
+  },
+  {
+    "selection": "LGCY",
+    "votingPower": 1057820524.51,
+    "voteCount": 45,
+    "rowan-staked power": "176,136.06",
+    "rowan-pooled power": "5,667,985.12"
+  },
+  {
+    "selection": "USDT",
+    "votingPower": 969668814.14,
+    "voteCount": 66,
+    "rowan-staked power": "111,658.14",
+    "rowan-pooled power": "3,665,816.26"
+  },
+  {
+    "selection": "ZCX",
+    "votingPower": 913572271.17,
+    "voteCount": 42,
+    "rowan-staked power": "114,499.78",
+    "rowan-pooled power": "7,003,514.85"
+  },
+  {
+    "selection": "UST",
+    "votingPower": 753296434.12,
+    "voteCount": 48,
+    "rowan-staked power": "128,859.71",
+    "rowan-pooled power": "2,346,675.95"
+  },
+  {
+    "selection": "OSMO",
+    "votingPower": 657130931.9,
+    "voteCount": 59,
+    "rowan-staked power": "401,214.58",
+    "rowan-pooled power": "2,877,819.86"
+  },
+  {
+    "selection": "AKT",
+    "votingPower": 376648217.06,
+    "voteCount": 31,
+    "rowan-staked power": "38,008.71",
+    "rowan-pooled power": "2,757,251"
+  },
+  {
+    "selection": "CRO",
+    "votingPower": 376648217.06,
+    "voteCount": 27,
+    "rowan-staked power": "42,378.99",
+    "rowan-pooled power": "369,363.18"
+  },
+  {
+    "selection": "LINA",
+    "votingPower": 208358588.16,
+    "voteCount": 8,
+    "rowan-staked power": "5,721.13",
+    "rowan-pooled power": "1,755.34"
+  },
+  {
+    "selection": "DVPN",
+    "votingPower": 200344796.31,
+    "voteCount": 13,
+    "rowan-staked power": "7,412.67",
+    "rowan-pooled power": "146,159.62"
+  },
+  {
+    "selection": "RUNE",
+    "votingPower": 200344796.31,
+    "voteCount": 20,
+    "rowan-staked power": "90,467.5",
+    "rowan-pooled power": "404,386.75"
+  },
+  {
+    "selection": "ATOM",
+    "votingPower": 192331004.46,
+    "voteCount": 16,
+    "rowan-staked power": "62,183.68",
+    "rowan-pooled power": "351,630.58"
+  },
+  {
+    "selection": "METIS",
+    "votingPower": 144248253.34,
+    "voteCount": 11,
+    "rowan-staked power": "115,998.76",
+    "rowan-pooled power": "845,493.78"
+  },
+  {
+    "selection": "RNDR",
+    "votingPower": 96165502.23,
+    "voteCount": 5,
+    "rowan-staked power": "5,225",
+    "rowan-pooled power": "88,238.16"
+  },
+  {
+    "selection": "LINK",
+    "votingPower": 72124126.67,
+    "voteCount": 8,
+    "rowan-staked power": "11,599.5",
+    "rowan-pooled power": "288,700.34"
+  },
+  {
+    "selection": "WBTC",
+    "votingPower": 72124126.67,
+    "voteCount": 6,
+    "rowan-staked power": "1,552.45",
+    "rowan-pooled power": "53,043.29"
+  },
+  {
+    "selection": "MATIC",
+    "votingPower": 72124126.67,
+    "voteCount": 5,
+    "rowan-staked power": "0",
+    "rowan-pooled power": "10,149.94"
+  },
+  {
+    "selection": "MEMO",
+    "votingPower": 64110334.82,
+    "voteCount": 2,
+    "rowan-staked power": "900",
+    "rowan-pooled power": "41,711.44"
+  },
+  {
+    "selection": "IRIS",
+    "votingPower": 48082751.11,
+    "voteCount": 5,
+    "rowan-staked power": "17,775.88",
+    "rowan-pooled power": "17,083.15"
+  },
+  {
+    "selection": "1INCH",
+    "votingPower": 32055167.41,
+    "voteCount": 3,
+    "rowan-staked power": "0",
+    "rowan-pooled power": "17,668.55"
+  },
+  {
+    "selection": "XDC",
+    "votingPower": 32055167.41,
+    "voteCount": 1,
+    "rowan-staked power": "0",
+    "rowan-pooled power": "2,447.67"
+  },
+  {
+    "selection": "DAI",
+    "votingPower": 32055167.41,
+    "voteCount": 4,
+    "rowan-staked power": "46,524.71",
+    "rowan-pooled power": "91,271.81"
+  },
+  {
+    "selection": "SAITO",
+    "votingPower": 32055167.41,
+    "voteCount": 1,
+    "rowan-staked power": "500",
+    "rowan-pooled power": "7,925.87"
+  },
+  {
+    "selection": "SAND",
+    "votingPower": 24041375.56,
+    "voteCount": 3,
+    "rowan-staked power": "0",
+    "rowan-pooled power": "1,135,212.66"
+  },
+  {
+    "selection": "SCRT",
+    "votingPower": 24041375.56,
+    "voteCount": 2,
+    "rowan-staked power": "0",
+    "rowan-pooled power": "4,661.64"
+  },
+  {
+    "selection": "VRA",
+    "votingPower": 16027583.7,
+    "voteCount": 1,
+    "rowan-staked power": "0",
+    "rowan-pooled power": "1,223.84"
+  },
+  {
+    "selection": "ZRX",
+    "votingPower": 16027583.7,
+    "voteCount": 2,
+    "rowan-staked power": "0",
+    "rowan-pooled power": "105,062.34"
+  },
+  {
+    "selection": "BAL",
+    "votingPower": 16027583.7,
+    "voteCount": 2,
+    "rowan-staked power": "0",
+    "rowan-pooled power": "33,488.3"
+  },
+  {
+    "selection": "NGM",
+    "votingPower": 16027583.7,
+    "voteCount": 2,
+    "rowan-staked power": "250",
+    "rowan-pooled power": "91,450.84"
+  },
+  {
+    "selection": "EEUR",
+    "votingPower": 16027583.7,
+    "voteCount": 2,
+    "rowan-staked power": "1,292.69",
+    "rowan-pooled power": "263,425.02"
+  },
+  {
+    "selection": "ZCN",
+    "votingPower": 16027583.7,
+    "voteCount": 1,
+    "rowan-staked power": "250",
+    "rowan-pooled power": "3,962.94"
+  },
+  {
+    "selection": "OSMOS",
+    "votingPower": 16027583.7,
+    "voteCount": 2,
+    "rowan-staked power": "0",
+    "rowan-pooled power": "0"
+  },
+  {
+    "selection": "IOTX",
+    "votingPower": 16027583.7,
+    "voteCount": 1,
+    "rowan-staked power": "166.26",
+    "rowan-pooled power": "6,206.8"
+  },
+  {
+    "selection": "AXS",
+    "votingPower": 16027583.7,
+    "voteCount": 2,
+    "rowan-staked power": "7.63",
+    "rowan-pooled power": "192.82"
+  },
+  {
+    "selection": "TEL",
+    "votingPower": 8013791.85,
+    "voteCount": 1,
+    "rowan-staked power": "0",
+    "rowan-pooled power": "611.92"
+  },
+  {
+    "selection": "XRP",
+    "votingPower": 8013791.85,
+    "voteCount": 1,
+    "rowan-staked power": "0",
+    "rowan-pooled power": "611.92"
+  },
+  {
+    "selection": "OCEAN",
+    "votingPower": 8013791.85,
+    "voteCount": 1
+  },
+  {
+    "selection": "USDC",
+    "votingPower": 8013791.85,
+    "voteCount": 1,
+    "rowan-staked power": "374.96",
+    "rowan-pooled power": "1,254.47"
+  },
+  {
+    "selection": "OSMOSIS",
+    "votingPower": 8013791.85,
+    "voteCount": 1,
+    "rowan-staked power": "0",
+    "rowan-pooled power": "3,347.68"
+  },
+  {
+    "selection": "REGEN",
+    "votingPower": 8013791.85,
+    "voteCount": 1,
+    "rowan-staked power": "3.5",
+    "rowan-pooled power": "0"
+  },
+  {
+    "selection": "IXO",
+    "votingPower": 8013791.85,
+    "voteCount": 1,
+    "rowan-staked power": "3.5",
+    "rowan-pooled power": "0"
+  },
+  {
+    "selection": "ATK",
+    "votingPower": 8013791.85,
+    "voteCount": 1,
+    "rowan-staked power": "0",
+    "rowan-pooled power": "5,264.27"
+  },
+  {
+    "selection": "FTM",
+    "votingPower": 8013791.85,
+    "voteCount": 1,
+    "rowan-staked power": "0",
+    "rowan-pooled power": "0"
+  },
+  {
+    "selection": "REEF",
+    "votingPower": 8013791.85,
+    "voteCount": 1,
+    "rowan-staked power": "83.13",
+    "rowan-pooled power": "3,103.4"
+  },
+  {
+    "selection": "SHIB",
+    "votingPower": 8013791.85,
+    "voteCount": 1,
+    "rowan-staked power": "1,375",
+    "rowan-pooled power": "3,419.45"
+  },
+  {
+    "selection": "RLY",
+    "votingPower": 8013791.85,
+    "voteCount": 1,
+    "rowan-staked power": "0",
+    "rowan-pooled power": "3,432.37"
+  }
+]

@@ -11,7 +11,7 @@ module.exports.default = async ({ startHeight, endHeight }, { fetch }) => {
       // optimally, would implement startHeight greater than & endHeight less than
       // https://lcd-ccc.omniflix.tv/cosmos/tx/v1beta1/txs?events=tx.height%3E=82&pagination.limit=100
       // `https://rpc.sifchain.finance/tx_search?query="transfer.recipient='sif1seftxu8l6v7d50ltm3v7hl55jlyxrps53rmjl8'"&per_page=100&page=${page}``https://rpc.sifchain.finance/tx_search?query="transfer.recipient='sif1seftxu8l6v7d50ltm3v7hl55jlyxrps53rmjl8'"&per_page=100&page=${page}`
-      `https://rpc.sifchain.finance/tx_search?query="transfer.recipient='sif1seftxu8l6v7d50ltm3v7hl55jlyxrps53rmjl8'"&per_page=100&page=${page}`
+      `https://rpc-archive.sifchain.finance/tx_search?query="transfer.recipient='sif1seftxu8l6v7d50ltm3v7hl55jlyxrps53rmjl8'"&per_page=100&page=${page}`
     ).then((r) => r.json());
     totalCount = +result.total_count;
     allTxs.push(
@@ -27,7 +27,7 @@ module.exports.default = async ({ startHeight, endHeight }, { fetch }) => {
       .map(async ({ height, hash }) => {
         if (+height < startHeight || +height > endHeight) return;
         const json = await fetch(
-          `https://api.sifchain.finance/cosmos/tx/v1beta1/txs/${hash}`
+          `https://api-archive.sifchain.finance/cosmos/tx/v1beta1/txs/${hash}`
         ).then((r) => r.json());
         const userAddress = json.tx.body.messages[0].from_address;
         ballotsByAddress[userAddress] = (
