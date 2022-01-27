@@ -287,20 +287,33 @@ const bp = new BackgroundProcessor();
 // const programName = 'harvest_expansion';
 // const programName = 'expansion_bonus';
 // const programName = 'bonus_v2_luna';
-// const programName = 'expansion_v2_bonus';
-const programName = 'expansion_v3_bonus';
-bp.reloadAndReprocessSnapshots({
-  network: MAINNET,
-  rewardProgram: programName,
-})
-  // test reload caching
-  // .then(async () => bp.reloadAndReprocessSnapshots({ network: MAINNET }))
-  .then(async () => {
-    await runTests('lm', bp.lmDataParsed, MAINNET, programName);
-    console.log(
-      bp.dispatch(GET_LM_CURRENT_APY_SUMMARY, {
-        programName: programName,
+const programName = 'expansion_v2_bonus';
+// const programName = 'expansion_v3_bonus';
+
+(async () => {
+  for (let programName of [
+    'harvest_expansion',
+    'expansion_bonus',
+    'bonus_v2_luna',
+    'expansion_v2_bonus',
+    'expansion_v3_bonus',
+  ]) {
+    await bp
+      .reloadAndReprocessSnapshots({
+        network: MAINNET,
+        rewardProgram: programName,
       })
-    );
-    // await runTests('vs', bp.vsDataParsed, MAINNET);
-  });
+      // test reload caching
+      // .then(async () => bp.reloadAndReprocessSnapshots({ network: MAINNET }))
+      .then(async () => {
+        console.log('>' + programName.toUpperCase());
+        await runTests('lm', bp.lmDataParsed, MAINNET, programName);
+        console.log(
+          bp.dispatch(GET_LM_CURRENT_APY_SUMMARY, {
+            programName: programName,
+          })
+        );
+        // await runTests('vs', bp.vsDataParsed, MAINNET);
+      });
+  }
+})();

@@ -27,13 +27,11 @@ function calculateDateOfNextDispensation(currentDate) {
       dateStyle: 'full',
       timeStyle: 'long',
     }).format(date);
-    // console.log(formattedDate);
     // dispensations are on Mondays at 8:00 AM PST
     if (
       formattedDate.includes('Monday') &&
       formattedDate.includes('8:00:00 AM PST')
     ) {
-      console.log(formattedDate);
       return date;
     }
   }
@@ -120,8 +118,6 @@ function createConfig({
     REWARD_ACCRUAL_DURATION_MS / 1000 / 60 / EVENT_INTERVAL_MINUTES
   );
 
-  console.log({ REWARD_ACCRUAL_DURATION_INTERVAL_COUNT });
-
   const config = {
     SHOULD_SUBTRACT_WITHDRAWALS_FROM_INITIAL_BALANCE:
       shouldSubtractWithdrawalsFromInitialBalance,
@@ -156,10 +152,7 @@ function createConfig({
     new Date(END_OF_REWARD_ACCRUAL_DATETIME),
     config
   );
-  console.log(
-    'AUTO_CLAIM_TIME_INDEX_LOOKUP',
-    config.AUTO_CLAIM_TIME_INDEX_LOOKUP
-  );
+
   return config;
 }
 
