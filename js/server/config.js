@@ -27,13 +27,11 @@ function calculateDateOfNextDispensation(currentDate) {
       dateStyle: 'full',
       timeStyle: 'long',
     }).format(date);
-    // console.log(formattedDate);
     // dispensations are on Mondays at 8:00 AM PST
     if (
       formattedDate.includes('Monday') &&
       formattedDate.includes('8:00:00 AM PST')
     ) {
-      console.log(formattedDate);
       return date;
     }
   }
@@ -121,7 +119,9 @@ function createConfig({
     REWARD_ACCRUAL_DURATION_MS / 1000 / 60 / EVENT_INTERVAL_MINUTES
   );
 
-  console.log({ REWARD_ACCRUAL_DURATION_INTERVAL_COUNT });
+  const NUMBER_OF_INTERVALS_TO_RUN =
+    REWARD_ACCRUAL_DURATION_INTERVAL_COUNT *
+    (weeksToTotalMaturity / durationInWeeks); // duration of bucket drain + duration to latest possible multiplier maturity
 
   const config = {
     SHOULD_SUBTRACT_WITHDRAWALS_FROM_INITIAL_BALANCE:
@@ -138,9 +138,7 @@ function createConfig({
     DEPOSITS_ALLOWED_DURATION_MS,
     MULTIPLIER_MATURITY:
       REWARD_ACCRUAL_DURATION_MS / 1000 / 60 / EVENT_INTERVAL_MINUTES, // 6 weeks in in 200minute intervals,
-    NUMBER_OF_INTERVALS_TO_RUN:
-      REWARD_ACCRUAL_DURATION_INTERVAL_COUNT *
-      (weeksToTotalMaturity / durationInWeeks), // duration of bucket drain + duration to latest possible multiplier maturity
+    NUMBER_OF_INTERVALS_TO_RUN,
     REWARD_ACCRUAL_DURATION_INTERVAL_COUNT,
     INITIAL_REWARD_MULTIPLIER: initialRewardMultiplier,
     COIN_WHITELIST: coinWhitelist,
@@ -157,10 +155,16 @@ function createConfig({
     new Date(END_OF_REWARD_ACCRUAL_DATETIME),
     config
   );
-  console.log(
-    name + ':AUTO_CLAIM_TIME_INDEX_LOOKUP',
-    config.AUTO_CLAIM_TIME_INDEX_LOOKUP
-  );
+
+  // console.log
+  //   ({
+  //   name,
+  //   endDate: END_OF_REWARD_ACCRUAL_DATETIME,
+  //   maturityDate: `${new Date(
+  //     new Date(START_DATETIME).getTime() +
+  //       intervalDurationMinutes * NUMBER_OF_INTERVALS_TO_RUN * 60 * 1000
+  //   ).toLocaleDateString()}`,
+  // });
   return config;
 }
 
@@ -241,7 +245,7 @@ module.exports = {
     startsAt: '2021-11-22T10:00:00.000Z',
     durationInWeeks: expansionBonusDurationInWeeks,
     // rewardBucketStartDateTime: HARVEST_RELOAD_DATETIME,
-    weeksToTotalMaturity: 8,
+    weeksToTotalMaturity: 12,
     intervalDurationMinutes: 60,
     initialRewardMultiplier: 1,
     shouldSubtractWithdrawalsFromInitialBalance: false,
