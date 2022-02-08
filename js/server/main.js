@@ -313,17 +313,17 @@ const server = new ApolloServer({
       async rewardPrograms(root, args, context, info) {
         // eeur
         return [
-          {
-            displayName: `Sif's Luna Bonus`,
-            description: `300% total APR (Expansion included). Elected by the community.`,
-            rewardProgramType: 'lm',
-            rewardProgramName: 'bonus_v2_luna',
-            incentivizedPoolSymbols: ['luna'],
-            documentationURL:
-              'https://docs.sifchain.finance/using-the-website/web-ui-step-by-step/rewards/liquidity-mining-rewards-programs',
-            isUniversal: false,
-            distributionPattern: 'STATIC_APR',
-          },
+          // {
+          //   displayName: `Sif's Luna Bonus`,
+          //   description: `300% total APR (Expansion included). Elected by the community.`,
+          //   rewardProgramType: 'lm',
+          //   rewardProgramName: 'bonus_v2_luna',
+          //   incentivizedPoolSymbols: ['luna'],
+          //   documentationURL:
+          //     'https://docs.sifchain.finance/using-the-website/web-ui-step-by-step/rewards/liquidity-mining-rewards-programs',
+          //   isUniversal: false,
+          //   distributionPattern: 'STATIC_APR',
+          // },
           {
             displayName: `Sif's Expansion`,
             description: `100% APR. All pools.`,
@@ -357,38 +357,38 @@ const server = new ApolloServer({
             isUniversal: false,
             distributionPattern: 'STATIC_APR',
           },
-          {
-            displayName: `Pools of the People (v2)`,
-            description: `300% total APR (Expansion included). 6 pools. Selected by the community.`,
-            rewardProgramType: 'lm',
-            rewardProgramName: 'expansion_v2_bonus',
-            incentivizedPoolSymbols: [
-              'zcx',
-              'eth',
-              'lgcy',
-              // JUNØ
-              'juno',
-              // LUNA
-              'luna',
-              // ATOM
-              'atom',
-            ],
-            documentationURL:
-              'https://docs.sifchain.finance/using-the-website/web-ui-step-by-step/rewards/liquidity-mining-rewards-programs',
-            isUniversal: false,
-            distributionPattern: 'STATIC_APR',
-          },
-          {
-            displayName: `Pools of the People (v1)`,
-            description: `300% total APR (Expansion included). 5 pools. Selected by the community.`,
-            rewardProgramType: 'lm',
-            rewardProgramName: 'expansion_bonus',
-            incentivizedPoolSymbols: ['atom', 'usd', 'juno', 'zcx', 'eth'],
-            documentationURL:
-              'https://docs.sifchain.finance/using-the-website/web-ui-step-by-step/rewards/liquidity-mining-rewards-programs',
-            isUniversal: false,
-            distributionPattern: 'STATIC_APR',
-          },
+          // {
+          //   displayName: `Pools of the People (v2)`,
+          //   description: `300% total APR (Expansion included). 6 pools. Selected by the community.`,
+          //   rewardProgramType: 'lm',
+          //   rewardProgramName: 'expansion_v2_bonus',
+          //   incentivizedPoolSymbols: [
+          //     'zcx',
+          //     'eth',
+          //     'lgcy',
+          //     // JUNØ
+          //     'juno',
+          //     // LUNA
+          //     'luna',
+          //     // ATOM
+          //     'atom',
+          //   ],
+          //   documentationURL:
+          //     'https://docs.sifchain.finance/using-the-website/web-ui-step-by-step/rewards/liquidity-mining-rewards-programs',
+          //   isUniversal: false,
+          //   distributionPattern: 'STATIC_APR',
+          // },
+          // {
+          //   displayName: `Pools of the People (v1)`,
+          //   description: `300% total APR (Expansion included). 5 pools. Selected by the community.`,
+          //   rewardProgramType: 'lm',
+          //   rewardProgramName: 'expansion_bonus',
+          //   incentivizedPoolSymbols: ['atom', 'usd', 'juno', 'zcx', 'eth'],
+          //   documentationURL:
+          //     'https://docs.sifchain.finance/using-the-website/web-ui-step-by-step/rewards/liquidity-mining-rewards-programs',
+          //   isUniversal: false,
+          //   distributionPattern: 'STATIC_APR',
+          // },
           /*          {
             displayName: `Sif's EEUR Bonus Pool`,
             description: `Earn Rowan rewards by pooling EEUR.`,
