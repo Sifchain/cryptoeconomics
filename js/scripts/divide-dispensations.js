@@ -75,7 +75,7 @@ async function divideDispensations() {
     'expansion_v2_bonus',
     'expansion_v3_bonus',
     'expansion_bonus',
-    'bonus_v2_luna',
+    // 'bonus_v2_luna',
   ]) {
     const rawDist = await fetch(
       `https://data.sifchain.finance/beta/network/dispensation/${type}`
