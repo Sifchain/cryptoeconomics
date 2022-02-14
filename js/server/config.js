@@ -30,11 +30,12 @@ function calculateDateOfNextDispensation(currentDate) {
     // dispensations are on Mondays at 8:00 AM PST
     if (
       formattedDate.includes('Monday') &&
-      formattedDate.includes('8:00:00 AM PST')
+      formattedDate.includes('8:00:00 AM')
     ) {
       return date;
     }
   }
+  console.log(currentDate);
   throw new Error('date not found');
 }
 
