@@ -35,7 +35,6 @@ function calculateDateOfNextDispensation(currentDate) {
       return date;
     }
   }
-  console.log(currentDate);
   throw new Error('date not found');
 }
 
