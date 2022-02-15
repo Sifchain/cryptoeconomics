@@ -357,6 +357,26 @@ const server = new ApolloServer({
             isUniversal: false,
             distributionPattern: 'STATIC_APR',
           },
+          {
+            displayName: `Pools of the People (v4)`,
+            description: `300% total APR (Expansion included). 7 pools. Selected by the community.`,
+            rewardProgramType: 'lm',
+            rewardProgramName: 'expansion_v4_bonus',
+            incentivizedPoolSymbols: [
+              'eth',
+              'usdc',
+              // JUNØ
+              'juno',
+              // LUNA
+              'luna',
+              // ATOM
+              'atom',
+            ],
+            documentationURL:
+              'https://docs.sifchain.finance/using-the-website/web-ui-step-by-step/rewards/liquidity-mining-rewards-programs',
+            isUniversal: false,
+            distributionPattern: 'STATIC_APR',
+          },
           // {
           //   displayName: `Pools of the People (v2)`,
           //   description: `300% total APR (Expansion included). 6 pools. Selected by the community.`,

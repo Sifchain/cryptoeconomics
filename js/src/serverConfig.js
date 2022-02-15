@@ -16,7 +16,7 @@ function getTimeIndex(timestampFromClient, config) {
   return rtn;
 }
 function calculateDateOfNextDispensation(currentDate) {
-  const date = currentDate;
+  const date = new Date(currentDate);
   date.setMinutes(0, 0, 0);
   let hoursIterationLimit = 24 * 7.5;
   while (hoursIterationLimit--) {
@@ -27,13 +27,11 @@ function calculateDateOfNextDispensation(currentDate) {
       dateStyle: 'full',
       timeStyle: 'long',
     }).format(date);
-    // console.log(formattedDate);
     // dispensations are on Mondays at 8:00 AM PST
     if (
       formattedDate.includes('Monday') &&
-      formattedDate.includes('8:00:00 AM PST')
+      formattedDate.includes('8:00:00 AM')
     ) {
-      console.log(formattedDate);
       return date;
     }
   }
@@ -65,6 +63,7 @@ const createAutoClaimTimeIndexLookup = (start, end, config) => {
 };
 
 function createConfig({
+  name,
   startsAt,
   durationInWeeks,
   weeksToTotalMaturity,
@@ -120,7 +119,9 @@ function createConfig({
     REWARD_ACCRUAL_DURATION_MS / 1000 / 60 / EVENT_INTERVAL_MINUTES
   );
 
-  console.log({ REWARD_ACCRUAL_DURATION_INTERVAL_COUNT });
+  const NUMBER_OF_INTERVALS_TO_RUN =
+    REWARD_ACCRUAL_DURATION_INTERVAL_COUNT *
+    (weeksToTotalMaturity / durationInWeeks); // duration of bucket drain + duration to latest possible multiplier maturity
 
   const config = {
     SHOULD_SUBTRACT_WITHDRAWALS_FROM_INITIAL_BALANCE:
@@ -137,9 +138,7 @@ function createConfig({
     DEPOSITS_ALLOWED_DURATION_MS,
     MULTIPLIER_MATURITY:
       REWARD_ACCRUAL_DURATION_MS / 1000 / 60 / EVENT_INTERVAL_MINUTES, // 6 weeks in in 200minute intervals,
-    NUMBER_OF_INTERVALS_TO_RUN:
-      REWARD_ACCRUAL_DURATION_INTERVAL_COUNT *
-      (weeksToTotalMaturity / durationInWeeks), // duration of bucket drain + duration to latest possible multiplier maturity
+    NUMBER_OF_INTERVALS_TO_RUN,
     REWARD_ACCRUAL_DURATION_INTERVAL_COUNT,
     INITIAL_REWARD_MULTIPLIER: initialRewardMultiplier,
     COIN_WHITELIST: coinWhitelist,
@@ -156,10 +155,16 @@ function createConfig({
     new Date(END_OF_REWARD_ACCRUAL_DATETIME),
     config
   );
-  console.log(
-    'AUTO_CLAIM_TIME_INDEX_LOOKUP',
-    config.AUTO_CLAIM_TIME_INDEX_LOOKUP
-  );
+
+  // console.log
+  //   ({
+  //   name,
+  //   endDate: END_OF_REWARD_ACCRUAL_DATETIME,
+  //   maturityDate: `${new Date(
+  //     new Date(START_DATETIME).getTime() +
+  //       intervalDurationMinutes * NUMBER_OF_INTERVALS_TO_RUN * 60 * 1000
+  //   ).toLocaleDateString()}`,
+  // });
   return config;
 }
 
@@ -234,12 +239,13 @@ module.exports = {
   //   shouldIncludeInitialLiquidity: true,
   // }),
   expansion_bonus: createConfig({
+    name: 'expansion_bonus',
     initialRowan: 0, // + 20_000_000,
     // startsAt: '2021-11-05T00:00:00.000Z',
     startsAt: '2021-11-22T10:00:00.000Z',
     durationInWeeks: expansionBonusDurationInWeeks,
     // rewardBucketStartDateTime: HARVEST_RELOAD_DATETIME,
-    weeksToTotalMaturity: 8,
+    weeksToTotalMaturity: 12,
     intervalDurationMinutes: 60,
     initialRewardMultiplier: 1,
     shouldSubtractWithdrawalsFromInitialBalance: false,
@@ -257,6 +263,7 @@ module.exports = {
     ],
   }),
   expansion_v2_bonus: createConfig({
+    name: 'expansion_v2_bonus',
     initialRowan: 0, // + 20_000_000,
     // startsAt: '2021-11-05T00:00:00.000Z',
     startsAt: new Date('12/21/2021, 8:00:00 AM PST').toISOString(),
@@ -281,6 +288,7 @@ module.exports = {
     ],
   }),
   expansion_v3_bonus: createConfig({
+    name: 'expansion_v3_bonus',
     initialRowan: 0, // + 20_000_000,
     // startsAt: '2021-11-05T00:00:00.000Z',
     startsAt: new Date('01/18/2022, 8:00:00 AM PST').toISOString(),
@@ -305,7 +313,32 @@ module.exports = {
       'ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2',
     ],
   }),
+  expansion_v4_bonus: createConfig({
+    name: 'expansion_v4_bonus',
+    initialRowan: 0, // + 20_000_000,
+    // Feb 15, 2021 @ 8:00:00 AM PST
+    startsAt: 1644940800000,
+    durationInWeeks: 4,
+    // rewardBucketStartDateTime: HARVEST_RELOAD_DATETIME,
+    weeksToTotalMaturity: 8,
+    intervalDurationMinutes: 60,
+    initialRewardMultiplier: 1,
+    shouldSubtractWithdrawalsFromInitialBalance: false,
+    shouldIncludeInitialLiquidity: true,
+    staticAPRPercentage: 200,
+    coinWhitelist: [
+      'cusdc',
+      'ceth',
+      // JUNØ
+      'ibc/F279AB967042CAC10BFF70FAECB179DCE37AAAE4CD4C1BC4565C2BBC383BC0FA',
+      // LUNA
+      'ibc/F141935FF02B74BDC6B8A0BD6FE86A23EE25D10E89AA0CD9158B3D92B63FDF4D',
+      // ATOM
+      'ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2',
+    ],
+  }),
   bonus_v2_luna: createConfig({
+    name: 'bonus_v2_luna',
     initialRowan: 0, // + 20_000_000,
     // startsAt: '2021-11-05T00:00:00.000Z',
     startsAt: new Date('12/14/2021, 8:00:00 AM PST').toISOString(),
@@ -322,19 +355,21 @@ module.exports = {
     ],
   }),
   harvest_expansion: createConfig({
+    name: 'harvest_expansion',
     initialRowan: 0, // + 20_000_000,
     // startsAt: '2021-11-05T00:00:00.000Z',
     startsAt: '2021-11-22T10:00:00.000Z',
-    durationInWeeks: 12,
+    durationInWeeks: 16,
     staticAPRPercentage: 100,
     // rewardBucketStartDateTime: HARVEST_RELOAD_DATETIME,
-    weeksToTotalMaturity: 12,
+    weeksToTotalMaturity: 16,
     intervalDurationMinutes: 60,
     initialRewardMultiplier: 1,
     shouldSubtractWithdrawalsFromInitialBalance: false,
     shouldIncludeInitialLiquidity: true,
     coinWhitelist: undefined,
   }),
+
   // bonus_v1: createConfig({
   //   initialRowan: 1_000_000,
   //   startsAt: '2021-10-05T19:00:00.000Z',

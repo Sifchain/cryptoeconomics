@@ -10,6 +10,7 @@ const rewardProgramStartingStates = {
   bonus_v2_luna: require('../load/starting-states/lm-bonus_v2_luna-starting-state.json'),
   expansion_v2_bonus: require('../load/starting-states/lm-expansion_v2_bonus-starting-state.json'),
   expansion_v3_bonus: require('../load/starting-states/lm-expansion_v3_bonus-starting-state.json'),
+  expansion_v4_bonus: require('../load/starting-states/lm-expansion_v4_bonus-starting-state.json'),
 };
 
 const getLMTimeseriesFinalIndex = (snapshotData) => {

@@ -58,7 +58,8 @@ const startingHeights = {
   // expansion_bonus: '4335023',
   // bonus_v2_luna: '4654182',
   // expansion_v2_bonus: '4756424',
-  expansion_v3_bonus: '5163394',
+  // expansion_v3_bonus: '5163394',
+  expansion_v4_bonus: '5571572',
 };
 async function main() {
   for (let programName in startingHeights) {
