@@ -74,7 +74,7 @@ async function divideDispensations() {
     'harvest_expansion',
     'expansion_v2_bonus',
     'expansion_v3_bonus',
-    'expansion_bonus',
+    // 'expansion_bonus',
     // 'bonus_v2_luna',
   ]) {
     const rawDist = await fetch(
