@@ -359,7 +359,7 @@ const server = new ApolloServer({
           },
           {
             displayName: `Pools of the People (v4)`,
-            description: `300% total APR (Expansion included). 7 pools. Selected by the community.`,
+            description: `300% total APR (Expansion included). 5 pools. Selected by the community.`,
             rewardProgramType: 'lm',
             rewardProgramName: 'expansion_v4_bonus',
             incentivizedPoolSymbols: [
