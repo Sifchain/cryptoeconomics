@@ -359,7 +359,7 @@ module.exports = {
     initialRowan: 0, // + 20_000_000,
     // startsAt: '2021-11-05T00:00:00.000Z',
     startsAt: '2021-11-22T10:00:00.000Z',
-    durationInWeeks: 16,
+    durationInWeeks: 26,
     staticAPRPercentage: 100,
     // rewardBucketStartDateTime: HARVEST_RELOAD_DATETIME,
     weeksToTotalMaturity: 16,
