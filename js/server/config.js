@@ -362,7 +362,7 @@ module.exports = {
     durationInWeeks: 26,
     staticAPRPercentage: 100,
     // rewardBucketStartDateTime: HARVEST_RELOAD_DATETIME,
-    weeksToTotalMaturity: 16,
+    weeksToTotalMaturity: 26,
     intervalDurationMinutes: 60,
     initialRewardMultiplier: 1,
     shouldSubtractWithdrawalsFromInitialBalance: false,
