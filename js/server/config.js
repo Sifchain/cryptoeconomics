@@ -318,9 +318,9 @@ module.exports = {
     initialRowan: 0, // + 20_000_000,
     // Feb 15, 2021 @ 8:00:00 AM PST
     startsAt: 1644940800000,
-    durationInWeeks: 4,
+    durationInWeeks: 10,
     // rewardBucketStartDateTime: HARVEST_RELOAD_DATETIME,
-    weeksToTotalMaturity: 8,
+    weeksToTotalMaturity: 10,
     intervalDurationMinutes: 60,
     initialRewardMultiplier: 1,
     shouldSubtractWithdrawalsFromInitialBalance: false,
